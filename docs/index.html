@@ -238,13 +238,13 @@ function home(){
     <div><h2 id="location-title">Office location</h2><p>Etheringtons Solicitors · North Sydney</p></div>
    </div>
    <div class="office-map" id="office-map">
-    <div class="location-actions"><button class="action" type="button" data-map-toggle aria-expanded="false" aria-controls="office-map-frame">Load Google map</button><a href="https://www.google.com/maps/search/?api=1&amp;query=Etheringtons%20Solicitors%2C%20North%20Sydney" target="_blank" rel="noopener noreferrer">Get directions <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
-    <p class="map-note">Google Maps may use cookies when loaded.</p>
-    <div id="office-map-frame" hidden></div>
+    <div class="location-actions"><a href="https://www.google.com/maps/search/?api=1&amp;query=Etheringtons%20Solicitors%2C%20North%20Sydney" target="_blank" rel="noopener noreferrer">Get directions <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+    <p class="map-note">The embedded Google Map may use cookies.</p>
+    <iframe id="office-map-frame" title="Google map showing Etheringtons Solicitors" referrerpolicy="no-referrer" src="https://maps.google.com/maps?q=Etheringtons%20Solicitors%2C%20North%20Sydney&amp;ll=-33.837858,151.209414&amp;z=17&amp;output=embed"></iframe>
    </div>
   </section>
  </div></div>
- <aside class="privacy-notice" aria-label="Privacy controls"><p>Google Maps may use cookies when you load the map. You can manage the map from the office location section.</p><a href="#office-map">Map settings</a><button type="button" data-dismiss-privacy>Dismiss</button></aside>
+ <aside class="privacy-notice" aria-label="Privacy controls"><p>The embedded Google Map may use cookies.</p><button type="button" data-dismiss-privacy>Dismiss</button></aside>
  </main><footer class="client-footer"><span>Family Law Firm · Sydney, NSW</span><small>Website concept</small></footer>`;
 }
 entry.addEventListener('click',()=>{if(app.querySelector('.shell'))home();else showStaff();window.scrollTo(0,0)});
@@ -300,7 +300,7 @@ const staffMode=new URLSearchParams(location.search).get('staff');
 if(staffMode==='demo'){entry.hidden=false;showStaff();}
 if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 </script>
-<script src="navigation.js?v=consultation-map-1" defer></script>
+<script src="navigation.js?v=always-map-2" defer></script>
 <script src="homepage-motion.js?v=1" defer></script>
 <script>
 (() => {

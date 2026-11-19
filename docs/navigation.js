@@ -96,22 +96,5 @@ clientApp.addEventListener('submit', event => {
 });
 
 clientApp.addEventListener('click', event => {
-  const button = event.target.closest('[data-map-toggle]');
-  if (!button) return;
-  const container = document.getElementById('office-map-frame');
-  const open = container.hidden;
-  if (open) {
-    const map = document.createElement('iframe');
-    map.title = 'Google map showing Etheringtons Solicitors';
-    map.referrerPolicy = 'no-referrer';
-    map.src = 'https://maps.google.com/maps?q=Etheringtons%20Solicitors%2C%20North%20Sydney&ll=-33.837858,151.209414&z=17&output=embed';
-    container.append(map);
-  } else container.replaceChildren();
-  container.hidden = !open;
-  button.setAttribute('aria-expanded', String(open));
-  button.textContent = open ? 'Hide Google map' : 'Load Google map';
-});
-
-clientApp.addEventListener('click', event => {
   if (event.target.closest('[data-dismiss-privacy]')) event.target.closest('.privacy-notice').hidden = true;
 });
