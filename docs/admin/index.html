@@ -9,7 +9,7 @@
 [hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
 </style>
 <link rel="stylesheet" href="./dashboard.css">
-<link rel="stylesheet" href="./workflow.css?v=2">
+<link rel="stylesheet" href="./workflow.css?v=3">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
 <style>
 .admin-dashboard{background:#f5f1eb}.dashboard-main{padding-top:32px}.dashboard-header{padding:17px 0 21px;margin-bottom:22px;border-bottom:1px solid #dfd3c8}.dashboard-header h1{font-size:clamp(30px,4vw,48px)}
@@ -96,7 +96,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=calendar-notes-6"></script>
+<script type="module" src="./firebase-admin.js?v=workspace-actions-1"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -106,22 +106,6 @@
  const shortcut = document.querySelector('.overview-links [href="#staff-inbox"]');
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
- const setupCalendar = () => {
-   const calendar = workspace.querySelector('#work-calendar');
-   if (!calendar || calendar.querySelector('[data-create-schedule]')) return;
-   const description = calendar.querySelector('.calendar-description');
-   const toolbar = document.createElement('div');
-   toolbar.className = 'calendar-toolbar';
-   description.before(toolbar);
-   const create = document.createElement('button');
-   create.type = 'button';
-   create.className = 'work-button';
-   create.dataset.createSchedule = '';
-   create.textContent = 'Create schedule';
-   toolbar.append(description, create);
- };
- new MutationObserver(setupCalendar).observe(workspace, {childList:true});
- setupCalendar();
  function render() {
    shortcut.hidden = inbox.hidden;
    const hash = ['#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#duties-all' : location.hash;
@@ -140,37 +124,15 @@
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const create = event.target.closest('[data-create-schedule]');
-   if (create) {
-     const form = workspace.querySelector('#work-form');
-     const kind = form.elements.namedItem('kind');
-     const date = form.elements.namedItem('date');
-     const month = workspace.querySelector('#work-month').value;
-     const selectedDay = workspace.querySelector('[data-calendar-day][aria-pressed="true"]');
-     const existing = form.elements.namedItem('title').value.trim() || form.elements.namedItem('notes').value.trim();
-     if (!existing && workspace.querySelector('#work-cancel').hidden) {
-       kind.value = 'Appointment';
-       form.elements.namedItem('calendar').value = workspace.querySelector('#work-calendar-scope').value;
-       kind.dispatchEvent(new Event('change', {bubbles:true}));
-       if (!date.value && month) {
-         const today = new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-         date.value = selectedDay?.dataset.calendarDay || (today.startsWith(month) ? today : month + '-01');
-       }
-     }
-     go('#work-queue');
-     form.elements.namedItem('title').focus();
-     return;
-   }
-   const draft = event.target.closest('[data-new-draft]');
-   if (draft) { go('#work-queue'); }
-   const edit = event.target.closest('#staff-workspace [data-edit]');
-   if (edit) { go('#work-queue'); return; }
    const link = event.target.closest('.dashboard-sidebar nav a, .overview-links a');
    if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
  }, true);
- workspace.addEventListener('schedule-saved', () => go('#work-calendar'));
+ workspace.addEventListener('workflow-view', event => {
+   const hash = '#' + event.detail;
+   if (location.hash !== hash) go(hash);
+ });
  window.addEventListener('hashchange', render);
  window.addEventListener('popstate', render);
  new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
