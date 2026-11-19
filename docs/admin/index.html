@@ -34,6 +34,7 @@
 <style>
 .month-controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:12px}.month-controls button{margin-bottom:10px;padding:8px 12px;border:1px solid #cbbec5;border-radius:6px;background:#fffdf8;color:#40233a}.month-controls label{min-width:160px}#work-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:10px 0 24px}.month-weekday{padding:7px 0;text-align:center;font-size:13px}.month-day{text-align:left;align-content:start;min-height:84px;border:1px solid #dfd4ca;border-radius:6px;background:#fffdfa;color:#382033;padding:6px;overflow:hidden}.month-day[aria-pressed=true]{background:#efe2eb;border-color:#75516c}.month-day[aria-current=date] strong{color:#526746;text-decoration:underline}.month-day span{display:block;background:#e9eee2;border-radius:4px;margin-top:3px;padding:3px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.month-day{min-height:56px;padding:3px}.month-day span{font-size:10px;padding:1px}}
 </style>
+<style>.staff-header-tools{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.staff-sydney-clock{display:grid;gap:3px;background:#fffdfa;color:#40233a;border:1px solid #ded3c6;border-radius:10px;padding:9px 13px}.staff-sydney-clock span{font-size:13px}.staff-sydney-clock time{font-size:18px;font-variant-numeric:tabular-nums;font-weight:700}</style>
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -70,7 +71,10 @@
  <div class="dashboard-main">
   <header class="dashboard-header">
    <div><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
-   <div id="dashboard-session"></div>
+   <div class="staff-header-tools">
+    <div class="staff-sydney-clock"><span>Sydney time</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
+    <div id="dashboard-session"></div>
+   </div>
   </header>
   <div class="dashboard-metrics" aria-label="Checklist summary">
    <div><span>Completed</span><strong id="dashboard-completed">0</strong></div>
@@ -166,6 +170,23 @@
  window.addEventListener('popstate', render);
  new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
  render();
+})();
+</script>
+<script>
+(() => {
+ const clock = document.getElementById('staff-sydney-time');
+ const calendarDate = document.getElementById('staff-sydney-date');
+ const timeZone = 'Australia/Sydney';
+ const timeFormat = new Intl.DateTimeFormat('en-AU', {timeZone, hour:'2-digit', minute:'2-digit', second:'2-digit', timeZoneName:'short'});
+ const dateFormat = new Intl.DateTimeFormat('en-AU', {timeZone, weekday:'short', day:'numeric', month:'short', year:'numeric'});
+ function tick() {
+   const now = new Date();
+   clock.dateTime = now.toISOString();
+   clock.textContent = timeFormat.format(now);
+   calendarDate.textContent = dateFormat.format(now);
+ }
+ tick();
+ setInterval(tick, 1000);
 })();
 </script>
 </body>
