@@ -6,6 +6,11 @@ service cloud.firestore {
       return exists(profile) && get(profile).data.role == role;
     }
 
+    function isActiveAdmin() {
+      let profile = /databases/$(database)/documents/users/$(request.auth.uid);
+      return hasRole('admin') && get(profile).data.get('Active', false) == true;
+    }
+
     function isSolicitor() {
       return request.auth != null
         && (request.auth.token.get('role', '') == 'solicitor' || hasRole('solicitor'));
@@ -23,7 +28,7 @@ service cloud.firestore {
     function ownsChecklist(uid) {
       return request.auth != null
         && request.auth.uid == uid
-        && (isSolicitor() || hasRole('employee'));
+        && (isSolicitor() || isActiveAdmin() || hasRole('employee'));
     }
 
     function validChecklist() {

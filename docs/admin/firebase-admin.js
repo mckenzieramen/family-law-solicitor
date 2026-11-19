@@ -129,10 +129,12 @@ onIdTokenChanged(auth, async user => {
   try {
     const { claims } = await getIdTokenResult(user);
     if (current !== generation) return;
-    const role = claims.role === 'solicitor' ? 'solicitor' :
-      (await getDocFromServer(doc(db, 'users', user.uid))).data()?.role;
+    const profile = claims.role === 'solicitor' ? null :
+      (await getDocFromServer(doc(db, 'users', user.uid))).data();
+    const role = claims.role === 'solicitor' ? 'solicitor' : profile?.role;
+    const admin = role === 'admin' && profile?.Active === true;
     if (current !== generation) return;
-    if (role !== 'solicitor' && (employeePanel || role !== 'employee')) {
+    if (role !== 'solicitor' && (employeePanel || (!admin && role !== 'employee'))) {
       authStatus.textContent = 'This account does not have access to this workspace.';
       return;
     }
@@ -144,7 +146,7 @@ onIdTokenChanged(auth, async user => {
     render(snapshot.data()?.progress ?? {});
     saveStatus.textContent = '';
     panel.hidden = false;
-    authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : 'Signed in as employee.';
+    authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch {
     if (current === generation) authStatus.textContent = 'Checklist unavailable. Verify the Firestore database and access rules.';
   }
