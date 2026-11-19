@@ -26,8 +26,9 @@ export function mountWorkflow(db, uid) {
   let loaded = false;
   let saving = false;
   root.innerHTML = `
+ <p id="work-status" role="status">Loading work items…</p>
  <section class="workflow-panel" id="work-queue">
-  <h2>Tasks &amp; deadlines</h2><p>Track client follow-ups, documents to request, and work for solicitor review.</p><p id="work-status" role="status">Loading work items…</p>
+  <h2>Tasks &amp; deadlines</h2><p>Track client follow-ups, documents to request, and work for solicitor review.</p>
   <form id="work-form" class="work-form">
    <h3 id="work-form-title">Add work item</h3>
    <div class="work-fields">
@@ -92,7 +93,11 @@ export function mountWorkflow(db, uid) {
     const date = today();
     const [year, monthNumber] = month.value.split('-').map(Number);
     const grid = find('#work-month-grid');
-    if (!year || !monthNumber) { grid.replaceChildren(); return; }
+    if (!year || !monthNumber) {
+      grid.replaceChildren();
+      renderRows('#work-agenda', [], 'Choose a month to see scheduled items.');
+      return;
+    }
     const matching = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
       (item.calendar || (item.kind === 'Appointment' && item.matter ? 'client' : 'admin')) === scope.value);
     const byDay = new Map();
@@ -146,7 +151,7 @@ export function mountWorkflow(db, uid) {
   }, () => {
     if (current !== session) return;
     loaded = false;
-    find('#work-calendar-status').textContent = 'Unable to load schedules. Check your staff access and Firestore rules.';
+    find('#work-calendar-status').textContent = '';
     save.disabled = true;
     status.textContent = 'Work items could not load. Publish the updated Firestore rules and reload this page.';
   });
@@ -190,7 +195,7 @@ export function mountWorkflow(db, uid) {
         scope.value = schedule.calendar;
         selectedDay = item.date;
         renderCalendar();
-        find('#work-calendar-status').textContent = 'Schedule saved.';
+        status.textContent = 'Schedule saved.';
         root.dispatchEvent(new Event('schedule-saved', {bubbles:true}));
       }
     } catch {
