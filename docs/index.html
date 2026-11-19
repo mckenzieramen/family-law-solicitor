@@ -27,7 +27,7 @@
 }
 </style>
 <link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="homepage.css?v=solicitors-3">
+<link rel="stylesheet" href="homepage.css?v=direction-icons-4">
 <header class="site-header">
  <a class="brand" href="./" aria-label="Family Law Firm home">
   <span class="brand-monogram" aria-hidden="true">FL</span>
@@ -40,7 +40,7 @@
   <a href="#reviews">Reviews</a>
   <a href="#about">About</a>
   <a href="#contact-info">Contact</a>
-  <a class="nav-cta" href="#contact">Consultation <svg class="ui-icon ui-icon-external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></a>
+  <a class="nav-cta" href="#contact">Consultation <span class="direction-icon direction-down" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5v14m-5-5 5 5 5-5"/></svg></span></a>
  </nav>
  <button class="secondary" id="entry" hidden>Staff Sign In · Demo</button>
 </header>
@@ -132,16 +132,16 @@ function home(){
  document.querySelector('.header-nav').hidden=false;
  app.innerHTML=`<main class="hero client-home">
  <section class="hero-grid" aria-labelledby="hero-title">
-  <div class="hero-copy"><p class="eyebrow">Family law · Sydney, NSW</p><h1 id="hero-title">Family law starts with a conversation.</h1><p>Guidance when you’re making decisions about separation, parenting arrangements or finances.</p><div class="hero-actions"><a class="hero-link" href="#contact">Request a consultation <svg class="ui-icon ui-icon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><a href="#services">Explore services <svg class="ui-icon ui-icon-down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v15m-6-6 6 6 6-6"/></svg></a></div></div>
+  <div class="hero-copy"><p class="eyebrow">Family law · Sydney, NSW</p><h1 id="hero-title">Family law starts with a conversation.</h1><p>Guidance when you’re making decisions about separation, parenting arrangements or finances.</p><div class="hero-actions"><a class="hero-link" href="#contact">Request a consultation <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a><a href="#services">Explore services <span class="direction-icon direction-down" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5v14m-5-5 5 5 5-5"/></svg></span></a></div></div>
   <figure class="hero-photo"><img src="family-law-consultation.webp" alt="Illustration of a solicitor listening to a client during a consultation" fetchpriority="high"></figure>
  </section>
  <section id="services" class="client-section">
   <div class="section-lead"><h2>How we can help</h2><p>Explore the areas you may want to discuss in an initial consultation.</p></div>
   <div class="service-grid">
-   <article><span class="service-emblem"><svg class="ui-icon ui-icon-separation" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h7v14H5a2 2 0 0 1-2-2zm11 0h7v12a2 2 0 0 1-2 2h-5M6 9h1m10 0h1M6 13h1m10 0h1"/></svg></span><h3><a href="#separation">Divorce &amp; separation</a></h3><p>Discuss your circumstances, immediate priorities and questions about separation.</p><a class="service-enquiry" href="#contact" data-topic="separation" aria-label="Enquire about Divorce &amp; separation">Enquire <svg class="ui-icon ui-icon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></article>
-   <article><span class="service-emblem"><svg class="ui-icon ui-icon-parenting" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8.5" r="2.5"/><path d="M2 20v-2a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v2m2-6h1a5 5 0 0 1 5 5v1"/></svg></span><h3><a href="#parenting">Parenting arrangements</a></h3><p>Discuss where your children will live and how they’ll spend time with each parent.</p><a class="service-enquiry" href="#contact" data-topic="parenting" aria-label="Enquire about Parenting arrangements">Enquire <svg class="ui-icon ui-icon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></article>
-   <article><span class="service-emblem"><svg class="ui-icon ui-icon-property" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 11 9-7 9 7M5 10v10h14V10M10 20v-5h4v5"/></svg></span><h3><a href="#property">Property &amp; finances</a></h3><p>Work through questions about the family home, assets and debts.</p><a class="service-enquiry" href="#contact" data-topic="property" aria-label="Enquire about Property &amp; finances">Enquire <svg class="ui-icon ui-icon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></article>
-   <article><span class="service-emblem"><svg class="ui-icon ui-icon-consent" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10zm0 0v7h7m-12 5 2 2 5-5"/></svg></span><h3><a href="#consent">Consent orders</a></h3><p>Discuss how to document parenting or property arrangements you have agreed on.</p><a class="service-enquiry" href="#contact" data-topic="consent" aria-label="Enquire about Consent orders">Enquire <svg class="ui-icon ui-icon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></article>
+   <article><span class="service-emblem"><svg class="ui-icon ui-icon-separation" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h7v14H5a2 2 0 0 1-2-2zm11 0h7v12a2 2 0 0 1-2 2h-5M6 9h1m10 0h1M6 13h1m10 0h1"/></svg></span><h3><a href="#separation">Divorce &amp; separation</a></h3><p>Discuss your circumstances, immediate priorities and questions about separation.</p><a class="service-enquiry" href="#contact" data-topic="separation" aria-label="Enquire about Divorce &amp; separation">Enquire <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a></article>
+   <article><span class="service-emblem"><svg class="ui-icon ui-icon-parenting" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8.5" r="2.5"/><path d="M2 20v-2a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v2m2-6h1a5 5 0 0 1 5 5v1"/></svg></span><h3><a href="#parenting">Parenting arrangements</a></h3><p>Discuss where your children will live and how they’ll spend time with each parent.</p><a class="service-enquiry" href="#contact" data-topic="parenting" aria-label="Enquire about Parenting arrangements">Enquire <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a></article>
+   <article><span class="service-emblem"><svg class="ui-icon ui-icon-property" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 11 9-7 9 7M5 10v10h14V10M10 20v-5h4v5"/></svg></span><h3><a href="#property">Property &amp; finances</a></h3><p>Work through questions about the family home, assets and debts.</p><a class="service-enquiry" href="#contact" data-topic="property" aria-label="Enquire about Property &amp; finances">Enquire <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a></article>
+   <article><span class="service-emblem"><svg class="ui-icon ui-icon-consent" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10zm0 0v7h7m-12 5 2 2 5-5"/></svg></span><h3><a href="#consent">Consent orders</a></h3><p>Discuss how to document parenting or property arrangements you have agreed on.</p><a class="service-enquiry" href="#contact" data-topic="consent" aria-label="Enquire about Consent orders">Enquire <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a></article>
   </div>
  </section>
  <section class="client-section service-details"><details id="separation"><summary>Divorce and separation</summary><p>Prepare a summary of your situation and the decisions you would like to discuss with a solicitor.</p></details><details id="parenting"><summary>Parenting arrangements</summary><p>Write down current arrangements, practical concerns, and questions about where children live and how they spend time with each parent.</p></details><details id="property"><summary>Property and finances</summary><p>Prepare a list of questions about the family home, other assets, debts, or financial agreements.</p></details><details id="consent"><summary>Consent orders</summary><p>Make a note of what you have agreed on and any points you still want to discuss.</p></details></section>
@@ -149,7 +149,7 @@ function home(){
  <section id="reviews" class="client-section" aria-labelledby="reviews-title">
   <div class="google-reviews-card">
    <div><h2 id="reviews-title">Google Reviews</h2><p>Selected Google Maps reviews for Etheringtons Solicitors.</p></div>
-   <a class="action" href="https://maps.app.goo.gl/gH7TEiQQMVVZta8XA" target="_blank" rel="noopener noreferrer">Read Google reviews <svg class="ui-icon ui-icon-external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></a>
+   <a class="action" href="https://maps.app.goo.gl/gH7TEiQQMVVZta8XA" target="_blank" rel="noopener noreferrer">Read Google reviews <span class="direction-icon direction-external" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 18 18 6M9 6h9v9"/></svg></span></a>
   </div>
 
   <div class="google-review-grid review-profile-cards" tabindex="0" aria-label="Google review cards">
@@ -218,7 +218,7 @@ function home(){
      <h2 id="about-title">Melissa Gok</h2>
      <p class="profile-position">Principal, Prevail Family Law</p>
      <p class="profile-preview-bio">NSW solicitor with experience in family law and estates.</p>
-     <span class="profile-link-label">View profile and contact details <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></span>
+     <span class="profile-link-label">View profile and contact details <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></span>
     </div>
    </a>
    <a class="profile-preview-link" href="https://etheringtons.com.au/paul-etherington/">
@@ -228,7 +228,7 @@ function home(){
      <h3>Paul Etherington</h3>
      <p class="profile-position">Principal and founder</p>
      <p class="profile-preview-bio">North Sydney, NSW</p>
-     <span class="profile-link-label">View profile <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></span>
+     <span class="profile-link-label">View profile <span class="direction-icon direction-external" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 18 18 6M9 6h9v9"/></svg></span></span>
     </div>
    </a>
   </section>
@@ -238,7 +238,7 @@ function home(){
     <div><h2 id="location-title">Office location</h2><p>Etheringtons Solicitors · North Sydney</p></div>
    </div>
    <div class="office-map" id="office-map">
-    <div class="location-actions"><a href="https://www.google.com/maps/search/?api=1&amp;query=Etheringtons%20Solicitors%2C%20North%20Sydney" target="_blank" rel="noopener noreferrer">Get directions <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div>
+    <div class="location-actions"><a href="https://www.google.com/maps/search/?api=1&amp;query=Etheringtons%20Solicitors%2C%20North%20Sydney" target="_blank" rel="noopener noreferrer">Get directions <span class="direction-icon direction-external" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 18 18 6M9 6h9v9"/></svg></span></a></div>
     <p class="map-note">The embedded Google Map may use cookies.</p>
     <iframe id="office-map-frame" title="Google map showing Etheringtons Solicitors" referrerpolicy="no-referrer" src="https://maps.google.com/maps?q=Etheringtons%20Solicitors%2C%20North%20Sydney&amp;ll=-33.837858,151.209414&amp;z=17&amp;output=embed"></iframe>
    </div>

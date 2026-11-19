@@ -237,3 +237,15 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 
 .profile-location .profile-preview{display:grid;gap:14px}
 .profile-location .profile-copy h3{font:400 clamp(30px,3.6vw,48px)/1.08 Georgia,serif;color:var(--plum);letter-spacing:-.035em;margin:0}
+
+/* Direction indicators share one stroke and sit on the text baseline. */
+.direction-icon{display:inline-grid;place-items:center;box-sizing:border-box;width:1.55em;height:1.55em;margin-inline-start:.35em;border:1px solid currentColor;border-color:color-mix(in srgb,currentColor 28%,transparent);border-radius:50%;vertical-align:middle;line-height:1;flex:none}
+.direction-icon svg{display:block;width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.direction-left{margin-inline:0 .35em}
+.hero-actions a,.location-actions a,.profile-header a{display:inline-flex;align-items:center;flex-wrap:wrap;column-gap:.15em}
+.profile-link-label .direction-icon,.service-enquiry .direction-icon{color:#6b465e;background:#f7eee9}
+.location-actions .direction-icon,.nav-cta .direction-icon,.hero-link .direction-icon{background:#ffffff12}
+.client-home :is(.client-faq,.service-details) summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.client-home :is(.client-faq,.service-details) summary::-webkit-details-marker{display:none}
+.client-home :is(.client-faq,.service-details) summary::after{content:"";width:.48em;height:.48em;border:solid #624057;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin:0 6px .2em;flex:none}
+.client-home :is(.client-faq,.service-details) details[open]>summary::after{transform:rotate(225deg);margin-bottom:-.2em}
