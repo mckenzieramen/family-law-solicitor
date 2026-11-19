@@ -18,3 +18,22 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 @media(max-width:640px){header{flex-wrap:wrap}.header-nav:not([hidden]){justify-content:flex-start;gap:13px}.header-nav a{font-size:13px}.service-grid,.client-columns{grid-template-columns:1fr}.contact-panel{align-items:flex-start;flex-direction:column}}
 
 .service-grid a{color:inherit;text-underline-offset:4px}.service-details{padding-top:0}.service-details details{padding:12px 0;border-bottom:1px solid var(--line)}.service-details summary{cursor:pointer;font-weight:650}
+
+.site-header{position:sticky;top:0;z-index:10;min-height:76px}
+.site-header .brand{gap:12px}
+.brand-monogram{display:grid;place-items:center;flex:none;width:43px;height:43px;border:1px solid #f2e0cb;border-radius:9px;outline:1px solid var(--plum);outline-offset:2px;background:var(--plum);color:#fff9ee;font:italic 22px Georgia,serif;letter-spacing:-.07em}
+.brand-name{line-height:1.05}.brand-name small{display:block;margin-top:4px;font:600 10px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.site-header .header-nav{gap:clamp(8px,1.6vw,24px)}
+.site-header .header-nav a{padding:9px 11px;border-radius:5px}.site-header .header-nav .nav-cta{padding:10px 14px}
+.site-header .header-nav a:not(.nav-cta):hover,.site-header .header-nav a:not(.nav-cta)[aria-current=location]{background:#eee5ec;color:#40233a;text-decoration:none}
+.site-header .nav-cta[aria-current=location]{box-shadow:inset 0 -3px #ca9f7d}
+.site-header .nav-cta span{margin-left:4px}
+.menu-toggle{border:1px solid #cec0c9;border-radius:6px;background:#fffdf8;color:var(--plum);font-weight:650;padding:9px 12px}
+.menu-toggle span{margin-left:5px}
+.client-home [id]{scroll-margin-top:calc(var(--header-height,76px) + 14px)}
+@media(max-width:680px){
+ .site-header{display:grid;grid-template-columns:minmax(0,1fr) auto}
+ .site-header .header-nav:not([hidden]){grid-column:1/-1;display:flex;flex-wrap:wrap}
+ .site-header .header-nav[data-collapsed=true]:not([hidden]){display:none}
+ .site-header .brand-monogram{width:37px;height:37px;font-size:19px}
+}
