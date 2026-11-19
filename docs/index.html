@@ -2,11 +2,95 @@
 <html lang="en-AU">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Family Law</title>
+<title>Family Law | Separation, Parenting and Property</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f8f5ef;color:#30232d;font:16px system-ui,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible{outline:3px solid #7b8360;outline-offset:3px}header{padding:23px clamp(20px,5vw,70px);background:#fffdf8;border-bottom:1px solid #ddd4ca;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand,h1,h2,h3{font-family:Georgia,serif}.brand{display:inline-flex;align-items:center;gap:12px;font-size:24px;color:#4a203e}.brand-mark{display:inline-grid;place-items:center;width:43px;height:43px;flex:none;border-radius:50%;background:#4a203e;color:#fffdf8;border:3px solid #ebe3cc;box-shadow:0 0 0 1px #4a203e;font:italic 18px Georgia,serif;letter-spacing:-1px}small,.muted{color:#6f626b}.shell{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 76px)}nav{background:#391a31;padding:26px 16px;color:white}nav button{display:block;width:100%;text-align:left;background:none;color:white;border:0;padding:12px;margin:4px 0;border-radius:6px}nav button[aria-current=true]{background:#693c5c}.role{padding:12px 12px 18px;color:#e9d9e4;font-size:14px}main{max-width:1450px;width:100%;padding:clamp(18px,4vw,55px)}h1{font-size:clamp(35px,5vw,58px);font-weight:500;line-height:1.05;margin:0 0 12px}h2{font-size:27px;margin:0 0 14px}h3{margin:0 0 8px}.cards,.split{display:grid;gap:16px;margin:24px 0}.cards{grid-template-columns:repeat(3,1fr)}.split{grid-template-columns:1fr 1.2fr}.card{background:#fffdf9;border:1px solid #ded5ca;border-radius:10px;padding:20px;min-width:0}.metric{font:32px Georgia;color:#4a203e;display:block;margin-bottom:6px}.action,.secondary{border-radius:6px;padding:10px 15px;border:1px solid #4a203e;background:#4a203e;color:white}.secondary{background:#fffdf9;color:#4a203e}.status{display:inline-block;background:#e5e8d8;color:#34402d;padding:5px 9px;border-radius:20px;font-size:14px}.item{border:0;border-bottom:1px solid #e5ddd4;background:none;width:100%;text-align:left;padding:14px 2px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:inherit}.item:last-child{border-bottom:0}.item[aria-pressed=true]{background:#eee6ec;padding-inline:8px}.note{background:#f2eee6;border-left:3px solid #747f5b;padding:14px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}label{display:block;margin:12px 0 6px}textarea{width:100%;min-height:90px;padding:10px;border:1px solid #a2999e;border-radius:6px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}ul{padding-left:20px}li{margin:10px 0}.hero{margin:auto;padding-block:clamp(40px,10vw,135px)}.hero h1{max-width:680px;font-size:clamp(50px,8vw,96px)}.hero p{max-width:550px;font-size:20px}.hero .card{background:#e5e8d8}.hero h2{color:#4a203e}button:hover{filter:brightness(.94)}@media(max-width:740px){.shell{grid-template-columns:1fr}nav{padding:8px;display:flex;overflow:auto}nav button{width:auto;white-space:nowrap}.role{display:none}.cards,.split{grid-template-columns:1fr}.cards{gap:8px}.item{flex-wrap:wrap}}
 </style>
 <link rel="stylesheet" href="theme.css">
-<header><span class="brand"><span class="brand-mark" aria-hidden="true">FL</span>Family Law</span><nav class="header-nav" aria-label="Public navigation"><a href="#about">About</a><a href="#services">Services</a><a href="#resources">Resources</a><a href="#contact">Contact</a></nav></header>
-<main class="hero"><section class="hero-grid"><div class="hero-copy"><h1>Family law starts with a conversation.</h1><p>Find information about separation, parenting arrangements, and property and finances.</p><a class="hero-link" href="#services">Explore family law services</a></div><figure class="hero-photo"><img src="sydney-terrace.webp" alt="Sunlit sandstone terrace overlooking Sydney Harbour"></figure></section><section id="services" class="services"><h2>How we can help</h2><div class="cards"><article class="card"><h3>Divorce &amp; separation</h3>Understand your options and prepare for the next conversation.</article><article class="card"><h3>Parenting arrangements</h3>Discuss where your children will live and how they’ll spend time with each parent.</article><article class="card"><h3>Property &amp; finances</h3>Work through decisions about the family home, assets and debts.</article></div></section><section class="services public-info" id="about"><h2>About</h2><p>Family law support for separation, parenting arrangements and financial matters.</p></section><section class="services public-info" id="resources"><h2>Resources</h2><details><summary>Preparing for a first consultation</summary><p>Bring a short timeline, a list of questions, and details of any upcoming deadlines.</p></details></section><section class="services public-info" id="contact"><h2>Request a consultation</h2><p>Consultation enquiries are currently unavailable through this website.</p></section></main><footer>Family Law</footer>
+<header><span class="brand"><span class="brand-mark" aria-hidden="true">FL</span>Family Law</span><nav class="header-nav" aria-label="Public navigation"><a href="#about">About</a><a href="#services">Services</a><a href="#resources">Resources</a><a href="#contact">Contact</a></nav><button class="secondary" id="entry">Staff Sign In</button></header>
+<div id="app"></div>
+<script>
+const tabs=['Overview','My Matters','Review Queue','Financial Disclosure','Calendar'];
+const records=[
+ {id:'D-01',title:'Assets & liabilities schedule',matter:'M-014',body:'Draft schedule for property settlement. Supporting records include the sample mortgage statement and asset register. The outstanding bank statement is marked as requested.',status:'For review'},
+ {id:'D-02',title:'Client follow-up letter',matter:'M-014',body:'Draft follow-up requesting the remaining bank statement. The assistant has recorded the preferred contact method in the sample matter.',status:'For review'},
+ {id:'D-03',title:'Hearing brief index',matter:'M-028',body:'Draft index with hearing details, chronology, correspondence and a list of attachments for solicitor review.',status:'For review'}
+];
+const matters={'M-014':'Property settlement','M-028':'Parenting arrangements'};
+const app=document.querySelector('#app');
+const entry=document.querySelector('#entry');
+let tab='Overview',selected='D-01',matter='M-014',notice='';
+function load(){try{return JSON.parse(localStorage.getItem('solicitor-demo-v1'))||{}}catch{return {}}}
+const saved=load();
+const decisions=saved.decisions||{};
+const instructions=saved.instructions||{};
+function persist(){try{localStorage.setItem('solicitor-demo-v1',JSON.stringify({decisions,instructions}));return true}catch{return false}}
+const status=r=>decisions[r.id]?.status||r.status;
+const dates=()=>[
+ ['Client consultation','M-014','23 November 2026, 10:00 am'],
+ ['Disclosure deadline','M-014','26 November 2026, 5:00 pm'],
+ ['Court hearing','M-028','2 December 2026, 9:30 am']
+].map(([name,id,time])=>'<li><strong>'+name+'</strong> · '+id+'<br><span class="muted">'+time+'</span></li>').join('');
+function queue(){
+ const record=records.find(r=>r.id===selected);
+ return '<div class="split"><section class="card"><h2>Documents</h2>'+records.map(r=>'<button class="item" data-doc="'+r.id+'" aria-pressed="'+(r.id===selected)+'"><span><strong>'+r.title+'</strong><br><small>'+r.matter+'</small></span><span class="status" data-state="'+status(r)+'">'+status(r)+'</span></button>').join('')+'</section><section class="card"><h2>'+record.title+'</h2><span class="status" data-state="'+status(record)+'">'+status(record)+'</span><p class="note">'+escapeHtml(record.body)+'</p><p id="previous-comment"></p>'+(status(record)==='For review'?'<form id="review"><label for="comment">Review comments</label><textarea id="comment" maxlength="1500"></textarea><div class="actions"><button class="action" value="Approved for next step">Approve draft</button><button class="secondary" value="Returned to assistant">Return with comments</button></div></form>':'')+'</section></div>';
+}
+function content(){
+ switch(tab){
+ case 'Overview': return '<div class="cards"><div class="card"><span class="metric">'+records.filter(r=>status(r)==='For review').length+'</span>Drafts for review</div><div class="card"><span class="metric">2</span>Assigned matters</div><div class="card"><span class="metric">3</span>Upcoming dates</div></div>'+queue();
+ case 'Review Queue': return queue();
+ case 'My Matters': return '<div class="split"><section class="card"><h2>Assigned matters</h2>'+Object.entries(matters).map(([id,name])=>'<button class="item" aria-pressed="'+(id===matter)+'" data-matter="'+id+'">'+id+' · '+name+'</button>').join('')+'</section><section class="card"><h2>'+matters[matter]+'</h2><p class="muted">'+matter+'</p><h3>Linked documents</h3>'+records.filter(r=>r.matter===matter).map(r=>'<button class="item" data-open="'+r.id+'">'+r.title+'</button>').join('')+'<form id="instruction"><label for="instructions">Instructions for the legal assistant</label><textarea id="instructions" maxlength="1500" required></textarea><button class="action">Save instructions</button></form></section></div>';
+ case 'Financial Disclosure': return '<section class="card"><h2>M-014 · Property settlement</h2><p>Supporting records for the sample assets and liabilities schedule.</p><ul><li>Mortgage statement · Received</li><li>Asset register · Received</li><li>Bank statement · Requested</li></ul><button class="action" data-open="D-01">Review assets & liabilities schedule</button></section>';
+ case 'Calendar': return '<section class="card"><h2>Upcoming dates</h2><p class="muted">Sydney time</p><ul>'+dates()+'</ul></section>';
+ }
+}
+function workspace(){
+ entry.textContent='Exit workspace';
+ document.querySelector('.header-nav').hidden=true;
+ app.innerHTML='<div class="shell"><nav aria-label="Workspace"><div class="role">Solicitor · Demo</div>'+tabs.map(t=>'<button data-tab="'+t+'" aria-current="'+(t===tab)+'">'+t+'</button>').join('')+'</nav><main><h1>'+ (tab==='Overview'?'Solicitor Workspace':tab)+'</h1><p class="muted">Sample matters and documents · Changes are stored in this browser</p><p role="status" id="notice"></p>'+content()+'</main></div>';
+ app.querySelector('#notice').textContent=notice;
+ const comment=app.querySelector('#previous-comment');
+ if(comment)comment.textContent=decisions[selected]?.comment||'';
+ const field=app.querySelector('#instructions');
+ if(field)field.value=instructions[matter]||'';
+}
+function home(){
+ entry.textContent='Staff Sign In';
+ document.querySelector('.header-nav').hidden=false;
+ app.innerHTML='<main class="hero"><section class="hero-grid"><div class="hero-copy"><h1>Family law starts with a conversation.</h1><p>Clear, compassionate and strategic family law advice for individuals and families across Australia.</p><a class="hero-link" href="#contact">Request a consultation</a></div><figure class="hero-photo"><img src="sydney-terrace.webp" alt="Sunlit sandstone terrace overlooking Sydney Harbour"></figure></section><section id="services" class="services"><h2 class="sr-only">How we can help</h2><div class="cards"><article class="card"><h3><a href="#separation">Separation</a></h3>Understand your options and prepare for the next conversation.</article><article class="card"><h3><a href="#parenting">Parenting</a></h3>Discuss where your children will live and how they’ll spend time with each parent.</article><article class="card"><h3><a href="#property">Property and Finances</a></h3>Work through decisions about the family home, assets and debts.</article></div></section><section class="services public-info service-details"><details id="separation"><summary>Divorce and separation</summary><p>Prepare a summary of your situation and the decisions you would like to discuss with a solicitor.</p></details><details id="parenting"><summary>Parenting arrangements</summary><p>Write down current arrangements, practical concerns, and questions about where children live and how they spend time with each parent.</p></details><details id="property"><summary>Property and finances</summary><p>Prepare a list of questions about the family home, other assets, debts, or financial agreements.</p></details></section><section class="services public-info" id="about"><h2>About</h2><p>Family law support for separation, parenting arrangements and financial matters.</p></section><section class="services public-info" id="resources"><h2>Resources</h2><details><summary>Preparing for a first consultation</summary><p>Bring a short timeline, a list of questions, and details of any upcoming deadlines.</p></details></section><section class="services public-info" id="contact"><h2>Request a consultation</h2><p>Online consultation requests will open once the firm’s enquiry inbox is connected.</p></section></main><footer>Family Law Website Concept</footer>';
+}
+entry.addEventListener('click',()=>{if(app.querySelector('.shell'))home();else showStaff();window.scrollTo(0,0)});
+app.addEventListener('click',event=>{const link=event.target.closest('.services .cards a');if(link){const details=document.querySelector(link.getAttribute('href'));if(details)details.open=true}});
+app.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-tab],button[data-doc],button[data-matter],button[data-open]');
+ if(!button)return;
+ notice='';
+ if(button.dataset.tab)tab=button.dataset.tab;
+ if(button.dataset.doc)selected=button.dataset.doc;
+ if(button.dataset.matter)matter=button.dataset.matter;
+ if(button.dataset.open){tab='Review Queue';selected=button.dataset.open}
+ workspace();
+});
+app.addEventListener('submit',event=>{
+ event.preventDefault();
+ if(event.target.id==='review'){
+  const comment=app.querySelector('#comment').value.trim();
+  const decision=event.submitter?.value;
+  if(!decision)return;
+  if(decision==='Returned to assistant'&&!comment){const field=app.querySelector('#comment');field.setCustomValidity('Enter comments before returning this draft.');field.reportValidity();return}
+  decisions[selected]={status:decision,comment};
+  notice=persist()?decision+' in this demo.':decision+' for this session only.';
+ }
+ if(event.target.id==='instruction'){
+  const field=app.querySelector('#instructions');
+  if(!field.value.trim()){field.setCustomValidity('Enter instructions before saving.');field.reportValidity();return}
+  instructions[matter]=field.value.trim();
+  notice=persist()?'Instructions saved in this demo.':'Instructions saved for this session only.';
+ }
+ workspace();
+});
+app.addEventListener('input',event=>{if(event.target instanceof HTMLTextAreaElement)event.target.setCustomValidity('')});
+home();
+</script>
+<script src="assistant.js"></script>
 </html>

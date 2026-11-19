@@ -1,7 +1,5 @@
 # Family Law Website
 
-The public website source is in `docs/`. Serve that directory with GitHub Pages on `main`.
+The complete site is in `docs/`. Open `docs/index.html` locally, or publish `main` from `/docs` in GitHub Pages.
 
-The internal workflow source is in `workspace-prototype/`, outside the Pages directory. It uses fictional records and browser-local storage. Enable real staff authentication, matter permissions, and server-side storage before using the workspace with client information.
-
-The public site uses the Family Law wordmark pending confirmation of the firm's official name and contact details.
+The homepage links to the Legal Assistant and Solicitor workspaces through Staff Sign In. The internal screens use sample records and browser-local storage. Real staff use requires authenticated accounts, access permissions, and server-side storage. The consultation inbox is pending firm contact details and setup.
