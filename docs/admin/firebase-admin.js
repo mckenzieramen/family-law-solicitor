@@ -100,8 +100,16 @@ login.addEventListener('submit', async event => {
   try {
     await signInWithEmailAndPassword(auth, data.get('email').trim(), data.get('password'));
     login.reset();
-  } catch {
-    authStatus.textContent = 'Sign-in failed. Check your credentials or contact your Firebase administrator.';
+  } catch (error) {
+    const messages = {
+      'auth/invalid-credential': 'Check your staff email and Firebase password. If you need a new password, contact your Firebase administrator.',
+      'auth/operation-not-allowed': 'Email/password sign-in is disabled in Firebase Authentication.',
+      'auth/user-disabled': 'This staff account is disabled. Contact your Firebase administrator.',
+      'auth/too-many-requests': 'Too many sign-in attempts. Wait and try again.',
+      'auth/network-request-failed': 'Could not reach Firebase Authentication. Check your internet connection and try again.',
+      'auth/invalid-api-key': 'The Firebase connection is misconfigured. Contact your Firebase administrator.'
+    };
+    authStatus.textContent = messages[error?.code] || 'Sign-in failed. Contact your Firebase administrator.';
   } finally {
     button.disabled = false;
   }
