@@ -9,6 +9,7 @@
 [hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
 </style>
 <link rel="stylesheet" href="./dashboard.css">
+<link rel="stylesheet" href="./workflow.css?v=2">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -34,6 +35,10 @@
   <p>Staff workspace</p>
   <nav aria-label="Dashboard">
    <a href="#dashboard-title">Overview</a>
+   <a href="#work-queue">Priorities</a>
+   <a href="#work-calendar">Calendar</a>
+   <a href="#work-matters">Matter work</a>
+   <a href="#work-email">Email drafts</a>
    <a href="#duties-legal">Legal Administration</a>
    <a href="#duties-family">Family Law Support</a>
    <a href="#duties-admin">Administrative Support</a>
@@ -49,10 +54,11 @@
    <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
    <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
+  <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=dashboard-1"></script>
+<script type="module" src="./firebase-admin.js?v=workflow-2"></script>
 </body>
 </html>

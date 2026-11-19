@@ -2,6 +2,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=2';
+
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',
   authDomain: 'family-law-firm.firebaseapp.com',
@@ -139,6 +141,7 @@ logout.addEventListener('click', async () => {
 onIdTokenChanged(auth, async user => {
   const current = ++generation;
   checklist = undefined;
+  clearWorkflow();
   if (entryCard) {
     entryCard.hidden = false;
     signOutHome.append(logout);
@@ -179,6 +182,7 @@ onIdTokenChanged(auth, async user => {
       updateDashboardTotals();
       dashboardSession.append(logout);
       entryCard.hidden = true;
+      mountWorkflow(db, user.uid);
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch {
