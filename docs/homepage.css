@@ -63,3 +63,11 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .directory-profile p{font-size:14px;margin:4px 0 0}.directory-office p{margin:0}
 .directory-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line)}
 .directory-footer a{color:var(--plum);font-size:14px;font-weight:700;text-underline-offset:4px}
+
+.bottom-profile{display:flex;align-items:center;gap:16px;margin:0 0 14px}
+.bottom-profile img{display:block;width:80px;height:80px;border-radius:50%;object-fit:cover}
+.bottom-profile h2,.bottom-profile p{margin:0}.bottom-profile p{margin-top:5px}
+.client-columns a:not(.action){color:var(--plum);font-weight:650;text-underline-offset:4px}
+.contact-button{display:inline-block;text-decoration:none;margin-top:7px}
+.client-faq details{border-bottom:1px solid var(--line);padding:13px 0}
+.client-faq summary{cursor:pointer;font-weight:650}
