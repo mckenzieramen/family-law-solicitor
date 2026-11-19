@@ -7,7 +7,7 @@
 *{box-sizing:border-box}body{margin:0;background:#f8f5ef;color:#30232d;font:16px system-ui,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible{outline:3px solid #7b8360;outline-offset:3px}header{padding:23px clamp(20px,5vw,70px);background:#fffdf8;border-bottom:1px solid #ddd4ca;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand,h1,h2,h3{font-family:Georgia,serif}.brand{display:inline-flex;align-items:center;gap:12px;font-size:24px;color:#4a203e}.brand-mark{display:inline-grid;place-items:center;width:43px;height:43px;flex:none;border-radius:50%;background:#4a203e;color:#fffdf8;border:3px solid #ebe3cc;box-shadow:0 0 0 1px #4a203e;font:italic 18px Georgia,serif;letter-spacing:-1px}small,.muted{color:#6f626b}.shell{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 76px)}nav{background:#391a31;padding:26px 16px;color:white}nav button{display:block;width:100%;text-align:left;background:none;color:white;border:0;padding:12px;margin:4px 0;border-radius:6px}nav button[aria-current=true]{background:#693c5c}.role{padding:12px 12px 18px;color:#e9d9e4;font-size:14px}main{max-width:1450px;width:100%;padding:clamp(18px,4vw,55px)}h1{font-size:clamp(35px,5vw,58px);font-weight:500;line-height:1.05;margin:0 0 12px}h2{font-size:27px;margin:0 0 14px}h3{margin:0 0 8px}.cards,.split{display:grid;gap:16px;margin:24px 0}.cards{grid-template-columns:repeat(3,1fr)}.split{grid-template-columns:1fr 1.2fr}.card{background:#fffdf9;border:1px solid #ded5ca;border-radius:10px;padding:20px;min-width:0}.metric{font:32px Georgia;color:#4a203e;display:block;margin-bottom:6px}.action,.secondary{border-radius:6px;padding:10px 15px;border:1px solid #4a203e;background:#4a203e;color:white}.secondary{background:#fffdf9;color:#4a203e}.status{display:inline-block;background:#e5e8d8;color:#34402d;padding:5px 9px;border-radius:20px;font-size:14px}.item{border:0;border-bottom:1px solid #e5ddd4;background:none;width:100%;text-align:left;padding:14px 2px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:inherit}.item:last-child{border-bottom:0}.item[aria-pressed=true]{background:#eee6ec;padding-inline:8px}.note{background:#f2eee6;border-left:3px solid #747f5b;padding:14px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}label{display:block;margin:12px 0 6px}textarea{width:100%;min-height:90px;padding:10px;border:1px solid #a2999e;border-radius:6px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}ul{padding-left:20px}li{margin:10px 0}.hero{margin:auto;padding-block:clamp(40px,10vw,135px)}.hero h1{max-width:680px;font-size:clamp(50px,8vw,96px)}.hero p{max-width:550px;font-size:20px}.hero .card{background:#e5e8d8}.hero h2{color:#4a203e}button:hover{filter:brightness(.94)}@media(max-width:740px){.shell{grid-template-columns:1fr}nav{padding:8px;display:flex;overflow:auto}nav button{width:auto;white-space:nowrap}.role{display:none}.cards,.split{grid-template-columns:1fr}.cards{gap:8px}.item{flex-wrap:wrap}}
 </style>
 <link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="homepage.css?v=contact-layout-2">
+<link rel="stylesheet" href="homepage.css?v=reviews-1">
 <header class="site-header">
  <a class="brand" href="./" aria-label="Family Law home">
   <span class="brand-monogram" aria-hidden="true">FL</span>
@@ -17,6 +17,7 @@
  <nav class="header-nav" id="public-navigation" aria-label="Main navigation">
   <a href="#services">Services</a>
   <a href="#resources">FAQs</a>
+  <a href="#reviews">Reviews</a>
   <a href="#about">About</a>
   <a href="#contact-info">Contact</a>
   <a class="nav-cta" href="#contact">Consultation <span aria-hidden="true">↗</span></a>
@@ -125,6 +126,12 @@ function home(){
  </section>
  <section class="client-section service-details"><details id="separation"><summary>Divorce and separation</summary><p>Prepare a summary of your situation and the decisions you would like to discuss with a solicitor.</p></details><details id="parenting"><summary>Parenting arrangements</summary><p>Write down current arrangements, practical concerns, and questions about where children live and how they spend time with each parent.</p></details><details id="property"><summary>Property and finances</summary><p>Prepare a list of questions about the family home, other assets, debts, or financial agreements.</p></details><details id="consent"><summary>Consent orders</summary><p>Make a note of what you have agreed on and any points you still want to discuss.</p></details></section>
   <section id="resources" class="client-section client-faq"><h2>Frequently asked questions</h2><details name="client-faq"><summary>What should I prepare?</summary><p>A short timeline, a list of questions and any upcoming deadlines can help you explain what you need.</p></details><details name="client-faq"><summary>What can we discuss?</summary><p>Start with the decisions you’re facing and what you’d like to understand before taking your next step.</p></details><details name="client-faq"><summary>Does an enquiry confirm my appointment?</summary><p>An appointment is confirmed separately after a time has been agreed.</p></details></section>
+ <section id="reviews" class="client-section" aria-labelledby="reviews-title">
+  <div class="google-reviews-card">
+   <div><h2 id="reviews-title">Google Reviews</h2><p>Read public reviews and reviewer names for Etheringtons Solicitors on Google Maps.</p></div>
+   <a class="action" href="https://www.google.com/maps?cid=13457232228988270540" target="_blank" rel="noopener noreferrer">Read Google reviews</a>
+  </div>
+ </section>
  <section id="contact" class="client-section" aria-labelledby="consultation-title"><div class="contact-panel consultation-wide">
   <div class="consultation-intro">
    <h2 id="consultation-title">Contact us</h2>
