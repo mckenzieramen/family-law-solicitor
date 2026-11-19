@@ -41,6 +41,20 @@ const authStatus = document.getElementById('auth-status');
 const saveStatus = document.getElementById('save-status');
 let generation = 0;
 let checklist;
+const entryCard = document.getElementById('staff-entry');
+const dashboardSession = document.getElementById('dashboard-session');
+const signOutHome = logout.parentElement;
+
+function updateDashboardTotals() {
+  if (!dashboardSession) return;
+  const boxes = [...list.querySelectorAll('input[data-duty]')];
+  const done = boxes.filter(box => box.dataset.saved === 'true').length;
+  const percent = boxes.length ? Math.round(done / boxes.length * 100) : 0;
+  document.getElementById('dashboard-completed').textContent = done;
+  document.getElementById('dashboard-remaining').textContent = boxes.length - done;
+  document.getElementById('dashboard-percent').textContent = percent + '%';
+  document.getElementById('dashboard-progress').value = percent;
+}
 const employeePanel = document.getElementById('employee-panel');
 const employeeForm = document.getElementById('employee-form');
 employeeForm?.addEventListener('submit', async event => {
@@ -73,6 +87,7 @@ function render(progress) {
   for (const group of dutyGroups) {
     const fieldset = document.createElement('fieldset');
     fieldset.className = 'duty-group';
+    fieldset.id = 'duties-' + group.id;
     const legend = document.createElement('legend');
     legend.textContent = group.title;
     fieldset.append(legend);
@@ -84,6 +99,7 @@ function render(progress) {
       input.type = 'checkbox';
       input.dataset.duty = key;
       input.checked = progress[key] === true;
+      input.dataset.saved = String(input.checked);
       label.append(input, duty);
       fieldset.append(label);
     }
@@ -117,12 +133,16 @@ login.addEventListener('submit', async event => {
 
 logout.addEventListener('click', async () => {
   try { await signOut(auth); }
-  catch { authStatus.textContent = 'Sign-out failed. Please try again.'; }
+  catch { (panel.hidden ? authStatus : saveStatus).textContent = 'Sign-out failed. Please try again.'; }
 });
 
 onIdTokenChanged(auth, async user => {
   const current = ++generation;
   checklist = undefined;
+  if (entryCard) {
+    entryCard.hidden = false;
+    signOutHome.append(logout);
+  }
   panel.hidden = true;
   if (employeePanel) {
     employeePanel.hidden = true;
@@ -154,6 +174,12 @@ onIdTokenChanged(auth, async user => {
     render(snapshot.data()?.progress ?? {});
     saveStatus.textContent = '';
     panel.hidden = false;
+    if (dashboardSession) {
+      document.getElementById('dashboard-role').textContent = {admin: 'Administrator', employee: 'Employee', solicitor: 'Solicitor'}[role];
+      updateDashboardTotals();
+      dashboardSession.append(logout);
+      entryCard.hidden = true;
+    }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch {
     if (current === generation) authStatus.textContent = 'Checklist unavailable. Verify the Firestore database and access rules.';
@@ -169,7 +195,11 @@ list.addEventListener('change', async event => {
   saveStatus.textContent = 'Saving…';
   try {
     await setDoc(checklist, {progress: {[box.dataset.duty]: checked}, updatedAt: serverTimestamp()}, {merge: true});
-    if (current === generation) saveStatus.textContent = 'Saved to Firestore.';
+    if (current === generation) {
+      box.dataset.saved = String(checked);
+      updateDashboardTotals();
+      saveStatus.textContent = 'Progress saved.';
+    }
   } catch {
     if (current === generation) {
       box.checked = !checked;

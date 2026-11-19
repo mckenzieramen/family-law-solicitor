@@ -8,9 +8,10 @@
 <style>
 [hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
 </style>
+<link rel="stylesheet" href="./dashboard.css">
 </head>
 <body class="solicitor-profile">
-<main class="profile-page staff-entry">
+<main class="profile-page staff-entry" id="staff-entry">
  <section class="staff-entry-intro">
   <p class="profile-eyebrow">Family Law · Staff workspace</p>
   <h1>Solicitor Admin</h1>
@@ -27,11 +28,31 @@
   <button id="staff-logout" type="button" hidden>Sign out</button>
  </section>
 </main>
-<section class="profile-page" id="staff-checklist" hidden>
- <h2>Legal Assistant Duties</h2>
- <p id="save-status" role="status"></p>
- <div id="duty-groups" class="duty-groups"></div>
+<section class="admin-dashboard" id="staff-checklist" hidden aria-labelledby="dashboard-title">
+ <aside class="dashboard-sidebar">
+  <span class="dashboard-brand">Family Law</span>
+  <p>Staff workspace</p>
+  <nav aria-label="Dashboard">
+   <a href="#dashboard-title">Overview</a>
+   <a href="#duties-legal">Legal Administration</a>
+   <a href="#duties-family">Family Law Support</a>
+   <a href="#duties-admin">Administrative Support</a>
+  </nav>
+ </aside>
+ <div class="dashboard-main">
+  <header class="dashboard-header">
+   <div><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
+   <div id="dashboard-session"></div>
+  </header>
+  <div class="dashboard-metrics" aria-label="Checklist summary">
+   <div><span>Completed</span><strong id="dashboard-completed">0</strong></div>
+   <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
+   <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
+  </div>
+  <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
+  <div id="duty-groups" class="duty-groups"></div>
+ </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=admin-role"></script>
+<script type="module" src="./firebase-admin.js?v=dashboard-1"></script>
 </body>
 </html>
