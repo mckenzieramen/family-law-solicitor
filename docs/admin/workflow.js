@@ -46,7 +46,7 @@ export function mountWorkflow(db, uid) {
   </form>
   <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
- <section class="workflow-panel" id="work-calendar"><p class="calendar-description">Appointments and deadlines in Sydney time.</p><div class="month-controls"><label>Calendar<select id="work-calendar-scope"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div><p id="work-calendar-status" role="status"></p><div id="work-month-grid"></div><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></section>
+ <section class="workflow-panel" id="work-calendar"><p class="calendar-description">Appointments and deadlines in Sydney time.</p><div class="month-controls"><label>Calendar<select id="work-calendar-scope"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div><p id="work-calendar-status" role="status"></p><div id="work-month-grid"></div><div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div><form id="day-note-form" hidden><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit">Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p id="day-note-status" role="status"></p></form><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></section>
  <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><p>Use the same matter reference on tasks, appointments and drafts to see related work here.</p><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare client correspondence for solicitor review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div><div id="work-drafts"></div></section>`;
   const find = selector => root.querySelector(selector);
@@ -155,6 +155,45 @@ export function mountWorkflow(db, uid) {
     find('#work-calendar-status').textContent = '';
     save.disabled = true;
     status.textContent = 'Work items could not load. Publish the updated Firestore rules and reload this page.';
+  });
+  const noteForm = find('#day-note-form');
+  const noteDate = noteForm.elements.namedItem('date');
+  const noteText = noteForm.elements.namedItem('note');
+  const noteStatus = find('#day-note-status');
+  const noteSave = noteForm.querySelector('[type="submit"]');
+  find('#add-day-note').addEventListener('click', () => {
+    if (noteForm.hidden) {
+      noteDate.value = selectedDay || (today().startsWith(month.value) ? today() : month.value ? month.value + '-01' : today());
+      noteForm.hidden = false;
+    }
+    noteText.focus();
+  });
+  find('#cancel-day-note').addEventListener('click', () => { noteForm.hidden = true; find('#add-day-note').focus(); });
+  noteForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (noteSave.disabled) return;
+    if (!loaded) { noteStatus.textContent = 'Schedules are unavailable. Check your staff access and try again.'; return; }
+    const notes = noteText.value.trim();
+    const date = noteDate.value;
+    const calendar = scope.value;
+    if (!notes || !date) { noteStatus.textContent = 'Enter a date and a note.'; return; }
+    noteSave.disabled = true;
+    noteStatus.textContent = 'Saving note…';
+    try {
+      await addDoc(items, {kind:'Task', title:'Calendar note', notes, matter:'', date, calendar, priority:'Normal', done:false, recipient:'', updatedAt:serverTimestamp()});
+      if (session !== current) return;
+      month.value = date.slice(0,7);
+      scope.value = calendar;
+      selectedDay = date;
+      noteForm.reset();
+      noteForm.hidden = true;
+      noteStatus.textContent = '';
+      status.textContent = 'Day note saved.';
+      renderCalendar();
+      find('#add-day-note').focus();
+    } catch {
+      if (session === current) noteStatus.textContent = 'Could not save the note. Check that the current Firestore rules are published.';
+    } finally { noteSave.disabled = false; }
   });
   field('kind').addEventListener('change', syncType);
   month.addEventListener('change', () => { selectedDay = ''; render(); });
