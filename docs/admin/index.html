@@ -53,14 +53,12 @@
   <p>Staff workspace</p>
   <nav aria-label="Dashboard">
    <a href="#dashboard-title">Overview</a>
-   <a id="inbox-nav" href="#staff-inbox" hidden>Inbox &amp; chat</a>
-   <a href="#work-queue">Priorities</a>
+   <a id="inbox-nav" href="#staff-inbox" hidden>Client Messages</a>
+   <a href="#work-queue">Tasks</a>
    <a href="#work-calendar">Calendar</a>
-   <a href="#work-matters">Matter work</a>
+   <a href="#work-matters">Cases</a>
    <a href="#work-email">Email drafts</a>
-   <a href="#duties-legal">Legal Administration</a>
-   <a href="#duties-family">Family Law Support</a>
-   <a href="#duties-admin">Administrative Support</a>
+   <a href="#duties-all">Duty Checklist</a>
   </nav>
  </aside>
  <div class="dashboard-main">
@@ -74,9 +72,9 @@
    <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
   <nav class="overview-links" aria-label="Workspace shortcuts">
-   <a href="#staff-inbox" hidden>Open Inbox &amp; Chat</a><a href="#work-queue">Manage priorities</a><a href="#work-calendar">View calendar</a><a href="#work-email">Open email drafts</a>
+   <a href="#staff-inbox" hidden>Read client messages</a><a href="#work-queue">Manage tasks</a><a href="#work-calendar">View calendar</a><a href="#work-email">Open email drafts</a><a href="#duties-all">Open duty checklist</a>
   </nav>
-  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Inbox &amp; chat</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
+  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client Messages</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
   <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
@@ -110,7 +108,8 @@
  setupCalendar();
  function render() {
    shortcut.hidden = inbox.hidden;
-   const selected = views.get(location.hash);
+   const hash = ['#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#duties-all' : location.hash;
+   const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
    title.textContent = active === links[0] ? 'Staff Dashboard' : active.textContent.trim();
