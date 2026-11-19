@@ -11,6 +11,22 @@
 <link rel="stylesheet" href="./dashboard.css">
 <link rel="stylesheet" href="./workflow.css?v=2">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
+<style>
+.admin-dashboard{background:#f5f1eb}.dashboard-main{padding-top:32px}.dashboard-header{padding:17px 0 21px;margin-bottom:22px;border-bottom:1px solid #dfd3c8}.dashboard-header h1{font-size:clamp(30px,4vw,48px)}
+.dashboard-sidebar{background:linear-gradient(165deg,#3d2137,#2c192b)}.dashboard-sidebar nav{gap:5px}.dashboard-sidebar a{display:block;font-weight:550}.dashboard-sidebar a[aria-current=page]{background:#efe3eb;color:#382033;font-weight:700}
+.dashboard-metrics{margin-top:0}.dashboard-metrics>div{box-shadow:0 6px 18px #40233a08;border-radius:13px}.dashboard-metrics>div:nth-child(3){background:#edf2e7;border-color:#d8e2d0}
+.staff-inbox,.workflow-panel{margin-top:0;box-shadow:0 8px 26px #40233a09}.overview-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.overview-links a{background:#fffdf8;color:#40243a;border-radius:12px;padding:18px;border:1px solid #ded3c6;text-underline-offset:4px;font-weight:650}.overview-links a:hover{background:#eee5ed}
+.admin-dashboard[data-view]:not([data-view="overview"]) :is(.dashboard-metrics,.overview-links){display:none}
+.admin-dashboard[data-view]:not([data-view="inbox"]) #staff-inbox{display:none}
+.admin-dashboard[data-view]:not([data-view^="duties-"]) :is(.dashboard-section-title,#duty-groups){display:none}
+.admin-dashboard[data-view^="duties-"] #duty-groups{grid-template-columns:1fr}
+.admin-dashboard[data-view="duties-legal"] #duty-groups .duty-group:not(#duties-legal),.admin-dashboard[data-view="duties-family"] #duty-groups .duty-group:not(#duties-family),.admin-dashboard[data-view="duties-admin"] #duty-groups .duty-group:not(#duties-admin){display:none}
+.admin-dashboard[data-view]:not([data-view^="work-"]) #staff-workspace{display:none}
+.admin-dashboard[data-view] .workflow-panel{display:none}
+.admin-dashboard[data-view="work-queue"] #work-queue,.admin-dashboard[data-view="work-calendar"] #work-calendar,.admin-dashboard[data-view="work-matters"] #work-matters,.admin-dashboard[data-view="work-email"] #work-email{display:block}
+@media(min-width:701px){.dashboard-sidebar{position:sticky;top:0;height:100dvh;overflow:auto}}
+@media(max-width:700px){.dashboard-main{padding-top:14px}.dashboard-header{margin-bottom:16px}.dashboard-sidebar a{padding:8px 12px}}
+</style>
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -56,6 +72,9 @@
    <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
    <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
+  <nav class="overview-links" aria-label="Workspace shortcuts">
+   <a href="#staff-inbox" hidden>Open Inbox &amp; Chat</a><a href="#work-queue">Manage priorities</a><a href="#work-calendar">View calendar</a><a href="#work-email">Open email drafts</a>
+  </nav>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Inbox &amp; chat</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
   <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
@@ -63,5 +82,43 @@
  </div>
 </section>
 <script type="module" src="./firebase-admin.js?v=chat-2"></script>
+<script>
+(() => {
+ const dashboard = document.getElementById('staff-checklist');
+ const links = [...dashboard.querySelectorAll('.dashboard-sidebar nav a')];
+ const title = document.getElementById('dashboard-title');
+ const inbox = document.getElementById('inbox-nav');
+ const shortcut = document.querySelector('.overview-links [href="#staff-inbox"]');
+ const views = new Map(links.map(link => [link.hash, link]));
+ function render() {
+   shortcut.hidden = inbox.hidden;
+   const selected = views.get(location.hash);
+   const active = selected && !selected.hidden ? selected : links[0];
+   dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
+   title.textContent = active === links[0] ? 'Staff Dashboard' : active.textContent.trim();
+   for (const link of links) {
+     if (link === active) link.setAttribute('aria-current', 'page');
+     else link.removeAttribute('aria-current');
+   }
+ }
+ function go(hash) {
+   if (location.hash !== hash) history.pushState(null, '', hash);
+   render();
+   window.scrollTo(0, 0);
+ }
+ dashboard.addEventListener('click', event => {
+   const edit = event.target.closest('#staff-workspace [data-edit]');
+   if (edit) { go('#work-queue'); return; }
+   const link = event.target.closest('.dashboard-sidebar nav a, .overview-links a');
+   if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+   event.preventDefault();
+   go(link.hash);
+ }, true);
+ window.addEventListener('hashchange', render);
+ window.addEventListener('popstate', render);
+ new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
+ render();
+})();
+</script>
 </body>
 </html>
