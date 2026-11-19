@@ -234,3 +234,6 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 .location-card .map-note{font-size:12px;margin-top:12px}
 @media(max-width:860px){.client-band .profile-location{grid-template-columns:1fr}}
 @media(max-width:460px){.profile-location .profile-preview-link{grid-template-columns:1fr}.profile-location .profile-portrait img{max-width:120px}.profile-location .profile-copy{text-align:center}}
+
+.profile-location .profile-preview{display:grid;gap:14px}
+.profile-location .profile-copy h3{font:400 clamp(30px,3.6vw,48px)/1.08 Georgia,serif;color:var(--plum);letter-spacing:-.035em;margin:0}
