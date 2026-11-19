@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function ownsChecklist(uid) {
+      return request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.role == 'solicitor';
+    }
+
+    function validChecklist() {
+      return request.resource.data.keys().hasOnly(['progress', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['progress', 'updatedAt'])
+        && request.resource.data.progress is map
+        && request.resource.data.progress.keys().hasOnly([
+          'legal-0', 'legal-1', 'legal-2', 'legal-3',
+          'family-0', 'family-1', 'family-2', 'family-3',
+          'admin-0', 'admin-1', 'admin-2', 'admin-3', 'admin-4'
+        ])
+        && request.resource.data.progress.values().hasOnly([true, false])
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    match /solicitorChecklists/{uid} {
+      allow get: if ownsChecklist(uid);
+      allow create, update: if ownsChecklist(uid) && validChecklist();
+    }
+  }
+}
