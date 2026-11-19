@@ -9,3 +9,5 @@
 .staff-inbox select,.staff-inbox button{font:inherit;border:1px solid #baabb0;border-radius:6px;padding:7px 10px;background:#fffdf8;color:#40233a}
 .staff-inbox details{border-top:1px solid #e5d9d0;padding:12px 0}.staff-inbox summary{cursor:pointer;font-weight:650}.staff-inbox details p{white-space:pre-wrap;overflow-wrap:anywhere}
 .staff-inbox button{background:#40233a;color:#fff9ee;cursor:pointer}
+
+.staff-inbox .chat-message{max-width:min(100%,680px);padding:12px 15px;border-radius:12px;background:#f0e9ee}.staff-inbox .chat-message-staff{margin-left:auto;background:#e8eddf}.staff-inbox .chat-message strong{display:block;margin-bottom:4px;font-size:13px}.staff-inbox form{margin-top:16px}.staff-inbox textarea{min-height:84px}

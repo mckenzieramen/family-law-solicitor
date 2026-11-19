@@ -21,23 +21,34 @@ export function mountInbox(db) {
   panel.hidden = nav.hidden = false;
   status.textContent = 'Loading messages…';
   let entries = [];
+  let alive = true;
+  const drafts = new Map();
   function render() {
     const visible = entries.filter(({kind}) => filter.value === 'all' || filter.value === kind);
+    const expanded = new Set([...list.querySelectorAll('details[open]')].map(row => row.dataset.messageId));
     list.replaceChildren();
     status.textContent = visible.length ? '' : 'No messages in this view.';
     for (const record of visible) {
       const details = document.createElement('details');
+      details.dataset.messageId = record.id;
+      details.open = expanded.has(record.id);
       const summary = document.createElement('summary');
       const message = document.createElement('p');
       const date = record.createdAt?.toDate().toLocaleString('en-AU', {timeZone:'Australia/Sydney'});
       const contact = record.contact ?? {};
-      summary.textContent = (record.kind === 'consultation' ? 'Consultation · ' + contact.firstName + ' ' + contact.lastName : 'Support question') + (date ? ' · ' + date : '');
+      summary.textContent = (record.kind === 'consultation' ? 'Consultation · ' + contact.firstName + ' ' + contact.lastName : record.reply ? 'Support chat · Replied' : 'Support chat · Awaiting reply') + (date ? ' · ' + date : '');
       message.textContent = record.message;
       details.append(summary);
       if (record.kind === 'consultation') {
         const fields = document.createElement('p');
         fields.textContent = [contact.topic, contact.email, contact.phone, contact.postcode, contact.newClient && 'New client: ' + contact.newClient, contact.preferredTime && 'Preferred time: ' + contact.preferredTime + ' Sydney'].filter(Boolean).join(' · ');
         details.append(fields);
+      }
+      if (record.kind === 'support') {
+        message.className = 'chat-message';
+        const sender = document.createElement('strong');
+        sender.textContent = 'Visitor';
+        message.prepend(sender);
       }
       details.append(message);
       if (record.kind === 'support') {
@@ -47,18 +58,35 @@ export function mountInbox(db) {
         const button = document.createElement('button');
         reply.required = true;
         reply.maxLength = 1000;
-        reply.value = record.reply;
+        if (record.reply) {
+          const previous = document.createElement('p');
+          previous.className = 'chat-message chat-message-staff';
+          const sender = document.createElement('strong');
+          sender.textContent = 'Staff';
+          previous.append(sender, record.reply);
+          details.append(previous);
+        }
+        reply.value = drafts.get(record.id) ?? record.reply ?? '';
+        reply.addEventListener('input', () => drafts.set(record.id, reply.value));
         label.textContent = 'Reply to client';
         label.append(reply);
-        button.textContent = 'Send reply';
-        form.append(label, button);
+        button.textContent = record.reply ? 'Update reply' : 'Send reply';
+        const feedback = document.createElement('p');
+        feedback.setAttribute('role', 'status');
+        form.append(label, button, feedback);
         form.addEventListener('submit', async event => {
           event.preventDefault();
           const value = reply.value.trim();
           if (!value) return;
           button.disabled = true;
-          try { await updateDoc(doc(db, 'clientInbox', record.id), {reply:value}); }
-          catch { status.textContent = 'Reply could not be saved.'; }
+          try {
+            await updateDoc(doc(db, 'clientInbox', record.id), {reply:value});
+            if (!alive) return;
+            drafts.delete(record.id);
+            status.textContent = 'Reply saved and visible to the visitor.';
+          } catch {
+            if (alive) (feedback.isConnected ? feedback : status).textContent = 'Reply could not be saved.';
+          }
           finally { button.disabled = false; }
         });
         details.append(form);
@@ -67,8 +95,9 @@ export function mountInbox(db) {
     }
   }
   filter.onchange = render;
-  stop = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
+  const unsubscribe = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
     entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
     render();
   }, () => { status.textContent = 'Inbox unavailable. Check the Firestore rules and staff permissions.'; });
+  stop = () => { alive = false; unsubscribe(); };
 }

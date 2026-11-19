@@ -10,7 +10,7 @@
 </style>
 <link rel="stylesheet" href="./dashboard.css">
 <link rel="stylesheet" href="./workflow.css?v=2">
-<link rel="stylesheet" href="../inbox.css">
+<link rel="stylesheet" href="../inbox.css?v=chat-2">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -36,7 +36,7 @@
   <p>Staff workspace</p>
   <nav aria-label="Dashboard">
    <a href="#dashboard-title">Overview</a>
-   <a id="inbox-nav" href="#staff-inbox" hidden>Client inbox</a>
+   <a id="inbox-nav" href="#staff-inbox" hidden>Inbox &amp; chat</a>
    <a href="#work-queue">Priorities</a>
    <a href="#work-calendar">Calendar</a>
    <a href="#work-matters">Matter work</a>
@@ -56,12 +56,12 @@
    <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
    <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
-  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client inbox</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support questions</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
+  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Inbox &amp; chat</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
   <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=inbox-1"></script>
+<script type="module" src="./firebase-admin.js?v=chat-2"></script>
 </body>
 </html>

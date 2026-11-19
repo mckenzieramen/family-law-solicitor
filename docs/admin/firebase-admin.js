@@ -2,7 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
-import { mountInbox, clearInbox } from './inbox.js';
+import { mountInbox, clearInbox } from './inbox.js?v=chat-2';
 import { mountWorkflow, clearWorkflow } from './workflow.js?v=2';
 
 const app = initializeApp({
