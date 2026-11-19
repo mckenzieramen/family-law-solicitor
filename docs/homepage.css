@@ -1,17 +1,20 @@
 header .brand{text-decoration:none}
 .header-nav{background:transparent;color:var(--ink);padding:0;overflow:visible;gap:clamp(12px,3vw,35px)}
 .header-nav a{text-decoration:none;font-size:15px;white-space:nowrap}.header-nav a:hover{text-decoration:underline}.header-nav .nav-cta{background:var(--plum);color:#fff9ee;padding:11px 17px;border-radius:4px}
-.client-home .hero-grid{grid-template-columns:1.02fr 1fr;min-height:0;background:#40233a;color:#fff9ee}
-.client-home .hero-copy{padding:clamp(43px,6vw,90px) clamp(24px,6vw,92px)}
-.client-home h1{font-size:clamp(44px,5.4vw,81px);line-height:1.03;max-width:13ch}
-.client-home .eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin:0 0 18px}.hero-copy .eyebrow{color:#edc9aa}
-.client-home .hero-link{background:#f7eee2;color:var(--plum)}.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.hero-actions>a:last-child{color:#fff9ee;text-underline-offset:4px}.hero-link span{margin-left:6px}
+.client-home .hero-grid{display:grid;position:relative;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);min-height:clamp(420px,39vw,560px);background:#faf6ed;color:var(--plum);padding:0}
+.client-home .hero-grid::after{content:none}
+.client-home .hero-photo{position:relative;inset:auto;z-index:auto;min-height:0;margin:0}
+.client-home .hero-photo img{display:block;inset:0;object-position:center 58%}
+.client-home .hero-copy{width:auto;padding:clamp(38px,5.5vw,80px) clamp(24px,5.5vw,84px)}
+.client-home h1{font-size:clamp(44px,5.4vw,81px);line-height:1.03;max-width:15ch;color:var(--plum)}
+.client-home .eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin:0 0 18px}.hero-copy .eyebrow{color:#785039}
+.client-home .hero-link{background:var(--plum);color:#fff9ee}.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.hero-actions>a:last-child{color:var(--plum);text-underline-offset:4px}.hero-link span{margin-left:6px}
 .client-section{width:min(1180px,calc(100% - 48px));margin:auto;padding-block:clamp(36px,6vw,76px);scroll-margin-top:20px}.client-section h2{font:400 clamp(30px,4vw,52px)/1.08 Georgia,serif;color:var(--plum);letter-spacing:-.035em}.client-section p{font-size:16px;color:#51454e;margin:10px 0;max-width:58ch}
 .section-lead{margin-bottom:24px}.service-grid,.client-columns{display:grid;gap:16px}.service-grid{grid-template-columns:repeat(3,1fr)}.service-grid article{background:#fffdf8;border:1px solid var(--line);border-top:3px solid #9d795e;border-radius:6px;padding:23px}.service-grid h3{font-size:23px;color:var(--plum)}
 .client-band{background:#eee8e0}.client-columns{grid-template-columns:1fr 1fr;gap:clamp(20px,6vw,80px)}.client-columns details{border-bottom:1px solid #d6c8c6;padding:13px 0}.client-columns summary{cursor:pointer;font-weight:650}.client-columns #resources h2{font-size:clamp(28px,3vw,39px)}
 .contact-panel{border:1px solid var(--line);border-radius:8px;background:#fffcf7;padding:clamp(21px,4vw,40px);display:flex;align-items:center;gap:16px;justify-content:space-between}.contact-panel a{color:var(--plum);text-underline-offset:4px}.client-footer{background:#40233a;color:#fff9ee;display:flex;justify-content:space-between;gap:12px}.client-footer small{color:#e7d8e2}
 header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-visible{outline:3px solid #a47a55;outline-offset:4px}
-@media(max-width:850px){.client-home .hero-grid{grid-template-columns:1fr}.header-nav:not([hidden]){display:flex;flex-wrap:wrap;justify-content:flex-end}}
+@media(max-width:850px){.client-home .hero-grid{grid-template-columns:1fr;min-height:0}.client-home .hero-photo{height:clamp(220px,50vw,380px)}.header-nav:not([hidden]){display:flex;flex-wrap:wrap;justify-content:flex-end}}
 @media(max-width:640px){header{flex-wrap:wrap}.header-nav:not([hidden]){justify-content:flex-start;gap:13px}.header-nav a{font-size:13px}.service-grid,.client-columns{grid-template-columns:1fr}.contact-panel{align-items:flex-start;flex-direction:column}}
 
 .service-grid a{color:inherit;text-underline-offset:4px}.service-details{padding-top:0}.service-details details{padding:12px 0;border-bottom:1px solid var(--line)}.service-details summary{cursor:pointer;font-weight:650}
