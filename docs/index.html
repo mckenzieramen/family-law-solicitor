@@ -190,14 +190,14 @@ function home(){
    <p>Tell us what you’d like to discuss, from separation and parenting arrangements to property and finances.</p>
    <a href="#contact-info">Office location and directions</a>
   </div>
-  <form id="consultation-form" class="consultation-form" aria-describedby="consultation-demo">
+  <form id="consultation-form" method="post" class="consultation-form" aria-describedby="consultation-demo">
    <h3>Consultation enquiry</h3>
-   <p id="consultation-demo">Form preview. Use fictional details. This form does not send enquiries.</p>
+   <p id="consultation-demo">Share only your contact details and a brief description. Please leave out confidential case details.</p>
    <div class="consultation-fields">
     <label>First name<input name="firstName" required maxlength="70" autocomplete="off"></label>
     <label>Last name<input name="lastName" required maxlength="70" autocomplete="off"></label>
     <label><span>Phone <small>(optional)</small></span><input name="phone" type="tel" maxlength="25" autocomplete="off"></label>
-    <label>Email<input name="email" type="email" required pattern="[^@]+@example[.]com" title="Use an example.com email address" placeholder="taylor@example.com" autocomplete="off"></label>
+    <label>Email<input name="email" type="email" required maxlength="254" autocomplete="off"></label>
     <label><span>Postcode <small>(optional)</small></span><input name="postcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></label>
     <label>Are you a new client?<select name="newClient" required><option value="">Select an option</option><option>Yes</option><option>No</option></select></label>
     <label>Enquiry topic<select id="sample-topic" name="topic" required>
@@ -206,7 +206,7 @@ function home(){
     <label><span>Preferred time <small>(Sydney time, optional)</small></span><input name="preferredTime" type="datetime-local"></label>
     <label class="consultation-message">How can we help?<textarea name="message" rows="5" maxlength="1500" required></textarea></label>
    </div>
-   <div class="consultation-footer"><button class="action" type="submit">Preview submission</button><p id="consultation-result" role="status"></p></div>
+   <div class="consultation-footer"><button class="action" type="submit" disabled>Send enquiry</button><p id="consultation-result" role="status"></p></div>
   </form>
  </div></section>
  <div class="client-band"><div class="client-section client-columns profile-location">
@@ -244,6 +244,15 @@ function home(){
    </div>
   </section>
  </div></div>
+ <details class="support-widget">
+  <summary>How can I help?</summary>
+  <div class="support-content">
+   <h2>Contact support</h2>
+   <p>Ask a general question. Replies appear here when the team responds.</p>
+   <form id="support-form" method="post"><label>Your question<textarea name="message" required maxlength="600" rows="3" placeholder="Please leave out confidential details"></textarea></label><button class="action" type="submit" disabled>Send question</button></form>
+   <div id="support-result" role="status"></div>
+  </div>
+ </details>
  <aside class="privacy-notice" aria-label="Privacy controls"><p>The embedded Google Map may use cookies.</p><button type="button" data-dismiss-privacy>Dismiss</button></aside>
  </main><footer class="client-footer"><span>Family Law Firm · Sydney, NSW</span><small>Website concept</small></footer>`;
 }
@@ -300,7 +309,7 @@ const staffMode=new URLSearchParams(location.search).get('staff');
 if(staffMode==='demo'){entry.hidden=false;showStaff();}
 if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 </script>
-<script src="navigation.js?v=always-map-2" defer></script>
+<script src="navigation.js?v=inbox-1" defer></script>
 <script src="homepage-motion.js?v=1" defer></script>
 <script>
 (() => {
@@ -319,4 +328,6 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
  viewport.dataset.marquee = '';
 })();
 </script>
+<link rel="stylesheet" href="inbox.css">
+<script type="module" src="client-inbox.js"></script>
 </html>

@@ -1,0 +1,11 @@
+.support-widget{position:fixed;z-index:20;right:clamp(12px,3vw,32px);bottom:clamp(12px,3vw,32px);width:max-content;max-width:calc(100vw - 24px);color:#40233a}
+.support-widget summary{list-style:none;width:max-content;margin-left:auto;padding:11px 16px;border-radius:24px;background:#40233a;color:#fff9ee;font-weight:650;cursor:pointer;box-shadow:0 8px 24px #40233a30}
+.support-widget summary::-webkit-details-marker{display:none}.support-widget[open]{width:min(350px,calc(100vw - 24px))}
+.support-content{padding:17px;margin-top:8px;background:#fffdf8;border:1px solid #ded1c7;border-radius:12px;box-shadow:0 10px 28px #40233a22;max-height:55vh;overflow:auto}
+.support-content h2,.staff-inbox h2{margin:0 0 8px;font:400 28px Georgia,serif}.support-content p{font-size:14px;margin:0 0 12px}
+.support-content textarea,.staff-inbox textarea{display:block;width:100%;box-sizing:border-box;padding:8px;margin:4px 0;border:1px solid #c8b9ba;border-radius:6px;font:inherit}
+#support-result{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;margin-top:8px}
+.staff-inbox{padding:clamp(17px,3vw,28px);margin:18px 0;border:1px solid #ded1c7;border-radius:13px;background:#fffdf8;color:#40233a;scroll-margin-top:18px}
+.staff-inbox select,.staff-inbox button{font:inherit;border:1px solid #baabb0;border-radius:6px;padding:7px 10px;background:#fffdf8;color:#40233a}
+.staff-inbox details{border-top:1px solid #e5d9d0;padding:12px 0}.staff-inbox summary{cursor:pointer;font-weight:650}.staff-inbox details p{white-space:pre-wrap;overflow-wrap:anywhere}
+.staff-inbox button{background:#40233a;color:#fff9ee;cursor:pointer}

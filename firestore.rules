@@ -64,6 +64,46 @@ service cloud.firestore {
         && d.updatedAt == request.time;
     }
 
+    function inboxStaff() {
+      return request.auth != null && (isSolicitor() || isActiveAdmin());
+    }
+
+    function validContact(c) {
+      return c is map
+        && c.keys().hasAll(['firstName', 'lastName', 'email', 'phone', 'postcode', 'topic', 'newClient', 'preferredTime'])
+        && c.keys().hasOnly(['firstName', 'lastName', 'email', 'phone', 'postcode', 'topic', 'newClient', 'preferredTime'])
+        && c.firstName is string && c.firstName.size() > 0 && c.firstName.size() <= 70
+        && c.lastName is string && c.lastName.size() > 0 && c.lastName.size() <= 70
+        && c.email is string && c.email.size() <= 254 && c.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && c.phone is string && c.phone.size() <= 25
+        && c.postcode is string && c.postcode.matches('([0-9]{4})?')
+        && c.topic in ['separation', 'parenting', 'property', 'consent']
+        && c.newClient in ['Yes', 'No']
+        && c.preferredTime is string && c.preferredTime.size() <= 24;
+    }
+
+    match /clientInbox/{messageId} {
+      allow create: if request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'anonymous'
+        && request.resource.data.keys().hasAll(['kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'])
+        && request.resource.data.keys().hasOnly(['kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.reply == ''
+        && request.resource.data.message is string && request.resource.data.message.size() > 0
+        && ((request.resource.data.kind == 'consultation'
+          && request.resource.data.message.size() <= 1500 && validContact(request.resource.data.contact))
+          || (request.resource.data.kind == 'support'
+          && request.resource.data.message.size() <= 600 && request.resource.data.contact == {}));
+      allow get: if inboxStaff() || (request.auth != null && resource.data.kind == 'support'
+        && resource.data.ownerUid == request.auth.uid);
+      allow list: if inboxStaff() && request.query.limit <= 100;
+      allow update: if inboxStaff() && resource.data.kind == 'support'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply'])
+        && request.resource.data.reply is string
+        && request.resource.data.reply.size() > 0 && request.resource.data.reply.size() <= 1000;
+    }
+
     match /solicitorChecklists/{uid} {
       allow get: if ownsChecklist(uid);
       allow create, update: if ownsChecklist(uid) && validChecklist();

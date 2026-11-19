@@ -2,6 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
+import { mountInbox, clearInbox } from './inbox.js';
 import { mountWorkflow, clearWorkflow } from './workflow.js?v=2';
 
 const app = initializeApp({
@@ -142,6 +143,7 @@ onIdTokenChanged(auth, async user => {
   const current = ++generation;
   checklist = undefined;
   clearWorkflow();
+  clearInbox();
   if (entryCard) {
     entryCard.hidden = false;
     signOutHome.append(logout);
@@ -183,6 +185,7 @@ onIdTokenChanged(auth, async user => {
       dashboardSession.append(logout);
       entryCard.hidden = true;
       mountWorkflow(db, user.uid);
+      if (admin || role === 'solicitor') mountInbox(db);
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch {

@@ -85,16 +85,6 @@ clientApp.addEventListener('click', event => {
   document.getElementById('consultation-result').textContent = '';
 });
 
-clientApp.addEventListener('submit', event => {
-  const form = event.target;
-  if (form.id !== 'consultation-form') return;
-  event.preventDefault();
-  const topic = form.elements.topic.selectedOptions[0].textContent;
-  document.getElementById('consultation-result').textContent =
-    'Demo complete for ' + topic + '. No enquiry was sent.';
-  form.reset();
-});
-
 clientApp.addEventListener('click', event => {
   if (event.target.closest('[data-dismiss-privacy]')) event.target.closest('.privacy-notice').hidden = true;
 });
