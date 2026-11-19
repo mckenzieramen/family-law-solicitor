@@ -54,3 +54,12 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 #consultation-result:not(:empty){background:#e5eadb;color:#2f482c;padding:10px 12px;border-radius:5px}
 @media(max-width:950px){.service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.service-grid,.contact-panel{grid-template-columns:1fr}}
+
+.directory-profile{margin-top:22px;border:1px solid #d9cdc7;border-radius:9px;overflow:hidden;background:#fffdf8}
+.directory-person,.directory-office,.directory-footer{padding:14px 16px}
+.directory-person{display:flex;align-items:center;gap:13px;background:#eeefe7}
+.directory-person img{width:60px;height:60px;flex:none;border-radius:50%;object-fit:cover}
+.directory-person h3{color:var(--plum);font-size:23px;margin:0}
+.directory-profile p{font-size:14px;margin:4px 0 0}.directory-office p{margin:0}
+.directory-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line)}
+.directory-footer a{color:var(--plum);font-size:14px;font-weight:700;text-underline-offset:4px}
