@@ -141,3 +141,22 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .duty-item{display:flex;align-items:flex-start;gap:9px;margin:0;padding:10px 0;border-top:1px solid var(--line);line-height:1.45;cursor:pointer}
 .duty-item input{flex:none;margin:4px 0 0;accent-color:#526746}
 @media(max-width:1120px){.duty-groups{grid-template-columns:1fr}}
+
+/* Public homepage navigation and motion. */
+body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;background:#fffdf8f5;backdrop-filter:blur(12px)}
+.client-home :is(section[id],details[id]){scroll-margin-top:110px}
+.client-home .hero-photo{overflow:hidden}
+.client-home .hero-actions a,.site-header .header-nav a,.client-home .profile-preview-link{transition:background-color .22s ease,color .22s ease,box-shadow .24s ease,transform .24s ease}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ .client-home .hero-actions .hero-link:hover,.client-home .profile-preview-link:hover{transform:translateY(-3px);box-shadow:0 12px 24px #40233a1c}
+}
+@media(prefers-reduced-motion:no-preference){
+ html:has(.client-home){scroll-behavior:smooth}
+ .client-home .hero-copy{animation:family-hero-in .66s cubic-bezier(.22,.61,.36,1) both}
+ .client-home .hero-photo img{animation:family-photo-in 1s cubic-bezier(.22,.61,.36,1) both}
+ @keyframes family-hero-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+ @keyframes family-photo-in{from{opacity:.8;transform:scale(1.035)}to{opacity:1;transform:scale(1)}}
+}
+@media(prefers-reduced-motion:reduce){
+ .client-home .hero-actions a,.site-header .header-nav a,.client-home .profile-preview-link{transition:none}
+}
