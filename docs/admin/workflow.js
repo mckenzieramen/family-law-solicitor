@@ -27,7 +27,7 @@ export function mountWorkflow(db, uid) {
   let saving = false;
   root.innerHTML = `
  <section class="workflow-panel" id="work-queue">
-  <h2>Work priorities</h2><p id="work-status" role="status">Loading work items…</p>
+  <h2>Tasks &amp; deadlines</h2><p>Track client follow-ups, documents to request, and work for solicitor review.</p><p id="work-status" role="status">Loading work items…</p>
   <form id="work-form" class="work-form">
    <h3 id="work-form-title">Add work item</h3>
    <div class="work-fields">
@@ -41,11 +41,11 @@ export function mountWorkflow(db, uid) {
    <button class="work-button" id="work-save" disabled>Save work item</button>
    <button type="button" id="work-cancel" hidden>Cancel edit</button>
   </form>
-  <div id="work-priority-list"></div>
+  <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
- <section class="workflow-panel" id="work-calendar"><h2>Calendar</h2><label>Month <input id="work-month" type="month"></label><div id="work-agenda"></div></section>
- <section class="workflow-panel" id="work-matters"><h2>Matter work</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
- <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Read or edit drafts saved here. Mailbox connection is pending.</p><div id="work-drafts"></div></section>`;
+ <section class="workflow-panel" id="work-calendar"><h2>Calendar</h2><p>Plan consultations, follow-ups and important case dates in Sydney time.</p><label>Month <input id="work-month" type="month"></label><div id="work-agenda"></div></section>
+ <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><p>Use the same matter reference on tasks, appointments and drafts to see related work here.</p><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
+ <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare client correspondence for solicitor review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div><div id="work-drafts"></div></section>`;
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
   const form = find('#work-form');
@@ -83,7 +83,19 @@ export function mountWorkflow(db, uid) {
   };
   function render() {
     const query = find('#work-matter-query').value.trim().toLowerCase();
-    renderRows('#work-priority-list', records.filter(x=>!x.done && x.kind!=='Email draft').sort(order), 'No open work items.');
+    const date = today();
+    const tasks = records.filter(item => item.kind === 'Task');
+    const overdue = item => !item.done && item.date && item.date < date;
+    const filter = find('#legal-task-filter').value;
+    renderRows('#work-priority-list', tasks.filter(item => filter === 'done' ? item.done : filter === 'overdue' ? overdue(item) : !item.done).sort(order), 'No tasks in this view.');
+    for (const [id, total] of [
+      ['legal-open', tasks.filter(item => !item.done).length],
+      ['legal-overdue', tasks.filter(overdue).length],
+      ['legal-appointments', records.filter(item => item.kind === 'Appointment' && !item.done && item.date >= date).length]
+    ]) {
+      const metric = document.getElementById(id);
+      if (metric) metric.textContent = total;
+    }
     renderRows('#work-agenda', records.filter(x=>x.date && x.date.startsWith(month.value) && x.kind!=='Email draft').sort((a,b)=>a.date.localeCompare(b.date)||order(a,b)), 'No appointments or deadlines in this month.');
     renderRows('#work-matter-list', records.filter(x=>x.matter && x.matter.toLowerCase().includes(query)).sort(order), 'No matching work items with a matter reference.');
     renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
@@ -103,6 +115,7 @@ export function mountWorkflow(db, uid) {
   });
   field('kind').addEventListener('change', syncType);
   month.addEventListener('change', render);
+  find('#legal-task-filter').addEventListener('change', render);
   find('#work-matter-query').addEventListener('input', render);
   find('#work-cancel').addEventListener('click', reset);
   form.addEventListener('submit', async event => {
@@ -133,6 +146,23 @@ export function mountWorkflow(db, uid) {
     }
   });
   root.onclick = async event => {
+    const draft = event.target.closest('[data-new-draft]');
+    if (draft) {
+      if (current !== session) return;
+      if (editing || field('title').value.trim() || field('notes').value.trim()) {
+        field('title').focus();
+        return;
+      }
+      field('kind').value = 'Email draft';
+      const request = draft.dataset.newDraft === 'documents';
+      field('title').value = request ? 'Request for outstanding documents' : 'Follow-up on your matter';
+      field('notes').value = request
+        ? 'Hi [Client name],\n\nCould you please provide the following documents through the agreed channel?\n\n[Document list and requested date]\n\nKind regards,\n[Your name]'
+        : 'Hi [Client name],\n\nI’m following up on [matter or previous enquiry].\n\n[Update or next step]\n\nKind regards,\n[Your name]';
+      syncType();
+      field('title').focus();
+      return;
+    }
     const button = event.target.closest('[data-edit],[data-toggle],[data-remove]');
     if (!button || !loaded || current !== session) return;
     const item = records.find(x=>x.id===(button.dataset.edit || button.dataset.toggle || button.dataset.remove));

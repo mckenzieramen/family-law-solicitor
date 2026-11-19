@@ -28,6 +28,9 @@
 @media(max-width:700px){.dashboard-main{padding-top:14px}.dashboard-header{margin-bottom:16px}.dashboard-sidebar a{padding:8px 12px}}
 </style>
 <style>.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.calendar-toolbar h2{margin:0}.calendar-toolbar button{min-height:42px}</style>
+<style>
+.legal-work-summary{margin:0 0 22px;padding:20px;border:1px solid #ded3c6;border-radius:12px;background:#fffdf8}.legal-work-summary h2{font:24px Georgia,serif;margin:0 0 14px}.legal-counts{display:flex;flex-wrap:wrap;gap:12px}.legal-counts span{background:#f1ece6;border-radius:8px;padding:9px 13px}.legal-counts strong{margin-left:8px}.admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary{display:none}.legal-actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:10px 0 16px}.legal-actions label{min-width:160px}.legal-actions button{margin-bottom:10px}
+</style>
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -71,16 +74,17 @@
    <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
    <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
+  <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Your workload</h2><div class="legal-counts"><span>Open tasks <strong id="legal-open">—</strong></span><span>Overdue tasks <strong id="legal-overdue">—</strong></span><span>Upcoming appointments <strong id="legal-appointments">—</strong></span></div></section>
   <nav class="overview-links" aria-label="Workspace shortcuts">
    <a href="#staff-inbox" hidden>Read client messages</a><a href="#work-queue">Manage tasks</a><a href="#work-calendar">View calendar</a><a href="#work-email">Open email drafts</a><a href="#duties-all">Open duty checklist</a>
   </nav>
-  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client Messages</h2><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
+  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client intake &amp; support</h2><p>Review new enquiries, check contact details and respond to support questions.</p><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
   <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=chat-2"></script>
+<script type="module" src="./firebase-admin.js?v=legal-desk-3"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -143,6 +147,8 @@
      form.elements.namedItem('title').focus();
      return;
    }
+   const draft = event.target.closest('[data-new-draft]');
+   if (draft) { go('#work-queue'); }
    const edit = event.target.closest('#staff-workspace [data-edit]');
    if (edit) { go('#work-queue'); return; }
    const link = event.target.closest('.dashboard-sidebar nav a, .overview-links a');
