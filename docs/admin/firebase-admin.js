@@ -41,6 +41,32 @@ const authStatus = document.getElementById('auth-status');
 const saveStatus = document.getElementById('save-status');
 let generation = 0;
 let checklist;
+const employeePanel = document.getElementById('employee-panel');
+const employeeForm = document.getElementById('employee-form');
+employeeForm?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const user = auth.currentUser;
+  if (!user || employeePanel.hidden) return;
+  const uid = new FormData(employeeForm).get('uid').trim();
+  const output = document.getElementById('employee-status');
+  if (!uid || uid.includes('/') || uid === '.' || uid === '..' || uid === user.uid) {
+    output.textContent = 'Enter the UID of another Firebase Authentication account.';
+    return;
+  }
+  const current = generation;
+  const button = employeeForm.querySelector('button');
+  button.disabled = true;
+  try {
+    await setDoc(doc(db, 'users', uid), {role: 'employee', lawyerUid: user.uid});
+    if (current !== generation) return;
+    employeeForm.reset();
+    output.textContent = 'Employee access granted.';
+  } catch {
+    if (current === generation) output.textContent = 'Could not grant access. Check Firestore rules and whether the account already has a role.';
+  } finally {
+    button.disabled = false;
+  }
+});
 
 function render(progress) {
   list.replaceChildren();
@@ -90,18 +116,27 @@ onIdTokenChanged(auth, async user => {
   const current = ++generation;
   checklist = undefined;
   panel.hidden = true;
+  if (employeePanel) {
+    employeePanel.hidden = true;
+    employeeForm.reset();
+    document.getElementById('employee-status').textContent = '';
+  }
   list.replaceChildren();
   login.hidden = Boolean(user);
   logout.hidden = !user;
-  authStatus.textContent = user ? 'Checking staff access…' : 'Sign in with your solicitor account.';
+  authStatus.textContent = user ? 'Checking staff access…' : 'Sign in with your staff account.';
   if (!user) return;
   try {
     const { claims } = await getIdTokenResult(user);
     if (current !== generation) return;
-    if (claims.role !== 'solicitor') {
-      authStatus.textContent = 'This account does not have solicitor access.';
+    const role = claims.role === 'solicitor' ? 'solicitor' :
+      (await getDocFromServer(doc(db, 'users', user.uid))).data()?.role;
+    if (current !== generation) return;
+    if (role !== 'solicitor' && (employeePanel || role !== 'employee')) {
+      authStatus.textContent = 'This account does not have access to this workspace.';
       return;
     }
+    if (employeePanel) employeePanel.hidden = false;
     const reference = doc(db, 'solicitorChecklists', user.uid);
     const snapshot = await getDocFromServer(reference);
     if (current !== generation) return;
@@ -109,7 +144,7 @@ onIdTokenChanged(auth, async user => {
     render(snapshot.data()?.progress ?? {});
     saveStatus.textContent = '';
     panel.hidden = false;
-    authStatus.textContent = 'Signed in as solicitor.';
+    authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : 'Signed in as employee.';
   } catch {
     if (current === generation) authStatus.textContent = 'Checklist unavailable. Verify the Firestore database and access rules.';
   }

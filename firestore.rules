@@ -1,10 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function hasRole(role) {
+      let profile = /databases/$(database)/documents/users/$(request.auth.uid);
+      return exists(profile) && get(profile).data.role == role;
+    }
+
+    function isSolicitor() {
+      return request.auth != null
+        && (request.auth.token.get('role', '') == 'solicitor' || hasRole('solicitor'));
+    }
+
+    match /users/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow create: if isSolicitor()
+        && request.auth.uid != uid
+        && request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
+        && request.resource.data.role == 'employee'
+        && request.resource.data.lawyerUid == request.auth.uid;
+    }
+
     function ownsChecklist(uid) {
       return request.auth != null
         && request.auth.uid == uid
-        && request.auth.token.role == 'solicitor';
+        && (isSolicitor() || hasRole('employee'));
     }
 
     function validChecklist() {
