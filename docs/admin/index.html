@@ -5,41 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solicitor Admin | Family Law Firm</title>
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
-<style>
-[hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
-</style>
-<link rel="stylesheet" href="./dashboard.css">
-<link rel="stylesheet" href="./workflow.css?v=2">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
-<style>
-.admin-dashboard{background:#f5f1eb}.dashboard-main{padding-top:32px}.dashboard-header{padding:17px 0 21px;margin-bottom:22px;border-bottom:1px solid #dfd3c8}.dashboard-header h1{font-size:clamp(30px,4vw,48px)}
-.dashboard-sidebar{background:linear-gradient(165deg,#3d2137,#2c192b)}.dashboard-sidebar nav{gap:5px}.dashboard-sidebar a{display:block;font-weight:550}.dashboard-sidebar a[aria-current=page]{background:#efe3eb;color:#382033;font-weight:700}
-.dashboard-metrics{margin-top:0}.dashboard-metrics>div{box-shadow:0 6px 18px #40233a08;border-radius:13px}.dashboard-metrics>div:nth-child(3){background:#edf2e7;border-color:#d8e2d0}
-.staff-inbox,.workflow-panel{margin-top:0;box-shadow:0 8px 26px #40233a09}.overview-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.overview-links a{background:#fffdf8;color:#40243a;border-radius:12px;padding:18px;border:1px solid #ded3c6;text-underline-offset:4px;font-weight:650}.overview-links a:hover{background:#eee5ed}
-.admin-dashboard[data-view]:not([data-view="overview"]) :is(.dashboard-metrics,.overview-links){display:none}
-.admin-dashboard[data-view]:not([data-view="inbox"]) #staff-inbox{display:none}
-.admin-dashboard[data-view]:not([data-view^="duties-"]) :is(.dashboard-section-title,#duty-groups){display:none}
-.admin-dashboard[data-view^="duties-"] #duty-groups{grid-template-columns:1fr}
-.admin-dashboard[data-view="duties-legal"] #duty-groups .duty-group:not(#duties-legal),.admin-dashboard[data-view="duties-family"] #duty-groups .duty-group:not(#duties-family),.admin-dashboard[data-view="duties-admin"] #duty-groups .duty-group:not(#duties-admin){display:none}
-.admin-dashboard[data-view]:not([data-view^="work-"]) #staff-workspace{display:none}
-.admin-dashboard[data-view] .workflow-panel{display:none}
-.admin-dashboard[data-view="work-queue"] #work-queue,.admin-dashboard[data-view="work-calendar"] #work-calendar,.admin-dashboard[data-view="work-matters"] #work-matters,.admin-dashboard[data-view="work-email"] #work-email{display:block}
-@media(min-width:701px){.dashboard-sidebar{position:sticky;top:0;height:100dvh;overflow:auto}}
-@media(max-width:700px){.dashboard-main{padding-top:14px}.dashboard-header{margin-bottom:16px}.dashboard-sidebar a{padding:8px 12px}}
-</style>
-<style>.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.calendar-toolbar .calendar-description{margin:0}.calendar-toolbar button{min-height:42px}</style>
-<style>
-.legal-work-summary{margin:0 0 22px;padding:20px;border:1px solid #ded3c6;border-radius:12px;background:#fffdf8}.legal-work-summary h2{font:24px Georgia,serif;margin:0 0 14px}.legal-counts{display:flex;flex-wrap:wrap;gap:12px}.legal-counts span{background:#f1ece6;border-radius:8px;padding:9px 13px}.legal-counts strong{margin-left:8px}.admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary{display:none}.legal-actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:10px 0 16px}.legal-actions label{min-width:160px}.legal-actions button{margin-bottom:10px}
-</style>
-<style>
-.month-controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:12px}.month-controls button{margin-bottom:10px;padding:8px 12px;border:1px solid #cbbec5;border-radius:6px;background:#fffdf8;color:#40233a}.month-controls label{min-width:160px}#work-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:10px 0 24px}.month-weekday{padding:7px 0;text-align:center;font-size:13px}.month-day{text-align:left;align-content:start;min-height:84px;border:1px solid #dfd4ca;border-radius:6px;background:#fffdfa;color:#382033;padding:6px;overflow:hidden}.month-day[aria-pressed=true]{background:#efe2eb;border-color:#75516c}.month-day[aria-current=date] strong{color:#526746;text-decoration:underline}.month-day span{display:block;background:#e9eee2;border-radius:4px;margin-top:3px;padding:3px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.month-day{min-height:56px;padding:3px}.month-day span{font-size:10px;padding:1px}}
-</style>
-<style>.staff-header-tools{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.staff-sydney-clock{display:grid;gap:3px;background:#fffdfa;color:#40233a;border:1px solid #ded3c6;border-radius:10px;padding:9px 13px}.staff-sydney-clock span{font-size:13px}.staff-sydney-clock time{font-size:18px;font-variant-numeric:tabular-nums;font-weight:700}</style>
-<style>
-#work-month-grid .month-day[aria-current="date"]{border:2px solid #b33c46}
-#work-month-grid .month-day[aria-current="date"] strong{color:#9b2d38;text-decoration:none}
-.calendar-note-actions{margin:0 0 12px}#day-note-form{margin:0 0 18px;padding:14px;background:#f5efe9;border:1px solid #ded3c6;border-radius:8px}#day-note-form input[type=date]{max-width:220px}
-</style>
+<link rel="stylesheet" href="./dashboard.css?v=studio-1">
+<link rel="stylesheet" href="./workflow.css?v=studio-1">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -61,8 +29,10 @@
 </main>
 <section class="admin-dashboard" id="staff-checklist" hidden aria-labelledby="dashboard-title">
  <aside class="dashboard-sidebar">
-  <span class="dashboard-brand">Family Law</span>
-  <p>Staff workspace</p>
+  <div class="dashboard-identity">
+   <span class="dashboard-monogram" aria-hidden="true">FL</span>
+   <div><span class="dashboard-brand">Family Law</span><p>Staff workspace</p></div>
+  </div>
   <nav aria-label="Dashboard">
    <a href="#dashboard-title">Overview</a>
    <a id="inbox-nav" href="#staff-inbox" hidden>Client Messages</a>
@@ -75,16 +45,16 @@
  </aside>
  <div class="dashboard-main">
   <header class="dashboard-header">
-   <div><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
+   <div class="dashboard-heading"><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
    <div class="staff-header-tools">
     <div class="staff-sydney-clock"><span>Sydney time</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
     <div id="dashboard-session"></div>
    </div>
   </header>
   <div class="dashboard-metrics" aria-label="Checklist summary">
-   <div><span>Completed</span><strong id="dashboard-completed">0</strong></div>
-   <div><span>Remaining</span><strong id="dashboard-remaining">0</strong></div>
-   <div><label for="dashboard-progress">Overall progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
+   <div><span>Duties completed</span><strong id="dashboard-completed">0</strong></div>
+   <div><span>Duties remaining</span><strong id="dashboard-remaining">0</strong></div>
+   <div><label for="dashboard-progress">Checklist progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
   <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Your workload</h2><div class="legal-counts"><span>Open tasks <strong id="legal-open">—</strong></span><span>Overdue tasks <strong id="legal-overdue">—</strong></span><span>Upcoming appointments <strong id="legal-appointments">—</strong></span></div></section>
   <nav class="overview-links" aria-label="Workspace shortcuts">
@@ -92,11 +62,11 @@
   </nav>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client intake &amp; support</h2><p>Review new enquiries, check contact details and respond to support questions.</p><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
   <div id="staff-workspace"></div>
-  <div class="dashboard-section-title"><h2>Legal Assistant Duties</h2><p id="save-status" role="status"></p></div>
+  <div class="dashboard-section-title"><h2>Legal assistant responsibilities</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=calendar-notes-6"></script>
+<script type="module" src="./firebase-admin.js?v=studio-1"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -106,22 +76,6 @@
  const shortcut = document.querySelector('.overview-links [href="#staff-inbox"]');
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
- const setupCalendar = () => {
-   const calendar = workspace.querySelector('#work-calendar');
-   if (!calendar || calendar.querySelector('[data-create-schedule]')) return;
-   const description = calendar.querySelector('.calendar-description');
-   const toolbar = document.createElement('div');
-   toolbar.className = 'calendar-toolbar';
-   description.before(toolbar);
-   const create = document.createElement('button');
-   create.type = 'button';
-   create.className = 'work-button';
-   create.dataset.createSchedule = '';
-   create.textContent = 'Create schedule';
-   toolbar.append(description, create);
- };
- new MutationObserver(setupCalendar).observe(workspace, {childList:true});
- setupCalendar();
  function render() {
    shortcut.hidden = inbox.hidden;
    const hash = ['#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#duties-all' : location.hash;
@@ -140,37 +94,15 @@
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const create = event.target.closest('[data-create-schedule]');
-   if (create) {
-     const form = workspace.querySelector('#work-form');
-     const kind = form.elements.namedItem('kind');
-     const date = form.elements.namedItem('date');
-     const month = workspace.querySelector('#work-month').value;
-     const selectedDay = workspace.querySelector('[data-calendar-day][aria-pressed="true"]');
-     const existing = form.elements.namedItem('title').value.trim() || form.elements.namedItem('notes').value.trim();
-     if (!existing && workspace.querySelector('#work-cancel').hidden) {
-       kind.value = 'Appointment';
-       form.elements.namedItem('calendar').value = workspace.querySelector('#work-calendar-scope').value;
-       kind.dispatchEvent(new Event('change', {bubbles:true}));
-       if (!date.value && month) {
-         const today = new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-         date.value = selectedDay?.dataset.calendarDay || (today.startsWith(month) ? today : month + '-01');
-       }
-     }
-     go('#work-queue');
-     form.elements.namedItem('title').focus();
-     return;
-   }
-   const draft = event.target.closest('[data-new-draft]');
-   if (draft) { go('#work-queue'); }
-   const edit = event.target.closest('#staff-workspace [data-edit]');
-   if (edit) { go('#work-queue'); return; }
    const link = event.target.closest('.dashboard-sidebar nav a, .overview-links a');
    if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
  }, true);
- workspace.addEventListener('schedule-saved', () => go('#work-calendar'));
+ workspace.addEventListener('workflow-view', event => {
+   const hash = '#' + event.detail;
+   if (location.hash !== hash) go(hash);
+ });
  window.addEventListener('hashchange', render);
  window.addEventListener('popstate', render);
  new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
