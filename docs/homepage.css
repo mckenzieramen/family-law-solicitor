@@ -133,3 +133,11 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .solicitor-profile a:focus-visible{outline:3px solid #a47a55;outline-offset:4px}
 @media(max-width:850px){.client-home .hero-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.client-band .client-columns,.staff-entry{grid-template-columns:1fr}.client-columns #contact-info{border-left:0;padding-left:0;border-top:1px solid #d0c2b6;padding-top:22px}}
+
+.duty-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
+.duty-group{margin:0;min-inline-size:0}
+.duty-group legend{padding:0 6px;color:var(--plum);font:400 23px/1.15 Georgia,serif}
+.duty-group [data-duty-count]{margin:0 0 10px;font-size:14px}
+.duty-item{display:flex;align-items:flex-start;gap:9px;margin:0;padding:10px 0;border-top:1px solid var(--line);line-height:1.45;cursor:pointer}
+.duty-item input{flex:none;margin:4px 0 0;accent-color:#526746}
+@media(max-width:1120px){.duty-groups{grid-template-columns:1fr}}
