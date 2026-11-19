@@ -160,3 +160,15 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 @media(prefers-reduced-motion:reduce){
  .client-home .hero-actions a,.site-header .header-nav a,.client-home .profile-preview-link{transition:none}
 }
+
+.client-home .consultation-wide{display:block;text-align:center}
+.consultation-wide .consultation-form{max-width:960px;margin:24px auto 0}
+.consultation-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;text-align:left;margin:18px 0}
+.consultation-fields label{display:grid;gap:6px;align-content:start;min-width:0}
+.consultation-fields :is(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;margin:0;border:1px solid #c9babd;border-radius:6px;padding:10px;background:#fffdf9;color:#322330}
+.consultation-message{grid-column:1/-1}.consultation-message textarea{resize:vertical}
+.office-map{margin-top:14px}.office-map button{margin:0 8px 8px 0}.office-map iframe{display:block;width:100%;height:300px;border:0;border-radius:8px;margin-top:10px}
+@media(max-width:640px){.consultation-fields{grid-template-columns:1fr}}
+
+.client-home .privacy-notice{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px clamp(20px,5vw,70px);border-top:1px solid #decfc4;background:#f2e8e0}
+.client-home .privacy-notice[hidden]{display:none}.privacy-notice p{margin:0;flex:1 1 280px}.privacy-notice a{color:#40233a}.privacy-notice button{padding:6px 12px;border:1px solid #b9a4aa;border-radius:5px;background:#fffdf8;color:#40233a}#office-map{scroll-margin-top:120px}
