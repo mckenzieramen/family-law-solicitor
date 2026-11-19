@@ -27,7 +27,7 @@
 @media(min-width:701px){.dashboard-sidebar{position:sticky;top:0;height:100dvh;overflow:auto}}
 @media(max-width:700px){.dashboard-main{padding-top:14px}.dashboard-header{margin-bottom:16px}.dashboard-sidebar a{padding:8px 12px}}
 </style>
-<style>.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.calendar-toolbar h2{margin:0}.calendar-toolbar button{min-height:42px}</style>
+<style>.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.calendar-toolbar .calendar-description{margin:0}.calendar-toolbar button{min-height:42px}</style>
 <style>
 .legal-work-summary{margin:0 0 22px;padding:20px;border:1px solid #ded3c6;border-radius:12px;background:#fffdf8}.legal-work-summary h2{font:24px Georgia,serif;margin:0 0 14px}.legal-counts{display:flex;flex-wrap:wrap;gap:12px}.legal-counts span{background:#f1ece6;border-radius:8px;padding:9px 13px}.legal-counts strong{margin-left:8px}.admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary{display:none}.legal-actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:10px 0 16px}.legal-actions label{min-width:160px}.legal-actions button{margin-bottom:10px}
 </style>
@@ -91,7 +91,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=month-grid-4"></script>
+<script type="module" src="./firebase-admin.js?v=calendar-ready-5"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -104,16 +104,16 @@
  const setupCalendar = () => {
    const calendar = workspace.querySelector('#work-calendar');
    if (!calendar || calendar.querySelector('[data-create-schedule]')) return;
-   const heading = calendar.querySelector('h2');
+   const description = calendar.querySelector('.calendar-description');
    const toolbar = document.createElement('div');
    toolbar.className = 'calendar-toolbar';
-   heading.before(toolbar);
+   description.before(toolbar);
    const create = document.createElement('button');
    create.type = 'button';
    create.className = 'work-button';
    create.dataset.createSchedule = '';
    create.textContent = 'Create schedule';
-   toolbar.append(heading, create);
+   toolbar.append(description, create);
  };
  new MutationObserver(setupCalendar).observe(workspace, {childList:true});
  setupCalendar();

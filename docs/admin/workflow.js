@@ -46,7 +46,7 @@ export function mountWorkflow(db, uid) {
   </form>
   <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
- <section class="workflow-panel" id="work-calendar"><h2>Calendar</h2><p>Appointments and deadlines in Sydney time.</p><div class="month-controls"><label>Calendar<select id="work-calendar-scope"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div><p id="work-calendar-status" role="status">Loading schedules…</p><div id="work-month-grid"></div><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></section>
+ <section class="workflow-panel" id="work-calendar"><p class="calendar-description">Appointments and deadlines in Sydney time.</p><div class="month-controls"><label>Calendar<select id="work-calendar-scope"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div><p id="work-calendar-status" role="status"></p><div id="work-month-grid"></div><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></section>
  <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><p>Use the same matter reference on tasks, appointments and drafts to see related work here.</p><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare client correspondence for solicitor review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div><div id="work-drafts"></div></section>`;
   const find = selector => root.querySelector(selector);
@@ -116,7 +116,7 @@ export function mountWorkflow(db, uid) {
     }
     grid.innerHTML = cells.join('');
     find('#work-agenda-title').textContent = selectedDay ? 'Scheduled items · '+selectedDay : 'Scheduled items this month';
-    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), 'No appointments or deadlines in this calendar view.');
+    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.');
   }
   function render() {
     const query = find('#work-matter-query').value.trim().toLowerCase();
@@ -138,6 +138,7 @@ export function mountWorkflow(db, uid) {
     renderRows('#work-matter-list', records.filter(x=>x.matter && x.matter.toLowerCase().includes(query)).sort(order), 'No matching work items with a matter reference.');
     renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
   }
+  renderCalendar();
   stop = onSnapshot(items, snapshot => {
     if (current !== session) return;
     records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
