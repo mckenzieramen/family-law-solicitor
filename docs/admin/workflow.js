@@ -35,6 +35,8 @@ export function mountWorkflow(db, uid) {
    <label>Title or email subject<input name="title" maxlength="160" required></label>
    <label>Matter reference<input name="matter" maxlength="80"></label>
    <label>Due or appointment date (Sydney)<input name="date" type="date"></label>
+   <label id="schedule-scope" hidden>Calendar<select name="calendar"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label>
+   <label id="schedule-time" hidden>Appointment time (Sydney)<input name="time" type="time"></label>
    <label>Priority<select name="priority"><option>Urgent</option><option>High</option><option selected>Normal</option><option>Low</option></select></label>
    <label id="work-recipient" hidden>Recipient<input type="email" name="recipient" maxlength="254"></label>
    </div><label>Notes or email body<textarea name="notes" rows="5" maxlength="8000"></textarea></label>
@@ -43,7 +45,7 @@ export function mountWorkflow(db, uid) {
   </form>
   <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
- <section class="workflow-panel" id="work-calendar"><h2>Calendar</h2><p>Plan consultations, follow-ups and important case dates in Sydney time.</p><label>Month <input id="work-month" type="month"></label><div id="work-agenda"></div></section>
+ <section class="workflow-panel" id="work-calendar"><h2>Calendar</h2><p>Appointments and deadlines in Sydney time.</p><div class="month-controls"><label>Calendar<select id="work-calendar-scope"><option value="admin">Admin Calendar</option><option value="client">Client Calendar</option></select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div><p id="work-calendar-status" role="status">Loading schedules…</p><div id="work-month-grid"></div><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></section>
  <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><p>Use the same matter reference on tasks, appointments and drafts to see related work here.</p><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare client correspondence for solicitor review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div><div id="work-drafts"></div></section>`;
   const find = selector => root.querySelector(selector);
@@ -52,12 +54,17 @@ export function mountWorkflow(db, uid) {
   const field = name => form.elements.namedItem(name);
   const save = find('#work-save');
   const month = find('#work-month');
+  const scope = find('#work-calendar-scope');
+  let selectedDay = '';
   month.value = today().slice(0,7);
   const syncType = () => {
     const mail = field('kind').value === 'Email draft';
     find('#work-recipient').hidden = !mail;
     field('recipient').disabled = !mail;
-    field('date').required = field('kind').value === 'Appointment';
+    const appointment = field('kind').value === 'Appointment';
+    field('date').required = appointment;
+    find('#schedule-scope').hidden = !appointment;
+    find('#schedule-time').hidden = !appointment;
   };
   const reset = () => {
     editing = null;
@@ -70,7 +77,7 @@ export function mountWorkflow(db, uid) {
   const order = (a,b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority) || (a.date || '9999').localeCompare(b.date || '9999');
   function row(item) {
     const badge = item.done ? 'Completed' : item.date && item.date < today() ? 'Overdue' : item.priority;
-    return `<details class="work-row"><summary><strong>${escape(item.title)}</strong> <span class="status">${escape(badge)}</span><small>${escape([item.kind, item.matter, item.date].filter(Boolean).join(' · '))}</small></summary>
+    return `<details class="work-row"><summary><strong>${escape(item.title)}</strong> <span class="status">${escape(badge)}</span><small>${escape([item.kind, item.matter, item.date, item.time && item.time + ' Sydney'].filter(Boolean).join(' · '))}</small></summary>
     ${item.recipient ? '<p>To: '+escape(item.recipient)+'</p>' : ''}
     ${item.notes ? '<p class="work-notes">'+escape(item.notes)+'</p>' : ''}
     <div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button>${item.kind === 'Email draft' ? '' : `<button type="button" data-toggle="${escape(item.id)}">${item.done?'Reopen':'Mark complete'}</button>`}<button type="button" data-remove="${escape(item.id)}">Delete</button></div></details>`;
@@ -81,6 +88,31 @@ export function mountWorkflow(db, uid) {
     container.innerHTML = entries.map(row).join('') || '<p>'+empty+'</p>';
     for (const button of container.querySelectorAll('[data-edit]')) if (open.has(button.dataset.edit)) button.closest('details').open = true;
   };
+  function renderCalendar() {
+    const date = today();
+    const [year, monthNumber] = month.value.split('-').map(Number);
+    const grid = find('#work-month-grid');
+    if (!year || !monthNumber) { grid.replaceChildren(); return; }
+    const matching = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
+      (item.calendar || (item.kind === 'Appointment' && item.matter ? 'client' : 'admin')) === scope.value);
+    const byDay = new Map();
+    for (const item of matching) {
+      if (!byDay.has(item.date)) byDay.set(item.date, []);
+      byDay.get(item.date).push(item);
+    }
+    const first = (new Date(Date.UTC(year, monthNumber - 1, 1)).getUTCDay() + 6) % 7;
+    const days = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
+    const cells = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => '<span class="month-weekday">'+day+'</span>');
+    for (let i = 0; i < first; i++) cells.push('<span aria-hidden="true"></span>');
+    for (let day = 1; day <= days; day++) {
+      const key = month.value + '-' + String(day).padStart(2, '0');
+      const items = byDay.get(key) || [];
+      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
+    }
+    grid.innerHTML = cells.join('');
+    find('#work-agenda-title').textContent = selectedDay ? 'Scheduled items · '+selectedDay : 'Scheduled items this month';
+    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), 'No appointments or deadlines in this calendar view.');
+  }
   function render() {
     const query = find('#work-matter-query').value.trim().toLowerCase();
     const date = today();
@@ -96,25 +128,39 @@ export function mountWorkflow(db, uid) {
       const metric = document.getElementById(id);
       if (metric) metric.textContent = total;
     }
-    renderRows('#work-agenda', records.filter(x=>x.date && x.date.startsWith(month.value) && x.kind!=='Email draft').sort((a,b)=>a.date.localeCompare(b.date)||order(a,b)), 'No appointments or deadlines in this month.');
+    renderCalendar();
+
     renderRows('#work-matter-list', records.filter(x=>x.matter && x.matter.toLowerCase().includes(query)).sort(order), 'No matching work items with a matter reference.');
     renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
   }
   stop = onSnapshot(items, snapshot => {
     if (current !== session) return;
     records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
-    if (!loaded) status.textContent = '';
+    if (!loaded) {
+      status.textContent = '';
+      find('#work-calendar-status').textContent = '';
+    }
     loaded = true;
     save.disabled = saving;
     render();
   }, () => {
     if (current !== session) return;
     loaded = false;
+    find('#work-calendar-status').textContent = 'Unable to load schedules. Check your staff access and Firestore rules.';
     save.disabled = true;
     status.textContent = 'Work items could not load. Publish the updated Firestore rules and reload this page.';
   });
   field('kind').addEventListener('change', syncType);
-  month.addEventListener('change', render);
+  month.addEventListener('change', () => { selectedDay = ''; render(); });
+  scope.addEventListener('change', () => { selectedDay = ''; render(); });
+  find('#work-show-month').addEventListener('click', () => { selectedDay = ''; renderCalendar(); });
+  find('#work-month-grid').addEventListener('click', event => {
+    const day = event.target.closest('[data-calendar-day]');
+    if (!day) return;
+    selectedDay = day.dataset.calendarDay;
+    renderCalendar();
+    find('[data-calendar-day="'+selectedDay+'"]').focus();
+  });
   find('#legal-task-filter').addEventListener('change', render);
   find('#work-matter-query').addEventListener('input', render);
   find('#work-cancel').addEventListener('click', reset);
@@ -132,12 +178,21 @@ export function mountWorkflow(db, uid) {
     saving = true;
     save.disabled = true;
     try {
-      const data = {...item, done: previous?.done ?? false, updatedAt:serverTimestamp()};
+      const schedule = item.kind === 'Appointment' ? {calendar:field('calendar').value, time:field('time').value} : {};
+      const data = {...item, ...schedule, done: previous?.done ?? false, updatedAt:serverTimestamp()};
       if (previous) await updateDoc(doc(items, previous.id), data);
       else await addDoc(items, data);
       if (current !== session) return;
       reset();
       status.textContent = 'Saved.';
+      if (item.kind === 'Appointment') {
+        month.value = item.date.slice(0,7);
+        scope.value = schedule.calendar;
+        selectedDay = item.date;
+        renderCalendar();
+        find('#work-calendar-status').textContent = 'Schedule saved.';
+        root.dispatchEvent(new Event('schedule-saved', {bubbles:true}));
+      }
     } catch {
       if (current === session) status.textContent = 'Could not save the work item.';
     } finally {
@@ -172,6 +227,8 @@ export function mountWorkflow(db, uid) {
       for (const name of ['kind','title','matter','date','priority','recipient','notes']) field(name).value = item[name] ?? '';
       find('#work-form-title').textContent = 'Edit work item';
       find('#work-cancel').hidden = false;
+      field('calendar').value = item.calendar || (item.matter ? 'client' : 'admin');
+      field('time').value = item.time || '';
       syncType();
       field('title').focus();
       return;

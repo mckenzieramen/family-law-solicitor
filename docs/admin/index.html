@@ -31,6 +31,9 @@
 <style>
 .legal-work-summary{margin:0 0 22px;padding:20px;border:1px solid #ded3c6;border-radius:12px;background:#fffdf8}.legal-work-summary h2{font:24px Georgia,serif;margin:0 0 14px}.legal-counts{display:flex;flex-wrap:wrap;gap:12px}.legal-counts span{background:#f1ece6;border-radius:8px;padding:9px 13px}.legal-counts strong{margin-left:8px}.admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary{display:none}.legal-actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:10px 0 16px}.legal-actions label{min-width:160px}.legal-actions button{margin-bottom:10px}
 </style>
+<style>
+.month-controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:12px}.month-controls button{margin-bottom:10px;padding:8px 12px;border:1px solid #cbbec5;border-radius:6px;background:#fffdf8;color:#40233a}.month-controls label{min-width:160px}#work-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:10px 0 24px}.month-weekday{padding:7px 0;text-align:center;font-size:13px}.month-day{text-align:left;align-content:start;min-height:84px;border:1px solid #dfd4ca;border-radius:6px;background:#fffdfa;color:#382033;padding:6px;overflow:hidden}.month-day[aria-pressed=true]{background:#efe2eb;border-color:#75516c}.month-day[aria-current=date] strong{color:#526746;text-decoration:underline}.month-day span{display:block;background:#e9eee2;border-radius:4px;margin-top:3px;padding:3px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:600px){.month-day{min-height:56px;padding:3px}.month-day span{font-size:10px;padding:1px}}
+</style>
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -84,7 +87,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=legal-desk-3"></script>
+<script type="module" src="./firebase-admin.js?v=month-grid-4"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -134,13 +137,15 @@
      const kind = form.elements.namedItem('kind');
      const date = form.elements.namedItem('date');
      const month = workspace.querySelector('#work-month').value;
+     const selectedDay = workspace.querySelector('[data-calendar-day][aria-pressed="true"]');
      const existing = form.elements.namedItem('title').value.trim() || form.elements.namedItem('notes').value.trim();
      if (!existing && workspace.querySelector('#work-cancel').hidden) {
        kind.value = 'Appointment';
+       form.elements.namedItem('calendar').value = workspace.querySelector('#work-calendar-scope').value;
        kind.dispatchEvent(new Event('change', {bubbles:true}));
        if (!date.value && month) {
          const today = new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-         date.value = today.startsWith(month) ? today : month + '-01';
+         date.value = selectedDay?.dataset.calendarDay || (today.startsWith(month) ? today : month + '-01');
        }
      }
      go('#work-queue');
@@ -156,6 +161,7 @@
    event.preventDefault();
    go(link.hash);
  }, true);
+ workspace.addEventListener('schedule-saved', () => go('#work-calendar'));
  window.addEventListener('hashchange', render);
  window.addEventListener('popstate', render);
  new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
