@@ -210,3 +210,27 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 .service-enquiry .ui-icon,.hero-actions .ui-icon,.nav-cta .ui-icon,.profile-link-label .ui-icon,.google-reviews-card .ui-icon,.menu-toggle .ui-icon{margin-inline-start:.28em}
 .rating-icons{display:inline-flex;align-items:center;gap:3px;color:#9d6532}
 .rating-icons .ui-icon{width:14px;height:14px;fill:currentColor;stroke:none}
+
+.client-band .profile-location{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start;gap:clamp(14px,2vw,26px)}
+.profile-location .profile-preview{text-align:left}
+.profile-location .profile-preview-link{display:grid;grid-template-columns:minmax(110px,.75fr) minmax(0,1.3fr);align-items:stretch;gap:0;padding:0;overflow:hidden;min-height:260px;border-color:#d8c8bd;border-radius:13px}
+.profile-location .profile-portrait{display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 40%,#f7eee5,#e6d6c7)}
+.profile-location .profile-portrait img{width:100%;max-width:150px;height:auto;aspect-ratio:1;border:4px solid #fffdf8}
+.profile-location .profile-copy{padding:clamp(20px,2.8vw,36px);align-self:center}
+.profile-location .profile-copy .eyebrow{margin-bottom:9px;color:#785039}
+.profile-location .profile-copy h2{font-size:clamp(30px,3.6vw,48px)}
+.profile-location .profile-position{font-size:14px;margin-top:6px}
+.profile-location .profile-preview-bio{margin-top:10px}
+.profile-location .profile-link-label{display:inline-block;margin-top:14px}
+.profile-location #contact-info{min-height:260px;background:#40233a;color:#fff9ee;padding:clamp(22px,3.4vw,42px);border:1px solid #40233a;border-radius:13px}
+.location-heading{display:flex;align-items:center;gap:13px}
+.location-heading h2{color:#fff9ee;font-size:clamp(29px,3.25vw,44px);margin:0}
+.location-heading p,.location-card .map-note{color:#efdfeb;font-size:14px;margin:6px 0 0}
+.location-icon{display:grid;place-items:center;width:43px;height:43px;flex:none;border:1px solid #c79a76;border-radius:9px;color:#f0c3a0}
+.location-icon .ui-icon{width:23px;height:23px}
+.location-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px 15px}
+.location-card .location-actions .action{margin:0;background:#fff5e8;color:#40233a;border-color:#fff5e8}
+.profile-location .location-actions a,.profile-location .location-actions a:not(.action){color:#fff9ee}
+.location-card .map-note{font-size:12px;margin-top:12px}
+@media(max-width:860px){.client-band .profile-location{grid-template-columns:1fr}}
+@media(max-width:460px){.profile-location .profile-preview-link{grid-template-columns:1fr}.profile-location .profile-portrait img{max-width:120px}.profile-location .profile-copy{text-align:center}}
