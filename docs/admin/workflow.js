@@ -52,7 +52,7 @@ export function mountWorkflow(db, uid) {
   <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
-  <div class="calendar-toolbar"><p class="calendar-description">Appointments and deadlines in Sydney time.</p><button type="button" class="work-button" data-create-schedule>Add schedule</button></div>
+  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule>Add schedule</button></div>
   ${editorMarkup('schedule-form', 'Add schedule', `
    <label>Appointment title<input name="title" maxlength="160" required></label>${matterField}
    <label>Calendar<select name="calendar">${calendarOptions}</select></label>
@@ -63,7 +63,7 @@ export function mountWorkflow(db, uid) {
   <div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
-  <h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div>
+  <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
  <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare and save client correspondence for review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="blank">New draft</button><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div>
@@ -128,7 +128,7 @@ export function mountWorkflow(db, uid) {
   const renderRows = (selector, entries, empty) => {
     const container = find(selector);
     const open = new Set([...container.querySelectorAll('details[open] [data-edit]')].map(button => button.dataset.edit));
-    container.innerHTML = entries.map(row).join('') || '<p>'+empty+'</p>';
+    container.innerHTML = entries.map(row).join('') || '<p class="work-empty">'+empty+'</p>';
     for (const button of container.querySelectorAll('[data-edit]')) if (open.has(button.dataset.edit)) button.closest('details').open = true;
   };
   function renderCalendar() {
@@ -140,6 +140,10 @@ export function mountWorkflow(db, uid) {
       renderRows('#work-agenda', [], 'Choose a month to see scheduled items.');
       return;
     }
+    const monthDate = new Date(Date.UTC(year, monthNumber - 1, 1));
+    find('#calendar-month-title').textContent = new Intl.DateTimeFormat('en-AU', {
+      month:'long', year:'numeric', timeZone:'UTC'
+    }).format(monthDate);
     const matching = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
       calendarFor(item) === scope.value);
     const byDay = new Map();
@@ -147,17 +151,20 @@ export function mountWorkflow(db, uid) {
       if (!byDay.has(item.date)) byDay.set(item.date, []);
       byDay.get(item.date).push(item);
     }
-    const first = (new Date(Date.UTC(year, monthNumber - 1, 1)).getUTCDay() + 6) % 7;
+    const first = (monthDate.getUTCDay() + 6) % 7;
     const days = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
     const cells = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => '<span class="month-weekday">'+day+'</span>');
-    for (let i = 0; i < first; i++) cells.push('<span aria-hidden="true"></span>');
+    const spacer = '<span class="month-spacer" aria-hidden="true"></span>';
+    for (let i = 0; i < first; i++) cells.push(spacer);
     for (let day = 1; day <= days; day++) {
       const key = month.value + '-' + String(day).padStart(2, '0');
       const items = byDay.get(key) || [];
-      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
+      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'">'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
     }
+    const trailing = (7 - (first + days) % 7) % 7;
+    for (let i = 0; i < trailing; i++) cells.push(spacer);
     grid.innerHTML = cells.join('');
-    find('#work-agenda-title').textContent = selectedDay ? 'Scheduled items · '+selectedDay : 'Scheduled items this month';
+    find('#work-agenda-title').textContent = selectedDay ? new Intl.DateTimeFormat('en-AU', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'}).format(new Date(selectedDay+'T00:00:00Z')) : 'Scheduled items this month';
     renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.');
   }
   function render() {
@@ -190,7 +197,7 @@ export function mountWorkflow(db, uid) {
       const entries = groups.get(key);
       const counts = ['Task', 'Appointment', 'Email draft'].map(kind => entries.filter(item => item.kind === kind).length);
       return `<details class="work-row matter-group" data-matter="${escape(key)}"${expanded.has(key) ? ' open' : ''}><summary><strong>${escape(entries[0].matter)}</strong><small>${counts[0]} tasks · ${counts[1]} appointments · ${counts[2]} drafts</small></summary>${entries.sort(order).map(row).join('')}</details>`;
-    }).join('') || '<p>No matching work items with a matter reference.</p>';
+    }).join('') || '<p class="work-empty">No matching work items with a matter reference.</p>';
     renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
   }
   renderCalendar();

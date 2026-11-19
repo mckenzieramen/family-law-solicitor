@@ -1,7 +1,118 @@
-.workflow-panel{background:#fffdf8;border:1px solid #ded3c6;border-radius:12px;padding:clamp(16px,3vw,28px);margin-bottom:20px;scroll-margin-top:20px}
-.workflow-panel h2,.work-form h3{font:normal 28px Georgia,serif;color:#40243a;margin:0 0 12px}.work-form h3{font-size:22px}.workflow-panel label{display:block;font-size:14px;font-weight:600}.workflow-panel input,.workflow-panel select,.workflow-panel textarea{display:block;box-sizing:border-box;width:100%;margin:5px 0 10px;padding:8px;border:1px solid #ab9da6;border-radius:5px;background:white;color:#302130;font:inherit}.work-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}.work-button,.work-actions button,[data-cancel-editor]{font:inherit;padding:7px 12px;border:1px solid #bdb0bc;border-radius:5px;background:#fffdf8;color:#40243a;cursor:pointer}.work-button{background:#40243a;color:white}.work-button:disabled{opacity:.55;cursor:default}.work-row{margin-top:10px;border:1px solid #e4dbd1;border-radius:7px;padding:10px 13px}.work-row summary{cursor:pointer}.work-row small{display:block;margin-top:4px}.work-notes{white-space:pre-wrap;overflow-wrap:anywhere}.work-actions{display:flex;gap:8px;flex-wrap:wrap}.work-form{margin-bottom:20px}.workflow-panel input[type=month]{max-width:230px}@media(max-width:760px){.work-fields{grid-template-columns:1fr}}
-
-.workflow-panel [hidden]{display:none}
-.work-form[hidden]{display:none}
-.work-form [role="status"]:empty,#work-status:empty{display:none}
-.matter-group > .work-row{margin-left:8px}
+.workflow-panel {
+  padding:clamp(14px,2.5vw,30px);
+  margin-bottom:20px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+}
+.workflow-panel h2, .workflow-panel h3 { margin:0 0 10px; color:var(--ink); font:normal 28px var(--serif); }
+.workflow-panel h3 { font-size:22px; }
+.workflow-panel > p, .calendar-description { margin:0 0 18px; color:var(--muted); }
+.workflow-panel label { display:block; font-size:14px; font-weight:650; }
+.workflow-panel :is(input,select,textarea) {
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  margin:6px 0 13px;
+  padding:9px 11px;
+  border:1px solid #d9cedd;
+  border-radius:8px;
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+}
+.workflow-panel textarea { resize:vertical; }
+.work-form {
+  margin:0 0 21px;
+  padding:clamp(13px,2vw,22px);
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#faf7fb;
+}
+.work-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:0 14px; }
+.workflow-panel button:not(.month-day) {
+  padding:8px 13px;
+  min-height:38px;
+  border:1px solid #d9cedd;
+  border-radius:8px;
+  background:var(--paper);
+  color:var(--accent);
+  font:600 14px/1.35 system-ui,sans-serif;
+  cursor:pointer;
+}
+.workflow-panel button:not(.month-day):hover { border-color:#ac8eaf; }
+.workflow-panel button.work-button { background:var(--accent); border-color:var(--accent); color:#fff; }
+.workflow-panel button.work-button:hover { background:#432742; }
+.workflow-panel button:disabled { opacity:.55; cursor:default; }
+.legal-actions, .calendar-toolbar, .month-controls, .work-actions { display:flex; align-items:center; flex-wrap:wrap; gap:9px 12px; }
+.calendar-toolbar { justify-content:space-between; margin-bottom:18px; }
+.calendar-toolbar h2 { margin-bottom:3px; }
+.calendar-toolbar .calendar-description { margin:0; }
+.month-controls { align-items:end; margin-bottom:14px; }
+.month-controls label { min-width:145px; }
+.month-controls :is(input,select) { margin-bottom:0; }
+.legal-actions { margin:8px 0 14px; }
+.legal-actions select { min-width:155px; }
+#work-matter-query, #day-note-form input[type=date] { max-width:340px; }
+#work-month-grid {
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:1px;
+  padding:1px;
+  overflow:hidden;
+  border-radius:11px;
+  background:var(--line);
+}
+.month-weekday { padding:8px 0; background:#faf7fb; text-align:center; color:var(--muted); font-size:13px; font-weight:650; }
+.month-spacer { background:#faf8fb; }
+.month-day {
+  display:grid;
+  align-content:start;
+  gap:3px;
+  min-width:0;
+  min-height:clamp(57px,8vw,100px);
+  padding:7px;
+  overflow:hidden;
+  border:2px solid transparent;
+  background:var(--paper);
+  color:var(--ink);
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+}
+.month-day:hover, .month-day[aria-pressed=true] { background:var(--tint); }
+.month-day[aria-pressed=true] { border-color:#816083; }
+.month-day[aria-current=date] { border-color:#b33c46; }
+.month-day[aria-current=date] strong { color:#9b2d38; }
+.month-day:focus-visible { outline-offset:-4px; }
+.month-day strong { font-size:14px; }
+.calendar-event {
+  overflow:hidden;
+  padding:2px 5px;
+  border-left:2px solid #93639b;
+  border-radius:4px;
+  background:#f2e7f4;
+  color:#47244e;
+  font-size:12px;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.calendar-event[data-event-type=note] { border-color:#aa792f; background:#f9f0dd; color:#694a1d; }
+.calendar-event[data-event-type=task] { border-color:#56836c; background:#eaf3ed; color:#2a5840; }
+.calendar-note-actions { margin:13px 0; }
+.calendar-agenda { margin-top:17px; padding-top:17px; border-top:1px solid var(--line); }
+.work-row { margin-top:9px; padding:12px 14px; border:1px solid var(--line); border-radius:9px; overflow-wrap:anywhere; }
+.work-row summary { cursor:pointer; }
+.work-row small { display:block; margin-top:4px; color:var(--muted); }
+.work-row .status { display:inline-block; margin:3px 0 0 5px; padding:2px 7px; border-radius:6px; background:var(--tint); color:var(--accent); font-size:12px; font-weight:650; }
+.work-row[open] .work-actions { margin-top:12px; }
+.work-notes { white-space:pre-wrap; }
+.work-empty { padding:15px; margin:0; border:1px dashed #d9cedd; border-radius:9px; color:var(--muted); }
+.work-form [role=status]:empty, #work-status:empty { display:none; }
+.matter-group > .work-row { margin-left:8px; }
+@media (max-width:570px) {
+  .month-day { padding:4px 2px; }
+  .calendar-event { max-width:13px; height:5px; padding:0; font-size:0; }
+  .month-day small { font-size:10px; }
+}
