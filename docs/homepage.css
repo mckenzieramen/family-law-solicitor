@@ -71,3 +71,28 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .contact-button{display:inline-block;text-decoration:none;margin-top:7px}
 .client-faq details{border-bottom:1px solid var(--line);padding:13px 0}
 .client-faq summary{cursor:pointer;font-weight:650}
+
+.profile-preview{text-align:center}
+.profile-preview>p:last-child{margin:12px auto 0}
+.client-columns .profile-preview-link{display:inline-flex;flex-direction:column;align-items:center;gap:8px;padding:15px 22px;border-radius:10px;text-decoration:none;background:#fffdf8;border:1px solid #d9cec7}
+.profile-preview-link:hover,.profile-preview-link:focus-visible{border-color:#795166}
+.profile-preview-link img,.profile-intro img{border-radius:50%;object-fit:cover;display:block}
+.profile-preview-link h2,.profile-preview-link p{margin:0}
+.profile-link-label{font-size:14px;text-decoration:underline;text-underline-offset:4px}
+.solicitor-profile{--plum:#40233a;margin:0;background:#f7f4ed;color:#342730;font:16px/1.6 system-ui,sans-serif}
+.solicitor-profile *{box-sizing:border-box}
+.solicitor-profile a{color:var(--plum);font-weight:650;text-underline-offset:4px}
+.profile-header,.profile-footer{padding:18px clamp(20px,6vw,80px);background:#fffdf8}
+.profile-header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #ded7cd}
+.profile-page{width:min(930px,calc(100% - 36px));margin:0 auto;padding:42px 0}
+.profile-intro{text-align:center;padding-bottom:28px}
+.profile-intro img{margin:0 auto 14px}
+.profile-eyebrow{font-weight:650;text-transform:uppercase;letter-spacing:.11em;font-size:12px}
+.profile-intro h1,.profile-panel h2{font:400 clamp(35px,6vw,66px)/1.05 Georgia,serif;color:var(--plum);margin:8px 0}
+.profile-role{margin-top:8px}
+.profile-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.profile-panel{background:#fffdf8;padding:24px;border:1px solid #ded7cd;border-radius:9px}
+.profile-panel h2{font-size:28px}
+.profile-phone a{font-size:23px}
+.profile-footer{border-top:1px solid #ded7cd;font-size:14px}
+@media(max-width:640px){.profile-sections{grid-template-columns:1fr}}
