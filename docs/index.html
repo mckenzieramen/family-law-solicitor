@@ -7,11 +7,21 @@
 *{box-sizing:border-box}body{margin:0;background:#f8f5ef;color:#30232d;font:16px system-ui,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible{outline:3px solid #7b8360;outline-offset:3px}header{padding:23px clamp(20px,5vw,70px);background:#fffdf8;border-bottom:1px solid #ddd4ca;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand,h1,h2,h3{font-family:Georgia,serif}.brand{display:inline-flex;align-items:center;gap:12px;font-size:24px;color:#4a203e}.brand-mark{display:inline-grid;place-items:center;width:43px;height:43px;flex:none;border-radius:50%;background:#4a203e;color:#fffdf8;border:3px solid #ebe3cc;box-shadow:0 0 0 1px #4a203e;font:italic 18px Georgia,serif;letter-spacing:-1px}small,.muted{color:#6f626b}.shell{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 76px)}nav{background:#391a31;padding:26px 16px;color:white}nav button{display:block;width:100%;text-align:left;background:none;color:white;border:0;padding:12px;margin:4px 0;border-radius:6px}nav button[aria-current=true]{background:#693c5c}.role{padding:12px 12px 18px;color:#e9d9e4;font-size:14px}main{max-width:1450px;width:100%;padding:clamp(18px,4vw,55px)}h1{font-size:clamp(35px,5vw,58px);font-weight:500;line-height:1.05;margin:0 0 12px}h2{font-size:27px;margin:0 0 14px}h3{margin:0 0 8px}.cards,.split{display:grid;gap:16px;margin:24px 0}.cards{grid-template-columns:repeat(3,1fr)}.split{grid-template-columns:1fr 1.2fr}.card{background:#fffdf9;border:1px solid #ded5ca;border-radius:10px;padding:20px;min-width:0}.metric{font:32px Georgia;color:#4a203e;display:block;margin-bottom:6px}.action,.secondary{border-radius:6px;padding:10px 15px;border:1px solid #4a203e;background:#4a203e;color:white}.secondary{background:#fffdf9;color:#4a203e}.status{display:inline-block;background:#e5e8d8;color:#34402d;padding:5px 9px;border-radius:20px;font-size:14px}.item{border:0;border-bottom:1px solid #e5ddd4;background:none;width:100%;text-align:left;padding:14px 2px;display:flex;justify-content:space-between;gap:8px;align-items:center;color:inherit}.item:last-child{border-bottom:0}.item[aria-pressed=true]{background:#eee6ec;padding-inline:8px}.note{background:#f2eee6;border-left:3px solid #747f5b;padding:14px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}label{display:block;margin:12px 0 6px}textarea{width:100%;min-height:90px;padding:10px;border:1px solid #a2999e;border-radius:6px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}ul{padding-left:20px}li{margin:10px 0}.hero{margin:auto;padding-block:clamp(40px,10vw,135px)}.hero h1{max-width:680px;font-size:clamp(50px,8vw,96px)}.hero p{max-width:550px;font-size:20px}.hero .card{background:#e5e8d8}.hero h2{color:#4a203e}button:hover{filter:brightness(.94)}@media(max-width:740px){.shell{grid-template-columns:1fr}nav{padding:8px;display:flex;overflow:auto}nav button{width:auto;white-space:nowrap}.role{display:none}.cards,.split{grid-template-columns:1fr}.cards{gap:8px}.item{flex-wrap:wrap}}
 </style>
 <style>
-#reviews .review-profile-cards{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:calc((100% - 28px)/3);overflow:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
-#reviews .review-profile-cards article{scroll-snap-align:start}
-.review-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.review-controls button{padding:8px 13px;background:#fffdfa;border:1px solid #c9bbc4;border-radius:6px;color:#40233a}
-@media(max-width:850px){#reviews .review-profile-cards{grid-auto-columns:calc((100% - 14px)/2)}}
-@media(max-width:560px){#reviews .review-profile-cards{grid-auto-columns:92%}}
+#reviews .review-profile-cards{display:block;overflow-x:auto;margin-top:22px;padding:5px 0 16px}
+.review-marquee{display:flex;width:max-content;--review-gap:16px;--review-width:clamp(245px,30vw,345px)}
+.review-marquee-set{display:flex;gap:var(--review-gap);padding-inline-end:var(--review-gap)}
+#reviews .review-marquee-set article{box-sizing:border-box;width:var(--review-width);flex:none;min-height:210px;padding:21px;border:1px solid #dfd2c8;border-radius:15px;background:linear-gradient(150deg,#fffdf9,#faf4ed);box-shadow:0 4px 10px #40233a0a}
+#reviews .review-marquee-set article header{gap:12px}
+#reviews .review-marquee-set article img{outline:1px solid #e4d4c9;outline-offset:2px}
+#reviews .review-marquee-set blockquote{color:#40333c}
+.review-marquee-set[inert]{display:none}
+@media(prefers-reduced-motion:no-preference){
+ #reviews .review-profile-cards[data-marquee]{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+ .review-marquee-set[inert]{display:flex}
+ .review-marquee{animation:review-loop 125s linear infinite}
+ #reviews .review-profile-cards:is(:hover,:focus-within) .review-marquee{animation-play-state:paused}
+ @keyframes review-loop{to{transform:translateX(-50%)}}
+}
 </style>
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="homepage.css?v=google-review-screenshots-5">
@@ -138,7 +148,7 @@ function home(){
    <div><h2 id="reviews-title">Google Reviews</h2><p>Selected Google Maps reviews for Etheringtons Solicitors.</p></div>
    <a class="action" href="https://maps.app.goo.gl/gH7TEiQQMVVZta8XA" target="_blank" rel="noopener noreferrer">Read Google reviews</a>
   </div>
-  <div class="review-controls"><button type="button" data-review-step="-1">Previous</button><button type="button" data-review-step="1">Next</button><button type="button" data-review-pause>Pause autoplay</button></div>
+
   <div class="google-review-grid review-profile-cards" tabindex="0" aria-label="Google review cards">
    <article><header><img src="data:image/webp;base64,UklGRmABAABXRUJQVlA4IFQBAADwBgCdASoaABoAPpFCm0olo6IhqAgAsBIJbACdMzQ+HaAlk0co0exTy35lgJUtyVHO8phSrJdjaC2aMqw183gAAP77SXDvKMrcE5SHMk9KDXNZBs4V9Vb/PQh7oejJIcXHHpB0h7jqO3UVmbc1uxPhNIMNyn1MSKjFUn9oLCIX1apcOCvEhXZrVXG66xRs1DKko3bD9Kfs96zpXQgR8n791mUL9T4BywqY/Etoz0I708sO//vCSQUPmgKJrZR4H0Ua2p1wQ8fKTSIwkApy8aP/5LxGkAPA7Sz34af5HSTsGrd5waB5R+Oy4KBqnNhfH1t/2fNazRt+mQpsc0Ovk/Yj6IYZgEAampd/chELG9totn33ZCp6T/kduwj+MUHTiAskfhI9BVwblXHGoBvF/apNae9O2Qk29FxKHX71uDitnTuTKH55z3uOo18t6pC28OmS8sAA" width="40" height="40" loading="lazy" alt=""><h3>Tim Hutton</h3></header><p class="review-stars"><span aria-hidden="true">★★★★★</span><span class="sr-only">5 out of 5 stars</span></p><blockquote>I found Etheringtons Solicitors to be the most professional law firm I have ever used. Getting me through my case with the up most efficiency. Thank you so much Paul.</blockquote></article>
    <article><header><img src="data:image/webp;base64,UklGRgIBAABXRUJQVlA4IPYAAAAQBgCdASoaABoAPoU0lUelIyIhN/qoAKAQiWwAnTKEdDIgAD7ajG5MZZz/5FK0vqhJjh/Q7G9YQ6AA/tYVwya/4Vx1m4O9/bnSXPQ0HpIOpTnpyC9LR7VX5I+3D8t9rC2u/d6fiOx8KGFy9/cSW+p8zk3mYqXmIBSuA6Ozoi9tTKUpYkVDaum+jR2fg1dvm3TgJLD0ySWERTV8TfI2gyw1l9kjJAmMhfuolt3HuSQwyvXuFV/TqeSIGzzgr1wIPL6i72tB6arWDmgmRGdhkwz1co9UNHadrXnsX5b5EqIkLQE/pUNkPdqa3PNbM843771MUfgs8AA=" width="40" height="40" loading="lazy" alt=""><h3>Tammy W</h3></header><p class="review-stars"><span aria-hidden="true">★★★★★</span><span class="sr-only">5 out of 5 stars</span></p><blockquote>I recently engaged Paul Etherington to certify documents (for a UK bank) in his capacity as Public Notary. Dealing with his legal practice, where everyone was friendly, accommodating and efficient, meant that a very unfamiliar (to me) process was sorted out in less than a week from first contact. I would definitely recommend Etheringtons Solicitors.</blockquote></article>
@@ -268,32 +278,19 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 <script src="homepage-motion.js?v=1" defer></script>
 <script>
 (() => {
- const section = document.getElementById('reviews');
- if (!section) return;
- const track = section.querySelector('.review-profile-cards');
- const pause = section.querySelector('[data-review-pause]');
- const reduced = matchMedia('(prefers-reduced-motion: reduce)');
- let running = !reduced.matches;
- let visible = false;
- function sync() { pause.textContent = running ? 'Pause autoplay' : 'Play reviews'; }
- function move(direction) {
-   const step = track.firstElementChild.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
-   const max = track.scrollWidth - track.clientWidth;
-   if (max <= 0) return;
-   const next = direction > 0 && track.scrollLeft >= max - 3 ? 0 :
-     direction < 0 && track.scrollLeft <= 3 ? max : track.scrollLeft + direction * step;
-   track.scrollTo({left:next, behavior:reduced.matches ? 'instant' : 'smooth'});
- }
- sync();
- pause.addEventListener('click', () => { running = !running; sync(); });
- for (const button of section.querySelectorAll('[data-review-step]')) {
-   button.addEventListener('click', () => { running = false; sync(); move(Number(button.dataset.reviewStep)); });
- }
- reduced.addEventListener('change', () => { if (reduced.matches) { running = false; sync(); } });
- if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(track);
- setInterval(() => {
-   if (track.isConnected && running && visible && !document.hidden && !section.matches(':hover') && !section.contains(document.activeElement)) move(1);
- }, 6500);
+ const viewport = document.querySelector('#reviews .review-profile-cards');
+ if (!viewport || !viewport.firstElementChild) return;
+ const marquee = document.createElement('div');
+ marquee.className = 'review-marquee';
+ const set = document.createElement('div');
+ set.className = 'review-marquee-set';
+ set.append(...viewport.children);
+ const repeat = set.cloneNode(true);
+ repeat.setAttribute('inert', '');
+ repeat.setAttribute('aria-hidden', 'true');
+ marquee.append(set, repeat);
+ viewport.append(marquee);
+ viewport.dataset.marquee = '';
 })();
 </script>
 </html>
