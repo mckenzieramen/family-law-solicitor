@@ -37,3 +37,20 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
  .site-header .header-nav[data-collapsed=true]:not([hidden]){display:none}
  .site-header .brand-monogram{width:37px;height:37px;font-size:19px}
 }
+
+.service-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.service-grid article{display:flex;flex-direction:column;align-items:flex-start}
+.service-grid .service-enquiry{margin-top:auto;padding-top:10px;font-weight:650;color:var(--plum)}
+.contact-panel{display:grid;grid-template-columns:1fr 1.15fr;align-items:start;gap:clamp(24px,5vw,56px)}
+.consultation-steps ol{counter-reset:consultation-step;list-style:none;padding:0;margin:22px 0 0}
+.consultation-steps li{counter-increment:consultation-step;position:relative;padding:0 0 15px 44px;margin:0 0 13px;border-bottom:1px solid var(--line)}
+.consultation-steps li::before{content:counter(consultation-step);position:absolute;left:0;top:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eee5ec;color:var(--plum);font-weight:700}
+.consultation-steps span{display:block;color:#51454e;font-size:14px;margin-top:4px}
+.consultation-form h2{font-size:clamp(28px,3.5vw,43px)}
+.consultation-form label{font-weight:650;font-size:14px}
+.consultation-form input,.consultation-form select{display:block;width:100%;min-width:0;padding:10px 12px;border:1px solid #a89ba2;border-radius:5px;background:white;color:var(--ink);min-height:44px}
+.consultation-form button{margin-top:16px}
+#consultation-result:empty{display:none}
+#consultation-result:not(:empty){background:#e5eadb;color:#2f482c;padding:10px 12px;border-radius:5px}
+@media(max-width:950px){.service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.service-grid,.contact-panel{grid-template-columns:1fr}}

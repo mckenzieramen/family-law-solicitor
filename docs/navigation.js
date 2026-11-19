@@ -75,3 +75,22 @@ window.addEventListener('scroll', scheduleHighlight, {passive:true});
 window.addEventListener('hashchange', scheduleHighlight);
 updateMenu();
 scheduleHighlight();
+
+const clientApp = document.getElementById('app');
+clientApp.addEventListener('click', event => {
+  const serviceLink = event.target.closest('a[data-topic]');
+  if (!serviceLink) return;
+  const topic = document.getElementById('sample-topic');
+  topic.value = serviceLink.dataset.topic;
+  document.getElementById('consultation-result').textContent = '';
+});
+
+clientApp.addEventListener('submit', event => {
+  const form = event.target;
+  if (form.id !== 'consultation-form') return;
+  event.preventDefault();
+  const topic = form.elements.topic.selectedOptions[0].textContent;
+  document.getElementById('consultation-result').textContent =
+    'Demo complete for ' + topic + '. No enquiry was sent.';
+  form.reset();
+});
