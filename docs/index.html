@@ -43,6 +43,7 @@
 <link rel="stylesheet" href="booking-journey.css?v=1">
 <link rel="stylesheet" href="approved-visual.css?v=1">
 <link rel="stylesheet" href="progressive-booking.css?v=1">
+<link rel="stylesheet" href="top-contact.css?v=1">
 <style>
 .client-home .client-band .profile-location{--profile-gap:18px;gap:var(--profile-gap);align-items:stretch}
 .client-home .profile-location .profile-preview{gap:var(--profile-gap)}
@@ -60,6 +61,13 @@
  .client-home .profile-location .office-map iframe{min-height:250px}
 }
 </style>
+<div class="premium-top-contact" aria-label="Firm contact and Sydney time">
+ <div class="premium-top-contact-inner">
+  <a href="#contact" class="premium-top-contact-link"><span aria-hidden="true">✉</span> Contact our team</a>
+  <a href="#contact-info" class="premium-top-contact-link"><span aria-hidden="true">⌖</span> North Sydney, NSW</a>
+  <span class="premium-top-sydney-time" aria-label="Sydney local time"><span aria-hidden="true">◷</span> <span id="premium-top-clock">Sydney local time</span></span>
+ </div>
+</div>
 <header class="site-header">
  <a class="brand" href="./" aria-label="Family Law Firm home">
   <span class="brand-monogram" aria-hidden="true">FL</span>
@@ -368,6 +376,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 <script src="premium-experience.js?v=1" defer></script>
 <script src="booking-journey.js?v=1" defer></script>
 <script src="progressive-booking.js?v=1" defer></script>
+<script src="top-contact.js?v=1" defer></script>
 <script>
 (() => {
  const viewport = document.querySelector('#reviews .review-profile-cards');
