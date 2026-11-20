@@ -19,9 +19,12 @@ const isNote = item => item.kind === 'Task' && item.title === 'Calendar note' &&
   Boolean(item.calendar) && !item.matter;
 const calendarFor = item => item.calendar || (item.kind === 'Appointment' && item.matter ? 'client' : 'admin');
 
+const appointmentColors = {Normal:'Plum', High:'Blue', Low:'Green', Urgent:'Amber'};
+const appointmentColor = item => appointmentColors[item.priority] || appointmentColors.Normal;
+
 function editorMarkup(id, title, fields, notesLabel, action, hidden = false) {
   return `<form id="${id}" class="work-form"${hidden ? ' hidden' : ''}>
-   <h3>${title}</h3>
+   <h3 id="${id}-title">${title}</h3>
    <div class="work-fields">${fields}</div>
    <label>${notesLabel}<textarea name="notes" rows="5" maxlength="8000"></textarea></label>
    <button class="work-button" type="submit" disabled>${action}</button>
@@ -52,13 +55,17 @@ export function mountWorkflow(db, uid) {
   <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
-  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule>Add schedule</button></div>
+  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
+  <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-form-title">
   ${editorMarkup('schedule-form', 'Add schedule', `
    <label>Appointment title<input name="title" maxlength="160" required></label>${matterField}
    <label>Calendar<select name="calendar">${calendarOptions}</select></label>
    <label>Date (Sydney)<input name="date" type="date" required></label>
-   <label>Time (Sydney)<input name="time" type="time"></label>`,
+   <label>Time (Sydney)<input name="time" type="time"></label>
+   <label>Calendar colour<select name="priority">${Object.entries(appointmentColors).map(([value,label]) =>
+     `<option value="${value}">${label}</option>`).join('')}</select></label>`,
    'Appointment notes', 'Save schedule', true)}
+  </dialog>
   <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div>
   <div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
@@ -79,7 +86,7 @@ export function mountWorkflow(db, uid) {
   const scope = find('#work-calendar-scope');
   const editors = {
     Task: {form:find('#task-form'), title:'Create task', editTitle:'Edit task', saved:'Task saved.', view:'work-queue'},
-    Appointment: {form:find('#schedule-form'), title:'Add schedule', editTitle:'Edit schedule', saved:'Schedule saved.', view:'work-calendar'},
+    Appointment: {form:find('#schedule-form'), dialog:find('#schedule-dialog'), title:'Add schedule', editTitle:'Edit schedule', saved:'Schedule saved.', view:'work-calendar'},
     'Email draft': {form:find('#draft-form'), title:'New email draft', editTitle:'Edit email draft', saved:'Draft saved.', view:'work-email'},
     Note: {form:find('#day-note-form'), title:'Add day note', editTitle:'Edit day note', saved:'Day note saved.', view:'work-calendar'}
   };
@@ -94,6 +101,7 @@ export function mountWorkflow(db, uid) {
     editor.id = null;
     editor.form.reset();
     editor.form.querySelector('h3').textContent = editor.title;
+    if (hide && editor.dialog?.open) editor.dialog.close();
     editor.form.hidden = hide && editor !== editors.Task;
     const cancel = editor.form.querySelector('[data-cancel-editor]');
     if (cancel && editor === editors.Task) cancel.hidden = true;
@@ -113,14 +121,16 @@ export function mountWorkflow(db, uid) {
       editor.form.querySelector('h3').textContent = editor.editTitle;
       if (editor === editors.Task) editor.form.querySelector('[data-cancel-editor]').hidden = false;
     } else if (editor === editors.Note) editor.calendar = scope.value;
+    if (editor.dialog && !editor.dialog.open) editor.dialog.showModal();
     editor.form.querySelector('input, textarea').focus();
   }
   const order = (a,b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority) || (a.date || '9999').localeCompare(b.date || '9999');
   function row(item) {
     const badge = isNote(item) ? 'Day note' : item.kind === 'Email draft' ? 'Draft' :
       item.done ? 'Completed' : item.date && item.date < today() ?
-      (item.kind === 'Appointment' ? 'Past appointment' : 'Overdue') : item.priority;
-    return `<details class="work-row"><summary><strong>${escape(item.title)}</strong> <span class="status">${escape(badge)}</span><small>${escape([item.kind, item.matter, item.date, item.time && item.time + ' Sydney'].filter(Boolean).join(' · '))}</small></summary>
+      (item.kind === 'Appointment' ? 'Past appointment' : 'Overdue') : item.kind === 'Appointment' ? 'Scheduled' : item.priority;
+    const color = item.kind === 'Appointment' ? ` data-appointment-color="${appointmentColor(item)}"` : '';
+    return `<details class="work-row"${color}><summary><strong>${escape(item.title)}</strong> <span class="status">${escape(badge)}</span><small>${escape([item.kind, item.matter, item.date, item.time && item.time + ' Sydney'].filter(Boolean).join(' · '))}</small></summary>
     ${item.recipient ? '<p>To: '+escape(item.recipient)+'</p>' : ''}
     ${item.notes ? '<p class="work-notes">'+escape(item.notes)+'</p>' : ''}
     <div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button>${(item.kind === 'Email draft' || isNote(item)) ? '' : `<button type="button" data-toggle="${escape(item.id)}">${item.done?'Reopen':'Mark complete'}</button>`}<button type="button" data-remove="${escape(item.id)}">Delete</button></div></details>`;
@@ -159,7 +169,7 @@ export function mountWorkflow(db, uid) {
     for (let day = 1; day <= days; day++) {
       const key = month.value + '-' + String(day).padStart(2, '0');
       const items = byDay.get(key) || [];
-      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'">'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
+      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
     }
     const trailing = (7 - (first + days) % 7) % 7;
     for (let i = 0; i < trailing; i++) cells.push(spacer);
@@ -215,6 +225,10 @@ export function mountWorkflow(db, uid) {
     status.textContent = 'Work items could not load. Check your workspace access, then reload.';
   });
   const scheduleEditor = editors.Appointment;
+  scheduleEditor.dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    if (!scheduleEditor.saving) reset(scheduleEditor);
+  });
   const noteEditor = editors.Note;
   const draftEditor = editors['Email draft'];
   function showNew(editor, defaults) {
