@@ -2,7 +2,7 @@ const navigation = document.getElementById('public-navigation');
 const menuToggle = document.querySelector('.menu-toggle');
 const header = navigation.closest('header');
 const links = [...navigation.querySelectorAll('a[href^="#"]')];
-const compact = matchMedia('(max-width: 680px)');
+const compact = matchMedia('(max-width: 850px)');
 let menuOpen = false;
 let scheduled = false;
 

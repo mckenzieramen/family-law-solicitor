@@ -60,3 +60,45 @@ body:has(.client-home) .site-header .nav-cta{background:linear-gradient(135deg,#
 .client-home .premium-step-number .mockup-icon{width:25px;height:25px;color:#f1ce86}
 .client-home .hero-copy h1{max-width:14ch;font-size:clamp(42px,5vw,72px)}
 @media(max-width:700px){.client-home .hero-copy h1{font-size:clamp(36px,9vw,54px)}}
+
+@media (max-width:850px) {
+  body:has(.client-home) .site-header {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    min-height:64px;
+    padding:10px clamp(14px,4vw,24px);
+    gap:10px;
+  }
+  body:has(.client-home) .site-header .brand-name { font-size:clamp(15px,4vw,21px)!important; }
+  .site-header .menu-toggle { min-height:44px; min-width:70px; }
+  .site-header .header-nav[data-collapsed=true]:not([hidden]) { display:none; }
+  .site-header .header-nav[data-collapsed=false]:not([hidden]) {
+    display:grid;
+    grid-column:1/-1;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:4px;
+    max-height:50dvh;
+    overflow:auto;
+    padding-bottom:4px;
+  }
+  .site-header .header-nav a { display:flex; align-items:center; min-height:44px; }
+  .site-header .header-nav .nav-cta { grid-column:1/-1; justify-content:center; margin-top:4px; }
+  .client-home .hero-grid { display:grid; grid-template-columns:minmax(0,1fr); min-height:0; }
+  .client-home .hero-copy { min-height:0; padding:clamp(26px,6vw,46px) clamp(18px,5vw,34px) 24px; }
+  .client-home .hero-copy h1 { max-width:18ch; font-size:clamp(34px,7vw,56px); }
+  .client-home .hero-photo { position:relative; inset:auto; order:2; width:100%; height:clamp(185px,49vw,370px); }
+  .client-home .hero-photo:before { background:linear-gradient(180deg,#f7e7d6aa,transparent 20%); pointer-events:none; }
+  .client-home .hero-photo img { object-position:50% 58%; }
+}
+@media (max-width:520px) {
+  .client-home .hero-actions {
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+    gap:8px;
+  }
+  .client-home .hero-actions > a { display:flex; justify-content:center; align-items:center; min-height:46px; text-align:center; }
+  .client-home .service-grid article { padding:16px; }
+  .client-home .service-grid .service-enquiry { display:inline-flex; align-items:center; min-height:44px; padding-block:7px; }
+  .client-home :is(input,select,textarea) { font-size:16px; }
+}
