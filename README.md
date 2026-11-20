@@ -13,3 +13,9 @@ For a separate Admin account, create `users/{admin UID}` with `role` set to the 
 ## Google reviews
 
 Set Cloudflare Pages production variables `GOOGLE_PLACE_ID` (the Etheringtons Solicitors Google Places ID) and `GOOGLE_PLACES_API_KEY` (encrypted secret, restricted to Places API (New), on a billing-enabled Google Cloud project). Redeploy after configuring the variables. The /api/reviews Pages Function retrieves the live review sample when the section approaches the viewport. No credential is bundled into the website.
+
+## Consultation inquiry email receipts
+
+The Firebase function watches newly saved consultation inquiries and sends a generic receipt to the submitted address through Resend. Support chat messages do not trigger email. The receipt omits the name, inquiry text and requested time.
+
+Enable Cloud Functions on the Firebase project, verify a sender domain in Resend, and set the key with `firebase functions:secrets:set RESEND_API_KEY --project family-law-firm`. Deploy with `firebase deploy --only functions:sendInquiryReceipt --project family-law-firm`. Supply the approved From address when prompted for `INQUIRY_RECEIPT_FROM`. After deployment, submit an inquiry with an authorized test mailbox and confirm a single receipt arrives.

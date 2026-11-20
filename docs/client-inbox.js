@@ -67,7 +67,7 @@ root.addEventListener('submit', async event => {
     });
     pending.delete(form);
     form.reset();
-    output.textContent = consultation ? 'Enquiry received. The team will contact you.' : 'Question sent. Waiting for a staff reply.';
+    output.textContent = consultation ? 'Inquiry received. The team will contact you.' : 'Question sent. Waiting for a staff reply.';
     if (!consultation) {
       try { localStorage.setItem(supportKey, reference.id); } catch {}
       watchSupport(user, reference.id);

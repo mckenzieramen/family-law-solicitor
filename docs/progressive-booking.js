@@ -1,4 +1,4 @@
-/* Progressive consultation enquiry: details -> preferred time -> review.
+/* Progressive consultation inquiry: details -> preferred time -> review.
    Existing Firebase clientInbox submission remains unchanged. Slots are requests,
    NOT confirmed bookings: no server-side reservation service exists yet. */
 (() => {
@@ -30,7 +30,7 @@
    const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
    back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
-   next.textContent=n===1?'Next · Select date & time →':'Next · Review enquiry →';
+   next.textContent=n===1?'Next · Select date & time →':'Next · Review inquiry →';
    for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
@@ -40,10 +40,27 @@
     const data=new FormData(form),v=k=>String(data.get(k)||'').trim();
     const row=(title,value)=>{const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=title+': ';p.append(strong,document.createTextNode(value||'Not provided'));return p;};
     review.replaceChildren(row('Name',[v('firstName'),v('lastName')].join(' ')),row('Email',v('email')),row('Phone',v('phone')),row('Topic',v('topic')),row('Preferred consultation',v('preferredTime')?v('preferredTime').replace('T',' ')+' Sydney local time':'No time selected'),row('How can we help?',v('message')));
-    const info=document.createElement('p');info.className='premium-booking-disclaimer';info.textContent='Submitting sends an enquiry to the firm. Your appointment is not booked until the firm confirms it.';review.append(info);
+    const info=document.createElement('p');info.className='premium-booking-disclaimer';info.textContent='Submitting sends an inquiry to the firm. Your appointment is not booked until the firm confirms it.';review.append(info);
    }
   }
+  const email=fields.querySelector('input[name="email"]');
+  const emailDomainSuggestions={
+   'gmial.com':'gmail.com',
+   'gamil.com':'gmail.com',
+   'gmai.com':'gmail.com',
+   'hotmial.com':'hotmail.com',
+   'outlok.com':'outlook.com',
+   'yaho.com':'yahoo.com'
+  };
+  email.addEventListener('input',()=>email.setCustomValidity(''));
   function validateDetails(){
+   email.setCustomValidity('');
+   const address=email.value.trim();
+   const at=address.lastIndexOf('@');
+   const domain=address.slice(at+1).toLowerCase();
+   const suggested=Object.hasOwn(emailDomainSuggestions,domain) && emailDomainSuggestions[domain];
+   if(at>0 && suggested) email.setCustomValidity('Please check your email address. Did you mean '+address.slice(0,at+1)+suggested+'?');
+
    const required=[...fields.querySelectorAll('[required]')];
    for(const field of required){if(!field.reportValidity())return false;}
    return true;
@@ -55,7 +72,7 @@
   back.addEventListener('click',()=>show(step===3?2:1));
   form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
   const result=form.querySelector('#consultation-result');
-  if(result){const observer=new MutationObserver(()=>{if(/Enquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
+  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
   show(1);
  }
  new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
