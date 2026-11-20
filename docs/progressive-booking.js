@@ -17,8 +17,6 @@
   const steps=document.createElement('div');steps.className='premium-booking-steps';
   steps.innerHTML='<span data-step="1">1 · Your details</span><span data-step="2">2 · Date & time</span><span data-step="3">3 · Review</span>';
   form.querySelector('h3')?.after(steps);
-  const note=document.createElement('p');note.className='premium-booking-disclaimer';note.textContent='Please do not include confidential case details. A requested time is not a confirmed appointment.';
-  fields.before(note);
   const controls=document.createElement('div');controls.className='premium-booking-navigation';
   controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next">Next →</button>';
   footer.before(controls);
@@ -29,10 +27,15 @@
   if(originalContinue)originalContinue.hidden=true;
   let step=1;
   function show(n){
+   const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
    back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
    next.textContent=n===1?'Next · Select date & time →':'Next · Review enquiry →';
    for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
+   if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const panel=n===1?fields:n===2?calendar:review;
+    panel.animate?.([{opacity:.86,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});
+   }
    if(n===3){
     const data=new FormData(form),v=k=>String(data.get(k)||'').trim();
     const row=(title,value)=>{const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=title+': ';p.append(strong,document.createTextNode(value||'Not provided'));return p;};
