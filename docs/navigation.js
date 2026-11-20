@@ -21,8 +21,9 @@ function highlightSection() {
     .sort((a, b) => a.section.getBoundingClientRect().top - b.section.getBoundingClientRect().top);
   const current = sections.filter(({section}) => section.getBoundingClientRect().top <= threshold).at(-1);
   for (const link of links) {
-    link.removeAttribute('aria-current');
-    if (link === current?.link) link.setAttribute('aria-current', 'location');
+    const active = link === current?.link;
+    if (active && !link.hasAttribute('aria-current')) link.setAttribute('aria-current', 'location');
+    if (!active && link.hasAttribute('aria-current')) link.removeAttribute('aria-current');
   }
 }
 
