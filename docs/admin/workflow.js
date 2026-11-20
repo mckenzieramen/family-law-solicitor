@@ -41,6 +41,7 @@ export function mountWorkflow(db, uid) {
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney', year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let records = [];
   let loaded = false;
+  let loadError = null;
   const matterField = '<label>Matter reference<input name="matter" maxlength="80"></label>';
   const calendarOptions = '<option value="admin">Admin Calendar</option><option value="client">Client Calendar</option>';
   root.innerHTML = `
@@ -65,6 +66,7 @@ export function mountWorkflow(db, uid) {
    <label>Calendar colour<select name="priority">${Object.entries(appointmentColors).map(([value,label]) =>
      `<option value="${value}">${label}</option>`).join('')}</select></label>`,
    'Appointment notes', 'Save schedule', true)}
+  <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
   <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div>
   <div id="work-month-grid"></div>
@@ -82,6 +84,7 @@ export function mountWorkflow(db, uid) {
  </section>`;
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
+  const retryCalendar = find('#retry-calendar-access');
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
   const editors = {
@@ -122,6 +125,7 @@ export function mountWorkflow(db, uid) {
       if (editor === editors.Task) editor.form.querySelector('[data-cancel-editor]').hidden = false;
     } else if (editor === editors.Note) editor.calendar = scope.value;
     if (editor.dialog && !editor.dialog.open) editor.dialog.showModal();
+    if (editor === editors.Appointment && !loaded) message(editor, loadError || 'Connecting to the calendar…');
     editor.form.querySelector('input, textarea').focus();
   }
   const order = (a,b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority) || (a.date || '9999').localeCompare(b.date || '9999');
@@ -211,20 +215,39 @@ export function mountWorkflow(db, uid) {
     renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
   }
   renderCalendar();
-  stop = onSnapshot(items, snapshot => {
-    if (current !== session) return;
-    records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
-    if (!loaded) status.textContent = '';
-    loaded = true;
-    for (const editor of Object.values(editors)) submit(editor).disabled = Boolean(editor.saving);
-    render();
-  }, () => {
-    if (current !== session) return;
-    loaded = false;
-    for (const editor of Object.values(editors)) submit(editor).disabled = true;
-    status.textContent = 'Work items could not load. Check your workspace access, then reload.';
-  });
   const scheduleEditor = editors.Appointment;
+  function listenForWorkItems() {
+    stop?.();
+    loaded = false;
+    loadError = null;
+    retryCalendar.hidden = true;
+    status.textContent = 'Connecting to the workspace…';
+    for (const editor of Object.values(editors)) submit(editor).disabled = true;
+    if (scheduleEditor.dialog.open) message(scheduleEditor, 'Connecting to the calendar…');
+    stop = onSnapshot(items, snapshot => {
+      if (current !== session) return;
+      records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
+      if (!loaded) {
+        status.textContent = '';
+        if (!scheduleEditor.saving) message(scheduleEditor, '');
+      }
+      loaded = true;
+      for (const editor of Object.values(editors)) submit(editor).disabled = Boolean(editor.saving);
+      render();
+    }, error => {
+      if (current !== session) return;
+      loaded = false;
+      loadError = error.code === 'permission-denied'
+        ? 'Firestore denied access to this workspace. Ask the project administrator to check your staff role and the published workspace rules.'
+        : 'The workspace could not connect. Retry the connection without closing your schedule.';
+      for (const editor of Object.values(editors)) submit(editor).disabled = true;
+      status.textContent = loadError;
+      message(scheduleEditor, loadError);
+      retryCalendar.hidden = false;
+    });
+  }
+  retryCalendar.addEventListener('click', listenForWorkItems);
+  listenForWorkItems();
   scheduleEditor.dialog.addEventListener('cancel', event => {
     event.preventDefault();
     if (!scheduleEditor.saving) reset(scheduleEditor);
@@ -309,8 +332,10 @@ export function mountWorkflow(db, uid) {
             find('[data-calendar-day="'+selectedDay+'"]')?.focus();
           }
         }
-      } catch {
-        if (current === session) message(editor, 'Could not save. Try again.');
+      } catch (error) {
+        if (current === session) message(editor, error.code === 'permission-denied'
+          ? 'Firestore denied this save. Your entries are still here. Ask the project administrator to check the published workspace rules.'
+          : 'Could not save. Your entries are still here. Please try again.');
       } finally {
         editor.saving = false;
         if (current === session) submit(editor).disabled = !loaded;
