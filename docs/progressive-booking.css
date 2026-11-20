@@ -14,3 +14,24 @@
 .client-home .premium-booking-review strong{color:#48172b}
 .client-home .consultation-fields label[hidden]{display:none!important}
 @media(max-width:560px){.client-home .premium-booking-steps{gap:4px}.client-home .premium-booking-steps span{font-size:10px;padding:10px 4px}.client-home .premium-booking-navigation button{padding:12px 15px}}
+
+.client-home .consultation-wide .consultation-form {
+  border-top:5px solid #65162e;
+  border-radius:0 14px 14px 0;
+  padding:clamp(16px,3vw,32px);
+  min-width:0;
+}
+.client-home .premium-booking-steps {
+  background:#521126;
+  border:1px solid #7b2940;
+  border-radius:12px;
+  padding:8px;
+}
+.client-home .premium-booking-steps span { background:#6e2439; border-color:#93465a; color:#fff8ee; }
+.client-home .premium-booking-steps span.active { color:#471020; }
+.client-home .premium-booking-navigation button { min-height:44px; }
+@media(max-width:700px) {
+  .client-home .consultation-wide .consultation-form { border-radius:0 0 14px 14px; }
+  .client-home .premium-booking-steps span { border-radius:8px; font-size:12px; }
+  .client-home .premium-booking-navigation .premium-next { flex:1; }
+}

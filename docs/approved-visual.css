@@ -102,3 +102,54 @@ body:has(.client-home) .site-header .nav-cta{background:linear-gradient(135deg,#
   .client-home .service-grid .service-enquiry { display:inline-flex; align-items:center; min-height:44px; padding-block:7px; }
   .client-home :is(input,select,textarea) { font-size:16px; }
 }
+
+.client-home .hero-copy h1 em {
+  display:inline-block;
+  color:#945014;
+  border-bottom:2px solid #c5822a;
+  font-weight:400;
+}
+.client-home .premium-quick-links {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:0;
+  padding:13px;
+}
+.client-home .premium-quick-links a {
+  display:grid;
+  justify-items:center;
+  align-content:center;
+  gap:6px;
+  min-height:72px;
+  padding:7px 9px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:700;
+}
+.client-home .premium-quick-links a:hover,
+.client-home .premium-quick-links a:focus-visible { background:#f6e6d4; border-radius:8px; }
+.client-home .premium-quick-links svg { width:28px; height:28px; color:#96510e; }
+.client-home .premium-journey-inner { padding-block:clamp(30px,5vw,62px); }
+.reference-consultation-cta {
+  width:min(1160px,calc(100% - 40px));
+  margin:0 auto 24px;
+  padding:clamp(20px,4vw,42px);
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:14px;
+  border:1px solid #b17e42;
+  border-radius:18px;
+  background:radial-gradient(ellipse at 85% 100%,#821e39,#470d20 68%);
+  color:#fff8ee;
+}
+.reference-consultation-cta h2 { color:inherit; font:400 clamp(25px,4vw,38px) Georgia,serif; margin:0 0 5px; }
+.reference-consultation-cta p { margin:0; }
+.reference-consultation-cta .action { background:#f2c675; color:#481327; }
+.client-home img.premium-article-art { display:block; width:100%; height:auto; aspect-ratio:3.89; object-fit:cover; }
+@media(max-width:700px) {
+  .client-home .premium-quick-links { width:calc(100% - 28px); margin:12px auto 0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; border-radius:14px; padding:8px; }
+  .client-home .premium-quick-links a { border:0; background:#faf0e4; border-radius:7px; }
+  .reference-consultation-cta { width:calc(100% - 28px); }
+}
