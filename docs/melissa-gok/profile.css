@@ -1,20 +1,88 @@
-.solicitor-profile{min-height:100vh;display:flex;flex-direction:column;background:#f8f3ea}
-.profile-header{padding-inline:max(24px,calc((100% - 1060px)/2))}
-.profile-header a:first-child{text-decoration:none}
-.melissa-page{width:min(1060px,calc(100% - 36px));margin:auto;padding:clamp(24px,5vw,66px) 0}
-.melissa-bio{display:grid;grid-template-columns:minmax(165px,.72fr) minmax(0,1.42fr);background:#fffdf8;border:1px solid #dcd0c4;border-radius:14px;overflow:hidden;box-shadow:0 12px 34px #40233a0b}
-.melissa-portrait{display:grid;place-items:center;background:radial-gradient(ellipse,#f9efe1,#e7d6c7);padding:24px}
-.melissa-portrait img{width:clamp(120px,19vw,192px);max-width:100%;height:auto;aspect-ratio:1;object-fit:cover;border:5px solid #fffaf1;outline:1px solid #af856a;border-radius:50%;box-shadow:0 8px 20px #40233a20}
-.melissa-copy{padding:clamp(23px,5vw,64px)}
-.melissa-location{margin:0;color:#785039;font-size:12px;letter-spacing:.13em;text-transform:uppercase;font-weight:700}
-.melissa-copy h1,.melissa-office h2{font:400 clamp(39px,6vw,71px)/1.02 Georgia,serif;letter-spacing:-.04em;color:#40233a;margin:8px 0}
-.melissa-role{margin:0;font-weight:650;color:#553449}
-.melissa-description{max-width:48ch;margin:17px 0;color:#51454e}
-.melissa-office{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-top:16px;padding:clamp(19px,3vw,32px);background:#efe5dc;border:1px solid #ddd0c3;border-radius:12px}
-.melissa-office h2{font-size:30px;margin:0 0 4px}
-.melissa-office p{margin:0;color:#51454e}
-.melissa-call{display:flex;align-items:center;flex-wrap:wrap;gap:12px 17px}
-.solicitor-profile .melissa-call-button{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:8px 14px;border-radius:6px;background:#40233a;color:#fff9ee;text-decoration:none}
-.melissa-call-button:hover{background:#57344f}
-.melissa-link{font-size:14px}
-@media(max-width:560px){.melissa-bio{grid-template-columns:1fr}.melissa-portrait img{width:134px}.melissa-copy{padding:21px 23px 27px}.melissa-office{align-items:flex-start}}
+.editorial-profile {
+  --ink: #2d1c30;
+  --muted: #584d57;
+  --paper: #fffdfa;
+  --line: #ded3c8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f0e9;
+  color: var(--ink);
+}
+.editorial-profile .profile-header {
+  padding: 18px max(20px, calc((100% - 1080px) / 2));
+  background: #2d1c30;
+}
+.editorial-profile .profile-header a { color: #fff8ef; font-size: 14px; text-decoration: none; }
+.editorial-profile a:focus-visible { outline: 2px solid #a4765c; outline-offset: 4px; }
+.melissa-page {
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto auto;
+  padding: clamp(24px, 5vw, 60px) 0;
+}
+.melissa-bio, .melissa-office {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.melissa-bio {
+  display: grid;
+  grid-template-columns: minmax(225px, 0.8fr) minmax(0, 1.4fr);
+  box-shadow: 0 20px 40px #39243b12;
+}
+.melissa-portrait {
+  display: grid;
+  place-items: center;
+  padding: clamp(22px, 4vw, 48px);
+  background: linear-gradient(145deg, #503653, #2d1c30 78%);
+}
+.melissa-portrait img {
+  display: block;
+  width: min(100%, 260px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid #e3c8b5;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px #1a102560;
+}
+.melissa-copy { align-self: center; padding: clamp(22px, 5vw, 62px); }
+.melissa-location { margin: 0 0 10px; color: #795340; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; font-weight: 650; }
+.melissa-copy h1, .melissa-office h2 { margin: 0; font: 400 clamp(36px, 5.4vw, 66px)/1.04 Georgia, serif; letter-spacing: -.04em; color: var(--ink); }
+.melissa-role { margin: 12px 0 0; font-weight: 650; }
+.melissa-description { max-width: 52ch; margin: 16px 0 23px; color: var(--muted); line-height: 1.65; }
+.melissa-office {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px 24px;
+  margin-top: 16px;
+  padding: clamp(20px, 3vw, 32px);
+}
+.melissa-office h2 { margin-bottom: 6px; font-size: 28px; }
+.melissa-office p { margin: 0; color: var(--muted); }
+.melissa-call { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.editorial-profile .melissa-link, .editorial-profile .melissa-call-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid #cbbbc8;
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.editorial-profile .melissa-call-button { background: var(--ink); color: #fff8ef; border-color: var(--ink); }
+.editorial-profile .melissa-link:hover { background: #f2e8f1; }
+.editorial-profile .melissa-call-button:hover { background: #503653; }
+@media (max-width: 620px) {
+  .melissa-page { width: calc(100% - 28px); }
+  .melissa-bio { grid-template-columns: minmax(0, 1fr); }
+  .melissa-portrait img { width: min(54%, 166px); }
+}

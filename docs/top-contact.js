@@ -1,1 +1,0 @@
-(()=>{const node=document.getElementById('premium-top-clock');if(!node)return;const tick=()=>{node.textContent=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Sydney',weekday:'short',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}).format(new Date());};tick();setInterval(tick,60000);})();
