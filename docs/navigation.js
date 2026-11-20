@@ -2,7 +2,7 @@ const navigation = document.getElementById('public-navigation');
 const menuToggle = document.querySelector('.menu-toggle');
 const header = navigation.closest('header');
 const links = [...navigation.querySelectorAll('a[href^="#"]')];
-const compact = matchMedia('(max-width: 680px)');
+const compact = matchMedia('(max-width: 850px)');
 let menuOpen = false;
 let scheduled = false;
 
@@ -88,3 +88,17 @@ clientApp.addEventListener('click', event => {
 clientApp.addEventListener('click', event => {
   if (event.target.closest('[data-dismiss-privacy]')) event.target.closest('.privacy-notice').hidden = true;
 });
+
+function openServiceFromHash() {
+  const service = document.getElementById(location.hash.slice(1));
+  if (service?.matches('#services details')) service.open = true;
+}
+
+clientApp.addEventListener('click', event => {
+  const shortcut = event.target.closest('.premium-quick-links a[href^="#"]');
+  if (!shortcut || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  const service = document.getElementById(shortcut.hash.slice(1));
+  if (service?.matches('#services details')) service.open = true;
+});
+window.addEventListener('hashchange', openServiceFromHash);
+openServiceFromHash();
