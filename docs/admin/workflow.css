@@ -145,3 +145,4 @@
   color:var(--appointment-ink,#47244e);
   border-inline-start:2px solid var(--appointment-line,#93639b);
 }
+#retry-calendar-access { margin:0 16px 16px; }
