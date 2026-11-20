@@ -65,8 +65,8 @@ export function mountWorkflow(db, uid) {
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
   <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
- <section class="workflow-panel" id="work-matters"><h2>Case activity</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
- <section class="workflow-panel" id="work-email"><h2>Email drafts</h2><p>Prepare and save client correspondence for review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="blank">New draft</button><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div>
+ <section class="workflow-panel" id="work-matters"><h2>Find a matter</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
+ <section class="workflow-panel" id="work-email"><h2>Saved drafts</h2><p>Prepare and save client correspondence for review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="blank">New draft</button><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div>
   ${editorMarkup('draft-form', 'New email draft', `
    <label>Subject<input name="title" maxlength="160" required></label>
    <label>Recipient<input type="email" name="recipient" maxlength="254"></label>${matterField}`,

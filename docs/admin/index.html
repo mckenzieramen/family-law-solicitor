@@ -6,8 +6,8 @@
 <title>Solicitor Admin | Family Law Firm</title>
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
-<link rel="stylesheet" href="./dashboard.css?v=studio-1">
-<link rel="stylesheet" href="./workflow.css?v=studio-1">
+<link rel="stylesheet" href="./dashboard.css?v=admin-focus-2">
+<link rel="stylesheet" href="./workflow.css?v=admin-focus-2">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -51,33 +51,28 @@
     <div id="dashboard-session"></div>
    </div>
   </header>
+  <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Workload at a glance</h2><nav class="legal-counts" aria-label="Workload shortcuts"><a href="#work-queue">Open tasks <strong id="legal-open">—</strong></a><a href="#work-queue" data-task-filter="overdue">Overdue tasks <strong id="legal-overdue">—</strong></a><a href="#work-calendar">Upcoming appointments <strong id="legal-appointments">—</strong></a></nav></section>
+  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client intake &amp; support</h2><div class="inbox-controls"><label>Message type <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><label>Search messages<input type="search" id="inbox-search" placeholder="Name, email or message"></label></div><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
+  <div id="staff-workspace"></div>
+  <div class="dashboard-section-title"><h2>Legal assistant responsibilities</h2><p id="save-status" role="status"></p></div>
   <div class="dashboard-metrics" aria-label="Checklist summary">
    <div><span>Duties completed</span><strong id="dashboard-completed">0</strong></div>
    <div><span>Duties remaining</span><strong id="dashboard-remaining">0</strong></div>
    <div><label for="dashboard-progress">Checklist progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
-  <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Your workload</h2><div class="legal-counts"><span>Open tasks <strong id="legal-open">—</strong></span><span>Overdue tasks <strong id="legal-overdue">—</strong></span><span>Upcoming appointments <strong id="legal-appointments">—</strong></span></div></section>
-  <nav class="overview-links" aria-label="Workspace shortcuts">
-   <a href="#staff-inbox" hidden>Read client messages</a><a href="#work-queue">Manage tasks</a><a href="#work-calendar">View calendar</a><a href="#work-email">Open email drafts</a><a href="#duties-all">Open duty checklist</a>
-  </nav>
-  <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading"><h2 id="inbox-heading">Client intake &amp; support</h2><p>Review new enquiries, check contact details and respond to support questions.</p><label>Show <select id="inbox-filter"><option value="all">All messages</option><option value="consultation">Consultation enquiries</option><option value="support">Support chat</option></select></label><p id="inbox-status" role="status"></p><div id="inbox-list"></div></section>
-  <div id="staff-workspace"></div>
-  <div class="dashboard-section-title"><h2>Legal assistant responsibilities</h2><p id="save-status" role="status"></p></div>
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=studio-1"></script>
+<script type="module" src="./firebase-admin.js?v=admin-focus-2"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
  const links = [...dashboard.querySelectorAll('.dashboard-sidebar nav a')];
  const title = document.getElementById('dashboard-title');
  const inbox = document.getElementById('inbox-nav');
- const shortcut = document.querySelector('.overview-links [href="#staff-inbox"]');
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
  function render() {
-   shortcut.hidden = inbox.hidden;
    const hash = ['#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#duties-all' : location.hash;
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
@@ -94,10 +89,15 @@
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .overview-links a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .legal-counts a');
    if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
+   const filter = document.getElementById('legal-task-filter');
+   if (filter && link.closest('.legal-counts') && link.hash === '#work-queue') {
+     filter.value = link.dataset.taskFilter || 'open';
+     filter.dispatchEvent(new Event('change'));
+   }
  }, true);
  workspace.addEventListener('workflow-view', event => {
    const hash = '#' + event.detail;

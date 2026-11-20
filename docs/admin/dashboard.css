@@ -89,20 +89,17 @@ body.solicitor-profile { background:#f6f4f7; }
 .dashboard-sidebar :focus-visible { outline-color:#f2d7ba; }
 .dashboard-metrics, .legal-counts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .dashboard-metrics { margin-bottom:22px; }
-.dashboard-metrics > div, .legal-counts > span, .overview-links a, .admin-dashboard .duty-group {
+.dashboard-metrics > div, .legal-counts > a, .admin-dashboard .duty-group {
   background:var(--paper);
   border:1px solid var(--line);
   border-radius:13px;
   box-shadow:var(--shadow);
 }
-.dashboard-metrics > div, .legal-counts > span { padding:15px clamp(12px,2vw,22px); font-size:14px; color:var(--muted); }
+.dashboard-metrics > div, .legal-counts > a { padding:15px clamp(12px,2vw,22px); font-size:14px; color:var(--muted); }
 .dashboard-metrics strong, .legal-counts strong { display:block; margin-top:3px; color:var(--accent); font:34px var(--serif); font-variant-numeric:tabular-nums; }
 .dashboard-metrics progress { display:block; width:100%; height:7px; margin-top:8px; accent-color:#78517b; }
 .legal-work-summary { margin-bottom:24px; }
 .legal-work-summary h2, .dashboard-section-title h2 { margin:0 0 12px; font:normal 24px var(--serif); }
-.overview-links { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; }
-.overview-links a { display:flex; align-items:center; min-height:60px; padding:13px 15px; color:var(--accent); text-decoration:none; font-weight:650; font-size:14px; }
-.overview-links a:hover { background:var(--tint); }
 .admin-dashboard #staff-inbox { padding:clamp(17px,3vw,30px); border:1px solid var(--line); border-radius:16px; background:var(--paper); box-shadow:var(--shadow); }
 .admin-dashboard #staff-inbox h2 { color:var(--ink); font:normal 28px var(--serif); }
 .dashboard-section-title p { margin:0 0 12px; color:var(--muted); }
@@ -112,9 +109,9 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard .duty-item { display:flex; gap:10px; padding:10px 0; }
 .admin-dashboard .duty-item + .duty-item { border-top:1px solid var(--line); }
 .admin-dashboard .duty-item input { flex-shrink:0; margin-top:5px; accent-color:var(--accent); }
-.admin-dashboard[data-view]:not([data-view="overview"]) :is(.dashboard-metrics,.overview-links,.legal-work-summary),
+.admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary,
 .admin-dashboard[data-view]:not([data-view="inbox"]) #staff-inbox,
-.admin-dashboard[data-view]:not([data-view^="duties-"]) :is(.dashboard-section-title,#duty-groups),
+.admin-dashboard[data-view]:not([data-view^="duties-"]) :is(.dashboard-section-title,.dashboard-metrics,#duty-groups),
 .admin-dashboard[data-view]:not([data-view^="work-"]) #staff-workspace,
 .admin-dashboard[data-view] .workflow-panel { display:none; }
 .admin-dashboard[data-view="work-queue"] #work-queue,
@@ -134,5 +131,12 @@ body.solicitor-profile { background:#f6f4f7; }
   .dashboard-main { padding:18px 13px 28px; }
   .dashboard-header { margin-bottom:16px; padding-bottom:15px; }
   .dashboard-metrics, .legal-counts { gap:6px; }
-  .dashboard-metrics > div, .legal-counts > span { padding:9px; font-size:13px; }
+  .dashboard-metrics > div, .legal-counts > a { padding:9px; font-size:13px; }
 }
+
+.legal-counts > a { display:block; text-decoration:none; }
+.legal-counts > a:hover { border-color:#a887a9; background:var(--tint); }
+.inbox-controls { display:grid; grid-template-columns:minmax(160px,.6fr) minmax(0,1fr); gap:12px; margin:16px 0; }
+.inbox-controls label { display:grid; gap:5px; color:var(--muted); font-size:14px; font-weight:650; }
+.inbox-controls :is(select,input) { width:100%; min-height:42px; border:1px solid #d9cedd; border-radius:8px; background:var(--paper); padding:8px 10px; font:inherit; color:var(--ink); }
+@media(max-width:500px) { .inbox-controls { grid-template-columns:1fr; } }

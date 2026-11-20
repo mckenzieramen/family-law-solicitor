@@ -4,6 +4,7 @@ const panel = document.getElementById('staff-inbox');
 const list = document.getElementById('inbox-list');
 const status = document.getElementById('inbox-status');
 const filter = document.getElementById('inbox-filter');
+const search = document.getElementById('inbox-search');
 const nav = document.getElementById('inbox-nav');
 let stop;
 
@@ -11,7 +12,8 @@ export function clearInbox() {
   stop?.();
   stop = undefined;
   if (!panel) return;
-  filter.onchange = null;
+  filter.onchange = search.oninput = null;
+  search.value = '';
   panel.hidden = nav.hidden = true;
   list.replaceChildren();
 }
@@ -24,10 +26,15 @@ export function mountInbox(db) {
   let alive = true;
   const drafts = new Map();
   function render() {
-    const visible = entries.filter(({kind}) => filter.value === 'all' || filter.value === kind);
+    const term = search.value.trim().toLowerCase();
+    const visible = entries.filter(({kind, contact, message}) => {
+      if (filter.value !== 'all' && filter.value !== kind) return false;
+      return !term || [contact?.firstName, contact?.lastName, contact?.email, message]
+        .filter(Boolean).join(' ').toLowerCase().includes(term);
+    });
     const expanded = new Set([...list.querySelectorAll('details[open]')].map(row => row.dataset.messageId));
     list.replaceChildren();
-    status.textContent = visible.length ? '' : 'No messages in this view.';
+    status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
     for (const record of visible) {
       const details = document.createElement('details');
       details.dataset.messageId = record.id;
@@ -94,7 +101,7 @@ export function mountInbox(db) {
       list.append(details);
     }
   }
-  filter.onchange = render;
+  filter.onchange = search.oninput = render;
   const unsubscribe = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
     entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
     render();
