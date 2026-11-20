@@ -162,3 +162,28 @@ body:has(.client-home) .site-header .nav-cta{background:linear-gradient(135deg,#
 .client-home .service-details details p { margin:8px 0; }
 .client-home .service-details .service-enquiry { display:inline-flex; align-items:center; min-height:44px; color:#671d38; font-weight:650; }
 @media(max-width:580px) { .client-home .service-detail-grid { grid-template-columns:minmax(0,1fr); } }
+
+body:has(.client-home) .site-header .header-nav { gap:clamp(3px,.7vw,12px); }
+body:has(.client-home) .site-header .header-nav a:not(.nav-cta):is(:hover,[aria-current=location]) {
+  background:#fff0cf1c;
+  color:#ffdf99;
+}
+body:has(.client-home) .site-header a:focus-visible { outline:2px solid #ffdf99; outline-offset:3px; }
+body:has(.client-home) .site-header .nav-cta {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:44px;
+  padding:9px 14px;
+  border-radius:9px;
+  white-space:nowrap;
+}
+body:has(.client-home) .site-header .nav-cta:hover {
+  background:linear-gradient(135deg,#ffe2a5,#e8b867)!important;
+}
+.site-header .nav-cta .mockup-icon { width:19px; height:19px; flex:none; }
+@media(max-width:850px) {
+  body:has(.client-home) .site-header .header-nav { gap:5px; }
+  body:has(.client-home) .site-header .nav-cta { width:100%; }
+}
