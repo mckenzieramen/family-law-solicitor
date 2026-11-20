@@ -9,7 +9,7 @@ body:has(.client-home) .site-header .header-nav a{font-weight:650}
 body:has(.client-home) .site-header .nav-cta{background:linear-gradient(135deg,#f1ce86,#d7a451)!important;color:#431325!important;border:1px solid #f7dfac!important;box-shadow:0 4px 16px #10050b35}
 .client-home .hero-grid{position:relative;min-height:590px;background:#f7e7d6!important;overflow:hidden}
 .client-home .hero-photo{position:absolute;inset:0 0 0 40%;width:60%;height:100%;margin:0;overflow:hidden}
-.client-home .hero-photo:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#f7e7d6 0%,#f7e7d6e6 15%,#f7e7d633 44%,transparent 65%)}
+.client-home .hero-photo:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#f7e7d6 0%,#f7e7d6c9 14%,#f7e7d624 29%,transparent 44%)}
 .client-home .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
 .client-home .hero-copy{position:relative;z-index:2;max-width:760px;min-height:590px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:60px clamp(32px,6vw,100px)}
 .client-home .hero-copy .eyebrow{font-size:12px;font-weight:750;color:#9b6033;letter-spacing:.2em}
