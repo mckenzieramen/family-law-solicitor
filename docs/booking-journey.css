@@ -1,0 +1,40 @@
+/* Premium legal journey and consultation preference picker */
+.client-home .premium-journey{background:radial-gradient(ellipse at 15% 100%,#f1dfcc 0%,transparent 45%),linear-gradient(180deg,#fff9f0,#fbf1e5)}
+.client-home .premium-journey-grid{gap:8px}
+.client-home .premium-journey-grid::before{content:"";position:absolute;top:39px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#e6c796,#ac7c40,#e6c796);z-index:0}
+.client-home .premium-step{position:relative;z-index:1;padding:12px 9px 20px}
+.client-home .premium-step-number{width:68px;height:68px;background:linear-gradient(145deg,#74243c,#421426);border:2px solid #d3a75b;color:#f9dcaa;box-shadow:0 0 0 5px #fbf1e5,0 10px 22px #4d1d2d2e;font-size:21px;transition:transform .25s ease,box-shadow .25s ease}
+.client-home .premium-step:hover .premium-step-number{transform:translateY(-4px);box-shadow:0 0 0 5px #fbf1e5,0 14px 26px #4d1d2d3c}
+.client-home .premium-step h3{font:700 17px/1.3 Georgia,serif;color:#4b192c}
+.client-home .premium-step p{max-width:24ch;margin:auto;color:#61525a;font-size:13px}
+.client-home .premium-booking{margin:20px 0 26px;padding:clamp(17px,3vw,28px);border:1px solid #d9bb8b;border-radius:17px;background:linear-gradient(145deg,#fffaf3,#f6e9d9);box-shadow:0 12px 28px #42142614}
+.client-home .premium-booking-head{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.client-home .premium-booking-head-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:#572037;color:#f2cf8c;font-size:23px}
+.client-home .premium-booking-head strong{display:block;font:400 25px Georgia,serif;color:#4b192c}
+.client-home .premium-booking-head small{display:block;margin-top:3px;color:#705b60;font-size:12px}
+.client-home .premium-booking-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:20px}
+.client-home .premium-calendar{padding:15px;background:#fffdf8;border:1px solid #e7d5c0;border-radius:13px}
+.client-home .premium-calendar-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:15px;color:#4b192c}
+.client-home .premium-calendar-header button{width:35px;height:35px;border-radius:50%;background:#f8ebdc;border:1px solid #e6d4bd;color:#542136}
+.client-home .premium-calendar-header button:disabled{opacity:.35;cursor:not-allowed}
+.client-home .premium-calendar-weekdays,.client-home .premium-calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.client-home .premium-calendar-weekdays span{font-size:11px;text-align:center;color:#8b737a;padding:7px 0}
+.client-home .premium-calendar-days button{border:1px solid transparent;border-radius:9px;background:transparent;color:#452334;min-height:38px;font-size:13px}
+.client-home .premium-calendar-days button:hover:not(:disabled){background:#f4e4d0;border-color:#d6b487}
+.client-home .premium-calendar-days button[aria-pressed=true]{background:#5a1930;color:#fff9ee;border-color:#5a1930;box-shadow:0 4px 12px #5a193040}
+.client-home .premium-calendar-days button:disabled{color:#b7adb0;cursor:not-allowed}
+.client-home .premium-calendar-days .premium-blank{visibility:hidden}
+.client-home .premium-times{padding:6px 0}
+.client-home .premium-times>strong{font:400 21px Georgia,serif;color:#4b192c}
+.client-home .premium-times>p{font-size:12px;color:#705c61;margin:6px 0 16px}
+.client-home .premium-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.client-home .premium-time-grid button{padding:10px 4px;border:1px solid #d7bea2;border-radius:9px;background:#fffaf4;color:#4d2736;font-size:12px;font-weight:700}
+.client-home .premium-time-grid button[aria-pressed=true]{background:#5a1930;border-color:#5a1930;color:#fff9ee}
+.client-home .premium-booking-status{margin:16px 0 0;font-size:13px;color:#5a3340;line-height:1.5}
+.client-home .premium-booking-footer{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-top:18px;border-top:1px solid #e6d2b8;padding-top:16px}
+.client-home .premium-booking-footer small{font-size:12px;color:#705c61;max-width:44ch}
+.client-home .premium-booking-footer button{border:0;background:#5a1930;color:#fff9ee;border-radius:9px;padding:12px 18px;font-weight:700}
+.client-home .premium-booking :is(button):focus-visible{outline:3px solid #bb8d48;outline-offset:2px}
+@media(max-width:900px){.client-home .premium-journey-grid::before{display:none}}
+@media(max-width:700px){.client-home .premium-booking-grid{grid-template-columns:1fr}.client-home .premium-step{padding:12px}.client-home .premium-step-number{width:55px;height:55px}.client-home .premium-booking-footer button{width:100%}}
+@media(prefers-reduced-motion:reduce){.client-home .premium-step-number{transition:none}}
