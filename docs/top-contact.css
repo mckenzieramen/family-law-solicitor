@@ -5,3 +5,7 @@
 .premium-top-contact-link>span,.premium-top-sydney-time>span:first-child{color:#e6b45f;font-size:16px}
 .premium-top-sydney-time{margin-left:auto;font-size:12px;font-weight:650;color:#f7d9a6;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
 @media(max-width:650px){.premium-top-contact-inner{gap:9px 16px;justify-content:center}.premium-top-contact-link,.premium-top-sydney-time{font-size:11px}.premium-top-sydney-time{margin-left:0}}
+
+.premium-top-contact .mockup-icon{display:block;flex:none;width:16px;height:16px;color:#e6b45f}
+.premium-top-contact-link[href^="tel:"]{white-space:nowrap}
+@media(max-width:650px){.premium-top-contact-inner{justify-content:flex-start}.premium-top-contact-link,.premium-top-sydney-time{font-size:12px}.premium-top-sydney-time{margin-left:0}}
