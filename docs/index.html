@@ -31,19 +31,12 @@
  #reviews .review-profile-cards[data-marquee]{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
  .review-marquee-set[inert]{display:flex}
  .review-marquee{animation:review-loop 125s linear infinite}
- /* Reviews continue rotating while hovered or keyboard-focused. */
+ #reviews .review-profile-cards:is(:hover,:focus-within) .review-marquee{animation-play-state:paused}
  @keyframes review-loop{to{transform:translateX(-50%)}}
 }
 </style>
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="homepage.css?v=direction-icons-4">
-<link rel="stylesheet" href="premium-burgundy.css?v=2">
-<link rel="stylesheet" href="premium-experience.css?v=1">
-<link rel="stylesheet" href="editorial-redesign.css?v=1">
-<link rel="stylesheet" href="booking-journey.css?v=1">
-<link rel="stylesheet" href="approved-visual.css?v=1">
-<link rel="stylesheet" href="progressive-booking.css?v=1">
-<link rel="stylesheet" href="top-contact.css?v=1">
 <style>
 .client-home .client-band .profile-location{--profile-gap:18px;gap:var(--profile-gap);align-items:stretch}
 .client-home .profile-location .profile-preview{gap:var(--profile-gap)}
@@ -61,13 +54,6 @@
  .client-home .profile-location .office-map iframe{min-height:250px}
 }
 </style>
-<div class="premium-top-contact" aria-label="Firm contact and Sydney time">
- <div class="premium-top-contact-inner">
-  <a href="#contact" class="premium-top-contact-link"><span aria-hidden="true">✉</span> Contact our team</a>
-  <a href="#contact-info" class="premium-top-contact-link"><span aria-hidden="true">⌖</span> North Sydney, NSW</a>
-  <span class="premium-top-sydney-time" aria-label="Sydney local time"><span aria-hidden="true">◷</span> <span id="premium-top-clock">Sydney local time</span></span>
- </div>
-</div>
 <header class="site-header">
  <a class="brand" href="./" aria-label="Family Law Firm home">
   <span class="brand-monogram" aria-hidden="true">FL</span>
@@ -185,29 +171,7 @@ function home(){
   </div>
  </section>
  <section class="client-section service-details"><details id="separation"><summary>Divorce and separation</summary><p>Prepare a summary of your situation and the decisions you would like to discuss with a solicitor.</p></details><details id="parenting"><summary>Parenting arrangements</summary><p>Write down current arrangements, practical concerns, and questions about where children live and how they spend time with each parent.</p></details><details id="property"><summary>Property and finances</summary><p>Prepare a list of questions about the family home, other assets, debts, or financial agreements.</p></details><details id="consent"><summary>Consent orders</summary><p>Make a note of what you have agreed on and any points you still want to discuss.</p></details></section>
-  <section class="premium-journey" aria-labelledby="premium-journey-title">
-  <div class="premium-journey-inner">
-   <span class="premium-eyebrow">A clear process, at your pace</span>
-   <h2 id="premium-journey-title">Your legal journey</h2>
-   <p class="premium-journey-intro">Every matter is different. These are the usual early stages of getting legal assistance; your solicitor will explain the steps relevant to you.</p>
-   <div class="premium-journey-grid">
-    <div class="premium-step"><span class="premium-step-number">01</span><h3>Initial enquiry</h3><p>Tell us briefly what assistance you are looking for.</p></div>
-    <div class="premium-step"><span class="premium-step-number">02</span><h3>Consultation</h3><p>Discuss your questions and priorities with the solicitor.</p></div>
-    <div class="premium-step"><span class="premium-step-number">03</span><h3>Conflict & engagement checks</h3><p>The firm confirms whether it can act and explains engagement terms.</p></div>
-    <div class="premium-step"><span class="premium-step-number">04</span><h3>Preparation</h3><p>Gather information and documents requested for your matter.</p></div>
-    <div class="premium-step"><span class="premium-step-number">05</span><h3>Next steps</h3><p>Agree on a plan appropriate to your circumstances.</p></div>
-   </div>
-  </div>
- </section>
- <section class="premium-knowledge" aria-labelledby="premium-knowledge-title">
-  <div class="premium-knowledge-head"><div><span class="premium-eyebrow">Helpful starting points</span><h2 id="premium-knowledge-title">Family law knowledge hub</h2><p>General information to help you prepare questions for your first conversation. These summaries are not legal advice.</p></div><a href="#resources">Browse FAQs →</a></div>
-  <div class="premium-knowledge-grid">
-   <article class="premium-article"><div class="premium-article-art" aria-hidden="true">§</div><div class="premium-article-body"><small>SEPARATION</small><h3>Preparing for a separation consultation</h3><p>Write down important dates, immediate concerns and the questions you want to ask.</p><a href="#contact">Ask about separation →</a></div></article>
-   <article class="premium-article"><div class="premium-article-art" aria-hidden="true">♡</div><div class="premium-article-body"><small>PARENTING</small><h3>Discussing parenting arrangements</h3><p>Consider current routines, practical arrangements and the issues you would like to clarify.</p><a href="#contact">Ask about parenting →</a></div></article>
-   <article class="premium-article"><div class="premium-article-art" aria-hidden="true">⌂</div><div class="premium-article-body"><small>PROPERTY</small><h3>Organising financial information</h3><p>Prepare a broad list of assets, liabilities and records to discuss with your solicitor.</p><a href="#contact">Ask about property →</a></div></article>
-  </div>
- </section>
- <section id="resources" class="client-section client-faq"><h2>Frequently asked questions</h2><details name="client-faq"><summary>What should I prepare?</summary><p>A short timeline, a list of questions and any upcoming deadlines can help you explain what you need.</p></details><details name="client-faq"><summary>What can we discuss?</summary><p>Start with the decisions you’re facing and what you’d like to understand before taking your next step.</p></details><details name="client-faq"><summary>Does an enquiry confirm my appointment?</summary><p>An appointment is confirmed separately after a time has been agreed.</p></details></section>
+  <section id="resources" class="client-section client-faq"><h2>Frequently asked questions</h2><details name="client-faq"><summary>What should I prepare?</summary><p>A short timeline, a list of questions and any upcoming deadlines can help you explain what you need.</p></details><details name="client-faq"><summary>What can we discuss?</summary><p>Start with the decisions you’re facing and what you’d like to understand before taking your next step.</p></details><details name="client-faq"><summary>Does an enquiry confirm my appointment?</summary><p>An appointment is confirmed separately after a time has been agreed.</p></details></section>
  <section id="reviews" class="client-section" aria-labelledby="reviews-title">
   <div class="google-reviews-card">
    <div><h2 id="reviews-title">Google Reviews</h2><p>Selected Google Maps reviews for Etheringtons Solicitors.</p></div>
@@ -373,10 +337,6 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 </script>
 <script src="navigation.js?v=inbox-1" defer></script>
 <script src="homepage-motion.js?v=1" defer></script>
-<script src="premium-experience.js?v=1" defer></script>
-<script src="booking-journey.js?v=1" defer></script>
-<script src="progressive-booking.js?v=1" defer></script>
-<script src="top-contact.js?v=1" defer></script>
 <script>
 (() => {
  const viewport = document.querySelector('#reviews .review-profile-cards');
