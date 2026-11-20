@@ -256,7 +256,7 @@ function home(){
     <li><strong>List your questions</strong><span>Start with the decisions or arrangements you want help understanding.</span></li>
     <li><strong>Flag any deadlines</strong><span>Note upcoming appointments, hearings, or dates you’ve been asked to respond by.</span></li>
    </ul>
-   <a href="#contact">Go to the enquiry form</a>
+   <a href="#contact">Go to the inquiry form</a>
   </div>
  </section>
  <section id="contact" class="client-section" aria-labelledby="consultation-title"><div class="contact-panel consultation-wide">
@@ -266,22 +266,22 @@ function home(){
    <a href="#contact-info">Office location and directions</a>
   </div>
   <form id="consultation-form" method="post" class="consultation-form" aria-describedby="consultation-demo">
-   <h3>Consultation enquiry</h3>
+   <h3>Consultation inquiry</h3>
    <p id="consultation-demo">Share only your contact details and a brief description. Please leave out confidential case details.</p>
    <div class="consultation-fields">
     <label>First name<input name="firstName" required maxlength="70" autocomplete="off"></label>
     <label>Last name<input name="lastName" required maxlength="70" autocomplete="off"></label>
     <label><span>Phone <small>(optional)</small></span><input name="phone" type="tel" maxlength="25" autocomplete="off"></label>
-    <label>Email<input name="email" type="email" required maxlength="254" autocomplete="off"></label>
+    <label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
     <label><span>Postcode <small>(optional)</small></span><input name="postcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></label>
     <label>Are you a new client?<select name="newClient" required><option value="">Select an option</option><option>Yes</option><option>No</option></select></label>
-    <label>Enquiry topic<select id="sample-topic" name="topic" required>
+    <label>Inquiry topic<select id="sample-topic" name="topic" required>
      <option value="">Select a topic</option><option value="separation">Divorce &amp; separation</option><option value="parenting">Parenting arrangements</option><option value="property">Property &amp; finances</option><option value="consent">Consent orders</option>
     </select></label>
     <label><span>Preferred time <small>(Sydney time, optional)</small></span><input name="preferredTime" type="datetime-local"></label>
     <label class="consultation-message">How can we help?<textarea name="message" rows="5" maxlength="1500" required></textarea></label>
    </div>
-   <div class="consultation-footer"><button class="action" type="submit" disabled>Send enquiry</button><p id="consultation-result" role="status"></p></div>
+   <div class="consultation-footer"><button class="action" type="submit" disabled>Send inquiry</button><p id="consultation-result" role="status"></p></div>
   </form>
  </div></section>
  <div class="client-band"><div class="client-section client-columns profile-location">
@@ -388,7 +388,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 <script src="homepage-motion.js?v=1" defer></script>
 <script src="premium-experience.js?v=1" defer></script>
 <script src="booking-journey.js?v=1" defer></script>
-<script src="progressive-booking.js?v=2" defer></script>
+<script src="progressive-booking.js?v=inquiry-3" defer></script>
 <script src="top-contact.js?v=1" defer></script>
 <script>
 (() => {
@@ -408,5 +408,5 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 })();
 </script>
 <link rel="stylesheet" href="inbox.css">
-<script type="module" src="client-inbox.js"></script>
+<script type="module" src="client-inbox.js?v=inquiry-1"></script>
 </html>
