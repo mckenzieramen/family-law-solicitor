@@ -1,0 +1,60 @@
+/* Progressive consultation enquiry: details -> preferred time -> review.
+   Existing Firebase clientInbox submission remains unchanged. Slots are requests,
+   NOT confirmed bookings: no server-side reservation service exists yet. */
+(() => {
+ let mounted=null;
+ function init(){
+  const form=document.querySelector('.client-home #consultation-form');
+  if(!form||form===mounted)return;
+  const fields=form.querySelector('.consultation-fields');
+  const calendar=form.querySelector('.premium-booking');
+  const footer=form.querySelector('.consultation-footer');
+  if(!fields||!calendar||!footer)return;
+  mounted=form;
+  const preferred=fields.querySelector('input[name="preferredTime"]');
+  const timeLabel=preferred?.closest('label');
+  if(timeLabel)timeLabel.hidden=true;
+  const steps=document.createElement('div');steps.className='premium-booking-steps';
+  steps.innerHTML='<span data-step="1">1 · Your details</span><span data-step="2">2 · Date & time</span><span data-step="3">3 · Review</span>';
+  form.querySelector('h3')?.after(steps);
+  const note=document.createElement('p');note.className='premium-booking-disclaimer';note.textContent='Please do not include confidential case details. A requested time is not a confirmed appointment.';
+  fields.before(note);
+  const controls=document.createElement('div');controls.className='premium-booking-navigation';
+  controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next">Next →</button>';
+  footer.before(controls);
+  const back=controls.querySelector('.premium-back'),next=controls.querySelector('.premium-next'),submit=footer.querySelector('button[type="submit"]');
+  const review=document.createElement('div');review.className='premium-booking-review';review.hidden=true;
+  footer.before(review);
+  const originalContinue=calendar.querySelector('[data-continue]');
+  if(originalContinue)originalContinue.hidden=true;
+  let step=1;
+  function show(n){
+   step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
+   back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
+   next.textContent=n===1?'Next · Select date & time →':'Next · Review enquiry →';
+   for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
+   if(n===3){
+    const data=new FormData(form),v=k=>String(data.get(k)||'').trim();
+    const row=(title,value)=>{const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=title+': ';p.append(strong,document.createTextNode(value||'Not provided'));return p;};
+    review.replaceChildren(row('Name',[v('firstName'),v('lastName')].join(' ')),row('Email',v('email')),row('Phone',v('phone')),row('Topic',v('topic')),row('Preferred consultation',v('preferredTime')?v('preferredTime').replace('T',' ')+' Sydney local time':'No time selected'),row('How can we help?',v('message')));
+    const info=document.createElement('p');info.className='premium-booking-disclaimer';info.textContent='Submitting sends an enquiry to the firm. Your appointment is not booked until the firm confirms it.';review.append(info);
+   }
+  }
+  function validateDetails(){
+   const required=[...fields.querySelectorAll('[required]')];
+   for(const field of required){if(!field.reportValidity())return false;}
+   return true;
+  }
+  next.addEventListener('click',()=>{
+   if(step===1){if(!validateDetails())return;show(2);}
+   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}show(3);}
+  });
+  back.addEventListener('click',()=>show(step===3?2:1));
+  form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
+  const result=form.querySelector('#consultation-result');
+  if(result){const observer=new MutationObserver(()=>{if(/Enquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
+  show(1);
+ }
+ new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
