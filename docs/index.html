@@ -31,12 +31,13 @@
  #reviews .review-profile-cards[data-marquee]{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
  .review-marquee-set[inert]{display:flex}
  .review-marquee{animation:review-loop 125s linear infinite}
- #reviews .review-profile-cards:is(:hover,:focus-within) .review-marquee{animation-play-state:paused}
+ /* Reviews continue rotating while hovered or keyboard-focused. */
  @keyframes review-loop{to{transform:translateX(-50%)}}
 }
 </style>
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="homepage.css?v=direction-icons-4">
+<link rel="stylesheet" href="premium-burgundy.css?v=1">
 <style>
 .client-home .client-band .profile-location{--profile-gap:18px;gap:var(--profile-gap);align-items:stretch}
 .client-home .profile-location .profile-preview{gap:var(--profile-gap)}
