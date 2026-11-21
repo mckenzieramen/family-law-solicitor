@@ -142,9 +142,13 @@ export function mountWorkflow(db, uid) {
  </dialog>
  <dialog id="work-delete-dialog" class="schedule-dialog work-delete-dialog" aria-labelledby="work-delete-title" aria-describedby="work-delete-description">
   <form id="work-delete-form">
-   <h3 id="work-delete-title">Delete item?</h3>
-   <p id="work-delete-description">Delete <strong id="work-delete-name"></strong> from the workspace? This cannot be undone.</p>
-   <p id="work-delete-status" role="status"></p>
+   <div class="work-delete-content">
+    <span class="work-delete-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"/></svg></span>
+    <h3 id="work-delete-title">Delete this item?</h3>
+    <p id="work-delete-name"></p>
+    <p id="work-delete-description">This will permanently remove the item from the workspace.</p>
+    <p id="work-delete-status" role="status"></p>
+   </div>
    <div class="work-delete-actions"><button type="button" id="work-delete-cancel" autofocus>Cancel</button><button type="submit" id="work-delete-confirm">Delete item</button></div>
   </form>
  </dialog>

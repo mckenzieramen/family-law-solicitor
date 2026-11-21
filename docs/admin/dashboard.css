@@ -263,13 +263,21 @@ body.solicitor-profile { background:#f6f4f7; }
 .follow-up-row small, #overview-follow-ups small { display:block; color:var(--muted); }
 
 #task-dialog, .work-delete-dialog { width:min(100% - 28px, 540px); max-height:calc(100dvh - 28px); overflow:auto; }
-.work-delete-dialog { max-width:440px; padding:clamp(16px,4vw,24px); }
-.work-delete-dialog h3 { margin:0 0 10px; font:1.45rem var(--serif); }
-.work-delete-dialog p { overflow-wrap:anywhere; }
+.work-delete-dialog { max-width:440px; }
+#work-delete-form { margin:0; }
+.work-delete-content { padding:clamp(20px,5vw,30px); }
+.work-delete-icon { display:grid; place-items:center; width:46px; height:46px; margin-bottom:14px; border:1px solid #edd1d8; border-radius:12px; background:#f8e6e9; color:#79263c; }
+.work-delete-dialog #work-delete-title { margin:0 0 12px; font:1.65rem/1.15 var(--serif); color:var(--ink); }
+.work-delete-dialog p { margin:8px 0 0; overflow-wrap:anywhere; }
+#work-delete-name { padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:#f9f0ee; font-weight:650; }
+#work-delete-description { color:var(--muted); }
+#work-delete-status { color:#79263c; }
 #work-delete-status:empty { display:none; }
-.work-delete-actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+.work-delete-actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; padding:14px clamp(20px,5vw,30px); border-top:1px solid var(--line); background:#f8eeed; }
 .work-delete-actions button { min-height:40px; padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); cursor:pointer; }
 #work-delete-confirm { background:#79263c; border-color:#79263c; color:white; font-weight:650; }
+.work-delete-actions button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#work-delete-confirm:hover:enabled { background:#622032; }
 .work-delete-actions button:disabled { opacity:.65; cursor:wait; }
 
 .admin-dashboard .dashboard-identity { border-bottom-color:#f0cb7e45; }
