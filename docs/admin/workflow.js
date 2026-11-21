@@ -53,7 +53,7 @@ export function mountWorkflow(db, uid) {
    <label>Due date (Sydney)<input name="date" type="date"></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
    'Task notes', 'Save task', true)}
-  <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
+  <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
   <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
@@ -89,6 +89,8 @@ export function mountWorkflow(db, uid) {
   <div class="draft-layout">
    <aside class="draft-library" aria-label="Draft library">
     <h3>Saved drafts</h3>
+    <label>Search drafts<input id="work-draft-search" type="search" placeholder="Subject, recipient or matter"></label>
+    <p class="work-result-count" id="work-draft-count" role="status"></p>
     <div id="work-drafts"><p class="work-empty">Connecting to your saved drafts…</p></div>
     <h3>Templates</h3>
     <button type="button" data-new-draft="followup">Client follow-up</button>
@@ -121,6 +123,7 @@ export function mountWorkflow(db, uid) {
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
   const agenda = document.getElementById('overview-agenda-items');
+  const upcoming = document.getElementById('overview-upcoming-items');
   const editors = {
     Task: {form:find('#task-form'), title:'Create task', editTitle:'Edit task', saved:'Task saved.', view:'work-queue'},
     Appointment: {form:find('#schedule-form'), dialog:find('#schedule-dialog'), title:'Add schedule', editTitle:'Edit schedule', saved:'Schedule saved.', view:'work-calendar'},
@@ -222,8 +225,17 @@ export function mountWorkflow(db, uid) {
     const overdue = item => !item.done && item.date && item.date < date;
     const filter = find('#legal-task-filter').value;
     const taskQuery = find('#work-task-search').value.trim().toLowerCase();
-    const matchingTasks = tasks.filter(item => [item.title, item.matter].join(' ').toLowerCase().includes(taskQuery));
-    renderRows('#work-priority-list', matchingTasks.filter(item => filter === 'done' ? item.done : filter === 'overdue' ? overdue(item) : !item.done && (filter !== 'today' || item.date === date)).sort(order), 'No tasks in this view.');
+    const priority = find('#work-task-priority').value;
+    const matchingTasks = tasks.filter(item => {
+      const matchesView = filter === 'done' ? item.done : !item.done &&
+        (filter !== 'today' || item.date === date) &&
+        (filter !== 'overdue' || overdue(item)) &&
+        (filter !== 'unscheduled' || !item.date);
+      return matchesView && (!priority || item.priority === priority) &&
+        [item.title, item.matter].join(' ').toLowerCase().includes(taskQuery);
+    }).sort(order);
+    find('#work-task-count').textContent = loaded ? `${matchingTasks.length} of ${tasks.length} tasks` : '';
+    renderRows('#work-priority-list', matchingTasks, loaded ? 'No tasks match this view.' : (loadError || 'Loading tasks…'));
     for (const [id, total] of [
       ['legal-open', tasks.filter(item => !item.done).length],
       ['legal-overdue', tasks.filter(overdue).length],
@@ -239,10 +251,24 @@ export function mountWorkflow(db, uid) {
         `<div class="overview-agenda-row" data-appointment-color="${appointmentColor(item)}"><time>${escape(item.time || 'Any time')}</time><strong>${escape(item.title)}</strong><small>${escape(item.matter || (calendarFor(item) === 'client' ? 'Client Calendar' : 'Admin Calendar'))}</small></div>`
       ).join('') || '<p>No appointments today in Sydney.</p>';
     }
+    if (upcoming && loaded) {
+      const next = records.filter(item => item.kind === 'Appointment' && !item.done && item.date > date && Number.isFinite(Date.parse(item.date + 'T00:00:00Z')))
+        .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '99:99').localeCompare(b.time || '99:99'))
+        .slice(0, 5);
+      const formatDate = new Intl.DateTimeFormat('en-AU', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'});
+      upcoming.innerHTML = next.map(item => `<div class="overview-agenda-row" data-appointment-color="${appointmentColor(item)}"><time datetime="${escape(item.date)}">${escape(formatDate.format(new Date(item.date + 'T00:00:00Z')))} · ${escape(item.time || 'Any time')}</time><strong>${escape(item.title)}</strong><small>${escape(item.matter || (calendarFor(item) === 'client' ? 'Client Calendar' : 'Admin Calendar'))}</small></div>`).join('') || '<p>No future appointments scheduled.</p>';
+    }
     renderCalendar();
-
     renderMatters();
-    renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
+    renderDrafts();
+  }
+  function renderDrafts() {
+    const drafts = records.filter(item => item.kind === 'Email draft');
+    const query = find('#work-draft-search').value.trim().toLowerCase();
+    const matching = drafts.filter(item => [item.title, item.recipient, item.matter].join(' ').toLowerCase().includes(query))
+      .sort((a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+    find('#work-draft-count').textContent = loaded ? `${matching.length} of ${drafts.length} drafts` : '';
+    renderRows('#work-drafts', matching, loaded ? (query ? 'No drafts match your search.' : 'No drafts saved.') : (loadError || 'Loading drafts…'));
   }
   function renderMatters() {
     const query = find('#work-matter-query').value.trim().toLowerCase();
@@ -283,6 +309,7 @@ export function mountWorkflow(db, uid) {
     loaded = false;
     loadError = null;
     renderMatters();
+    if (upcoming) upcoming.textContent = 'Loading appointments…';
     retryCalendar.hidden = true;
     status.textContent = 'Connecting to the workspace…';
     for (const editor of Object.values(editors)) submit(editor).disabled = true;
@@ -305,7 +332,8 @@ export function mountWorkflow(db, uid) {
         ? 'Calendar and work records are unavailable. Ask your Firebase administrator to verify your staff role and the published workspace rules.'
         : 'The workspace could not connect. Retry the connection without closing your schedule.';
       for (const editor of Object.values(editors)) submit(editor).disabled = true;
-      if (!records.length) find('#work-drafts').innerHTML = '<p class="work-empty">Saved drafts could not load. You can still preview the sample.</p>';
+      renderDrafts();
+      if (upcoming) upcoming.textContent = 'Upcoming appointments could not load.';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       status.textContent = loadError;
       renderMatters();
@@ -360,6 +388,8 @@ export function mountWorkflow(db, uid) {
   find('#work-matter-kind').addEventListener('change', renderMatters);
   find('#work-matter-sort').addEventListener('change', renderMatters);
   find('#work-task-search').addEventListener('input', render);
+  find('#work-task-priority').addEventListener('change', render);
+  find('#work-draft-search').addEventListener('input', renderDrafts);
   find('#copy-draft-body').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(field(draftEditor, 'notes').value);
