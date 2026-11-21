@@ -74,7 +74,13 @@ export function mountWorkflow(db, uid) {
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
   <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
- <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2></div><label>Find a matter<input id="work-matter-query" type="search" placeholder="Enter a matter reference"></label><div id="work-matter-list"></div></section>
+ <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2></div>
+  <div class="legal-actions">
+   <label>Search matters<input id="work-matter-query" type="search" placeholder="Matter reference or item title"></label>
+   <label>Show<select id="work-matter-kind"><option value="">All work items</option><option>Task</option><option>Appointment</option><option>Email draft</option></select></label>
+   <label>Sort matters<select id="work-matter-sort"><option value="reference">Reference A–Z</option><option value="activity">Most recent activity</option></select></label>
+  </div>
+  <p id="work-matter-count" role="status"></p><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email">
   <header class="draft-toolbar">
    <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
@@ -211,7 +217,6 @@ export function mountWorkflow(db, uid) {
     renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.');
   }
   function render() {
-    const query = find('#work-matter-query').value.trim().toLowerCase();
     const date = today();
     const tasks = records.filter(item => item.kind === 'Task' && !isNote(item));
     const overdue = item => !item.done && item.date && item.date < date;
@@ -236,21 +241,40 @@ export function mountWorkflow(db, uid) {
     }
     renderCalendar();
 
+    renderMatters();
+    renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
+  }
+  function renderMatters() {
+    const query = find('#work-matter-query').value.trim().toLowerCase();
+    const kind = find('#work-matter-kind').value;
+    const sort = find('#work-matter-sort').value;
     const groups = new Map();
     for (const item of records) {
       const key = item.matter?.trim().toLowerCase();
-      if (!key || !key.includes(query)) continue;
+      if (!key || (kind && item.kind !== kind) || isNote(item)) continue;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(item);
     }
     const matters = find('#work-matter-list');
     const expanded = new Set([...matters.querySelectorAll('[data-matter][open]')].map(group => group.dataset.matter));
-    matters.innerHTML = [...groups.keys()].sort().map(key => {
+    const lastActivity = entries => Math.max(...entries.map(item => item.updatedAt?.toMillis?.() ?? 0));
+    const keys = [...groups.keys()].filter(key =>
+      key.includes(query) || groups.get(key).some(item => item.title.toLowerCase().includes(query))
+    ).sort((a, b) => (sort === 'activity' ? lastActivity(groups.get(b)) - lastActivity(groups.get(a)) : 0) || a.localeCompare(b, 'en-AU', {numeric:true}));
+    find('#work-matter-count').textContent = loaded ? `${keys.length} ${keys.length === 1 ? 'matter' : 'matters'}` : '';
+    matters.innerHTML = keys.map(key => {
       const entries = groups.get(key);
       const counts = ['Task', 'Appointment', 'Email draft'].map(kind => entries.filter(item => item.kind === kind).length);
       return `<details class="work-row matter-group" data-matter="${escape(key)}"${expanded.has(key) ? ' open' : ''}><summary><strong>${escape(entries[0].matter)}</strong><small>${counts[0]} tasks · ${counts[1]} appointments · ${counts[2]} drafts</small></summary>${entries.sort(order).map(row).join('')}</details>`;
-    }).join('') || '<p class="work-empty">No matching work items with a matter reference.</p>';
-    renderRows('#work-drafts', records.filter(x=>x.kind==='Email draft').sort(order), 'No drafts saved.');
+    }).join('');
+    if (!keys.length || !loaded) {
+      const notice = document.createElement('p');
+      notice.className = 'work-empty';
+      notice.textContent = !loaded ? (loadError || 'Loading matter activity…')
+        : query || kind ? 'No matters match these filters.'
+        : 'Add a matter reference to a task, appointment or email draft to see it here.';
+      matters.prepend(notice);
+    }
   }
   renderCalendar();
   const scheduleEditor = editors.Appointment;
@@ -258,6 +282,7 @@ export function mountWorkflow(db, uid) {
     stop?.();
     loaded = false;
     loadError = null;
+    renderMatters();
     retryCalendar.hidden = true;
     status.textContent = 'Connecting to the workspace…';
     for (const editor of Object.values(editors)) submit(editor).disabled = true;
@@ -283,6 +308,7 @@ export function mountWorkflow(db, uid) {
       if (!records.length) find('#work-drafts').innerHTML = '<p class="work-empty">Saved drafts could not load. You can still preview the sample.</p>';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       status.textContent = loadError;
+      renderMatters();
       message(scheduleEditor, loadError);
       retryCalendar.hidden = accessDenied;
     });
@@ -330,7 +356,9 @@ export function mountWorkflow(db, uid) {
     find('[data-calendar-day="'+selectedDay+'"]').focus();
   });
   find('#legal-task-filter').addEventListener('change', render);
-  find('#work-matter-query').addEventListener('input', render);
+  find('#work-matter-query').addEventListener('input', renderMatters);
+  find('#work-matter-kind').addEventListener('change', renderMatters);
+  find('#work-matter-sort').addEventListener('change', renderMatters);
   find('#work-task-search').addEventListener('input', render);
   find('#copy-draft-body').addEventListener('click', async () => {
     try {
