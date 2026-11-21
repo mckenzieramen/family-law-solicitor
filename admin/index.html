@@ -7,7 +7,7 @@
 <link rel="canonical" href="https://family-law-firm.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=chat-2">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-layout-24">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-nav-25">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=theme-18">
 <style>
 .admin-sign-in {
@@ -105,6 +105,7 @@
  </section>
 </main>
 <section class="admin-dashboard" id="staff-checklist" hidden aria-labelledby="dashboard-title">
+ <a class="staff-skip-link" href="#workspace-content">Skip to workspace content</a>
  <aside class="dashboard-sidebar">
   <div class="dashboard-identity">
    <span class="dashboard-monogram" aria-hidden="true">F<span>L</span></span>
@@ -121,7 +122,7 @@
 
   </nav>
  </aside>
- <div class="dashboard-main">
+ <div class="dashboard-main" id="workspace-content" tabindex="-1">
   <header class="dashboard-header">
    <div class="dashboard-heading"><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
    <div class="staff-header-tools">
@@ -256,6 +257,10 @@ if (sampleMode) {
  workspace.addEventListener('workflow-view', event => {
    const hash = '#' + event.detail;
    if (location.hash !== hash) go(hash);
+ });
+ dashboard.querySelector('.staff-skip-link').addEventListener('click', event => {
+   event.preventDefault();
+   document.getElementById('workspace-content').focus();
  });
  window.addEventListener('hashchange', render);
  window.addEventListener('popstate', render);
