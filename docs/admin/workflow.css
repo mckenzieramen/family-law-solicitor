@@ -9,8 +9,8 @@
 .workflow-panel h2, .workflow-panel h3 { margin:0 0 10px; color:var(--ink); font:normal 28px var(--serif); }
 .workflow-panel h3 { font-size:22px; }
 .workflow-panel > p, .calendar-description { margin:0 0 18px; color:var(--muted); }
-:is(.workflow-panel, #task-dialog) label { display:block; font-size:14px; font-weight:650; }
-:is(.workflow-panel, #task-dialog) :is(input,select,textarea) {
+:is(.workflow-panel, .task-dialog) label { display:block; font-size:14px; font-weight:650; }
+:is(.workflow-panel, .task-dialog) :is(input,select,textarea) {
   display:block;
   box-sizing:border-box;
   width:100%;
@@ -22,7 +22,7 @@
   color:var(--ink);
   font:inherit;
 }
-:is(.workflow-panel, #task-dialog) textarea { resize:vertical; }
+:is(.workflow-panel, .task-dialog) textarea { resize:vertical; }
 .work-form {
   margin:0 0 21px;
   padding:clamp(13px,2vw,22px);
@@ -31,7 +31,7 @@
   background:#faf7fb;
 }
 .work-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:0 14px; }
-:is(.workflow-panel, #task-dialog) button:not(.month-day) {
+:is(.workflow-panel, .task-dialog) button:not(.month-day) {
   padding:8px 13px;
   min-height:38px;
   border:1px solid #d9cedd;
@@ -41,10 +41,15 @@
   font:600 14px/1.35 system-ui,sans-serif;
   cursor:pointer;
 }
-:is(.workflow-panel, #task-dialog) button:not(.month-day):hover { border-color:#ac8eaf; }
-.workflow-panel button.work-button { background:var(--accent); border-color:var(--accent); color:#fff; }
-.workflow-panel button.work-button:hover { background:#432742; }
-:is(.workflow-panel, #task-dialog) button:disabled { opacity:.55; cursor:default; }
+:is(.workflow-panel, .task-dialog) button:not(.month-day):hover { border-color:#ac8eaf; }
+.workflow-panel button.work-button:not(:disabled) {
+  background:#e3b761;
+  border-color:#ae7b34;
+  color:#2d160a;
+  font-weight:700;
+}
+.workflow-panel button.work-button:not(:disabled):hover { background:#f0cb86; }
+:is(.workflow-panel, .task-dialog) button:disabled { opacity:.55; cursor:default; }
 .legal-actions, .calendar-toolbar, .month-controls, .work-actions { display:flex; align-items:center; flex-wrap:wrap; gap:9px 12px; }
 .calendar-toolbar { justify-content:space-between; margin-bottom:18px; }
 .calendar-toolbar h2 { margin-bottom:3px; }

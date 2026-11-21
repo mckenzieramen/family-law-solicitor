@@ -272,3 +272,10 @@ body.solicitor-profile { background:#f6f4f7; }
 .work-delete-actions button { min-height:40px; padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); cursor:pointer; }
 #work-delete-confirm { background:#79263c; border-color:#79263c; color:white; font-weight:650; }
 .work-delete-actions button:disabled { opacity:.65; cursor:wait; }
+
+.admin-dashboard .dashboard-identity { border-bottom-color:#f0cb7e45; }
+.admin-dashboard :is(.workflow-panel, .staff-inbox, .overview-agenda) {
+  border-color:var(--line);
+  box-shadow:0 8px 24px #4521390a;
+}
+#task-dialog .work-form h3 { border-bottom:1px solid #c9964f6b; padding-bottom:13px; color:var(--accent); }

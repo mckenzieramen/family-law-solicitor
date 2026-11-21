@@ -109,7 +109,7 @@ export function mountWorkflow(db, uid) {
    <button type="button" id="close-document-template">Close draft</button>
   </form>
  </section>
- <dialog id="task-dialog" class="schedule-dialog" aria-labelledby="task-form-title">
+ <dialog id="task-dialog" class="schedule-dialog task-dialog" aria-labelledby="task-form-title">
  ${editorMarkup('task-form', 'Create task', `
    <label>Task title<input name="title" maxlength="160" required></label>${matterField}
    <label>Due or follow-up date (Sydney)<input name="date" type="date"></label>
