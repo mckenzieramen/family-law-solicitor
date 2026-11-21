@@ -177,3 +177,11 @@
 #work-queue .legal-actions { align-items:end; }
 #work-queue .work-row { background:#fffefa; }
 .draft-toolbar { border-bottom:1px solid var(--line); margin-bottom:18px; }
+
+/* Daily work summaries */
+#overview-upcoming { margin-top: 16px; }
+.admin-dashboard:not([data-view="overview"]) #overview-upcoming { display: none; }
+#overview-upcoming a { color: #63324b; font-weight: 650; text-underline-offset: .2em; }
+.work-result-count { min-height: 1.35em; margin: 8px 0; color: #62495a; font-size: .875rem; }
+.work-result-count:empty { display: none; }
+.draft-library #work-draft-search { width: 100%; }
