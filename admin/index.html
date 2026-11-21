@@ -123,10 +123,12 @@
   <header class="dashboard-header">
    <div class="dashboard-heading"><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
    <div class="staff-header-tools">
+    <a id="staff-sample-link" href="?sample=1">View sample data</a>
     <div class="staff-sydney-clock"><span>Sydney time</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
     <div id="dashboard-session"></div>
    </div>
   </header>
+  <p id="staff-sample-banner" hidden style="padding:12px 16px;border:1px solid #c5a56e;border-radius:10px;background:#fff1d8;color:#573716"><strong>Sample workspace</strong> · Fictional records. Changes reset when you reload or leave.</p>
   <section class="legal-work-summary" aria-label="Workload at a glance"><nav class="legal-counts" aria-label="Workload shortcuts">
    <a href="#work-calendar" data-calendar-today><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Appointments today<strong id="legal-today">—</strong></span></a>
    <a href="#work-queue" data-task-filter="overdue"><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Overdue tasks<strong id="legal-overdue">—</strong></span></a>
@@ -180,7 +182,7 @@
   </details>
  </div>
 </section>
-<script type="module" src="../docs/admin/firebase-admin.js?v=delete-card-21"></script>
+<script type="module" src="../docs/admin/firebase-admin.js?v=sample-records-22"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
