@@ -5,6 +5,11 @@ const list = document.getElementById('inbox-list');
 const status = document.getElementById('inbox-status');
 const filter = document.getElementById('inbox-filter');
 const search = document.getElementById('inbox-search');
+const sort = document.getElementById('inbox-sort');
+const count = document.getElementById('inbox-count');
+const senderName = record => [record.contact?.firstName, record.contact?.lastName].filter(Boolean).join(' ');
+const compareText = (a, b) => a.localeCompare(b, 'en-AU', {sensitivity:'base'});
+const sortText = (a, b) => a && b ? compareText(a, b) : Number(!a) - Number(!b);
 const nav = document.getElementById('inbox-nav');
 let stop;
 
@@ -12,7 +17,8 @@ export function clearInbox() {
   stop?.();
   stop = undefined;
   if (!panel) return;
-  filter.onchange = search.oninput = null;
+  filter.onchange = sort.onchange = search.oninput = null;
+  count.textContent = '';
   search.value = '';
   panel.hidden = nav.hidden = true;
   list.replaceChildren();
@@ -24,31 +30,56 @@ export function mountInbox(db) {
   status.textContent = 'Loading messages…';
   let entries = [];
   let alive = true;
+  let ready = false;
+  const expanded = new Set();
   const drafts = new Map();
   function render() {
+    if (!ready) return;
     const term = search.value.trim().toLowerCase();
-    const visible = entries.filter(({kind, contact, message}) => {
-      if (filter.value !== 'all' && filter.value !== kind) return false;
-      return !term || [contact?.firstName, contact?.lastName, contact?.email, message]
+    const type = filter.value;
+    const visible = entries.filter(({kind, contact, message, reply}) => {
+      if (type === 'unanswered' && (kind !== 'support' || reply)) return false;
+      if (type === 'replied' && (kind !== 'support' || !reply)) return false;
+      if (['consultation', 'support'].includes(type) && type !== kind) return false;
+      return !term || [contact?.firstName, contact?.lastName, contact?.email, contact?.topic, message]
         .filter(Boolean).join(' ').toLowerCase().includes(term);
     });
-    const expanded = new Set([...list.querySelectorAll('details[open]')].map(row => row.dataset.messageId));
+    if (sort.value === 'oldest') visible.reverse();
+    if (sort.value === 'name') visible.sort((a, b) => sortText(senderName(a), senderName(b)));
+    if (sort.value === 'email') visible.sort((a, b) => sortText(a.contact?.email, b.contact?.email));
+    count.textContent = 'Showing ' + visible.length + ' of ' + entries.length + ' loaded messages' +
+      (entries.length === 100 ? ' · latest 100' : '');
     list.replaceChildren();
     status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
     for (const record of visible) {
       const details = document.createElement('details');
       details.dataset.messageId = record.id;
       details.open = expanded.has(record.id);
+      details.addEventListener('toggle', () => {
+        if (!details.isConnected) return;
+        if (details.open) expanded.add(record.id);
+        else expanded.delete(record.id);
+      });
       const summary = document.createElement('summary');
       const message = document.createElement('p');
       const date = record.createdAt?.toDate().toLocaleString('en-AU', {timeZone:'Australia/Sydney'});
       const contact = record.contact ?? {};
-      summary.textContent = (record.kind === 'consultation' ? 'Consultation · ' + contact.firstName + ' ' + contact.lastName : record.reply ? 'Support chat · Replied' : 'Support chat · Awaiting reply') + (date ? ' · ' + date : '');
+      const title = document.createElement('strong');
+      const meta = document.createElement('span');
+      const preview = document.createElement('span');
+      const consultation = record.kind === 'consultation';
+      title.textContent = consultation ? senderName(record) || 'Consultation inquiry' :
+        (record.reply ? 'Support chat · Replied' : 'Support chat · Awaiting reply');
+      meta.className = 'inbox-message-meta';
+      meta.textContent = [consultation && contact.email, date && date + ' Sydney'].filter(Boolean).join(' · ');
+      preview.className = 'inbox-message-preview';
+      preview.textContent = String(record.message ?? '').replace(/\s+/g, ' ').trim();
+      summary.append(title, meta, preview);
       message.textContent = record.message;
       details.append(summary);
-      if (record.kind === 'consultation') {
+      if (consultation) {
         const fields = document.createElement('p');
-        fields.textContent = [contact.topic, contact.email, contact.phone, contact.postcode, contact.newClient && 'New client: ' + contact.newClient, contact.preferredTime && 'Preferred time: ' + contact.preferredTime + ' Sydney'].filter(Boolean).join(' · ');
+        fields.textContent = [contact.topic, contact.phone, contact.postcode, contact.newClient && 'New client: ' + contact.newClient, contact.preferredTime && 'Preferred time: ' + contact.preferredTime + ' Sydney'].filter(Boolean).join(' · ');
         details.append(fields);
       }
       if (record.kind === 'support') {
@@ -58,6 +89,14 @@ export function mountInbox(db) {
         message.prepend(sender);
       }
       details.append(message);
+      if (consultation && /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(contact.email || '')) {
+        const email = document.createElement('a');
+        email.className = 'inbox-email-action';
+        email.href = 'mailto:' + contact.email.split('@').map(encodeURIComponent).join('@') + '?subject=' +
+          encodeURIComponent('Re: Your consultation inquiry');
+        email.textContent = 'Open email draft';
+        details.append(email);
+      }
       if (record.kind === 'support') {
         const form = document.createElement('form');
         const label = document.createElement('label');
@@ -101,10 +140,14 @@ export function mountInbox(db) {
       list.append(details);
     }
   }
-  filter.onchange = search.oninput = render;
+  filter.onchange = sort.onchange = search.oninput = render;
   const unsubscribe = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
+    ready = true;
     entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
     render();
-  }, () => { status.textContent = 'Inbox unavailable. Check the Firestore rules and staff permissions.'; });
+  }, () => {
+    ready = false;
+    status.textContent = 'Inbox unavailable. Check the Firestore rules and staff permissions.';
+  });
   stop = () => { alive = false; unsubscribe(); };
 }
