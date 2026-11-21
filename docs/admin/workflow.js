@@ -75,15 +75,42 @@ export function mountWorkflow(db, uid) {
   <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
  <section class="workflow-panel" id="work-matters"><h2>Find a matter</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
- <section class="workflow-panel" id="work-email"><h2>Saved drafts</h2><p>Prepare and save client correspondence for review.</p><div class="legal-actions"><button class="work-button" type="button" data-new-draft="blank">New draft</button><button class="work-button" type="button" data-new-draft="followup">Draft client follow-up</button><button class="work-button" type="button" data-new-draft="documents">Draft document request</button></div>
+ <section class="workflow-panel" id="work-email">
+  <header class="draft-toolbar">
+   <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
+   <button class="work-button" type="button" data-new-draft="blank">New draft</button>
+  </header>
+  <div class="draft-layout">
+   <aside class="draft-library" aria-label="Draft library">
+    <h3>Saved drafts</h3>
+    <div id="work-drafts"><p class="work-empty">Connecting to your saved drafts…</p></div>
+    <h3>Templates</h3>
+    <button type="button" data-new-draft="followup">Client follow-up</button>
+    <button type="button" data-new-draft="documents">Document request</button>
+   </aside>
+   <div class="draft-reading">
+    <article id="draft-sample" class="draft-example">
+     <span class="draft-example-tag">Sample draft</span>
+     <h3>Following up on your consultation</h3>
+     <dl><div><dt>To</dt><dd>avery@example.com</dd></div><div><dt>Matter</dt><dd>Sample FL-1024</dd></div></dl>
+     <div class="draft-example-body">
+      <p>Hi Avery,</p>
+      <p>Thank you for meeting with us. I’m writing to check whether you have any questions about the next steps we discussed.</p>
+      <p>If you’d like to arrange a follow-up appointment, please let us know which days and times work for you.</p>
+      <p>Kind regards,<br>Family Law Team</p>
+     </div>
+     <button type="button" data-new-draft="followup">Use follow-up template</button>
+    </article>
   ${editorMarkup('draft-form', 'New email draft', `
    <label>Subject<input name="title" maxlength="160" required></label>
    <label>Recipient<input type="email" name="recipient" maxlength="254"></label>${matterField}`,
    'Email body', 'Save draft', true).replace('<p role="status">', '<button type="button" id="copy-draft-body">Copy text</button><p role="status">')}
-  <div id="work-drafts"></div>
+   </div>
+  </div>
  </section>`;
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
+  const sampleDraft = find('#draft-sample');
   const retryCalendar = find('#retry-calendar-access');
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
@@ -107,6 +134,7 @@ export function mountWorkflow(db, uid) {
     editor.form.querySelector('h3').textContent = editor.title;
     if (hide && editor.dialog?.open) editor.dialog.close();
     editor.form.hidden = hide && editor !== editors.Task;
+    if (editor === editors['Email draft']) sampleDraft.hidden = !editor.form.hidden;
     const cancel = editor.form.querySelector('[data-cancel-editor]');
     if (cancel && editor === editors.Task) cancel.hidden = true;
     message(editor, '');
@@ -251,6 +279,7 @@ export function mountWorkflow(db, uid) {
         ? 'Firestore denied access to this workspace. Ask the project administrator to check your staff role and the published workspace rules.'
         : 'The workspace could not connect. Retry the connection without closing your schedule.';
       for (const editor of Object.values(editors)) submit(editor).disabled = true;
+      if (!records.length) find('#work-drafts').innerHTML = '<p class="work-empty">Saved drafts could not load. You can still preview the sample.</p>';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       status.textContent = loadError;
       message(scheduleEditor, loadError);
