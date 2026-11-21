@@ -207,3 +207,52 @@ body.solicitor-profile { background:#f6f4f7; }
 #document-template-editor :is(input,textarea) { width:100%; }
 #staff-duty-reference { margin-top:16px; padding:14px 18px; border:1px solid var(--line); border-radius:12px; background:var(--paper); }
 #staff-duty-reference summary { cursor:pointer; font-weight:650; }
+
+/* Plum and ivory staff workspace */
+.admin-dashboard { --page:#f7f1eb; --paper:#fffaf5; --ink:#2d1426; --muted:#66505d; --line:#dcc7d3; --accent:#59203f; --tint:#f5e6eb; }
+.dashboard-sidebar { background:linear-gradient(155deg,#481530,#290e24); }
+.dashboard-monogram { display:inline-flex; position:relative; align-items:center; background:transparent; border:0; color:#f7d389; font:2rem var(--serif); }
+.dashboard-monogram span { position:relative; top:.23em; margin-left:-.12em; }
+.dashboard-identity p { color:#eed9e6; }
+.dashboard-sidebar .admin-nav-symbol { display:inline-grid; place-items:center; flex:none; color:#fff0ec; }
+.dashboard-sidebar nav a[aria-current="page"] { background:#70364e; box-shadow:inset 3px 0 #f0cb7e; }
+.dashboard-header { border-bottom-color:var(--line); }
+.dashboard-heading h1 { color:#3a172e; }
+.legal-counts > a { display:flex; gap:12px; align-items:center; border:1px solid #c5a5b8; background:var(--paper); }
+.legal-counts > a[hidden] { display:none; }
+.legal-counts strong { margin:0; }
+.overview-count-icon { display:grid; place-items:center; flex:none; width:39px; height:39px; background:#f4e7d4; border-radius:50%; color:#764510; }
+#overview-panels { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:16px; }
+.admin-dashboard:not([data-view="overview"]) #overview-panels { display:none; }
+#overview-panels .overview-agenda { min-width:0; }
+#overview-panels a { color:#784812; font-weight:650; text-underline-offset:3px; }
+#overview-task-attention a, #overview-inbox-attention a { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:12px 0; border-top:1px solid var(--line); }
+#overview-task-attention span { background:#f5dce1; color:#7e213a; border-radius:20px; padding:2px 9px; font-size:.875rem; }
+#overview-agenda > a { display:inline-block; margin-top:12px; }
+.overview-agenda-row { grid-template-columns:minmax(85px,auto) minmax(0,1fr); }
+.overview-agenda-row small { grid-column:2; }
+.admin-dashboard .work-button:not(:disabled) { color:#2d160a; background:#e3b761; border-color:#ae7b34; font-weight:700; }
+.admin-dashboard .work-button:not(:disabled):hover { background:#f0cb86; }
+.inbox-row[aria-pressed="true"] { background:#faedda; box-shadow:inset 3px 0 #ae7529; }
+.calendar-split, .matter-split { display:grid; grid-template-columns:minmax(0,2fr) minmax(220px,1fr); gap:16px; align-items:start; }
+.matter-split { grid-template-columns:minmax(160px,1fr) minmax(0,1.7fr); }
+#work-calendar .calendar-agenda { margin-top:0; }
+#work-matter-list, #work-matter-detail { overflow:hidden; border:1px solid var(--line); border-radius:12px; background:var(--paper); }
+#work-matter-detail { padding:16px; overflow-wrap:anywhere; }
+#work-matter-detail h3 { margin:0 0 12px; font:1.5rem var(--serif); }
+#work-matter-detail h4 { margin:16px 0 6px; font:1.18rem var(--serif); }
+.template-preview pre { margin:0 0 18px; white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; }
+.template-preview h3 { margin:0; font:1.4rem var(--serif); }
+.staff-table-scroll { overflow-x:auto; }
+.staff-task-table { width:100%; min-width:570px; border-collapse:collapse; text-align:left; }
+.staff-task-table :is(th,td) { border-bottom:1px solid var(--line); padding:11px 9px; }
+.staff-task-table th { background:#f5e9e9; color:var(--accent); }
+.staff-task-table small { display:block; color:var(--muted); }
+.task-priority { border-radius:20px; background:#f1e8df; padding:3px 8px; white-space:nowrap; }
+.task-priority:is([data-priority="Urgent"],[data-priority="High"]) { background:#f5dce1; color:#7e213a; }
+@media(max-width:990px) { .calendar-split { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:760px) {
+  #overview-panels, .matter-split { grid-template-columns:minmax(0,1fr); }
+  .legal-counts > a { gap:6px; align-items:flex-start; flex-direction:column; }
+  .overview-count-icon { width:30px; height:30px; }
+}
