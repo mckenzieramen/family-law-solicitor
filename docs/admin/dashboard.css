@@ -241,7 +241,6 @@ body.solicitor-profile { background:#f6f4f7; }
 #work-matter-detail { padding:16px; overflow-wrap:anywhere; }
 #work-matter-detail h3 { margin:0 0 12px; font:1.5rem var(--serif); }
 #work-matter-detail h4 { margin:16px 0 6px; font:1.18rem var(--serif); }
-.template-preview pre { margin:0 0 18px; white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; }
 .template-preview h3 { margin:0; font:1.4rem var(--serif); }
 .staff-table-scroll { overflow-x:auto; }
 .staff-task-table { width:100%; min-width:570px; border-collapse:collapse; text-align:left; }
@@ -279,3 +278,18 @@ body.solicitor-profile { background:#f6f4f7; }
   box-shadow:0 8px 24px #4521390a;
 }
 #task-dialog .work-form h3 { border-bottom:1px solid #c9964f6b; padding-bottom:13px; color:var(--accent); }
+
+.template-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.7fr); gap:16px; align-items:start; }
+.template-layout .staff-template-grid { grid-template-columns:minmax(0,1fr); gap:8px; }
+.template-layout .staff-template-card { padding:12px 15px; }
+.staff-template-card:has(button[aria-pressed="true"]) { background:#faedda; border-color:#b38a57; }
+.template-preview { min-width:0; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--paper); }
+.template-preview :is(header,footer) { padding:16px clamp(16px,3vw,25px); background:var(--tint); }
+.template-preview header p { margin:0 0 5px; color:var(--muted); font-size:.875rem; }
+.template-preview dl { margin:0; padding:8px clamp(16px,3vw,25px); border-bottom:1px solid var(--line); }
+.template-preview dl div { display:grid; grid-template-columns:4rem minmax(0,1fr); gap:8px; padding:5px 0; }
+.template-preview dt { font-weight:650; }
+.template-preview dd { margin:0; overflow-wrap:anywhere; }
+.template-preview-body { padding:20px clamp(16px,3vw,25px); white-space:pre-wrap; overflow-wrap:anywhere; }
+.template-preview footer { text-align:right; }
+@media(max-width:760px) { .template-layout { grid-template-columns:minmax(0,1fr); } }

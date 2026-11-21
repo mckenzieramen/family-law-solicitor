@@ -91,16 +91,18 @@ export function mountWorkflow(db, uid) {
  <section class="workflow-panel" id="work-templates">
   <div class="admin-section-heading"><h2>Email and document templates</h2></div>
   <p>Choose a template to prefill a draft, then replace the bracketed details.</p>
-  <div class="staff-template-grid">
+  <div class="template-layout"><div class="staff-template-grid" aria-label="Available templates">
    ${Object.entries(templates).map(([key, template]) => `<article class="staff-template-card">
     <span>${template.type}</span><h3>${template.title}</h3><p>${template.description}</p>
-    <button class="work-button" type="button" data-preview-template="${key}">Preview template</button>
+    <button class="work-button" type="button" data-preview-template="${key}" aria-pressed="false" aria-controls="template-preview">Preview</button>
    </article>`).join('')}
   </div>
-  <dialog class="schedule-dialog template-preview" id="template-preview" aria-labelledby="template-preview-title">
-   <div class="admin-section-heading"><h3 id="template-preview-title"></h3><form method="dialog"><button>Close</button></form></div>
-   <pre id="template-preview-text"></pre><button class="work-button" type="button" id="apply-template">Use template</button>
-  </dialog>
+  <section class="template-preview" id="template-preview" aria-labelledby="template-preview-title">
+   <header><p id="template-preview-type"></p><h3 id="template-preview-title" tabindex="-1"></h3></header>
+   <dl id="template-email-meta"><div><dt>To</dt><dd>[Client email]</dd></div><div><dt>Subject</dt><dd id="template-preview-subject"></dd></div></dl>
+   <div id="template-preview-text" class="template-preview-body"></div>
+   <footer><button class="work-button" type="button" id="apply-template">Use template</button></footer>
+  </section></div>
   <form class="work-form" id="document-template-editor" hidden>
    <h3>Edit document draft</h3>
    <label>Title<input name="title" maxlength="160" required></label>
@@ -648,7 +650,19 @@ export function mountWorkflow(db, uid) {
       deleteConfirm.disabled = deleteCancel.disabled = false;
     }
   });
-  const preview = find('#template-preview');
+  function selectTemplate(key) {
+    const template = templates[key];
+    find('#template-preview-type').textContent = template.type + ' preview';
+    find('#template-preview-title').textContent = template.title;
+    find('#template-preview-subject').textContent = template.title;
+    find('#template-email-meta').hidden = template.type !== 'Email';
+    find('#template-preview-text').textContent = template.notes;
+    find('#apply-template').dataset.newDraft = key;
+    for (const button of root.querySelectorAll('[data-preview-template]')) {
+      button.setAttribute('aria-pressed', String(button.dataset.previewTemplate === key));
+    }
+  }
+  selectTemplate('followup');
   root.onclick = async event => {
     const matter = event.target.closest('[data-matter]');
     if (matter) {
@@ -659,16 +673,14 @@ export function mountWorkflow(db, uid) {
     }
     const previewButton = event.target.closest('[data-preview-template]');
     if (previewButton) {
-      const key = previewButton.dataset.previewTemplate;
-      find('#template-preview-title').textContent = templates[key].title;
-      find('#template-preview-text').textContent = templates[key].notes;
-      find('#apply-template').dataset.newDraft = key;
-      preview.showModal();
+      selectTemplate(previewButton.dataset.previewTemplate);
+      const heading = find('#template-preview-title');
+      heading.focus({preventScroll:true});
+      find('#template-preview').scrollIntoView({block:'nearest'});
       return;
     }
     const draft = event.target.closest('[data-new-draft]');
     if (draft) {
-      if (preview.open) preview.close();
       const template = templates[draft.dataset.newDraft];
       if (template?.type === 'Document') {
         if (!documentEditor.hidden && documentEditor.dataset.changed && !window.confirm('Replace this document draft?')) return;
