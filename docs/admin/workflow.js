@@ -47,8 +47,29 @@ const followUpStates = {
 const priorities = ['Urgent', 'High', 'Normal', 'Low'];
 let stop;
 let session = 0;
+const toast = document.getElementById('staff-toast');
+let toastTimer;
+
+function dismissToast() {
+  clearTimeout(toastTimer);
+  if (toast) toast.hidden = true;
+}
+
+toast?.querySelector('button').addEventListener('click', dismissToast);
+
+function notify(title, detail, error = false) {
+  if (!toast) return;
+  clearTimeout(toastTimer);
+  toast.dataset.tone = error ? 'error' : 'success';
+  toast.querySelector('.staff-toast-icon').textContent = error ? '!' : '✓';
+  toast.hidden = false;
+  document.getElementById('staff-toast-title').textContent = title;
+  document.getElementById('staff-toast-message').textContent = detail;
+  if (!error) toastTimer = setTimeout(dismissToast, 7000);
+}
 
 export function clearWorkflow() {
+  dismissToast();
   session++;
   stop?.();
   stop = undefined;
@@ -576,7 +597,7 @@ export function mountWorkflow(db, uid) {
         else await addDoc(items, data);
         if (current !== session) return;
         reset(editor);
-        status.textContent = editor.saved;
+        notify(editor.saved, data.title);
         if (note || editor === scheduleEditor) {
           month.value = data.date.slice(0,7);
           scope.value = data.calendar;
@@ -643,7 +664,7 @@ export function mountWorkflow(db, uid) {
       if (editor && !editor.saving) reset(editor);
       pendingDelete = null;
       deleteDialog.close();
-      status.textContent = 'Item deleted.';
+      notify('Item deleted', deleteName.textContent);
     } catch {
       if (current === session) deleteStatus.textContent = 'Could not delete the item. Try again or cancel.';
     } finally {
@@ -740,8 +761,9 @@ export function mountWorkflow(db, uid) {
     button.disabled = true;
     try {
       await updateDoc(doc(items, item.id), {done:!item.done, updatedAt:serverTimestamp()});
+      if (current === session) notify(item.done ? 'Item reopened' : 'Item completed', item.title);
     } catch {
-      if (current === session) status.textContent = 'Could not update the work item.';
+      if (current === session) notify('Update failed', 'Could not update this item. Please try again.', true);
     } finally { button.disabled = false; }
   };
 }
