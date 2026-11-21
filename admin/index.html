@@ -7,7 +7,7 @@
 <link rel="canonical" href="https://family-law-firm.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=chat-2">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-menu-26">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-actions-27">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=theme-18">
 <style>
 .admin-sign-in {
@@ -133,6 +133,11 @@
    </div>
   </header>
   <div id="staff-sample-banner" class="sample-workspace-strip" hidden><span>Sample data</span><p>Explore with fictional records. Changes reset when you reload.</p></div>
+  <nav class="staff-quick-actions" aria-label="Common workspace actions">
+   <a href="#work-queue" data-open-editor="task">Add task</a>
+   <a href="#work-calendar" data-open-editor="schedule" data-calendar-today>Add schedule</a>
+   <a href="#work-email" data-open-editor="draft">New email draft</a>
+  </nav>
   <div id="overview-panels">
    <section class="overview-agenda" aria-labelledby="overview-attention-title"><div class="admin-section-heading"><h2 id="overview-attention-title">Needs attention</h2></div><div id="overview-task-attention">Loading tasks…</div><div id="overview-inbox-attention"></div><h3>Follow-ups due</h3><div id="overview-follow-ups">Loading follow-ups…</div></section>
    <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div><a href="#work-calendar" data-calendar-today>Open today’s calendar</a></section>
@@ -243,7 +248,7 @@ if (sampleMode) {
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .legal-counts a, #overview-panels a, #overview-upcoming a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a');
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
@@ -257,6 +262,8 @@ if (sampleMode) {
      filter.dispatchEvent(new Event('change'));
    }
    if (link.hasAttribute('data-calendar-today')) document.getElementById('work-calendar-today')?.click();
+   const editorButtons = {task:'#new-work-task', schedule:'[data-create-schedule]', draft:'[data-new-draft="blank"]'};
+   if (link.dataset.openEditor) workspace.querySelector(editorButtons[link.dataset.openEditor])?.click();
    if (link.dataset.inboxFilter) {
      const inboxFilter = document.getElementById('inbox-filter');
      inboxFilter.value = link.dataset.inboxFilter;
