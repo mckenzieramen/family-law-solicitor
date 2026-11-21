@@ -81,6 +81,7 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-sign-in #staff-login button { transition: none; }
 }
+.staff-preview-link { display:inline-block; margin-top:14px; color:#59203f; font-weight:650; text-underline-offset:3px; }
 </style>
 </head>
 <body class="solicitor-profile">
@@ -97,6 +98,7 @@
     <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
     <button type="submit">Sign in</button>
    </form>
+   <a class="staff-preview-link" href="?sample=1">Open sample workspace</a>
    <p id="auth-status" class="entry-note" role="status">Connecting to Firebase…</p>
    <button id="staff-logout" type="button" hidden>Sign out</button>
   </div>
@@ -182,7 +184,34 @@
   </details>
  </div>
 </section>
-<script type="module" src="../docs/admin/firebase-admin.js?v=realistic-samples-23"></script>
+<script type="module">
+const url = new URL(location.href);
+const sampleMode = url.searchParams.get('sample') === '1';
+if (sampleMode) {
+  const status = document.getElementById('auth-status');
+  status.textContent = 'Opening the sample workspace…';
+  try {
+    const [{mountWorkflow}, {mountInbox}] = await Promise.all([
+      import('../docs/admin/workflow.js?v=realistic-samples-23'),
+      import('../docs/admin/inbox.js?v=realistic-samples-23')
+    ]);
+    mountWorkflow(null, null, true);
+    mountInbox(null, true);
+    url.searchParams.delete('sample');
+    const link = document.getElementById('staff-sample-link');
+    link.href = url.href;
+    link.textContent = 'Back to staff sign-in';
+    document.getElementById('dashboard-role').textContent = 'Sample workspace';
+    document.getElementById('staff-sample-banner').hidden = false;
+    document.getElementById('staff-entry').hidden = true;
+    document.getElementById('staff-checklist').hidden = false;
+  } catch {
+    status.textContent = 'The sample workspace could not load. Refresh the page to try again.';
+  }
+} else {
+  await import('../docs/admin/firebase-admin.js?v=realistic-samples-23');
+}
+</script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
