@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Family Law Firm</title>
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
-<link rel="stylesheet" href="./dashboard.css?v=compact-heading-9">
+<link rel="stylesheet" href="./dashboard.css?v=staff-templates-13">
 <link rel="stylesheet" href="./workflow.css?v=daily-work-12">
 <style>
 .admin-sign-in {
@@ -114,7 +114,8 @@
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true">▦</span><span>Calendar</span></a>
    <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true">▤</span><span>Cases</span></a>
    <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true">✎</span><span>Email drafts</span></a>
-   <a href="#duties-all"><span class="admin-nav-symbol" aria-hidden="true">✓</span><span>Duty Checklist</span></a>
+   <a href="#work-templates"><span class="admin-nav-symbol" aria-hidden="true">▤</span><span>Templates</span></a>
+
   </nav>
  </aside>
  <div class="dashboard-main">
@@ -155,6 +156,7 @@
    </div>
   </section>
   <div id="staff-workspace"></div>
+  <details id="staff-duty-reference"><summary>Duty checklist</summary>
   <div class="dashboard-section-title"><h2>Legal assistant responsibilities</h2><p id="save-status" role="status"></p></div>
   <div class="dashboard-metrics" aria-label="Checklist summary">
    <div><span>Duties completed</span><strong id="dashboard-completed">0</strong></div>
@@ -162,9 +164,10 @@
    <div><label for="dashboard-progress">Checklist progress</label><strong id="dashboard-percent">0%</strong><progress id="dashboard-progress" max="100" value="0"></progress></div>
   </div>
   <div id="duty-groups" class="duty-groups"></div>
+  </details>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=daily-work-12"></script>
+<script type="module" src="./firebase-admin.js?v=staff-templates-13"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -174,7 +177,7 @@
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
  function render() {
-   const hash = ['#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#duties-all' : location.hash;
+   const hash = ['#duties-all','#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#work-templates' : location.hash;
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
