@@ -256,3 +256,9 @@ body.solicitor-profile { background:#f6f4f7; }
   .legal-counts > a { gap:6px; align-items:flex-start; flex-direction:column; }
   .overview-count-icon { width:30px; height:30px; }
 }
+
+#case-follow-ups { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,195px),1fr)); gap:10px; margin-block:12px 20px; }
+.follow-up-group { border:1px solid var(--line); border-radius:10px; padding:10px; }
+.follow-up-group summary { cursor:pointer; font-weight:650; }
+.follow-up-row { border-top:1px solid var(--line); padding:9px 0; overflow-wrap:anywhere; }
+.follow-up-row small, #overview-follow-ups small { display:block; color:var(--muted); }
