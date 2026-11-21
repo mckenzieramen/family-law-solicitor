@@ -13,7 +13,22 @@ const senderName = record => [record.contact?.firstName, record.contact?.lastNam
 const compareText = (a, b) => a.localeCompare(b, 'en-AU', {sensitivity:'base'});
 const sortText = (a, b) => a && b ? compareText(a, b) : Number(!a) - Number(!b);
 const nav = document.getElementById('inbox-nav');
+const overviewLink = document.getElementById('overview-inbox-link');
+const overviewCount = document.getElementById('overview-inbox-count');
+const overviewAttention = document.getElementById('overview-inbox-attention');
 let stop;
+
+function showOverviewInbox(total) {
+  if (overviewCount) overviewCount.textContent = total ?? '—';
+  if (!overviewAttention) return;
+  overviewAttention.replaceChildren();
+  if (!total) return;
+  const link = document.createElement('a');
+  link.href = '#staff-inbox';
+  link.dataset.inboxFilter = 'unanswered';
+  link.textContent = total + (total === 1 ? ' support chat awaiting reply' : ' support chats awaiting reply');
+  overviewAttention.append(link);
+}
 
 export function clearInbox() {
   stop?.();
@@ -23,6 +38,8 @@ export function clearInbox() {
   count.textContent = '';
   search.value = '';
   panel.hidden = nav.hidden = true;
+  if (overviewLink) overviewLink.hidden = true;
+  showOverviewInbox();
   list.replaceChildren();
   reader.replaceChildren();
   retry.onclick = null;
@@ -32,6 +49,7 @@ export function clearInbox() {
 export function mountInbox(db) {
   if (!panel) return;
   panel.hidden = nav.hidden = false;
+  if (overviewLink) overviewLink.hidden = false;
   status.textContent = 'Loading messages…';
   let entries = [];
   let alive = true;
@@ -170,10 +188,12 @@ export function mountInbox(db) {
       if (!alive) return;
       ready = true;
       entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
+      showOverviewInbox(entries.filter(item => item.kind === 'support' && !item.reply).length);
       render();
     }, error => {
       if (!alive) return;
       ready = false;
+      showOverviewInbox();
       const accessDenied = ['permission-denied', 'unauthenticated'].includes(error.code);
       status.textContent = accessDenied
         ? 'Inbox access unavailable. Ask your Firebase administrator to verify your staff role and the published rules.'

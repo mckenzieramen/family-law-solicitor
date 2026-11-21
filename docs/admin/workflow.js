@@ -89,9 +89,13 @@ export function mountWorkflow(db, uid) {
   <div class="staff-template-grid">
    ${Object.entries(templates).map(([key, template]) => `<article class="staff-template-card">
     <span>${template.type}</span><h3>${template.title}</h3><p>${template.description}</p>
-    <button class="work-button" type="button" data-new-draft="${key}">Use template</button>
+    <button class="work-button" type="button" data-preview-template="${key}">Preview template</button>
    </article>`).join('')}
   </div>
+  <dialog class="schedule-dialog template-preview" id="template-preview" aria-labelledby="template-preview-title">
+   <div class="admin-section-heading"><h3 id="template-preview-title"></h3><form method="dialog"><button>Close</button></form></div>
+   <pre id="template-preview-text"></pre><button class="work-button" type="button" id="apply-template">Use template</button>
+  </dialog>
   <form class="work-form" id="document-template-editor" hidden>
    <h3>Edit document draft</h3>
    <label>Title<input name="title" maxlength="160" required></label>
@@ -123,11 +127,11 @@ export function mountWorkflow(db, uid) {
    'Appointment notes', 'Save schedule', true)}
   <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
-  <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><div class="calendar-month-nav"><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><label>Month <input id="work-month" type="month"></label><button type="button" data-month-step="1" aria-label="Next month">›</button></div><button type="button" id="work-show-month">Show whole month</button></div>
-  <div id="work-month-grid"></div>
+  <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><div class="calendar-month-nav"><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><label>Month <input id="work-month" type="month"></label><button type="button" data-month-step="1" aria-label="Next month">›</button></div><button type="button" id="work-calendar-today">Today</button><button type="button" id="work-show-month">Show whole month</button></div>
+  <div class="calendar-split"><div><div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
-  <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
+  </div><div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div></div>
  </section>
  <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2></div>
   <div class="legal-actions">
@@ -135,7 +139,7 @@ export function mountWorkflow(db, uid) {
    <label>Show<select id="work-matter-kind"><option value="">All work items</option><option>Task</option><option>Appointment</option><option>Email draft</option></select></label>
    <label>Sort matters<select id="work-matter-sort"><option value="reference">Reference A–Z</option><option value="activity">Most recent activity</option></select></label>
   </div>
-  <p id="work-matter-count" role="status"></p><div id="work-matter-list"></div></section>
+  <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></section>
  <section class="workflow-panel" id="work-email">
   <header class="draft-toolbar">
    <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
@@ -186,6 +190,7 @@ export function mountWorkflow(db, uid) {
     Note: {form:find('#day-note-form'), title:'Add day note', editTitle:'Edit day note', saved:'Day note saved.', view:'work-calendar'}
   };
   let selectedDay = '';
+  let selectedMatter;
   month.value = today().slice(0,7);
   const calendarDate = () => selectedDay || (month.value && !today().startsWith(month.value) ? month.value + '-01' : today());
   const field = (editor, name) => editor.form.elements.namedItem(name);
@@ -290,14 +295,22 @@ export function mountWorkflow(db, uid) {
         [item.title, item.matter].join(' ').toLowerCase().includes(taskQuery);
     }).sort(order);
     find('#work-task-count').textContent = loaded ? `${matchingTasks.length} of ${tasks.length} tasks` : '';
-    renderRows('#work-priority-list', matchingTasks, loaded ? 'No tasks match this view.' : (loadError || 'Loading tasks…'));
+    const taskList = find('#work-priority-list');
+    taskList.innerHTML = matchingTasks.length ? `<div class="staff-table-scroll"><table class="staff-task-table">
+      <thead><tr><th scope="col">Task</th><th scope="col">Matter</th><th scope="col">Priority</th><th scope="col">Due date</th><th scope="col">Actions</th></tr></thead>
+      <tbody>${matchingTasks.map(item => `<tr><td><strong>${escape(item.title)}</strong><small>${item.done ? 'Completed' : overdue(item) ? 'Overdue' : 'Open'}</small></td><td>${escape(item.matter || '—')}</td><td><span class="task-priority" data-priority="${escape(item.priority)}">${escape(item.priority)}</span></td><td>${escape(item.date || '—')}</td><td><div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button><button type="button" data-toggle="${escape(item.id)}">${item.done ? 'Reopen' : 'Complete'}</button><button type="button" data-remove="${escape(item.id)}">Delete</button></div></td></tr>`).join('')}</tbody></table></div>` :
+      `<p class="work-empty">${escape(loaded ? 'No tasks match this view.' : (loadError || 'Loading tasks…'))}</p>`;
     for (const [id, total] of [
-      ['legal-open', tasks.filter(item => !item.done).length],
-      ['legal-overdue', tasks.filter(overdue).length],
-      ['legal-appointments', records.filter(item => item.kind === 'Appointment' && !item.done && item.date >= date).length]
+      ['legal-today', records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date).length],
+      ['legal-overdue', tasks.filter(overdue).length]
     ]) {
       const metric = document.getElementById(id);
       if (metric) metric.textContent = total;
+    }
+    const attention = document.getElementById('overview-task-attention');
+    if (attention) {
+      const due = tasks.filter(overdue).sort(order).slice(0, 3);
+      attention.innerHTML = due.map(item => `<a href="#work-queue" data-task-filter="overdue"><strong>${escape(item.title)}</strong><span>Overdue</span></a>`).join('') || '<p>No overdue tasks.</p>';
     }
     if (agenda) {
       const appointments = records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date)
@@ -337,17 +350,24 @@ export function mountWorkflow(db, uid) {
       groups.get(key).push(item);
     }
     const matters = find('#work-matter-list');
-    const expanded = new Set([...matters.querySelectorAll('[data-matter][open]')].map(group => group.dataset.matter));
+    const detail = find('#work-matter-detail');
     const lastActivity = entries => Math.max(...entries.map(item => item.updatedAt?.toMillis?.() ?? 0));
     const keys = [...groups.keys()].filter(key =>
       key.includes(query) || groups.get(key).some(item => item.title.toLowerCase().includes(query))
     ).sort((a, b) => (sort === 'activity' ? lastActivity(groups.get(b)) - lastActivity(groups.get(a)) : 0) || a.localeCompare(b, 'en-AU', {numeric:true}));
     find('#work-matter-count').textContent = loaded ? `${keys.length} ${keys.length === 1 ? 'matter' : 'matters'}` : '';
-    matters.innerHTML = keys.map(key => {
-      const entries = groups.get(key);
-      const counts = ['Task', 'Appointment', 'Email draft'].map(kind => entries.filter(item => item.kind === kind).length);
-      return `<details class="work-row matter-group" data-matter="${escape(key)}"${expanded.has(key) ? ' open' : ''}><summary><strong>${escape(entries[0].matter)}</strong><small>${counts[0]} tasks · ${counts[1]} appointments · ${counts[2]} drafts</small></summary>${entries.sort(order).map(row).join('')}</details>`;
-    }).join('');
+    if (!keys.includes(selectedMatter)) selectedMatter = keys[0];
+    matters.innerHTML = keys.map(key => `<button class="inbox-row" type="button" data-matter="${escape(key)}" aria-pressed="${key === selectedMatter}">${escape(groups.get(key)[0].matter)}</button>`).join('');
+    const entries = groups.get(selectedMatter) ?? [];
+    const next = entries.filter(item => item.kind === 'Appointment' && !item.done && item.date >= today())
+      .sort((a,b) => a.date.localeCompare(b.date) || (a.time || '99:99').localeCompare(b.time || '99:99')).slice(0,1);
+    const drafts = entries.filter(item => item.kind === 'Email draft')
+      .sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0)).slice(0,5);
+    const tasks = entries.filter(item => item.kind === 'Task' && !item.done).sort(order);
+    const sections = kind ? [[kind, entries.sort(order)]] :
+      [['Next appointment', next], ['Open tasks', tasks], ['Recent drafts', drafts]];
+    detail.innerHTML = entries.length ? `<h3>${escape(entries[0].matter)}</h3>` +
+      sections.map(([label, items]) => `<h4>${label}</h4>${items.map(row).join('') || '<p class="work-empty">None in this matter.</p>'}`).join('') : 'Select a matter to view its activity.';
     if (!keys.length || !loaded) {
       const notice = document.createElement('p');
       notice.className = 'work-empty';
@@ -390,6 +410,8 @@ export function mountWorkflow(db, uid) {
       renderDrafts();
       if (upcoming) upcoming.textContent = 'Upcoming appointments could not load.';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
+      const attention = document.getElementById('overview-task-attention');
+      if (attention) attention.textContent = 'Could not load task updates.';
       status.textContent = loadError;
       renderMatters();
       message(scheduleEditor, loadError);
@@ -430,6 +452,11 @@ export function mountWorkflow(db, uid) {
   }
   month.addEventListener('change', () => { selectedDay = ''; render(); });
   scope.addEventListener('change', () => { selectedDay = ''; render(); });
+  find('#work-calendar-today').addEventListener('click', () => {
+    selectedDay = today();
+    month.value = selectedDay.slice(0,7);
+    renderCalendar();
+  });
   find('#work-show-month').addEventListener('click', () => { selectedDay = ''; renderCalendar(); });
   find('#work-month-grid').addEventListener('click', event => {
     const day = event.target.closest('[data-calendar-day]');
@@ -535,9 +562,27 @@ export function mountWorkflow(db, uid) {
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
+  const preview = find('#template-preview');
   root.onclick = async event => {
+    const matter = event.target.closest('[data-matter]');
+    if (matter) {
+      selectedMatter = matter.dataset.matter;
+      renderMatters();
+      find('#work-matter-list [aria-pressed="true"]')?.focus();
+      return;
+    }
+    const previewButton = event.target.closest('[data-preview-template]');
+    if (previewButton) {
+      const key = previewButton.dataset.previewTemplate;
+      find('#template-preview-title').textContent = templates[key].title;
+      find('#template-preview-text').textContent = templates[key].notes;
+      find('#apply-template').dataset.newDraft = key;
+      preview.showModal();
+      return;
+    }
     const draft = event.target.closest('[data-new-draft]');
     if (draft) {
+      if (preview.open) preview.close();
       const template = templates[draft.dataset.newDraft];
       if (template?.type === 'Document') {
         if (!documentEditor.hidden && documentEditor.dataset.changed && !window.confirm('Replace this document draft?')) return;
