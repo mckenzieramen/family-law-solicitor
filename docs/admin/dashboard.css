@@ -174,3 +174,22 @@ body.solicitor-profile { background:#f6f4f7; }
   .overview-agenda-row { grid-template-columns:72px minmax(0,1fr); }
   .overview-agenda-row small { grid-column:2; }
 }
+
+.admin-dashboard { --page:#f7f4f0; --paper:#fffefa; --ink:#251827; --muted:#615461; --line:#e9dfe4; --accent:#532345; --tint:#f3e8ef; background:var(--page); }
+.dashboard-sidebar { background:linear-gradient(165deg,#3b1b34,#271426 76%); }
+.dashboard-sidebar .admin-nav-symbol { width:22px; text-align:center; font-size:17px; color:#e5bcce; }
+.dashboard-sidebar a { display:flex; align-items:center; gap:9px; min-height:43px; }
+.dashboard-header { align-items:center; }
+.admin-section-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+.admin-section-heading h2 { margin:0; }
+.admin-section-heading > span { color:var(--muted); font-size:14px; }
+.legal-counts > a { border-top:3px solid #896083; padding-block:18px; }
+.legal-counts > a:nth-child(2) { border-top-color:#a65a59; }
+.legal-counts > a:nth-child(3) { border-top-color:#668673; }
+.admin-dashboard .dashboard-metrics > div { background:#fcf8fa; }
+.admin-dashboard .duty-group { border-top:3px solid #896083; }
+.admin-dashboard .duty-item:has(input:checked) { color:var(--muted); }
+.admin-dashboard #inbox-list { background:#faf6f8; }
+.admin-dashboard #inbox-reader { min-height:265px; }
+.admin-dashboard #inbox-status:not(:empty) { color:#653b4d; }
+@media(max-width:760px) { .dashboard-sidebar a { gap:5px; } .dashboard-sidebar .admin-nav-symbol { width:17px; } }
