@@ -262,3 +262,13 @@ body.solicitor-profile { background:#f6f4f7; }
 .follow-up-group summary { cursor:pointer; font-weight:650; }
 .follow-up-row { border-top:1px solid var(--line); padding:9px 0; overflow-wrap:anywhere; }
 .follow-up-row small, #overview-follow-ups small { display:block; color:var(--muted); }
+
+#task-dialog, .work-delete-dialog { width:min(100% - 28px, 540px); max-height:calc(100dvh - 28px); overflow:auto; }
+.work-delete-dialog { max-width:440px; padding:clamp(16px,4vw,24px); }
+.work-delete-dialog h3 { margin:0 0 10px; font:1.45rem var(--serif); }
+.work-delete-dialog p { overflow-wrap:anywhere; }
+#work-delete-status:empty { display:none; }
+.work-delete-actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+.work-delete-actions button { min-height:40px; padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); cursor:pointer; }
+#work-delete-confirm { background:#79263c; border-color:#79263c; color:white; font-weight:650; }
+.work-delete-actions button:disabled { opacity:.65; cursor:wait; }

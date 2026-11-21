@@ -109,16 +109,26 @@ export function mountWorkflow(db, uid) {
    <button type="button" id="close-document-template">Close draft</button>
   </form>
  </section>
- <p id="work-status" role="status">Loading work items…</p>
- <section class="workflow-panel" id="work-queue">
-  <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
-  ${editorMarkup('task-form', 'Create task', `
+ <dialog id="task-dialog" class="schedule-dialog" aria-labelledby="task-form-title">
+ ${editorMarkup('task-form', 'Create task', `
    <label>Task title<input name="title" maxlength="160" required></label>${matterField}
    <label>Due or follow-up date (Sydney)<input name="date" type="date"></label>
    <label>Follow-up status<select name="followUpStatus"><option value="">Regular task</option>${Object.entries(followUpStates).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
    'Task notes', 'Save task', true)}
-  <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
+ </dialog>
+ <dialog id="work-delete-dialog" class="schedule-dialog work-delete-dialog" aria-labelledby="work-delete-title" aria-describedby="work-delete-description">
+  <form id="work-delete-form">
+   <h3 id="work-delete-title">Delete item?</h3>
+   <p id="work-delete-description">Delete <strong id="work-delete-name"></strong> from the workspace? This cannot be undone.</p>
+   <p id="work-delete-status" role="status"></p>
+   <div class="work-delete-actions"><button type="button" id="work-delete-cancel" autofocus>Cancel</button><button type="submit" id="work-delete-confirm">Delete item</button></div>
+  </form>
+ </dialog>
+ <p id="work-status" role="status">Loading work items…</p>
+ <section class="workflow-panel" id="work-queue">
+  <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
+    <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
   <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
@@ -191,7 +201,7 @@ export function mountWorkflow(db, uid) {
   const agenda = document.getElementById('overview-agenda-items');
   const upcoming = document.getElementById('overview-upcoming-items');
   const editors = {
-    Task: {form:find('#task-form'), title:'Create task', editTitle:'Edit task', saved:'Task saved.', view:'work-queue'},
+    Task: {form:find('#task-form'), dialog:find('#task-dialog'), title:'Create task', editTitle:'Edit task', saved:'Task saved.', view:'work-queue'},
     Appointment: {form:find('#schedule-form'), dialog:find('#schedule-dialog'), title:'Add schedule', editTitle:'Edit schedule', saved:'Schedule saved.', view:'work-calendar'},
     'Email draft': {form:find('#draft-form'), title:'New email draft', editTitle:'Edit email draft', saved:'Draft saved.', view:'work-email'},
     Note: {form:find('#day-note-form'), title:'Add day note', editTitle:'Edit day note', saved:'Day note saved.', view:'work-calendar'}
@@ -230,7 +240,7 @@ export function mountWorkflow(db, uid) {
       if (editor === editors.Task) editor.form.querySelector('[data-cancel-editor]').hidden = false;
     } else if (editor === editors.Note) editor.calendar = scope.value;
     if (editor.dialog && !editor.dialog.open) editor.dialog.showModal();
-    if (editor === editors.Appointment && !loaded) message(editor, loadError || 'Connecting to the calendar…');
+    if (editor.dialog && !loaded) message(editor, loadError || 'Connecting to the workspace…');
     editor.form.querySelector('input, textarea').focus();
   }
   const order = (a,b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority) || (a.date || '9999').localeCompare(b.date || '9999');
@@ -410,7 +420,9 @@ export function mountWorkflow(db, uid) {
     if (!button || current !== session || !loaded) return;
     const action = [...find('#case-follow-ups').querySelectorAll('[data-edit]')]
       .find(entry => entry.dataset.edit === button.dataset.overviewFollowUp);
-    action?.click();
+    if (!action) return;
+    navigate('work-matters');
+    action.click();
   };
   function listenForWorkItems() {
     stop?.();
@@ -427,7 +439,7 @@ export function mountWorkflow(db, uid) {
       records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
       if (!loaded) {
         status.textContent = '';
-        if (!scheduleEditor.saving) message(scheduleEditor, '');
+        for (const editor of [scheduleEditor, editors.Task]) if (!editor.saving) message(editor, '');
       }
       loaded = true;
       for (const editor of Object.values(editors)) submit(editor).disabled = Boolean(editor.saving);
@@ -450,15 +462,18 @@ export function mountWorkflow(db, uid) {
       status.textContent = loadError;
       renderMatters();
       message(scheduleEditor, loadError);
+      message(editors.Task, loadError);
       retryCalendar.hidden = accessDenied;
     });
   }
   retryCalendar.addEventListener('click', listenForWorkItems);
   listenForWorkItems();
-  scheduleEditor.dialog.addEventListener('cancel', event => {
-    event.preventDefault();
-    if (!scheduleEditor.saving) reset(scheduleEditor);
-  });
+  for (const editor of [scheduleEditor, editors.Task]) {
+    editor.dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      if (!editor.saving) reset(editor);
+    });
+  }
   const noteEditor = editors.Note;
   const draftEditor = editors['Email draft'];
   function showNew(editor, defaults) {
@@ -522,6 +537,7 @@ export function mountWorkflow(db, uid) {
       reset(editor);
       if (editor === scheduleEditor) find('[data-create-schedule]').focus();
       else if (editor === draftEditor) find('[data-new-draft="blank"]').focus();
+      else if (root.closest('[data-view="work-matters"]')) find('#new-follow-up').focus();
       else find('#new-work-task').focus();
     });
     editor.form.addEventListener('submit', async event => {
@@ -600,8 +616,37 @@ export function mountWorkflow(db, uid) {
   });
   find('#new-follow-up').addEventListener('click', () => {
     const matter = find('#work-matter-list [aria-pressed="true"]')?.textContent.trim() || '';
-    navigate(editors.Task.view);
     showNew(editors.Task, {matter, followUpStatus:'client', date:today()});
+    editors.Task.form.querySelector('h3').textContent = 'Add follow-up';
+  });
+  const deleteDialog = find('#work-delete-dialog');
+  const deleteName = find('#work-delete-name');
+  const deleteStatus = find('#work-delete-status');
+  const deleteConfirm = find('#work-delete-confirm');
+  const deleteCancel = find('#work-delete-cancel');
+  let pendingDelete;
+  deleteCancel.addEventListener('click', () => deleteDialog.close());
+  deleteDialog.addEventListener('cancel', event => {
+    if (deleteConfirm.disabled) event.preventDefault();
+  });
+  find('#work-delete-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!pendingDelete || deleteConfirm.disabled || current !== session) return;
+    deleteConfirm.disabled = deleteCancel.disabled = true;
+    deleteStatus.textContent = 'Deleting…';
+    try {
+      await deleteDoc(doc(items, pendingDelete));
+      if (current !== session) return;
+      const editor = Object.values(editors).find(entry => entry.id === pendingDelete);
+      if (editor && !editor.saving) reset(editor);
+      pendingDelete = null;
+      deleteDialog.close();
+      status.textContent = 'Item deleted.';
+    } catch {
+      if (current === session) deleteStatus.textContent = 'Could not delete the item. Try again or cancel.';
+    } finally {
+      deleteConfirm.disabled = deleteCancel.disabled = false;
+    }
   });
   const preview = find('#template-preview');
   root.onclick = async event => {
@@ -662,7 +707,7 @@ export function mountWorkflow(db, uid) {
     if (button.dataset.edit) {
       const editor = isNote(item) ? noteEditor : editors[item.kind];
       if (!editor || editor.saving) return;
-      navigate(editor.view);
+      if (editor !== editors.Task) navigate(editor.view);
       if (editor.id === item.id && !editor.form.hidden) {
         editor.form.querySelector('input, textarea').focus();
         return;
@@ -673,17 +718,16 @@ export function mountWorkflow(db, uid) {
       open(editor, item);
       return;
     }
-    if (button.dataset.remove && !window.confirm('Delete this work item?')) return;
+    if (button.dataset.remove) {
+      pendingDelete = item.id;
+      deleteName.textContent = item.title;
+      deleteStatus.textContent = '';
+      deleteDialog.showModal();
+      return;
+    }
     button.disabled = true;
     try {
-      const ref = doc(items, item.id);
-      if (button.dataset.remove) {
-        await deleteDoc(ref);
-        if (current === session) {
-          const editor = Object.values(editors).find(entry => entry.id === item.id);
-          if (editor && !editor.saving) reset(editor);
-        }
-      } else await updateDoc(ref, {done:!item.done, updatedAt:serverTimestamp()});
+      await updateDoc(doc(items, item.id), {done:!item.done, updatedAt:serverTimestamp()});
     } catch {
       if (current === session) status.textContent = 'Could not update the work item.';
     } finally { button.disabled = false; }
