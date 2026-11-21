@@ -8,23 +8,97 @@
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
 <link rel="stylesheet" href="./dashboard.css?v=compact-heading-9">
 <link rel="stylesheet" href="./workflow.css?v=admin-suite-8">
+<style>
+.admin-sign-in {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 5vw, 48px);
+  background: radial-gradient(ellipse at 50% 0%, #f3e2d9, transparent 65%), #f8f4ef;
+  color: #351d2b;
+  font: 400 1rem/1.5 system-ui, sans-serif;
+}
+.admin-sign-in[hidden] { display: none; }
+.admin-sign-in-card {
+  width: min(100%, 28rem);
+  border: 1px solid #e5d5ce;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fffdf9;
+  box-shadow: 0 20px 55px #4320321a;
+}
+.admin-sign-in-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px clamp(20px, 6vw, 36px);
+  background: linear-gradient(130deg, #52182c, #351322);
+  color: #fff8ed;
+  border-bottom: 2px solid #ceaa6b;
+}
+.admin-sign-in-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 1px solid #cba568;
+  border-radius: 12px;
+  color: #f2ce88;
+  font: 1.1rem Georgia, serif;
+}
+.admin-sign-in-brand { font: 1.25rem Georgia, serif; }
+.admin-sign-in-body { padding: clamp(20px, 6vw, 36px); }
+.admin-sign-in h1 { margin: 0 0 20px; color: inherit; font: 400 2rem/1.12 Georgia, serif; }
+.admin-sign-in #staff-login label { margin: 0 0 16px; font-size: .9375rem; font-weight: 600; }
+.admin-sign-in #staff-login input {
+  box-sizing: border-box;
+  min-height: 46px;
+  margin: 6px 0 0;
+  border-color: #d7c6cd;
+  background: #fff;
+  color: #351d2b;
+  font-size: 1rem;
+}
+.admin-sign-in #staff-login button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 4px;
+  border: 1px solid #51182c;
+  border-radius: 9px;
+  background: #51182c;
+  color: #fffaf4;
+  font-weight: 700;
+  transition: background-color .16s ease;
+}
+.admin-sign-in #staff-login button:hover:enabled { background: #70253e; }
+.admin-sign-in #staff-login button:disabled { opacity: .65; cursor: wait; }
+.admin-sign-in :is(input, button):focus-visible { outline: 2px solid #9f652c; outline-offset: 3px; }
+.admin-sign-in #auth-status { margin: 14px 0 0; color: #654b5a; font-size: .875rem; overflow-wrap: anywhere; }
+.admin-sign-in #auth-status:empty { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .admin-sign-in #staff-login button { transition: none; }
+}
+</style>
 </head>
 <body class="solicitor-profile">
-<main class="profile-page staff-entry" id="staff-entry">
- <section class="staff-entry-intro">
-  <p class="profile-eyebrow">Family Law Firm · Staff workspace</p>
-  <h1>Solicitor Admin</h1>
-  <p>Manage consultation enquiries, support messages and legal assistant duties.</p>
- </section>
- <section class="staff-entry-action">
-  <h2>Staff sign-in</h2>
-  <form id="staff-login" hidden>
-   <label>Email<input name="email" type="email" autocomplete="username" required></label>
-   <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-   <button class="profile-button" type="submit">Sign in</button>
-  </form>
-  <p id="auth-status" class="entry-note" role="status">Connecting to Firebase…</p>
-  <button id="staff-logout" type="button" hidden>Sign out</button>
+<main class="admin-sign-in" id="staff-entry">
+ <section class="admin-sign-in-card" aria-labelledby="staff-sign-in-title">
+  <header class="admin-sign-in-header">
+   <span class="admin-sign-in-mark" aria-hidden="true">FL</span>
+   <span class="admin-sign-in-brand">Family Law Workspace</span>
+  </header>
+  <div class="admin-sign-in-body">
+   <h1 id="staff-sign-in-title">Staff sign-in</h1>
+   <form id="staff-login" hidden>
+    <label>Email address<input name="email" type="email" autocomplete="username" required></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <button type="submit">Sign in</button>
+   </form>
+   <p id="auth-status" class="entry-note" role="status">Connecting to Firebase…</p>
+   <button id="staff-logout" type="button" hidden>Sign out</button>
+  </div>
  </section>
 </main>
 <section class="admin-dashboard" id="staff-checklist" hidden aria-labelledby="dashboard-title">
