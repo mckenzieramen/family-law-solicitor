@@ -2,6 +2,8 @@ import {collection, query, orderBy, limit, onSnapshot, doc, updateDoc} from 'htt
 
 const panel = document.getElementById('staff-inbox');
 const list = document.getElementById('inbox-list');
+const reader = document.getElementById('inbox-reader');
+const retry = document.getElementById('inbox-retry');
 const status = document.getElementById('inbox-status');
 const filter = document.getElementById('inbox-filter');
 const search = document.getElementById('inbox-search');
@@ -22,6 +24,9 @@ export function clearInbox() {
   search.value = '';
   panel.hidden = nav.hidden = true;
   list.replaceChildren();
+  reader.replaceChildren();
+  retry.onclick = null;
+  retry.hidden = true;
 }
 
 export function mountInbox(db) {
@@ -31,7 +36,7 @@ export function mountInbox(db) {
   let entries = [];
   let alive = true;
   let ready = false;
-  const expanded = new Set();
+  let selectedId;
   const drafts = new Map();
   function render() {
     if (!ready) return;
@@ -49,18 +54,26 @@ export function mountInbox(db) {
     if (sort.value === 'email') visible.sort((a, b) => sortText(a.contact?.email, b.contact?.email));
     count.textContent = 'Showing ' + visible.length + ' of ' + entries.length + ' loaded messages' +
       (entries.length === 100 ? ' · latest 100' : '');
+    const selected = visible.find(record => record.id === selectedId) ?? visible[0];
+    selectedId = selected?.id;
     list.replaceChildren();
+    reader.replaceChildren();
+    if (!selected) reader.textContent = 'No message to display.';
+
     status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
     for (const record of visible) {
-      const details = document.createElement('details');
-      details.dataset.messageId = record.id;
-      details.open = expanded.has(record.id);
-      details.addEventListener('toggle', () => {
-        if (!details.isConnected) return;
-        if (details.open) expanded.add(record.id);
-        else expanded.delete(record.id);
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'inbox-row';
+      row.setAttribute('aria-pressed', String(record.id === selectedId));
+      row.addEventListener('click', () => {
+        selectedId = record.id;
+        render();
+        reader.querySelector('h3')?.focus();
       });
-      const summary = document.createElement('summary');
+      const details = document.createElement('article');
+      const summary = document.createElement('div');
+      summary.className = 'inbox-reader-heading';
       const message = document.createElement('p');
       const date = record.createdAt?.toDate().toLocaleString('en-AU', {timeZone:'Australia/Sydney'});
       const contact = record.contact ?? {};
@@ -74,7 +87,13 @@ export function mountInbox(db) {
       meta.textContent = [consultation && contact.email, date && date + ' Sydney'].filter(Boolean).join(' · ');
       preview.className = 'inbox-message-preview';
       preview.textContent = String(record.message ?? '').replace(/\s+/g, ' ').trim();
-      summary.append(title, meta, preview);
+      row.append(title.cloneNode(true), meta.cloneNode(true), preview);
+      list.append(row);
+      if (record.id !== selectedId) continue;
+      const heading = document.createElement('h3');
+      heading.textContent = title.textContent;
+      heading.tabIndex = -1;
+      summary.append(heading, meta);
       message.textContent = record.message;
       details.append(summary);
       if (consultation) {
@@ -137,17 +156,34 @@ export function mountInbox(db) {
         });
         details.append(form);
       }
-      list.append(details);
+      reader.append(details);
     }
   }
   filter.onchange = sort.onchange = search.oninput = render;
-  const unsubscribe = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
-    ready = true;
-    entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
-    render();
-  }, () => {
+  let unsubscribe;
+  function connect() {
+    unsubscribe?.();
     ready = false;
-    status.textContent = 'Inbox unavailable. Check the Firestore rules and staff permissions.';
-  });
-  stop = () => { alive = false; unsubscribe(); };
+    retry.hidden = true;
+    status.textContent = 'Connecting to the website inbox…';
+    unsubscribe = onSnapshot(query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)), snapshot => {
+      if (!alive) return;
+      ready = true;
+      entries = snapshot.docs.map(item => ({id:item.id, ...item.data()}));
+      render();
+    }, error => {
+      if (!alive) return;
+      ready = false;
+      status.textContent = error.code === 'permission-denied'
+        ? 'Firestore denied inbox access. Check your staff role and published rules.'
+        : 'The website inbox could not connect. Try again.';
+      retry.hidden = false;
+      list.replaceChildren();
+      reader.textContent = 'Messages will appear here when the inbox connects.';
+      count.textContent = '';
+    });
+  }
+  retry.onclick = connect;
+  connect();
+  stop = () => { alive = false; unsubscribe?.(); };
 }
