@@ -60,11 +60,11 @@ body.solicitor-profile { background:#f6f4f7; }
   color:#fff;
   box-shadow:inset 3px 0 #dbab89;
 }
-.dashboard-main { width:100%; max-width:1512px; min-width:0; margin-inline:auto; padding:clamp(22px,3.5vw,54px); }
+.dashboard-main { width:100%; max-width:1512px; min-width:0; margin-inline:auto; padding:clamp(14px,2vw,26px) clamp(22px,3.5vw,54px) 36px; }
 .dashboard-header, .dashboard-section-title { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-.dashboard-header { padding:0 0 22px; margin-bottom:24px; border-bottom:1px solid var(--line); }
-.dashboard-header h1 { margin:0; font:normal clamp(34px,4vw,54px)/1.05 var(--serif); letter-spacing:-.035em; }
-.dashboard-header p { margin:7px 0 0; color:var(--muted); font-size:14px; }
+.dashboard-header { padding:0 0 11px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+.dashboard-header h1 { margin:0; font:normal clamp(25px,2.7vw,36px)/1.1 var(--serif); letter-spacing:-.035em; }
+.dashboard-header p { margin:3px 0 0; color:var(--muted); font-size:13px; }
 .staff-header-tools { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 .staff-sydney-clock {
   display:grid;
@@ -128,8 +128,8 @@ body.solicitor-profile { background:#f6f4f7; }
   .dashboard-monogram { flex-basis:34px; height:34px; border-radius:8px; }
   .dashboard-sidebar nav { display:flex; overflow:auto; padding:3px 1px 5px; }
   .dashboard-sidebar a { padding:7px 10px; white-space:nowrap; }
-  .dashboard-main { padding:18px 13px 28px; }
-  .dashboard-header { margin-bottom:16px; padding-bottom:15px; }
+  .dashboard-main { padding:12px 13px 28px; }
+  .dashboard-header { margin-bottom:12px; padding-bottom:9px; }
   .dashboard-metrics, .legal-counts { gap:6px; }
   .dashboard-metrics > div, .legal-counts > a { padding:9px; font-size:13px; }
 }
