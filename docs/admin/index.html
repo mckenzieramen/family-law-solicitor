@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
 <link rel="stylesheet" href="./dashboard.css?v=compact-heading-9">
-<link rel="stylesheet" href="./workflow.css?v=admin-suite-8">
+<link rel="stylesheet" href="./workflow.css?v=daily-work-12">
 <style>
 .admin-sign-in {
   min-height: 100vh;
@@ -127,6 +127,7 @@
   </header>
   <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Workload at a glance</h2><nav class="legal-counts" aria-label="Workload shortcuts"><a href="#work-queue">Open tasks <strong id="legal-open">—</strong></a><a href="#work-queue" data-task-filter="overdue">Overdue tasks <strong id="legal-overdue">—</strong></a><a href="#work-calendar">Upcoming appointments <strong id="legal-appointments">—</strong></a></nav></section>
   <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div></section>
+  <section id="overview-upcoming" class="overview-agenda" aria-labelledby="overview-upcoming-title"><div class="admin-section-heading"><h2 id="overview-upcoming-title">Upcoming appointments</h2><a href="#work-calendar">Open calendar</a></div><div id="overview-upcoming-items">Loading appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Website inbox</h2>
    <div class="inbox-controls">
@@ -163,7 +164,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=case-activity-11"></script>
+<script type="module" src="./firebase-admin.js?v=daily-work-12"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -189,7 +190,7 @@
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .legal-counts a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .legal-counts a, #overview-upcoming a');
    if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
