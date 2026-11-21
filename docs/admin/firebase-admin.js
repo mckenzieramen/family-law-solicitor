@@ -2,7 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
-import { mountInbox, clearInbox } from './inbox.js?v=admin-focus-2';
+import { mountInbox, clearInbox } from './inbox.js?v=inbox-organize-5';
 import { mountWorkflow, clearWorkflow } from './workflow.js?v=schedule-access-4';
 
 const app = initializeApp({

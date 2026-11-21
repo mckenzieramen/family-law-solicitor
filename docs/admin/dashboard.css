@@ -140,3 +140,14 @@ body.solicitor-profile { background:#f6f4f7; }
 .inbox-controls label { display:grid; gap:5px; color:var(--muted); font-size:14px; font-weight:650; }
 .inbox-controls :is(select,input) { width:100%; min-height:42px; border:1px solid #d9cedd; border-radius:8px; background:var(--paper); padding:8px 10px; font:inherit; color:var(--ink); }
 @media(max-width:500px) { .inbox-controls { grid-template-columns:1fr; } }
+
+.inbox-controls { grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)); }
+#inbox-count { color:var(--muted); font-size:14px; margin:0 0 12px; }
+#inbox-list details { overflow-wrap:anywhere; }
+#inbox-list summary { padding-block:8px; }
+.inbox-message-meta,.inbox-message-preview { display:block; margin-top:3px; color:var(--muted); font-size:14px; }
+.inbox-message-preview { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#inbox-list details[open] .inbox-message-preview { display:none; }
+.inbox-email-action { display:inline-block; border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-block:6px 10px; text-decoration:none; font-weight:650; }
+.inbox-email-action:hover { background:var(--tint); }
+@media(max-width:650px) { .inbox-controls { grid-template-columns:repeat(2,minmax(0,1fr)); } .inbox-controls label:first-child { grid-column:1/-1; } }
