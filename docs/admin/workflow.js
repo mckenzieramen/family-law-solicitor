@@ -97,11 +97,11 @@ function editorMarkup(id, title, fields, notesLabel, action, hidden = false) {
   </form>`;
 }
 
-export function mountWorkflow(db, uid) {
+export function mountWorkflow(db, uid, sampleMode = false) {
   if (!root) return;
   clearWorkflow();
   const current = session;
-  const items = collection(db, 'staffWorkspaces', uid, 'items');
+  const items = sampleMode ? null : collection(db, 'staffWorkspaces', uid, 'items');
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney', year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let records = [];
   let loaded = false;
@@ -494,7 +494,26 @@ export function mountWorkflow(db, uid) {
     });
   }
   retryCalendar.addEventListener('click', listenForWorkItems);
-  listenForWorkItems();
+  if (sampleMode) {
+    const date = today();
+    const offset = days => {
+      const day = new Date(date + 'T00:00:00Z');
+      day.setUTCDate(day.getUTCDate() + days);
+      return day.toISOString().slice(0, 10);
+    };
+    const sample = {matter:'DEMO-101', priority:'Normal', done:false, recipient:'', notes:''};
+    records = [
+      {...sample, id:'demo-1', kind:'Task', title:'Request missing bank statements', date:offset(-1), priority:'High', followUpStatus:'client'},
+      {...sample, id:'demo-2', kind:'Task', title:'Review consultation notes', date, followUpStatus:'review'},
+      {...sample, id:'demo-3', kind:'Appointment', title:'Initial consultation', date, time:'14:00', calendar:'client'},
+      {...sample, id:'demo-4', kind:'Appointment', title:'Matter handover', date:offset(2), time:'10:30', calendar:'admin', matter:'DEMO-102'},
+      {...sample, id:'demo-5', kind:'Email draft', title:'Consultation follow-up', date:'', recipient:'avery@example.com', notes:'Hi Avery,\n\nThank you for meeting with us. Please let us know if you have questions about the next steps.\n\nKind regards,\nFamily Law Team'}
+    ];
+    loaded = true;
+    status.textContent = '';
+    for (const editor of Object.values(editors)) submit(editor).disabled = false;
+    render();
+  } else listenForWorkItems();
   for (const editor of [scheduleEditor, editors.Task]) {
     editor.dialog.addEventListener('cancel', event => {
       event.preventDefault();
@@ -597,7 +616,11 @@ export function mountWorkflow(db, uid) {
       status.textContent = '';
       message(editor, 'Saving…');
       try {
-        if (previous) await updateDoc(doc(items, previous.id), data);
+        if (sampleMode) {
+          const saved = {...previous, ...data, id:previous?.id || crypto.randomUUID(), updatedAt:{toMillis:() => Date.now()}};
+          records = [saved, ...records.filter(item => item.id !== saved.id)];
+          render();
+        } else if (previous) await updateDoc(doc(items, previous.id), data);
         else await addDoc(items, data);
         if (current !== session) return;
         reset(editor);
@@ -662,7 +685,10 @@ export function mountWorkflow(db, uid) {
     deleteConfirm.disabled = deleteCancel.disabled = true;
     deleteStatus.textContent = 'Deleting…';
     try {
-      await deleteDoc(doc(items, pendingDelete));
+      if (sampleMode) {
+        records = records.filter(item => item.id !== pendingDelete);
+        render();
+      } else await deleteDoc(doc(items, pendingDelete));
       if (current !== session) return;
       const editor = Object.values(editors).find(entry => entry.id === pendingDelete);
       if (editor && !editor.saving) reset(editor);
@@ -764,7 +790,10 @@ export function mountWorkflow(db, uid) {
     }
     button.disabled = true;
     try {
-      await updateDoc(doc(items, item.id), {done:!item.done, updatedAt:serverTimestamp()});
+      if (sampleMode) {
+        item.done = !item.done;
+        render();
+      } else await updateDoc(doc(items, item.id), {done:!item.done, updatedAt:serverTimestamp()});
       if (current === session) notify(item.done ? 'Item reopened' : 'Item completed', item.title);
     } catch {
       if (current === session) notify('Update failed', 'Could not update this item. Please try again.', true);

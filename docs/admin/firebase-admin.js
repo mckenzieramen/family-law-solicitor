@@ -3,7 +3,7 @@ import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 import { mountInbox, clearInbox } from './inbox.js?v=plum-workspace-14';
-import { mountWorkflow, clearWorkflow } from './workflow.js?v=delete-card-21';
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=sample-records-22';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',
@@ -184,8 +184,17 @@ onIdTokenChanged(auth, async user => {
       updateDashboardTotals();
       dashboardSession.append(logout);
       entryCard.hidden = true;
-      mountWorkflow(db, user.uid);
-      if (admin || role === 'solicitor') mountInbox(db);
+      const sampleUrl = new URL(location.href);
+      const sampleMode = sampleUrl.searchParams.get('sample') === '1';
+      const sampleLink = document.getElementById('staff-sample-link');
+      if (sampleMode) sampleUrl.searchParams.delete('sample');
+      else sampleUrl.searchParams.set('sample', '1');
+      if (sampleUrl.hash === '#staff-inbox') sampleUrl.hash = '#dashboard-title';
+      sampleLink.href = sampleUrl.href;
+      sampleLink.textContent = sampleMode ? 'Back to live records' : 'View sample data';
+      document.getElementById('staff-sample-banner').hidden = !sampleMode;
+      mountWorkflow(db, user.uid, sampleMode);
+      if (!sampleMode && (admin || role === 'solicitor')) mountInbox(db);
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch {
