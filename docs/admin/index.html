@@ -6,8 +6,8 @@
 <title>Solicitor Admin | Family Law Firm</title>
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
-<link rel="stylesheet" href="./dashboard.css?v=draft-studio-7">
-<link rel="stylesheet" href="./workflow.css?v=draft-studio-7">
+<link rel="stylesheet" href="./dashboard.css?v=admin-suite-8">
+<link rel="stylesheet" href="./workflow.css?v=admin-suite-8">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -33,14 +33,14 @@
    <span class="dashboard-monogram" aria-hidden="true">FL</span>
    <div><span class="dashboard-brand">Family Law</span><p>Staff workspace</p></div>
   </div>
-  <nav aria-label="Dashboard">
-   <a href="#dashboard-title">Overview</a>
-   <a id="inbox-nav" href="#staff-inbox" hidden>Client Messages</a>
-   <a href="#work-queue">Tasks</a>
-   <a href="#work-calendar">Calendar</a>
-   <a href="#work-matters">Cases</a>
-   <a href="#work-email">Email drafts</a>
-   <a href="#duties-all">Duty Checklist</a>
+  <nav aria-label="Staff navigation">
+   <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true">⌂</span><span>Overview</span></a>
+   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true">✉</span><span>Client Messages</span></a>
+   <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true">☑</span><span>Tasks</span></a>
+   <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true">▦</span><span>Calendar</span></a>
+   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true">▤</span><span>Cases</span></a>
+   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true">✎</span><span>Email drafts</span></a>
+   <a href="#duties-all"><span class="admin-nav-symbol" aria-hidden="true">✓</span><span>Duty Checklist</span></a>
   </nav>
  </aside>
  <div class="dashboard-main">
@@ -52,7 +52,7 @@
    </div>
   </header>
   <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Workload at a glance</h2><nav class="legal-counts" aria-label="Workload shortcuts"><a href="#work-queue">Open tasks <strong id="legal-open">—</strong></a><a href="#work-queue" data-task-filter="overdue">Overdue tasks <strong id="legal-overdue">—</strong></a><a href="#work-calendar">Upcoming appointments <strong id="legal-appointments">—</strong></a></nav></section>
-  <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><h2 id="overview-agenda-title">Today’s agenda</h2><div id="overview-agenda-items">Loading Sydney appointments…</div></section>
+  <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Website inbox</h2>
    <div class="inbox-controls">
@@ -89,7 +89,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=draft-studio-7"></script>
+<script type="module" src="./firebase-admin.js?v=admin-suite-8"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');
@@ -103,7 +103,7 @@
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
-   title.textContent = active === links[0] ? 'Staff Dashboard' : active.textContent.trim();
+   title.textContent = active === links[0] ? 'Staff Dashboard' : active.lastElementChild.textContent.trim();
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
      else link.removeAttribute('aria-current');

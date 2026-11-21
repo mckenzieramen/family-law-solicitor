@@ -47,12 +47,12 @@ export function mountWorkflow(db, uid) {
   root.innerHTML = `
  <p id="work-status" role="status">Loading work items…</p>
  <section class="workflow-panel" id="work-queue">
-  <h2>Tasks &amp; deadlines</h2><p>Track client follow-ups, documents to request, and work for solicitor review.</p>
+  <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
   ${editorMarkup('task-form', 'Create task', `
    <label>Task title<input name="title" maxlength="160" required></label>${matterField}
    <label>Due date (Sydney)<input name="date" type="date"></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
-   'Task notes', 'Save task')}
+   'Task notes', 'Save task', true)}
   <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
@@ -68,13 +68,13 @@ export function mountWorkflow(db, uid) {
    'Appointment notes', 'Save schedule', true)}
   <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
-  <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><label>Month <input id="work-month" type="month"></label><button type="button" id="work-show-month">Show whole month</button></div>
+  <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><div class="calendar-month-nav"><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><label>Month <input id="work-month" type="month"></label><button type="button" data-month-step="1" aria-label="Next month">›</button></div><button type="button" id="work-show-month">Show whole month</button></div>
   <div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
   <div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
- <section class="workflow-panel" id="work-matters"><h2>Find a matter</h2><label>Search by matter reference<input id="work-matter-query" type="search"></label><div id="work-matter-list"></div></section>
+ <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2></div><label>Find a matter<input id="work-matter-query" type="search" placeholder="Enter a matter reference"></label><div id="work-matter-list"></div></section>
  <section class="workflow-panel" id="work-email">
   <header class="draft-toolbar">
    <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
@@ -133,10 +133,10 @@ export function mountWorkflow(db, uid) {
     editor.form.reset();
     editor.form.querySelector('h3').textContent = editor.title;
     if (hide && editor.dialog?.open) editor.dialog.close();
-    editor.form.hidden = hide && editor !== editors.Task;
+    editor.form.hidden = hide;
     if (editor === editors['Email draft']) sampleDraft.hidden = !editor.form.hidden;
     const cancel = editor.form.querySelector('[data-cancel-editor]');
-    if (cancel && editor === editors.Task) cancel.hidden = true;
+    if (cancel && editor === editors.Task) cancel.hidden = false;
     message(editor, '');
   }
   function open(editor, item, defaults = {}) {
@@ -302,12 +302,22 @@ export function mountWorkflow(db, uid) {
     open(editor, null, defaults);
   }
   find('[data-create-schedule]').addEventListener('click', () => showNew(scheduleEditor, {calendar:scope.value, date:calendarDate()}));
+  find('#new-work-task').addEventListener('click', () => showNew(editors.Task, {}));
   find('#add-day-note').addEventListener('click', () => showNew(noteEditor, {date:calendarDate()}));
   find('#cancel-day-note').addEventListener('click', () => {
     if (noteEditor.saving) return;
     reset(noteEditor);
     find('#add-day-note').focus();
   });
+  for (const button of root.querySelectorAll('[data-month-step]')) {
+    button.addEventListener('click', () => {
+      const [year, currentMonth] = (month.value || today().slice(0, 7)).split('-').map(Number);
+      const next = new Date(Date.UTC(year, currentMonth - 1 + Number(button.dataset.monthStep), 1));
+      month.value = next.toISOString().slice(0, 7);
+      selectedDay = '';
+      renderCalendar();
+    });
+  }
   month.addEventListener('change', () => { selectedDay = ''; render(); });
   scope.addEventListener('change', () => { selectedDay = ''; render(); });
   find('#work-show-month').addEventListener('click', () => { selectedDay = ''; renderCalendar(); });
@@ -336,7 +346,7 @@ export function mountWorkflow(db, uid) {
       reset(editor);
       if (editor === scheduleEditor) find('[data-create-schedule]').focus();
       else if (editor === draftEditor) find('[data-new-draft="blank"]').focus();
-      else field(editor, 'title').focus();
+      else find('#new-work-task').focus();
     });
     editor.form.addEventListener('submit', async event => {
       event.preventDefault();
