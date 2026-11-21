@@ -111,7 +111,7 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard .duty-item input { flex-shrink:0; margin-top:5px; accent-color:var(--accent); }
 .admin-dashboard[data-view]:not([data-view="overview"]) .legal-work-summary,
 .admin-dashboard[data-view]:not([data-view="inbox"]) #staff-inbox,
-.admin-dashboard[data-view]:not([data-view^="duties-"]) :is(.dashboard-section-title,.dashboard-metrics,#duty-groups),
+.admin-dashboard[data-view]:not([data-view="work-templates"]) #staff-duty-reference,
 .admin-dashboard[data-view]:not([data-view^="work-"]) #staff-workspace,
 .admin-dashboard[data-view] .workflow-panel { display:none; }
 .admin-dashboard[data-view="work-queue"] #work-queue,
@@ -193,3 +193,17 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard #inbox-reader { min-height:265px; }
 .admin-dashboard #inbox-status:not(:empty) { color:#653b4d; }
 @media(max-width:760px) { .dashboard-sidebar a { gap:5px; } .dashboard-sidebar .admin-nav-symbol { width:17px; } }
+
+.admin-dashboard[data-view="work-templates"] #work-templates { display:block; }
+.staff-template-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%, 230px),1fr)); gap:14px; }
+.staff-template-card { display:flex; flex-direction:column; align-items:flex-start; padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--paper); }
+.staff-template-card span { color:var(--muted); font-size:.875rem; font-weight:650; }
+.staff-template-card h3 { margin:5px 0 0; font:400 1.25rem var(--serif); }
+.staff-template-card p { margin:7px 0 16px; color:var(--muted); }
+.staff-template-card button { margin-top:auto; }
+#document-template-editor { margin-top:20px; }
+#document-template-editor[hidden] { display:none; }
+#document-template-editor label { display:grid; gap:6px; margin-block:12px; }
+#document-template-editor :is(input,textarea) { width:100%; }
+#staff-duty-reference { margin-top:16px; padding:14px 18px; border:1px solid var(--line); border-radius:12px; background:var(--paper); }
+#staff-duty-reference summary { cursor:pointer; font-weight:650; }
