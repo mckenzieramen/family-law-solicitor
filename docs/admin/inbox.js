@@ -46,7 +46,7 @@ export function clearInbox() {
   retry.hidden = true;
 }
 
-export function mountInbox(db) {
+export function mountInbox(db, sampleMode = false) {
   if (!panel) return;
   panel.hidden = nav.hidden = false;
   if (overviewLink) overviewLink.hidden = false;
@@ -163,10 +163,14 @@ export function mountInbox(db) {
           if (!value) return;
           button.disabled = true;
           try {
-            await updateDoc(doc(db, 'clientInbox', record.id), {reply:value});
+            if (sampleMode) {
+              record.reply = value;
+              showOverviewInbox(entries.filter(item => item.kind === 'support' && !item.reply).length);
+              render();
+            } else await updateDoc(doc(db, 'clientInbox', record.id), {reply:value});
             if (!alive) return;
             drafts.delete(record.id);
-            status.textContent = 'Reply saved and visible to the visitor.';
+            status.textContent = sampleMode ? 'Sample reply updated.' : 'Reply saved and visible to the visitor.';
           } catch {
             if (alive) (feedback.isConnected ? feedback : status).textContent = 'Reply could not be saved.';
           }
@@ -205,6 +209,15 @@ export function mountInbox(db) {
     });
   }
   retry.onclick = connect;
-  connect();
+  if (sampleMode) {
+    entries = [
+      {kind:'consultation', contact:{firstName:'Mia', lastName:'Bennett', email:'mia@example.com', topic:'Parenting arrangements'}, message:'Hello, I’d like to arrange an initial consultation about school-holiday arrangements. Do you have any availability next week?'},
+      {kind:'support', contact:{}, message:'Could you confirm whether I should upload my statements before the appointment?'},
+      {kind:'support', contact:{}, message:'Can I move my consultation to an afternoon slot?', reply:'Please share two afternoon times that work for you and we’ll check availability.'}
+    ].map((item, index) => ({id:'sample-message-' + index, reply:'', ...item, createdAt:{toDate:() => new Date(Date.now() - (index + 1) * 3600000)}}));
+    ready = true;
+    showOverviewInbox(entries.filter(item => item.kind === 'support' && !item.reply).length);
+    render();
+  } else connect();
   stop = () => { alive = false; unsubscribe?.(); };
 }
