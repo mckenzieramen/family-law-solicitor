@@ -293,3 +293,15 @@ body.solicitor-profile { background:#f6f4f7; }
 .template-preview-body { padding:20px clamp(16px,3vw,25px); white-space:pre-wrap; overflow-wrap:anywhere; }
 .template-preview footer { text-align:right; }
 @media(max-width:760px) { .template-layout { grid-template-columns:minmax(0,1fr); } }
+
+.staff-toast { position:fixed; z-index:50; inset:auto max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) auto; width:min(410px,calc(100% - 32px)); box-sizing:border-box; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:12px; padding:16px; border:1px solid #d8c2cc; border-inline-start:4px solid #ba883c; border-radius:14px; background:#fffaf5; color:#2d1426; box-shadow:0 14px 40px #2c10273b; animation:staff-toast-enter .2s ease-out; }
+.staff-toast-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#f5e7cc; color:#704510; font-weight:800; }
+.staff-toast[data-tone="error"] { border-inline-start-color:#9e3046; }
+.staff-toast[data-tone="error"] .staff-toast-icon { background:#f5dce1; color:#85263a; }
+.staff-toast strong { display:block; font:700 1.06rem/1.3 var(--serif); }
+.staff-toast p { margin:4px 0 0; color:#66505d; font-size:.875rem; overflow-wrap:anywhere; }
+.staff-toast button { min-width:36px; min-height:36px; border:1px solid #dcc7d3; border-radius:8px; background:transparent; color:#59203f; cursor:pointer; font:1.15rem/1 system-ui,sans-serif; }
+.staff-toast button:hover { background:#f5e6eb; }
+.staff-toast button:focus-visible { outline:2px solid #59203f; outline-offset:2px; }
+@keyframes staff-toast-enter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@media(prefers-reduced-motion:reduce) { .staff-toast { animation:none; } }
