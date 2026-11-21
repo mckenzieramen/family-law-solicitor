@@ -365,3 +365,8 @@ body.solicitor-profile { background:#f6f4f7; }
   #staff-menu-toggle[aria-expanded="false"] + nav { display:none; }
   .dashboard-sidebar #staff-navigation { grid-column:1/-1; grid-template-columns:minmax(0,1fr); }
 }
+
+.staff-quick-actions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.admin-dashboard:not([data-view="overview"]) .staff-quick-actions { display:none; }
+.staff-quick-actions a { display:inline-flex; align-items:center; min-height:44px; padding:5px 13px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--accent); font-weight:650; text-decoration:none; }
+.staff-quick-actions a:hover { background:#fff2df; border-color:#be9460; }
