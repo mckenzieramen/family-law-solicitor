@@ -3,7 +3,7 @@ import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 import { mountInbox, clearInbox } from './inbox.js?v=plum-workspace-14';
-import { mountWorkflow, clearWorkflow } from './workflow.js?v=theme-18';
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=inline-template-19';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',
