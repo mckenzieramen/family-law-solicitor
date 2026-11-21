@@ -7,7 +7,7 @@
 <link rel="canonical" href="https://family-law-firm.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=chat-2">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-nav-25">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=workspace-menu-26">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=theme-18">
 <style>
 .admin-sign-in {
@@ -111,7 +111,8 @@
    <span class="dashboard-monogram" aria-hidden="true">F<span>L</span></span>
    <div><span class="dashboard-brand">Family Law</span><p>Staff workspace</p></div>
   </div>
-  <nav aria-label="Staff navigation">
+  <button type="button" id="staff-menu-toggle" aria-expanded="false" aria-controls="staff-navigation">Menu <span aria-hidden="true">☰</span></button>
+  <nav id="staff-navigation" aria-label="Staff navigation">
    <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Overview</span></a>
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client Messages</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span></a>
@@ -124,7 +125,7 @@
  </aside>
  <div class="dashboard-main" id="workspace-content" tabindex="-1">
   <header class="dashboard-header">
-   <div class="dashboard-heading"><h1 id="dashboard-title">Staff Dashboard</h1><p id="dashboard-role"></p></div>
+   <div class="dashboard-heading"><h1 id="dashboard-title" tabindex="-1">Staff Dashboard</h1><p id="dashboard-role"></p></div>
    <div class="staff-header-tools">
     <a id="staff-sample-link" href="?sample=1">View sample data</a>
     <div class="staff-sydney-clock"><span>Sydney time</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
@@ -132,15 +133,15 @@
    </div>
   </header>
   <div id="staff-sample-banner" class="sample-workspace-strip" hidden><span>Sample data</span><p>Explore with fictional records. Changes reset when you reload.</p></div>
+  <div id="overview-panels">
+   <section class="overview-agenda" aria-labelledby="overview-attention-title"><div class="admin-section-heading"><h2 id="overview-attention-title">Needs attention</h2></div><div id="overview-task-attention">Loading tasks…</div><div id="overview-inbox-attention"></div><h3>Follow-ups due</h3><div id="overview-follow-ups">Loading follow-ups…</div></section>
+   <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div><a href="#work-calendar" data-calendar-today>Open today’s calendar</a></section>
+  </div>
   <section class="legal-work-summary" aria-label="Workload at a glance"><nav class="legal-counts" aria-label="Workload shortcuts">
    <a href="#work-calendar" data-calendar-today><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Appointments today<strong id="legal-today">—</strong></span></a>
    <a href="#work-queue" data-task-filter="overdue"><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Overdue tasks<strong id="legal-overdue">—</strong></span></a>
    <a href="#staff-inbox" data-inbox-filter="unanswered" id="overview-inbox-link" hidden><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Support awaiting reply<strong id="overview-inbox-count">—</strong></span></a>
   </nav></section>
-  <div id="overview-panels">
-   <section class="overview-agenda" aria-labelledby="overview-attention-title"><div class="admin-section-heading"><h2 id="overview-attention-title">Needs attention</h2></div><div id="overview-task-attention">Loading tasks…</div><div id="overview-inbox-attention"></div><h3>Follow-ups due</h3><div id="overview-follow-ups">Loading follow-ups…</div></section>
-   <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div><a href="#work-calendar" data-calendar-today>Open today’s calendar</a></section>
-  </div>
   <section id="overview-upcoming" class="overview-agenda" aria-labelledby="overview-upcoming-title"><div class="admin-section-heading"><h2 id="overview-upcoming-title">Upcoming appointments</h2><a href="#work-calendar">Open calendar</a></div><div id="overview-upcoming-items">Loading appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Website inbox</h2>
@@ -232,6 +233,10 @@ if (sampleMode) {
      else link.removeAttribute('aria-current');
    }
  }
+ const menu = document.getElementById('staff-menu-toggle');
+ menu.addEventListener('click', () => {
+   menu.setAttribute('aria-expanded', String(menu.getAttribute('aria-expanded') === 'false'));
+ });
  function go(hash) {
    if (location.hash !== hash) history.pushState(null, '', hash);
    render();
@@ -242,6 +247,10 @@ if (sampleMode) {
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
+   if (link.closest('#staff-navigation') && menu.getAttribute('aria-expanded') === 'true' && menu.getClientRects().length) {
+     menu.setAttribute('aria-expanded', 'false');
+     title.focus({preventScroll:true});
+   }
    const filter = document.getElementById('legal-task-filter');
    if (filter && link.dataset.taskFilter) {
      filter.value = link.dataset.taskFilter || 'open';
