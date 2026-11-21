@@ -501,14 +501,23 @@ export function mountWorkflow(db, uid, sampleMode = false) {
       day.setUTCDate(day.getUTCDate() + days);
       return day.toISOString().slice(0, 10);
     };
-    const sample = {matter:'DEMO-101', priority:'Normal', done:false, recipient:'', notes:''};
-    records = [
-      {...sample, id:'demo-1', kind:'Task', title:'Request missing bank statements', date:offset(-1), priority:'High', followUpStatus:'client'},
-      {...sample, id:'demo-2', kind:'Task', title:'Review consultation notes', date, followUpStatus:'review'},
-      {...sample, id:'demo-3', kind:'Appointment', title:'Initial consultation', date, time:'14:00', calendar:'client'},
-      {...sample, id:'demo-4', kind:'Appointment', title:'Matter handover', date:offset(2), time:'10:30', calendar:'admin', matter:'DEMO-102'},
-      {...sample, id:'demo-5', kind:'Email draft', title:'Consultation follow-up', date:'', recipient:'avery@example.com', notes:'Hi Avery,\n\nThank you for meeting with us. Please let us know if you have questions about the next steps.\n\nKind regards,\nFamily Law Team'}
+    const sample = {priority:'Normal', done:false, recipient:'', notes:''};
+    const activities = [
+      {matter:'DEMO-101', kind:'Task', title:'Follow up on outstanding bank statements', date:offset(-1), priority:'High', followUpStatus:'client', notes:'Still needed: August–October statements. Payslips received. Ask the client to use the secure upload link.'},
+      {matter:'DEMO-101', kind:'Task', title:'Review property disclosure index', date, followUpStatus:'review', notes:'Check that the index includes the mortgage statement and current superannuation balance.'},
+      {matter:'DEMO-101', kind:'Appointment', title:'Property settlement consultation', date, time:'14:00', calendar:'client', notes:'Review the updated asset and liability schedule with Ava.'},
+      {matter:'DEMO-101', kind:'Email draft', title:'Outstanding financial disclosure documents', date:'', recipient:'ava@example.com', notes:'Hi Ava,\n\nThank you for sending your payslips. Could you please upload the August to October bank statements using the secure link we shared? Let me know if you need more time.\n\nKind regards,\nFamily Law Team'},
+      {matter:'DEMO-102', kind:'Appointment', title:'Parenting matter handover', date, time:'10:30', calendar:'admin', notes:'Run through the proposed school-holiday dates and open correspondence with the solicitor.'},
+      {matter:'DEMO-102', kind:'Task', title:'Confirm proposed holiday dates with solicitor', date:offset(1), followUpStatus:'solicitor'},
+      {matter:'DEMO-102', kind:'Task', title:'File attendance note from client call', date:offset(-2), done:true},
+      {matter:'DEMO-102', kind:'Email draft', title:'Confirming your next appointment', date:'', recipient:'liam@example.com', notes:'Hi Liam,\n\nI’m writing to confirm your next appointment on [date] at [time, Sydney time]. Please let us know if you need to reschedule.\n\nKind regards,\nFamily Law Team'},
+      {matter:'DEMO-103', kind:'Appointment', title:'Financial agreement intake call', date:offset(3), time:'11:00', calendar:'client'},
+      {matter:'DEMO-103', kind:'Task', title:'Prepare intake pack for solicitor', date:offset(2), priority:'High', notes:'Include the questionnaire, appointment details and a blank document index.'},
+      {matter:'DEMO-103', kind:'Task', title:'Check outstanding onboarding information', date:'', followUpStatus:'client'}
     ];
+    records = activities.map((activity, index) => ({
+      ...sample, ...activity, id:'demo-' + index, updatedAt:{toMillis:() => Date.now() - index * 600000}
+    }));
     loaded = true;
     status.textContent = '';
     for (const editor of Object.values(editors)) submit(editor).disabled = false;
