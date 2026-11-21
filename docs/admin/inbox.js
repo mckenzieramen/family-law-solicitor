@@ -174,10 +174,11 @@ export function mountInbox(db) {
     }, error => {
       if (!alive) return;
       ready = false;
-      status.textContent = error.code === 'permission-denied'
-        ? 'Firestore denied inbox access. Check your staff role and published rules.'
+      const accessDenied = ['permission-denied', 'unauthenticated'].includes(error.code);
+      status.textContent = accessDenied
+        ? 'Inbox access unavailable. Ask your Firebase administrator to verify your staff role and the published rules.'
         : 'The website inbox could not connect. Try again.';
-      retry.hidden = false;
+      retry.hidden = accessDenied;
       list.replaceChildren();
       reader.textContent = 'Messages will appear here when the inbox connects.';
       count.textContent = '';

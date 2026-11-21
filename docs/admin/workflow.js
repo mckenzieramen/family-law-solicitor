@@ -275,15 +275,16 @@ export function mountWorkflow(db, uid) {
     }, error => {
       if (current !== session) return;
       loaded = false;
-      loadError = error.code === 'permission-denied'
-        ? 'Firestore denied access to this workspace. Ask the project administrator to check your staff role and the published workspace rules.'
+      const accessDenied = ['permission-denied', 'unauthenticated'].includes(error.code);
+      loadError = accessDenied
+        ? 'Calendar and work records are unavailable. Ask your Firebase administrator to verify your staff role and the published workspace rules.'
         : 'The workspace could not connect. Retry the connection without closing your schedule.';
       for (const editor of Object.values(editors)) submit(editor).disabled = true;
       if (!records.length) find('#work-drafts').innerHTML = '<p class="work-empty">Saved drafts could not load. You can still preview the sample.</p>';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       status.textContent = loadError;
       message(scheduleEditor, loadError);
-      retryCalendar.hidden = false;
+      retryCalendar.hidden = accessDenied;
     });
   }
   retryCalendar.addEventListener('click', listenForWorkItems);
