@@ -1,6 +1,44 @@
 import { addDoc, collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 const root = document.getElementById('staff-workspace');
+const templates = {
+  "followup": {
+    "type": "Email",
+    "title": "Consultation follow-up",
+    "description": "Check in after an initial consultation.",
+    "notes": "Hi [Client name],\n\nThank you for meeting with us on [date]. I’m following up to share the next steps discussed with [solicitor name].\n\n[Insert agreed next steps and any dates.]\n\nPlease let me know if you have any questions.\n\nKind regards,\n[Your name]"
+  },
+  "documents": {
+    "type": "Email",
+    "title": "Request for outstanding documents",
+    "description": "List what you need and when it is due.",
+    "notes": "Hi [Client name],\n\nCould you please provide the following documents by [date]?\n\n[Document 1]\n[Document 2]\n\nPlease use [agreed secure channel] to send the documents. Let us know if you need more time.\n\nKind regards,\n[Your name]"
+  },
+  "confirmation": {
+    "type": "Email",
+    "title": "Appointment confirmation",
+    "description": "Confirm an agreed appointment with the client.",
+    "notes": "Hi [Client name],\n\nI’m writing to confirm your appointment with [solicitor name] on [date] at [time, Sydney time].\n\nLocation or meeting link: [details]\nPlease bring: [documents, if applicable]\n\nPlease let us know if you need to reschedule.\n\nKind regards,\n[Your name]"
+  },
+  "filenote": {
+    "type": "Document",
+    "title": "Client attendance note",
+    "description": "Record the discussion, agreed actions and deadlines.",
+    "notes": "CLIENT ATTENDANCE NOTE\n\nMatter reference: [reference]\nDate and time: [date and time]\nPrepared by: [name]\nAttendees: [names]\n\nPurpose of discussion\n[Purpose]\n\nKey points and client instructions\n[Notes]\n\nAgreed actions\n[Action — owner — due date]\n\nSolicitor review\n[Reviewer and date]"
+  },
+  "brief": {
+    "type": "Document",
+    "title": "Hearing preparation brief",
+    "description": "Organise hearing details, documents and outstanding actions.",
+    "notes": "HEARING PREPARATION BRIEF\n\nMatter reference: [reference]\nCourt and file number: [details]\nHearing date and time: [details]\nResponsible solicitor: [name]\n\nPurpose and current status\n[Summary for solicitor review]\n\nDocuments to compile\n[Document — date — status]\n\nOutstanding tasks\n[Action — owner — due date]\n\nReview and approval\n[Reviewer and date]"
+  },
+  "index": {
+    "type": "Document",
+    "title": "Matter document index",
+    "description": "Track documents, versions and the location of each file.",
+    "notes": "MATTER DOCUMENT INDEX\n\nMatter reference: [reference]\nPrepared by: [name]\nLast updated: [date]\n\nItem | Document | Date/version | File location | Status\n1 | [Document] | [Date/version] | [Path] | [Status]\n2 | [Document] | [Date/version] | [Path] | [Status]\n\nMissing documents and follow-up\n[Action — owner — due date]"
+  }
+};
 const priorities = ['Urgent', 'High', 'Normal', 'Low'];
 let stop;
 let session = 0;
@@ -45,6 +83,23 @@ export function mountWorkflow(db, uid) {
   const matterField = '<label>Matter reference<input name="matter" maxlength="80"></label>';
   const calendarOptions = '<option value="admin">Admin Calendar</option><option value="client">Client Calendar</option>';
   root.innerHTML = `
+ <section class="workflow-panel" id="work-templates">
+  <div class="admin-section-heading"><h2>Email and document templates</h2></div>
+  <p>Choose a template to prefill a draft, then replace the bracketed details.</p>
+  <div class="staff-template-grid">
+   ${Object.entries(templates).map(([key, template]) => `<article class="staff-template-card">
+    <span>${template.type}</span><h3>${template.title}</h3><p>${template.description}</p>
+    <button class="work-button" type="button" data-new-draft="${key}">Use template</button>
+   </article>`).join('')}
+  </div>
+  <form class="work-form" id="document-template-editor" hidden>
+   <h3>Edit document draft</h3>
+   <label>Title<input name="title" maxlength="160" required></label>
+   <label>Document text<textarea name="notes" rows="14" required></textarea></label>
+   <button class="work-button" type="submit">Download text file</button>
+   <button type="button" id="close-document-template">Close draft</button>
+  </form>
+ </section>
  <p id="work-status" role="status">Loading work items…</p>
  <section class="workflow-panel" id="work-queue">
   <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
@@ -460,18 +515,45 @@ export function mountWorkflow(db, uid) {
       }
     });
   }
+  const documentEditor = find('#document-template-editor');
+  let documentTrigger;
+  documentEditor.addEventListener('input', () => { documentEditor.dataset.changed = 'true'; });
+  find('#close-document-template').addEventListener('click', () => {
+    if (documentEditor.dataset.changed && !window.confirm('Close this document draft?')) return;
+    documentEditor.reset();
+    documentEditor.hidden = true;
+    delete documentEditor.dataset.changed;
+    documentTrigger?.focus();
+  });
+  documentEditor.addEventListener('submit', event => {
+    event.preventDefault();
+    const title = documentEditor.elements.title.value.trim();
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(new Blob([documentEditor.elements.notes.value], {type:'text/plain;charset=utf-8'}));
+    link.href = url;
+    link.download = (title.replace(/[^\p{L}\p{N} -]+/gu, '').trim() || 'Document draft') + '.txt';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
   root.onclick = async event => {
     const draft = event.target.closest('[data-new-draft]');
     if (draft) {
-      const template = draft.dataset.newDraft;
-      const request = template === 'documents';
-      const defaults = template === 'blank' ? {} : {
-        title:request ? 'Request for outstanding documents' : 'Follow-up on your matter',
-        notes:request
-          ? 'Hi [Client name],\n\nCould you please provide the following documents through the agreed channel?\n\n[Document list and requested date]\n\nKind regards,\n[Your name]'
-          : 'Hi [Client name],\n\nI’m following up on [matter or previous enquiry].\n\n[Update or next step]\n\nKind regards,\n[Your name]'
-      };
-      showNew(draftEditor, defaults);
+      const template = templates[draft.dataset.newDraft];
+      if (template?.type === 'Document') {
+        if (!documentEditor.hidden && documentEditor.dataset.changed && !window.confirm('Replace this document draft?')) return;
+        documentEditor.elements.title.value = template.title;
+        documentEditor.elements.notes.value = template.notes;
+        delete documentEditor.dataset.changed;
+        documentEditor.hidden = false;
+        documentTrigger = draft;
+        documentEditor.elements.title.focus();
+        return;
+      }
+      if (draftEditor.saving) return;
+      if (!draftEditor.form.hidden && template && !window.confirm('Replace the open email draft in the editor?')) return;
+      navigate(draftEditor.view);
+      if (template) open(draftEditor, null, {title:template.title, notes:template.notes});
+      else showNew(draftEditor, {});
       return;
     }
     const button = event.target.closest('[data-edit],[data-toggle],[data-remove]');
