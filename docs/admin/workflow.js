@@ -39,6 +39,11 @@ const templates = {
     "notes": "MATTER DOCUMENT INDEX\n\nMatter reference: [reference]\nPrepared by: [name]\nLast updated: [date]\n\nItem | Document | Date/version | File location | Status\n1 | [Document] | [Date/version] | [Path] | [Status]\n2 | [Document] | [Date/version] | [Path] | [Status]\n\nMissing documents and follow-up\n[Action — owner — due date]"
   }
 };
+const followUpStates = {
+  client:'Waiting on client',
+  solicitor:'Waiting on solicitor',
+  review:'Ready for review'
+};
 const priorities = ['Urgent', 'High', 'Normal', 'Low'];
 let stop;
 let session = 0;
@@ -109,7 +114,8 @@ export function mountWorkflow(db, uid) {
   <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
   ${editorMarkup('task-form', 'Create task', `
    <label>Task title<input name="title" maxlength="160" required></label>${matterField}
-   <label>Due date (Sydney)<input name="date" type="date"></label>
+   <label>Due or follow-up date (Sydney)<input name="date" type="date"></label>
+   <label>Follow-up status<select name="followUpStatus"><option value="">Regular task</option>${Object.entries(followUpStates).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
    'Task notes', 'Save task', true)}
   <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
@@ -133,7 +139,8 @@ export function mountWorkflow(db, uid) {
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
   </div><div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div></div>
  </section>
- <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2></div>
+ <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2><button type="button" class="work-button" id="new-follow-up">Add follow-up</button></div>
+  <section id="case-follow-ups" aria-label="Open follow-ups"></section>
   <div class="legal-actions">
    <label>Search matters<input id="work-matter-query" type="search" placeholder="Matter reference or item title"></label>
    <label>Show<select id="work-matter-kind"><option value="">All work items</option><option>Task</option><option>Appointment</option><option>Email draft</option></select></label>
@@ -307,9 +314,10 @@ export function mountWorkflow(db, uid) {
       const metric = document.getElementById(id);
       if (metric) metric.textContent = total;
     }
+    renderFollowUps(tasks, date);
     const attention = document.getElementById('overview-task-attention');
     if (attention) {
-      const due = tasks.filter(overdue).sort(order).slice(0, 3);
+      const due = tasks.filter(item => overdue(item) && !item.followUpStatus).sort(order).slice(0, 3);
       attention.innerHTML = due.map(item => `<a href="#work-queue" data-task-filter="overdue"><strong>${escape(item.title)}</strong><span>Overdue</span></a>`).join('') || '<p>No overdue tasks.</p>';
     }
     if (agenda) {
@@ -329,6 +337,23 @@ export function mountWorkflow(db, uid) {
     renderCalendar();
     renderMatters();
     renderDrafts();
+  }
+  function renderFollowUps(tasks, date) {
+    const followUps = tasks.filter(item => !item.done && Object.hasOwn(followUpStates, item.followUpStatus))
+      .sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999') || order(a,b));
+    const overview = document.getElementById('overview-follow-ups');
+    const label = item => escape([item.matter, item.date].filter(Boolean).join(' · '));
+    if (overview) {
+      overview.innerHTML = followUps.filter(item => item.date && item.date <= date).slice(0,5).map(item =>
+        `<button class="inbox-row" type="button" data-overview-follow-up="${escape(item.id)}"><strong>${escape(item.title)}</strong><small>${label(item)} · ${followUpStates[item.followUpStatus]}</small></button>`
+      ).join('') || '<p>No follow-ups due today.</p>';
+    }
+    find('#case-follow-ups').innerHTML = Object.entries(followUpStates).map(([state, heading]) => {
+      const group = followUps.filter(item => item.followUpStatus === state);
+      return `<details class="follow-up-group"${group.length ? ' open' : ''}><summary>${heading} (${group.length})</summary>${group.map(item =>
+        `<div class="follow-up-row"><strong>${escape(item.title)}</strong><small>${label(item)}</small><div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button><button type="button" data-toggle="${escape(item.id)}">Complete</button>${state === 'client' ? `<button type="button" data-remind="${escape(item.id)}">Draft reminder</button>` : ''}</div></div>`
+      ).join('') || '<p>No open follow-ups.</p>'}</details>`;
+    }).join('');
   }
   function renderDrafts() {
     const drafts = records.filter(item => item.kind === 'Email draft');
@@ -379,6 +404,14 @@ export function mountWorkflow(db, uid) {
   }
   renderCalendar();
   const scheduleEditor = editors.Appointment;
+  const followUpOverview = document.getElementById('overview-follow-ups');
+  if (followUpOverview) followUpOverview.onclick = event => {
+    const button = event.target.closest('[data-overview-follow-up]');
+    if (!button || current !== session || !loaded) return;
+    const action = [...find('#case-follow-ups').querySelectorAll('[data-edit]')]
+      .find(entry => entry.dataset.edit === button.dataset.overviewFollowUp);
+    action?.click();
+  };
   function listenForWorkItems() {
     stop?.();
     loaded = false;
@@ -409,6 +442,8 @@ export function mountWorkflow(db, uid) {
       for (const editor of Object.values(editors)) submit(editor).disabled = true;
       renderDrafts();
       if (upcoming) upcoming.textContent = 'Upcoming appointments could not load.';
+      if (followUpOverview) followUpOverview.textContent = 'Follow-ups could not load.';
+      find('#case-follow-ups').textContent = 'Follow-ups could not load.';
       if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       const attention = document.getElementById('overview-task-attention');
       if (attention) attention.textContent = 'Could not load task updates.';
@@ -511,6 +546,7 @@ export function mountWorkflow(db, uid) {
         priority:get('priority') || previous?.priority || 'Normal', recipient:get('recipient'),
         done:previous?.done ?? false, updatedAt:serverTimestamp()
       };
+      if (kind === 'Task' && !note && (get('followUpStatus') || previous?.followUpStatus)) data.followUpStatus = get('followUpStatus');
       if (editor === scheduleEditor) Object.assign(data, {calendar:get('calendar'), time:get('time')});
       if (note) data.calendar = editor.calendar;
       editor.saving = true;
@@ -562,6 +598,11 @@ export function mountWorkflow(db, uid) {
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
+  find('#new-follow-up').addEventListener('click', () => {
+    const matter = find('#work-matter-list [aria-pressed="true"]')?.textContent.trim() || '';
+    navigate(editors.Task.view);
+    showNew(editors.Task, {matter, followUpStatus:'client', date:today()});
+  });
   const preview = find('#template-preview');
   root.onclick = async event => {
     const matter = event.target.closest('[data-matter]');
@@ -599,6 +640,19 @@ export function mountWorkflow(db, uid) {
       navigate(draftEditor.view);
       if (template) open(draftEditor, null, {title:template.title, notes:template.notes});
       else showNew(draftEditor, {});
+      return;
+    }
+    const reminder = event.target.closest('[data-remind]');
+    if (reminder && loaded && current === session) {
+      const item = records.find(entry => entry.id === reminder.dataset.remind);
+      if (!item || draftEditor.saving) return;
+      if (!draftEditor.form.hidden && !window.confirm('Replace the open email draft in the editor?')) return;
+      navigate(draftEditor.view);
+      open(draftEditor, null, {
+        title:'Reminder: ' + item.title.slice(0,150),
+        matter:item.matter,
+        notes:`Hi [Client name],\n\nI’m following up regarding ${item.title}. Could you please provide an update or send the outstanding documents via [agreed secure channel]?\n\nKind regards,\n[Your name]`
+      });
       return;
     }
     const button = event.target.closest('[data-edit],[data-toggle],[data-remove]');
