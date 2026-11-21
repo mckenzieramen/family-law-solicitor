@@ -2,8 +2,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
-import { mountInbox, clearInbox } from './inbox.js?v=inbox-organize-5';
-import { mountWorkflow, clearWorkflow } from './workflow.js?v=schedule-access-4';
+import { mountInbox, clearInbox } from './inbox.js?v=workspace-design-6';
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=workspace-design-6';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',

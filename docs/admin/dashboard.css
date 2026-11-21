@@ -151,3 +151,26 @@ body.solicitor-profile { background:#f6f4f7; }
 .inbox-email-action { display:inline-block; border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-block:6px 10px; text-decoration:none; font-weight:650; }
 .inbox-email-action:hover { background:var(--tint); }
 @media(max-width:650px) { .inbox-controls { grid-template-columns:repeat(2,minmax(0,1fr)); } .inbox-controls label:first-child { grid-column:1/-1; } }
+
+.admin-dashboard[data-view]:not([data-view="overview"]) #overview-agenda { display:none; }
+.overview-agenda { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow); }
+.overview-agenda h2 { margin:0 0 14px; font:400 26px var(--serif); }
+.overview-agenda-row { display:grid; grid-template-columns:95px minmax(0,1fr) auto; align-items:center; gap:12px; padding:12px; border-top:1px solid var(--line); border-inline-start:3px solid var(--appointment-line,#93639b); overflow-wrap:anywhere; }
+.overview-agenda-row small { color:var(--muted); }
+.inbox-split { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,3fr); gap:14px; margin-top:12px; align-items:start; }
+#inbox-list,#inbox-reader { border:1px solid var(--line); border-radius:12px; overflow-wrap:anywhere; min-height:115px; background:var(--paper); }
+#inbox-list { overflow:auto; max-height:65vh; }
+#inbox-reader { padding:clamp(15px,3vw,25px); }
+#inbox-reader h3 { margin:0; color:var(--ink); font:400 28px var(--serif); }
+#inbox-reader article > p { white-space:pre-wrap; }
+.inbox-reader-heading { padding-bottom:14px; border-bottom:1px solid var(--line); }
+.inbox-row { display:block; width:100%; margin:0; border:0; border-bottom:1px solid var(--line); background:var(--paper); text-align:left; padding:13px 14px; color:var(--ink); cursor:pointer; font:inherit; }
+.inbox-row:is(:hover,[aria-pressed=true]) { background:var(--tint); }
+.inbox-row[aria-pressed=true] { box-shadow:inset 3px 0 var(--accent); }
+#inbox-retry { padding:8px 12px; }
+@media(max-width:750px) {
+  .inbox-split { grid-template-columns:minmax(0,1fr); }
+  #inbox-list { max-height:260px; }
+  .overview-agenda-row { grid-template-columns:72px minmax(0,1fr); }
+  .overview-agenda-row small { grid-column:2; }
+}

@@ -6,8 +6,8 @@
 <title>Solicitor Admin | Family Law Firm</title>
 <link rel="stylesheet" href="../homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../inbox.css?v=chat-2">
-<link rel="stylesheet" href="./dashboard.css?v=inbox-organize-5">
-<link rel="stylesheet" href="./workflow.css?v=inbox-organize-5">
+<link rel="stylesheet" href="./dashboard.css?v=workspace-design-6">
+<link rel="stylesheet" href="./workflow.css?v=workspace-design-6">
 </head>
 <body class="solicitor-profile">
 <main class="profile-page staff-entry" id="staff-entry">
@@ -52,6 +52,7 @@
    </div>
   </header>
   <section class="legal-work-summary" aria-labelledby="legal-work-title"><h2 id="legal-work-title">Workload at a glance</h2><nav class="legal-counts" aria-label="Workload shortcuts"><a href="#work-queue">Open tasks <strong id="legal-open">—</strong></a><a href="#work-queue" data-task-filter="overdue">Overdue tasks <strong id="legal-overdue">—</strong></a><a href="#work-calendar">Upcoming appointments <strong id="legal-appointments">—</strong></a></nav></section>
+  <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><h2 id="overview-agenda-title">Today’s agenda</h2><div id="overview-agenda-items">Loading Sydney appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Website inbox</h2>
    <div class="inbox-controls">
@@ -72,7 +73,11 @@
    </div>
    <p id="inbox-count"></p>
    <p id="inbox-status" role="status"></p>
-   <div id="inbox-list"></div>
+   <button type="button" id="inbox-retry" hidden>Retry connection</button>
+   <div class="inbox-split">
+    <div id="inbox-list" aria-label="Messages"></div>
+    <section id="inbox-reader" aria-label="Selected message"></section>
+   </div>
   </section>
   <div id="staff-workspace"></div>
   <div class="dashboard-section-title"><h2>Legal assistant responsibilities</h2><p id="save-status" role="status"></p></div>
@@ -84,7 +89,7 @@
   <div id="duty-groups" class="duty-groups"></div>
  </div>
 </section>
-<script type="module" src="./firebase-admin.js?v=inbox-organize-5"></script>
+<script type="module" src="./firebase-admin.js?v=workspace-design-6"></script>
 <script>
 (() => {
  const dashboard = document.getElementById('staff-checklist');

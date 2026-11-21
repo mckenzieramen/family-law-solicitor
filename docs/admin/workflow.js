@@ -53,7 +53,7 @@ export function mountWorkflow(db, uid) {
    <label>Due date (Sydney)<input name="date" type="date"></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
    'Task notes', 'Save task')}
-  <div class="legal-actions"><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
+  <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select></label></div><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
   <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
@@ -79,7 +79,7 @@ export function mountWorkflow(db, uid) {
   ${editorMarkup('draft-form', 'New email draft', `
    <label>Subject<input name="title" maxlength="160" required></label>
    <label>Recipient<input type="email" name="recipient" maxlength="254"></label>${matterField}`,
-   'Email body', 'Save draft', true)}
+   'Email body', 'Save draft', true).replace('<p role="status">', '<button type="button" id="copy-draft-body">Copy text</button><p role="status">')}
   <div id="work-drafts"></div>
  </section>`;
   const find = selector => root.querySelector(selector);
@@ -87,6 +87,7 @@ export function mountWorkflow(db, uid) {
   const retryCalendar = find('#retry-calendar-access');
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
+  const agenda = document.getElementById('overview-agenda-items');
   const editors = {
     Task: {form:find('#task-form'), title:'Create task', editTitle:'Edit task', saved:'Task saved.', view:'work-queue'},
     Appointment: {form:find('#schedule-form'), dialog:find('#schedule-dialog'), title:'Add schedule', editTitle:'Edit schedule', saved:'Schedule saved.', view:'work-calendar'},
@@ -187,7 +188,9 @@ export function mountWorkflow(db, uid) {
     const tasks = records.filter(item => item.kind === 'Task' && !isNote(item));
     const overdue = item => !item.done && item.date && item.date < date;
     const filter = find('#legal-task-filter').value;
-    renderRows('#work-priority-list', tasks.filter(item => filter === 'done' ? item.done : filter === 'overdue' ? overdue(item) : !item.done && (filter !== 'today' || item.date === date)).sort(order), 'No tasks in this view.');
+    const taskQuery = find('#work-task-search').value.trim().toLowerCase();
+    const matchingTasks = tasks.filter(item => [item.title, item.matter].join(' ').toLowerCase().includes(taskQuery));
+    renderRows('#work-priority-list', matchingTasks.filter(item => filter === 'done' ? item.done : filter === 'overdue' ? overdue(item) : !item.done && (filter !== 'today' || item.date === date)).sort(order), 'No tasks in this view.');
     for (const [id, total] of [
       ['legal-open', tasks.filter(item => !item.done).length],
       ['legal-overdue', tasks.filter(overdue).length],
@@ -195,6 +198,13 @@ export function mountWorkflow(db, uid) {
     ]) {
       const metric = document.getElementById(id);
       if (metric) metric.textContent = total;
+    }
+    if (agenda) {
+      const appointments = records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date)
+        .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+      agenda.innerHTML = appointments.map(item =>
+        `<div class="overview-agenda-row" data-appointment-color="${appointmentColor(item)}"><time>${escape(item.time || 'Any time')}</time><strong>${escape(item.title)}</strong><small>${escape(item.matter || (calendarFor(item) === 'client' ? 'Client Calendar' : 'Admin Calendar'))}</small></div>`
+      ).join('') || '<p>No appointments today in Sydney.</p>';
     }
     renderCalendar();
 
@@ -241,6 +251,7 @@ export function mountWorkflow(db, uid) {
         ? 'Firestore denied access to this workspace. Ask the project administrator to check your staff role and the published workspace rules.'
         : 'The workspace could not connect. Retry the connection without closing your schedule.';
       for (const editor of Object.values(editors)) submit(editor).disabled = true;
+      if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
       status.textContent = loadError;
       message(scheduleEditor, loadError);
       retryCalendar.hidden = false;
@@ -280,6 +291,15 @@ export function mountWorkflow(db, uid) {
   });
   find('#legal-task-filter').addEventListener('change', render);
   find('#work-matter-query').addEventListener('input', render);
+  find('#work-task-search').addEventListener('input', render);
+  find('#copy-draft-body').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(field(draftEditor, 'notes').value);
+      message(draftEditor, 'Draft copied.');
+    } catch {
+      message(draftEditor, 'Could not copy. Select the draft text to copy it.');
+    }
+  });
   for (const [kind, editor] of Object.entries(editors)) {
     const cancel = editor.form.querySelector('[data-cancel-editor]');
     cancel?.addEventListener('click', () => {
