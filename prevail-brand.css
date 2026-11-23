@@ -18,3 +18,20 @@ html body .admin-sidebar,html body .workspace-sidebar,html body .lawyer-sidebar{
 html body .admin-sidebar a,html body .workspace-sidebar a,html body .lawyer-sidebar a{color:#fffaf3!important}
 @media(max-width:900px){html body .site-header a.brand{width:clamp(180px,38vw,300px)!important}html body .site-header{min-height:88px!important}}
 @media(max-width:600px){html body .site-header a.brand{width:185px!important}html body .site-header{padding:10px 15px!important}}
+
+
+/* FINAL COLOR CLEANUP: no burgundy or maroon surfaces */
+:root{--plum:#073e2f!important;--burgundy:#073e2f!important;--maroon:#073e2f!important;--wine:#073e2f!important;--primary:#073e2f!important;--brand:#073e2f!important;--gold:#bb892c!important}
+html body .site-header,html body .site-nav,html body .header-main{background-color:#fffaf3!important}
+html body .site-header .nav-cta,html body .client-home .hero-actions a:first-child,html body .client-home .hero-link,html body .chat-launcher,html body .chat-toggle{background-color:#073e2f!important;border-color:#073e2f!important;color:#fffaf3!important}
+html body .client-home .premium-quick-links{background:#fffaf3!important}
+html body .client-home .premium-quick-links a{color:#073e2f!important}
+html body .client-home .hero-copy{background:#fffaf3!important}
+html body .client-home .hero-copy h1,html body .client-home h2,html body .client-home h3{color:#10382d!important}
+html body .client-home .hero-copy h1 em{color:#b5842b!important}
+html body .admin-sign-in{background:linear-gradient(135deg,#fffaf3,#eee2ca)!important;color:#10382d!important}
+html body .admin-sign-in-card{background:#fffdf9!important;border-color:#e1d1af!important}
+html body .admin-sign-in-header,html body .admin-sign-in button[type="submit"]{background:#073e2f!important;color:#fffaf3!important}
+html body .admin-sidebar,html body .workspace-sidebar,html body .lawyer-sidebar,html body nav[aria-label="Admin navigation"]{background:#073e2f!important;color:#fffaf3!important}
+html body .admin-sidebar a,html body .workspace-sidebar a,html body .lawyer-sidebar a{color:#fffaf3!important}
+html body .profile-button,html body .staff-entry-action button[type="submit"]{background:#073e2f!important;color:#fffaf3!important}
