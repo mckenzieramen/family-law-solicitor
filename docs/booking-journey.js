@@ -21,10 +21,15 @@
     if(!fields)return;fields.before(shell);
     let year=part('year'),month=part('month'),selectedDate='',selectedTime='';
     const monthEl=shell.querySelector('[data-month]'),days=shell.querySelector('[data-days]'),times=shell.querySelector('[data-times]'),status=shell.querySelector('[data-status]');
-    // Only confirmed bookings supplied by a trusted integration are marked booked.\n    const booked=()=>new Set(Array.isArray(window.PREVAIL_CONFIRMED_BOOKED_SLOTS)?window.PREVAIL_CONFIRMED_BOOKED_SLOTS:[]);\n    const isBooked=(d,t)=>booked().has(d+'T'+t);\n    function sync(){
-      if(selectedDate&&selectedTime&&isBooked(selectedDate,selectedTime))selectedTime='';\n      input.value=selectedDate&&selectedTime?selectedDate+'T'+selectedTime:'';
+    // Only confirmed bookings supplied by a trusted integration are marked booked.
+    const booked=()=>new Set(Array.isArray(window.PREVAIL_CONFIRMED_BOOKED_SLOTS)?window.PREVAIL_CONFIRMED_BOOKED_SLOTS:[]);
+    const isBooked=(d,t)=>booked().has(d+'T'+t);
+    function sync(){
+      if(selectedDate&&selectedTime&&isBooked(selectedDate,selectedTime))selectedTime='';
+      input.value=selectedDate&&selectedTime?selectedDate+'T'+selectedTime:'';
       input.dispatchEvent(new Event('change',{bubbles:true}));
-      renderTimes();\n      status.textContent=selectedDate&&selectedTime?'Requested: '+new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'))+' at '+selectedTime+' (Sydney time). Awaiting firm confirmation.':'Select a date and time to include in your enquiry.';
+      renderTimes();
+      status.textContent=selectedDate&&selectedTime?'Requested: '+new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'))+' at '+selectedTime+' (Sydney time). Awaiting firm confirmation.':'Select a date and time to include in your enquiry.';
     }
     function renderDays(){
       monthEl.textContent=monthLabel(year,month);days.replaceChildren();
@@ -34,7 +39,8 @@
       for(let i=0;i<first;i++){const blank=document.createElement('span');blank.className='premium-blank';days.append(blank);}
       for(let day=1;day<=count;day++){
         const value=iso(year,month,day),button=document.createElement('button');button.type='button';button.textContent=day;button.disabled=value<today;button.setAttribute('aria-label',value);button.setAttribute('aria-pressed',String(value===selectedDate));
-        button.dataset.state=button.disabled?'unavailable':'requestable';\n        button.addEventListener('click',()=>{selectedDate=value;selectedTime='';renderDays();sync();});
+        button.dataset.state=button.disabled?'unavailable':'requestable';
+        button.addEventListener('click',()=>{selectedDate=value;selectedTime='';renderDays();sync();});
         days.append(button);
       }
     }
