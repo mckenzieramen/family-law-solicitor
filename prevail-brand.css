@@ -129,3 +129,33 @@ html body .chat-launcher,html body .chat-toggle{background:#102a3a!important;col
 @media(prefers-reduced-motion:reduce){
  html{scroll-behavior:auto}html body *,html body *::before,html body *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+
+/* Booking, reviews and contact sections: remove legacy forest-green surfaces */
+html body .client-home :is(.consultation-intro,.office-location,.office-card,.office-panel,.reviews-section,.reviews-band,.google-reviews,#reviews){
+ background:linear-gradient(135deg,#102a3a,#1c3a4d)!important;color:#f7f4ee!important
+}
+html body .client-home :is(.consultation-intro,.office-location,.office-card,.office-panel,.reviews-section,.reviews-band,.google-reviews,#reviews)>:is(h1,h2,h3,p){color:#f7f4ee!important}
+html body .client-home :is(.consultation-intro,.office-location,.office-card,.office-panel) a{color:#f0d49b!important}
+html body .client-home .reference-consultation-cta{
+ background:linear-gradient(125deg,#091e2d,#1b3a50)!important;color:#f7f4ee!important;border-color:#d5ae67!important
+}
+html body .client-home .reference-consultation-cta :is(h2,p){color:#f7f4ee!important}
+html body .client-home .premium-booking-steps{background:#102a3a!important;border-color:#34485a!important}
+html body .client-home .premium-booking-steps span{background:#24465a!important;border-color:#446175!important;color:#fff!important}
+html body .client-home .premium-booking-steps span.active{background:#d5ae67!important;color:#091e2d!important;border-color:#d5ae67!important}
+html body .client-home .premium-booking-steps span.completed{background:#34485a!important;color:#fff!important;border-color:#d5ae67!important}
+html body .client-home .premium-booking-footer button,
+html body .client-home .premium-booking-navigation .premium-next,
+html body .client-home .consultation-footer button.action{background:#102a3a!important;border-color:#102a3a!important;color:#fff!important}
+html body .client-home .premium-booking-navigation .premium-back{background:#fff!important;border-color:#d5ae67!important;color:#102a3a!important}
+html body .client-home .premium-booking-review strong{color:#102a3a!important}
+html body .client-home .premium-calendar-days button[aria-pressed="true"],
+html body .client-home .premium-time-grid button[aria-pressed="true"]{background:#2563eb!important;border-color:#2563eb!important;color:#fff!important}
+html body .client-home .premium-calendar-days button:disabled,
+html body .client-home .premium-time-grid button:disabled{opacity:.45;cursor:not-allowed}
+html body .client-home #reviews :is(.review-card,.review-item),
+html body .client-home .google-reviews .review-card{background:#fff!important;color:#102a3a!important;border-radius:12px!important}
+html body .client-home #reviews :is(.review-card,.review-item) :is(h3,p,strong,span),
+html body .client-home .google-reviews .review-card :is(h3,p,strong,span){color:#102a3a!important}
+html body .client-home #reviews a.action,html body .client-home .google-reviews a.action{background:#d5ae67!important;color:#102a3a!important}
