@@ -19,7 +19,7 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 .client-home .hero-copy h1,.client-home .hero-copy p{color:#f7f4ee!important}
 .client-home .reference-consultation-cta,.client-home #reviews{background:#102a3a!important;color:#f7f4ee!important}
 </style>
-<link rel="stylesheet" href="/prevail-brand.css?v=restore-booking-section-18">
+<link rel="stylesheet" href="/prevail-brand.css?v=submit-success-19">
 
 <meta name="description" content="Prevail Family Law — practical, compassionate family law advice in New South Wales.">
 <style>
@@ -296,6 +296,16 @@ function home(){
    <p>Tell us what you’d like to discuss, from separation and parenting arrangements to property and finances.</p>
    <a href="#contact-info">Office location and directions</a>
   </div>
+  <dialog id="consultation-success-dialog" class="consultation-success-dialog" aria-labelledby="consultation-success-title">
+ <div class="consultation-success-content">
+  <div class="consultation-success-icon" aria-hidden="true">✓</div>
+  <h2 id="consultation-success-title">Enquiry Sent Successfully</h2>
+  <p>Thank you for contacting Prevail Family Law. Your consultation enquiry has been sent to the team for review.</p>
+  <p class="consultation-success-note">Your preferred date and time are subject to confirmation by the firm.</p>
+  <p class="consultation-success-ref">Reference: <span data-reference></span></p>
+  <button type="button" class="consultation-success-close" onclick="this.closest('dialog').close()">Done</button>
+ </div>
+</dialog>
   <form id="consultation-form" method="post" class="consultation-form" aria-describedby="consultation-demo">
    <h3>Consultation inquiry</h3>
    <p id="consultation-demo">Share only your contact details and a brief description. Please leave out confidential case details.</p>
@@ -439,7 +449,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 })();
 </script>
 <link rel="stylesheet" href="inbox.css">
-<script type="module" src="client-inbox.js?v=inquiry-1"></script>
+<script type="module" src="client-inbox.js?v=submit-fix-2"></script>
 
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
