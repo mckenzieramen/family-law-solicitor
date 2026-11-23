@@ -70,7 +70,7 @@
   background:var(--line);
 }
 .month-weekday { padding:8px 0; background:#fffaf3; text-align:center; color:var(--muted); font-size:13px; font-weight:650; }
-.month-spacer { background:#faf8fb; }
+.month-spacer { background:#fffaf3; }
 .month-day {
   display:grid;
   align-content:start;
@@ -87,7 +87,7 @@
   cursor:pointer;
 }
 .month-day:hover, .month-day[aria-pressed=true] { background:var(--tint); }
-.month-day[aria-pressed=true] { border-color:#816083; }
+.month-day[aria-pressed=true] { border-color:#587762; }
 .month-day[aria-current=date] { border-color:#b33c46; }
 .month-day[aria-current=date] strong { color:#9b2d38; }
 .month-day:focus-visible { outline-offset:-4px; }
@@ -176,7 +176,7 @@
 .calendar-month-nav { display:flex; align-items:end; gap:6px; min-width:0; }
 .calendar-month-nav label { min-width:0; }
 #work-calendar .month-day { min-height:clamp(54px,8vw,110px); }
-#work-calendar .calendar-agenda { background:#faf6f8; border:1px solid var(--line); border-radius:12px; padding:16px; }
+#work-calendar .calendar-agenda { background:#fffaf3; border:1px solid var(--line); border-radius:12px; padding:16px; }
 #work-matters .matter-group { border-inline-start:3px solid #527a61; }
 #work-matters #work-matter-query { max-width:440px; }
 #work-queue .legal-actions { align-items:end; }
