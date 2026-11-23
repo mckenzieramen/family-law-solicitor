@@ -476,3 +476,27 @@ dialog.booking-workflow-dialog #consultation-form > h3{display:none!important}
 dialog.booking-workflow-dialog .premium-booking-steps{margin-top:10px!important;margin-bottom:20px!important}
 dialog.booking-workflow-dialog .availability-dialog-inner{padding-bottom:24px!important}
 dialog.booking-workflow-dialog .premium-booking-navigation{position:relative!important;bottom:auto!important;padding:18px 0 0!important;border-top:1px solid #e6dfd3!important}
+
+/* Consultation wizard: quiet, aligned footer controls; no on-page enquiry form */
+html body .client-home #consultation-form:not(dialog.booking-workflow-dialog #consultation-form){
+ display:none!important;
+}
+dialog.booking-workflow-dialog .premium-booking-navigation{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:14px!important;margin-top:26px!important;padding:20px 0 4px!important;
+ border-top:1px solid #e6dfd3!important
+}
+dialog.booking-workflow-dialog .premium-booking-navigation .premium-next{
+ margin-left:auto!important;min-width:108px!important;background:#102a3a!important;
+ color:#fff!important;border:1px solid #102a3a!important;border-radius:10px!important
+}
+dialog.booking-workflow-dialog .premium-booking-navigation .premium-next:disabled{
+ background:#e5e7eb!important;color:#8b929b!important;border-color:#d9dce0!important;
+ cursor:not-allowed!important;opacity:1!important;box-shadow:none!important;transform:none!important
+}
+dialog.booking-workflow-dialog .premium-booking-navigation .premium-back{
+ margin-right:auto!important;min-width:108px!important;background:#fff!important;
+ color:#102a3a!important;border:1px solid #d5ae67!important;border-radius:10px!important
+}
+dialog.booking-workflow-dialog .premium-booking-navigation button[hidden]{display:none!important}
+dialog.booking-workflow-dialog .booking-selection-summary{display:none!important}
