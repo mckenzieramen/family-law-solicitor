@@ -16,7 +16,7 @@
   width:100%;
   margin:6px 0 13px;
   padding:9px 11px;
-  border:1px solid #d9cedd;
+  border:1px solid #e2d7c2;
   border-radius:8px;
   background:var(--paper);
   color:var(--ink);
@@ -28,20 +28,20 @@
   padding:clamp(13px,2vw,22px);
   border:1px solid var(--line);
   border-radius:12px;
-  background:#faf7fb;
+  background:#fffaf3;
 }
 .work-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:0 14px; }
 :is(.workflow-panel, .task-dialog) button:not(.month-day) {
   padding:8px 13px;
   min-height:38px;
-  border:1px solid #d9cedd;
+  border:1px solid #e2d7c2;
   border-radius:8px;
   background:var(--paper);
   color:var(--accent);
   font:600 14px/1.35 system-ui,sans-serif;
   cursor:pointer;
 }
-:is(.workflow-panel, .task-dialog) button:not(.month-day):hover { border-color:#ac8eaf; }
+:is(.workflow-panel, .task-dialog) button:not(.month-day):hover { border-color:#7b967a; }
 .workflow-panel button.work-button:not(:disabled) {
   background:#e3b761;
   border-color:#ae7b34;
@@ -69,7 +69,7 @@
   border-radius:11px;
   background:var(--line);
 }
-.month-weekday { padding:8px 0; background:#faf7fb; text-align:center; color:var(--muted); font-size:13px; font-weight:650; }
+.month-weekday { padding:8px 0; background:#fffaf3; text-align:center; color:var(--muted); font-size:13px; font-weight:650; }
 .month-spacer { background:#faf8fb; }
 .month-day {
   display:grid;
@@ -95,10 +95,10 @@
 .calendar-event {
   overflow:hidden;
   padding:2px 5px;
-  border-left:2px solid #93639b;
+  border-left:2px solid #517e60;
   border-radius:4px;
-  background:#f2e7f4;
-  color:#47244e;
+  background:#f5f0e5;
+  color:#103e31;
   font-size:12px;
   white-space:nowrap;
   text-overflow:ellipsis;
@@ -113,7 +113,7 @@
 .work-row .status { display:inline-block; margin:3px 0 0 5px; padding:2px 7px; border-radius:6px; background:var(--tint); color:var(--accent); font-size:12px; font-weight:650; }
 .work-row[open] .work-actions { margin-top:12px; }
 .work-notes { white-space:pre-wrap; }
-.work-empty { padding:15px; margin:0; border:1px dashed #d9cedd; border-radius:9px; color:var(--muted); }
+.work-empty { padding:15px; margin:0; border:1px dashed #e2d7c2; border-radius:9px; color:var(--muted); }
 .work-form [role=status]:empty, #work-status:empty { display:none; }
 .matter-group > .work-row { margin-left:8px; }
 @media (max-width:570px) {
@@ -146,9 +146,9 @@
 [data-appointment-color="Green"] { --appointment-ink:#25543b; --appointment-tint:#e5f3e9; --appointment-line:#477956; }
 [data-appointment-color="Amber"] { --appointment-ink:#6b4515; --appointment-tint:#fcf0d7; --appointment-line:#9b6c2b; }
 .calendar-event[data-appointment-color], .work-row[data-appointment-color] .status {
-  background:var(--appointment-tint,#f2e7f4);
-  color:var(--appointment-ink,#47244e);
-  border-inline-start:2px solid var(--appointment-line,#93639b);
+  background:var(--appointment-tint,#f5f0e5);
+  color:var(--appointment-ink,#103e31);
+  border-inline-start:2px solid var(--appointment-line,#517e60);
 }
 #retry-calendar-access { margin:0 16px 16px; }
 
@@ -156,7 +156,7 @@
 .draft-toolbar p { color:var(--muted); margin:0; }
 .draft-layout { display:grid; grid-template-columns:minmax(215px,1fr) minmax(0,2.1fr); gap:16px; align-items:start; }
 .draft-library,.draft-reading { border:1px solid var(--line); border-radius:12px; overflow-wrap:anywhere; }
-.draft-library { background:#faf7fb; padding:16px; }
+.draft-library { background:#fffaf3; padding:16px; }
 .draft-library > h3 { font:650 14px system-ui,sans-serif; color:var(--muted); margin:0 0 10px; }
 .draft-library > h3:not(:first-child) { margin-top:22px; }
 .draft-library > button { display:block; width:100%; text-align:left; margin-bottom:6px; }
@@ -177,7 +177,7 @@
 .calendar-month-nav label { min-width:0; }
 #work-calendar .month-day { min-height:clamp(54px,8vw,110px); }
 #work-calendar .calendar-agenda { background:#faf6f8; border:1px solid var(--line); border-radius:12px; padding:16px; }
-#work-matters .matter-group { border-inline-start:3px solid #896083; }
+#work-matters .matter-group { border-inline-start:3px solid #527a61; }
 #work-matters #work-matter-query { max-width:440px; }
 #work-queue .legal-actions { align-items:end; }
 #work-queue .work-row { background:#fffefa; }
@@ -186,8 +186,8 @@
 /* Daily work summaries */
 #overview-upcoming { margin-top: 16px; }
 .admin-dashboard:not([data-view="overview"]) #overview-upcoming { display: none; }
-#overview-upcoming a { color: #63324b; font-weight: 650; text-underline-offset: .2em; }
-.work-result-count { min-height: 1.35em; margin: 8px 0; color: #62495a; font-size: .875rem; }
+#overview-upcoming a { color: #164736; font-weight: 650; text-underline-offset: .2em; }
+.work-result-count { min-height: 1.35em; margin: 8px 0; color: #456e58; font-size: .875rem; }
 .work-result-count:empty { display: none; }
 .draft-library #work-draft-search { width: 100%; }
 
