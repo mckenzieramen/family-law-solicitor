@@ -159,3 +159,20 @@ html body .client-home .google-reviews .review-card{background:#fff!important;co
 html body .client-home #reviews :is(.review-card,.review-item) :is(h3,p,strong,span),
 html body .client-home .google-reviews .review-card :is(h3,p,strong,span){color:#102a3a!important}
 html body .client-home #reviews a.action,html body .client-home .google-reviews a.action{background:#d5ae67!important;color:#102a3a!important}
+
+/* Prominent booking shortcut and visible date/time selection */
+html body .client-home .booking-quick-calendar{
+ display:flex!important;align-items:center;justify-content:center;gap:10px;
+ width:100%;margin:18px 0;padding:16px 22px;
+ background:linear-gradient(120deg,#102a3a,#24465a)!important;
+ border:1px solid #d5ae67!important;border-radius:12px!important;
+ color:#fff!important;font-size:1.05rem!important;font-weight:700!important;
+ cursor:pointer;box-shadow:0 10px 24px rgba(16,42,58,.16)!important
+}
+html body .client-home .booking-quick-calendar:hover{filter:brightness(1.14);transform:translateY(-2px)}
+html body .client-home .premium-booking:not([hidden]){display:block!important;visibility:visible!important;opacity:1!important}
+html body .client-home .premium-calendar-days button[data-state="requestable"]{background:#e8f0ff!important;color:#174ea6!important;border-color:#b5cef7!important}
+html body .client-home .premium-calendar-days button[data-state="booked"],
+html body .client-home .premium-time-grid button[data-state="booked"]{background:#fee2e2!important;color:#991b1b!important;border-color:#fca5a5!important}
+html body .client-home .premium-calendar-days button[aria-pressed="true"],
+html body .client-home .premium-time-grid button[aria-pressed="true"]{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
