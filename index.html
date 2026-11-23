@@ -523,6 +523,73 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
  html body .client-home .reference-consultation-cta .action:hover{transform:none}
 }
 </style>
+<style id="availability-dialog-styles">
+.availability-dialog{border:0;border-radius:20px;padding:0;width:min(850px,calc(100vw - 28px));max-height:min(90vh,900px);background:#fffaf3;color:#173b2e;box-shadow:0 22px 90px #071e1a60;overflow:auto}
+.availability-dialog::backdrop{background:rgba(9,28,24,.68);backdrop-filter:blur(5px)}
+.availability-dialog-inner{padding:clamp(18px,4vw,32px)}
+.availability-dialog-header{display:flex;justify-content:space-between;align-items:start;gap:15px;margin-bottom:18px}
+.availability-dialog h2{font:500 clamp(26px,4vw,36px)/1.2 Georgia,serif;color:#103d31;margin:0 0 7px}
+.availability-dialog p{color:#53675b;line-height:1.5;margin:0}
+.availability-dialog-close{background:#f2e9dc;border:1px solid #d7cabb;border-radius:50%;width:42px;height:42px;flex:none;font-size:24px;color:#103d31}
+.availability-dialog .premium-booking{display:block!important;margin:0!important}
+.availability-dialog .premium-booking-footer{display:none!important}
+.availability-dialog-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid #ded6c9}
+.availability-dialog-actions small{max-width:420px;line-height:1.5;color:#58685d}
+.availability-dialog-continue{min-height:48px;border:0;border-radius:9px;background:#103d31;color:#fffaf3;padding:12px 22px;font-weight:700}
+.availability-dialog-continue:hover{background:#205940}
+.availability-dialog-status{color:#8c3c30!important;margin-top:12px!important}
+@media(max-width:600px){.availability-dialog-actions{align-items:stretch;flex-direction:column}.availability-dialog-continue{width:100%}}
+</style>
+<script id="availability-dialog-controller">
+(() => {
+ let dialog=null,calendar=null,originalParent=null,originalNext=null,wasHidden=false;
+ function ensureDialog(){
+  if(dialog)return dialog;
+  dialog=document.createElement('dialog');dialog.className='availability-dialog';
+  dialog.setAttribute('aria-labelledby','availability-dialog-title');
+  dialog.innerHTML='<div class="availability-dialog-inner"><div class="availability-dialog-header"><div><h2 id="availability-dialog-title">Choose a consultation time</h2><p>Select your preferred date and time in Sydney.</p></div><button class="availability-dialog-close" type="button" aria-label="Close calendar">×</button></div><div data-calendar-host></div><div class="availability-dialog-actions"><small>Times shown are suggested preferences, not verified availability. The firm will confirm your appointment.</small><button class="availability-dialog-continue" type="button">Continue to Booking</button></div><p class="availability-dialog-status" role="status" aria-live="polite"></p></div>';
+  document.body.append(dialog);
+  dialog.querySelector('.availability-dialog-close').addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+  dialog.addEventListener('close',restore);
+  dialog.querySelector('.availability-dialog-continue').addEventListener('click',()=>{
+   const form=document.querySelector('.client-home #consultation-form');
+   const preferred=form?.querySelector('input[name="preferredTime"]');
+   if(!preferred?.value){dialog.querySelector('.availability-dialog-status').textContent='Please select both a date and a time.';return}
+   dialog.close();
+   const section=document.getElementById('contact');
+   if(section){history.pushState(null,'','#contact');section.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
+   const first=form?.querySelector('.consultation-fields input');
+   if(first)window.setTimeout(()=>first.focus({preventScroll:true}),350);
+  });
+  return dialog;
+ }
+ function restore(){
+  if(calendar&&originalParent){
+   if(originalNext?.parentNode===originalParent)originalParent.insertBefore(calendar,originalNext);
+   else originalParent.append(calendar);
+   calendar.hidden=wasHidden;
+  }
+  calendar=null;originalParent=null;originalNext=null;
+  document.body.style.removeProperty('overflow');
+ }
+ document.addEventListener('click',e=>{
+  const link=e.target.closest('.reference-consultation-cta a.action');
+  if(!link)return;
+  e.preventDefault();
+  const form=document.querySelector('.client-home #consultation-form');
+  const picker=form?.querySelector('.premium-booking');
+  if(!picker){document.getElementById('contact')?.scrollIntoView({behavior:'smooth'});return}
+  if(dialog?.open)return;
+  const modal=ensureDialog();
+  calendar=picker;originalParent=picker.parentNode;originalNext=picker.nextSibling;wasHidden=picker.hidden;
+  picker.hidden=false;
+  modal.querySelector('[data-calendar-host]').append(picker);
+  modal.querySelector('.availability-dialog-status').textContent='';
+  modal.showModal();
+ },true);
+})();
+</script>
 </html>
 
 
