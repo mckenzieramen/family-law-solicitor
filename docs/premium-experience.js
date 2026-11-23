@@ -9,19 +9,12 @@
       progress.setAttribute('aria-hidden','true');
       document.body.append(progress);
     }
-    if (!topButton){
-      topButton=document.createElement('button');
-      topButton.type='button';topButton.className='premium-back-to-top';
-      topButton.setAttribute('aria-label','Back to top');
-      topButton.textContent='↑';
-      topButton.addEventListener('click',()=>window.scrollTo({top:0,behavior:reduce.matches?'instant':'smooth'}));
-      document.body.append(topButton);
-    }
+    // Floating back-to-top control intentionally removed.
   }
   function updateScroll(){
-    if(!progress||!topButton)return;
+    if(!progress)return;
     const active=!!document.querySelector('.client-home');
-    progress.hidden=!active;topButton.hidden=!active||scrollY<450;
+    progress.hidden=!active;
     if(active){const total=document.documentElement.scrollHeight-innerHeight;progress.style.transform='scaleX('+(total>0?Math.min(1,scrollY/total):0)+')';}
   }
   function enhanceFaq(root){
