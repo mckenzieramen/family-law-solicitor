@@ -1,4 +1,4 @@
-/* Progressive consultation inquiry: details -> preferred time -> review.
+/* Progressive consultation inquiry: preferred time -> details -> review.
    Existing Firebase clientInbox submission remains unchanged. Slots are requests,
    NOT confirmed bookings: no server-side reservation service exists yet. */
 (() => {
@@ -25,7 +25,7 @@
   footer.before(review);
   const originalContinue=calendar.querySelector('[data-continue]');
   if(originalContinue)originalContinue.hidden=true;
-  let step=1;
+  let step=2;
   let reviewFrom=2;
   function updateNextState(){
    const ready=step===2?Boolean(preferred?.value):step===1;
@@ -80,15 +80,9 @@
   back.addEventListener('click',()=>show(step===3?1:2));
   form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(2);}},true);
   const result=form.querySelector('#consultation-result');
-  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){document.querySelector('.booking-workflow-dialog')?.close();show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
-  const quick=document.createElement('button');
-  quick.type='button';
-  quick.className='booking-quick-calendar';
-  quick.textContent='View consultation dates & times';
-  quick.addEventListener('click',()=>show(2));
-  steps.before(quick);
+  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){document.querySelector('.booking-workflow-dialog')?.close();show(2);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
   form.addEventListener('prevail:booking-open',()=>{show(2);});
-  show(1);
+  show(2);
  }
  new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
