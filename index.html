@@ -19,7 +19,7 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 .client-home .hero-copy h1,.client-home .hero-copy p{color:#f7f4ee!important}
 .client-home .reference-consultation-cta,.client-home #reviews{background:#102a3a!important;color:#f7f4ee!important}
 </style>
-<link rel="stylesheet" href="/prevail-brand.css?v=hero-single-strip-11">
+<link rel="stylesheet" href="/prevail-brand.css?v=booking-modal-12">
 
 <meta name="description" content="Prevail Family Law — practical, compassionate family law advice in New South Wales.">
 <style>
@@ -586,7 +586,7 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
   calendar=null;originalParent=null;originalNext=null;
  }
  document.addEventListener('click',e=>{
-  const link=e.target.closest('.reference-consultation-cta a.action');
+  const link=e.target.closest('.client-home .hero-actions .hero-link, .client-home .reference-consultation-cta a.action, .site-header .header-nav a.nav-cta, .client-home a[data-open-availability]');
   if(!link)return;
   e.preventDefault();
   const form=document.querySelector('.client-home #consultation-form');
