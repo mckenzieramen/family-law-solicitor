@@ -88,6 +88,12 @@
   form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
   const result=form.querySelector('#consultation-result');
   if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
+  const quick=document.createElement('button');
+  quick.type='button';
+  quick.className='booking-quick-calendar';
+  quick.textContent='View consultation dates & times';
+  quick.addEventListener('click',()=>show(2));
+  steps.before(quick);
   show(1);
  }
  new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
