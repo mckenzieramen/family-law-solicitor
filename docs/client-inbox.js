@@ -82,8 +82,14 @@ document.addEventListener('submit', async event => {
       try { localStorage.setItem(supportKey, reference.id); } catch {}
       watchSupport(user, reference.id);
     }
-  } catch {
-    output.textContent = 'Could not send your message. Please try again.';
+  } catch (error) {
+    console.error('Consultation enquiry submission failed:', error);
+    const code = String(error?.code || '');
+    output.textContent = code.includes('permission-denied')
+      ? 'Unable to send: Firebase permissions rejected the enquiry. Please contact the firm or try again later.'
+      : code.includes('network-request-failed') || code.includes('unavailable')
+      ? 'Connection problem. Your enquiry was not confirmed. Please try again.'
+      : 'Could not send your enquiry. Please try again or contact the firm directly.';
   } finally {
     button.disabled = false;
   }
