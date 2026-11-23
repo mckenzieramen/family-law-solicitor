@@ -143,7 +143,7 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 @media(max-width:1120px){.duty-groups{grid-template-columns:1fr}}
 
 /* Public homepage navigation and motion. */
-body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;background:#fffdf8f5;backdrop-filter:blur(12px)}
+body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;background:#ffffff!important;backdrop-filter:blur(12px)}
 .client-home :is(section[id],details[id]){scroll-margin-top:110px}
 .client-home .hero-photo{overflow:hidden}
 .client-home .hero-actions a,.site-header .header-nav a,.client-home .profile-preview-link{transition:background-color .22s ease,color .22s ease,box-shadow .24s ease,transform .24s ease}
@@ -249,3 +249,8 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 .client-home :is(.client-faq,.service-details) summary::-webkit-details-marker{display:none}
 .client-home :is(.client-faq,.service-details) summary::after{content:"";width:.48em;height:.48em;border:solid #624057;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin:0 6px .2em;flex:none}
 .client-home :is(.client-faq,.service-details) details[open]>summary::after{transform:rotate(225deg);margin-bottom:-.2em}
+
+/* Prevail header: white navigation surface */
+body .site-header,body:has(.client-home)>.site-header{background:#fff!important;background-image:none!important;color:#073e2f!important}
+body .site-header .header-nav{background:transparent!important}
+body .site-header .header-nav a:not(.nav-cta){color:#073e2f!important}
