@@ -19,7 +19,7 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 .client-home .hero-copy h1,.client-home .hero-copy p{color:#f7f4ee!important}
 .client-home .reference-consultation-cta,.client-home #reviews{background:#102a3a!important;color:#f7f4ee!important}
 </style>
-<link rel="stylesheet" href="/prevail-brand.css?v=booking-modal-12">
+<link rel="stylesheet" href="/prevail-brand.css?v=booking-workflow-13">
 
 <meta name="description" content="Prevail Family Law — practical, compassionate family law advice in New South Wales.">
 <style>
@@ -555,51 +555,37 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
 </style>
 <script id="availability-dialog-controller">
 (() => {
- let dialog=null,calendar=null,originalParent=null,originalNext=null,wasHidden=false;
+ let dialog=null, form=null, placeholder=null;
  function ensureDialog(){
-  if(dialog)return dialog;
-  dialog=document.createElement('dialog');dialog.className='availability-dialog';
-  dialog.setAttribute('aria-labelledby','availability-dialog-title');
-  dialog.innerHTML='<div class="availability-dialog-inner"><div class="availability-dialog-header"><div><h2 id="availability-dialog-title">Choose a consultation time</h2><p>Select your preferred date and time in Sydney.</p></div><button class="availability-dialog-close" type="button" aria-label="Close calendar">×</button></div><div data-calendar-host></div><div class="availability-dialog-actions"><small>Times shown are suggested preferences, not verified availability. The firm will confirm your appointment.</small><button class="availability-dialog-continue" type="button">Continue to Booking</button></div><p class="availability-dialog-status" role="status" aria-live="polite"></p></div>';
-  document.querySelector('.client-home #consultation-form')?.append(dialog);
+  if(dialog?.isConnected)return dialog;
+  dialog=document.createElement('dialog');
+  dialog.className='availability-dialog booking-workflow-dialog';
+  dialog.setAttribute('aria-label','Book a consultation');
+  dialog.innerHTML='<div class="availability-dialog-inner"><div class="availability-dialog-header"><div><h2 id="availability-dialog-title">Book a Consultation</h2><p>Choose a Sydney consultation time, enter your details and review your enquiry.</p></div><button class="availability-dialog-close" type="button" aria-label="Close booking">×</button></div><div data-booking-form-host></div></div>';
+  document.body.append(dialog);
   dialog.querySelector('.availability-dialog-close').addEventListener('click',()=>dialog.close());
-  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
-  dialog.addEventListener('close',restore);
-  dialog.querySelector('.availability-dialog-continue').addEventListener('click',()=>{
-   const form=document.querySelector('.client-home #consultation-form');
-   const preferred=form?.querySelector('input[name="preferredTime"]');
-   if(!preferred?.value){dialog.querySelector('.availability-dialog-status').textContent='Please select both a date and a time.';return}
-   dialog.close();
-   const section=document.getElementById('contact');
-   if(section){history.pushState(null,'','#contact');section.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
-   const first=form?.querySelector('.consultation-fields input');
-   if(first)window.setTimeout(()=>first.focus({preventScroll:true}),350);
+  dialog.addEventListener('cancel',e=>{e.preventDefault();dialog.close()});
+  dialog.addEventListener('close',()=>{
+   if(form&&placeholder?.parentNode){placeholder.replaceWith(form);form.hidden=true;}
+   form=null;placeholder=null;
   });
   return dialog;
- }
- function restore(){
-  if(calendar&&originalParent){
-   if(originalNext?.parentNode===originalParent)originalParent.insertBefore(calendar,originalNext);
-   else originalParent.append(calendar);
-   calendar.hidden=wasHidden;
-  }
-  calendar=null;originalParent=null;originalNext=null;
  }
  document.addEventListener('click',e=>{
   const link=e.target.closest('.client-home .hero-actions .hero-link, .client-home .reference-consultation-cta a.action, .site-header .header-nav a.nav-cta, .client-home a[data-open-availability]');
   if(!link)return;
   e.preventDefault();
-  const form=document.querySelector('.client-home #consultation-form');
-  const picker=form?.querySelector('.premium-booking');
-  if(!picker){document.getElementById('contact')?.scrollIntoView({behavior:'smooth'});return}
   if(dialog?.open)return;
-  if(dialog && !dialog.isConnected){dialog=null;}
+  const target=document.querySelector('.client-home #consultation-form');
+  if(!target){document.getElementById('contact')?.scrollIntoView({behavior:'smooth'});return}
   const modal=ensureDialog();
-  calendar=picker;originalParent=picker.parentNode;originalNext=picker.nextSibling;wasHidden=picker.hidden;
-  picker.hidden=false;
-  modal.querySelector('[data-calendar-host]').append(picker);
-  modal.querySelector('.availability-dialog-status').textContent='';
+  placeholder=document.createComment('consultation-form-return');
+  target.before(placeholder);
+  form=target;
+  form.hidden=false;
+  modal.querySelector('[data-booking-form-host]').append(form);
   modal.showModal();
+  form.dispatchEvent(new CustomEvent('prevail:booking-open',{bubbles:true}));
   modal.querySelector('.availability-dialog-close').focus({preventScroll:true});
  },true);
 })();
