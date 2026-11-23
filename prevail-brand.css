@@ -501,6 +501,8 @@ dialog.booking-workflow-dialog .premium-booking-navigation .premium-back{
 dialog.booking-workflow-dialog .premium-booking-navigation button[hidden]{display:none!important}
 dialog.booking-workflow-dialog .booking-selection-summary{display:none!important}
 
-/* The consultation is modal-only: never render the old two-column inline panel. */
-html body .client-home section#contact{display:none!important}
+/* Restore the Book a Consultation section on the public page. */
+html body .client-home section#contact{display:block!important}
+html body .client-home section#contact .contact-panel{max-width:1160px;margin-inline:auto}
+html body .client-home section#contact #consultation-form{display:block!important}
 html body dialog.booking-workflow-dialog #consultation-form{display:block!important}
