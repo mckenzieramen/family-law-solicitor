@@ -26,11 +26,26 @@
   const originalContinue=calendar.querySelector('[data-continue]');
   if(originalContinue)originalContinue.hidden=true;
   let step=1;
+  let reviewFrom=2;
+  const summary=document.createElement('div');
+  summary.className='booking-selection-summary';
+  summary.hidden=true;
+  fields.before(summary);
+  function updateSummary(){
+   if(!preferred?.value){summary.hidden=true;return;}
+   const display=preferred.value.replace('T',' · ')+' Sydney time';
+   summary.hidden=false;
+   summary.innerHTML='<div><small>Your requested consultation</small><strong></strong><span>Subject to confirmation by the firm</span></div><button type="button" class="booking-change-time">Change time</button>';
+   summary.querySelector('strong').textContent=display;
+  }
+  summary.addEventListener('click',e=>{if(e.target.closest('.booking-change-time'))show(2)});
+  preferred?.addEventListener('change',updateSummary);
   function show(n){
    const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
+   updateSummary();summary.hidden=n!==1||!preferred?.value;
    back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
-   next.textContent=n===1?'Next · Select date & time →':'Next · Review inquiry →';
+   next.textContent=n===1?(preferred?.value?'Review your inquiry →':'Choose a date & time →'):'Review your inquiry →';
    for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
@@ -66,10 +81,10 @@
    return true;
   }
   next.addEventListener('click',()=>{
-   if(step===1){if(!validateDetails())return;show(2);}
-   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}show(3);}
+   if(step===1){if(!validateDetails())return;reviewFrom=preferred?.value?1:2;show(preferred?.value?3:2);}
+   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}reviewFrom=2;show(3);}
   });
-  back.addEventListener('click',()=>show(step===3?2:1));
+  back.addEventListener('click',()=>show(step===3?reviewFrom:1));
   form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
   const result=form.querySelector('#consultation-result');
   if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
