@@ -460,3 +460,19 @@ dialog.booking-workflow-dialog .premium-booking-steps > span.completed b{
  dialog.booking-workflow-dialog .premium-booking-steps > span{gap:6px!important;padding:8px 3px!important;flex-direction:column!important;font-size:11px!important;text-align:center!important}
  dialog.booking-workflow-dialog .premium-booking-steps > span b{width:29px!important;height:29px!important;flex-basis:29px!important}
 }
+
+/* Clean consultation modal heading; avoid duplicate 'Consultation inquiry' title */
+dialog.booking-workflow-dialog .availability-dialog-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:24px!important;margin-bottom:12px!important;padding-bottom:16px!important;
+ border-bottom:1px solid #e6dfd3!important
+}
+dialog.booking-workflow-dialog #availability-dialog-title{
+ margin:0!important;font-family:Georgia,'Times New Roman',serif!important;
+ font-size:clamp(28px,3vw,40px)!important;line-height:1.15!important;
+ font-weight:500!important;color:#102a3a!important
+}
+dialog.booking-workflow-dialog #consultation-form > h3{display:none!important}
+dialog.booking-workflow-dialog .premium-booking-steps{margin-top:10px!important;margin-bottom:20px!important}
+dialog.booking-workflow-dialog .availability-dialog-inner{padding-bottom:24px!important}
+dialog.booking-workflow-dialog .premium-booking-navigation{position:relative!important;bottom:auto!important;padding:18px 0 0!important;border-top:1px solid #e6dfd3!important}
