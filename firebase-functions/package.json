@@ -1,7 +1,0 @@
-{
-  "name": "family-law-inquiry-receipts",
-  "private": true,
-  "main": "index.js",
-  "engines": { "node": "22" },
-  "dependencies": { "firebase-functions": "^6.0.0" }
-}
