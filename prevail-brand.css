@@ -35,3 +35,97 @@ html body .admin-sign-in-header,html body .admin-sign-in button[type="submit"]{b
 html body .admin-sidebar,html body .workspace-sidebar,html body .lawyer-sidebar,html body nav[aria-label="Admin navigation"]{background:#073e2f!important;color:#fffaf3!important}
 html body .admin-sidebar a,html body .workspace-sidebar a,html body .lawyer-sidebar a{color:#fffaf3!important}
 html body .profile-button,html body .staff-entry-action button[type="submit"]{background:#073e2f!important;color:#fffaf3!important}
+
+
+/* EXECUTIVE NAVY & GOLD — shared visual system, 2026-11 */
+:root{
+ --plum:#102a3a!important;--burgundy:#102a3a!important;--maroon:#102a3a!important;
+ --wine:#102a3a!important;--brand:#102a3a!important;--primary:#102a3a!important;
+ --accent:#d5ae67!important;--gold:#d5ae67!important;
+ --navy:#102a3a;--navy-dark:#091e2d;--navy-light:#34485a;
+ --ivory:#f7f4ee;--surface:#fff;--gold-soft:#f3e6cc;--line:#e6dfd3;
+}
+html{scroll-behavior:smooth}
+html body{background:#f7f4ee!important;color:#102a3a!important;-webkit-font-smoothing:antialiased}
+html body h1,html body h2,html body h3,html body .brand-name{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.025em}
+html body p,html body li,html body input,html body textarea{line-height:1.6}
+html body .premium-top-contact{background:#091e2d!important;color:#f3e6cc!important}
+html body .site-header,html body .site-nav,html body .header-main{
+ background:#102a3a!important;border-bottom:1px solid rgba(213,174,103,.32)!important;
+ box-shadow:0 8px 28px rgba(9,30,45,.10)!important
+}
+html body .site-header .header-nav a:not(.nav-cta){color:#f7f4ee!important}
+html body .site-header .header-nav a:not(.nav-cta):hover,
+html body .site-header .header-nav a[aria-current="page"]{color:#d5ae67!important}
+html body .site-header .header-nav a.nav-cta,
+html body .site-header .nav-cta,
+html body .client-home .hero-actions a:first-child,
+html body .client-home .hero-link,
+html body .reference-consultation-cta,
+html body .consultation-form button[type="submit"],
+html body .service-enquiry button[type="submit"]{
+ background:linear-gradient(125deg,#f0d49b,#d5ae67 75%,#bf934a)!important;
+ color:#091e2d!important;border:1px solid #d5ae67!important;
+ border-radius:9px!important;box-shadow:0 5px 16px rgba(9,30,45,.14)!important;
+ font-weight:700!important;transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important
+}
+html body .site-header .nav-cta:hover,html body .client-home .hero-actions a:first-child:hover,
+html body .consultation-form button[type="submit"]:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(9,30,45,.22)!important}
+html body .client-home .hero-copy{
+ background:linear-gradient(125deg,#091e2d 0%,#102a3a 74%,#1c3a4d 100%)!important;
+ color:#f7f4ee!important
+}
+html body .client-home .hero-copy h1,html body .client-home .hero-copy h2,
+html body .client-home .hero-copy p{color:#f7f4ee!important}
+html body .client-home .hero-copy h1 em{color:#d5ae67!important}
+html body .client-home .premium-quick-links{background:#102a3a!important}
+html body .client-home .premium-quick-links a{color:#f7f4ee!important}
+html body .client-home h2,html body .client-home h3{color:#102a3a!important}
+html body .client-home .cards .card,html body .service-detail-grid > *,
+html body .google-reviews-card,html body .location-card,
+html body .consultation-wide,html body .consultation-form,
+html body .review-profile-cards > *{
+ background:#fff!important;border:1px solid #e6dfd3!important;
+ border-radius:15px!important;box-shadow:0 10px 30px rgba(16,42,58,.07)!important
+}
+html body .client-home .cards .card:hover,html body .service-detail-grid > *:hover{
+ box-shadow:0 17px 38px rgba(16,42,58,.12)!important;transform:translateY(-3px);
+ transition:transform .22s ease,box-shadow .22s ease
+}
+html body input,html body textarea,html body select{
+ border-color:#d9d5cd!important;border-radius:8px!important
+}
+html body input:focus-visible,html body textarea:focus-visible,html body select:focus-visible,
+html body button:focus-visible,html body a:focus-visible{outline:3px solid #d5ae67!important;outline-offset:3px!important}
+html body .admin-sidebar,html body .workspace-sidebar,html body .lawyer-sidebar,
+html body nav[aria-label="Admin navigation"],html body .shell > nav{
+ background:#102a3a!important;color:#f7f4ee!important
+}
+html body .admin-sidebar a,html body .workspace-sidebar a,html body .lawyer-sidebar a{
+ color:#f7f4ee!important;border-radius:8px
+}
+html body .admin-sidebar a:hover,html body .workspace-sidebar a:hover,
+html body .lawyer-sidebar a:hover{background:#24465a!important;color:#f3d9a5!important}
+html body .admin-sidebar a[aria-current="page"],html body .workspace-sidebar a[aria-current="page"],
+html body .lawyer-sidebar a[aria-current="page"]{background:#d5ae67!important;color:#091e2d!important}
+html body .admin-sign-in{background:linear-gradient(135deg,#f7f4ee,#e9e2d6)!important;color:#102a3a!important}
+html body .admin-sign-in-card{background:#fff!important;border-color:#e6dfd3!important;border-radius:16px!important}
+html body .admin-sign-in-header{background:#102a3a!important;color:#fff!important}
+html body .admin-sign-in button[type="submit"],html body .profile-button,
+html body .staff-entry-action button[type="submit"]{
+ background:#102a3a!important;color:#fff!important;border-color:#102a3a!important;border-radius:8px!important
+}
+html body .metric{color:#102a3a!important}
+html body .action{background:#102a3a!important;border-color:#102a3a!important;color:#fff!important}
+html body .secondary{background:#fff!important;color:#102a3a!important;border-color:#d5ae67!important}
+html body .status{background:#f3e6cc!important;color:#102a3a!important}
+html body .note{background:#f7f4ee!important;border-left-color:#d5ae67!important}
+html body .item[aria-pressed=true]{background:#f3e6cc!important}
+html body .chat-launcher,html body .chat-toggle{background:#102a3a!important;color:#fff!important;border-color:#d5ae67!important}
+@media(max-width:900px){
+ html body .site-header{min-height:82px!important}
+ html body .site-header .header-nav{background:#102a3a!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}html body *,html body *::before,html body *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
