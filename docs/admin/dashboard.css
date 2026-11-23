@@ -374,3 +374,40 @@ body.solicitor-profile { background:#fffaf3; }
 /* Prevail admin: original sidebar selector */
 .admin-dashboard .dashboard-sidebar,body.solicitor-profile .admin-dashboard .dashboard-sidebar{background:#073e2f!important;background-image:none!important;color:#fffaf3!important}
 .admin-dashboard .dashboard-main{background:#fffaf3!important}
+
+
+/* Scalable case follow-up board: polished at zero and high record counts */
+#case-follow-ups{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ align-items:start!important;gap:16px!important;margin:20px 0 28px!important;
+}
+#case-follow-ups .follow-up-group{
+ display:block!important;min-width:0!important;margin:0!important;padding:0!important;
+ background:#fff!important;border:1px solid #e5dfd3!important;border-radius:15px!important;
+ box-shadow:0 5px 20px rgba(16,42,58,.055)!important;overflow:hidden!important;
+}
+#case-follow-ups .follow-up-group > summary{
+ display:flex!important;align-items:center!important;min-height:62px!important;
+ padding:17px 18px!important;background:#f7f4ee!important;color:#102a3a!important;
+ border-bottom:1px solid #e5dfd3!important;font-size:15px!important;font-weight:750!important;
+ line-height:1.35!important;list-style:none!important;cursor:pointer!important;
+}
+#case-follow-ups .follow-up-group > summary::-webkit-details-marker{display:none}
+#case-follow-ups .follow-up-group > summary::before{
+ content:"";display:inline-block;width:8px;height:8px;margin-right:10px;
+ border-radius:50%;background:#d5ae67;flex:none
+}
+#case-follow-ups .follow-up-group[open] > summary{background:#f7f4ee!important}
+#case-follow-ups .follow-up-group > :not(summary){margin:0!important;padding:15px 18px!important}
+#case-follow-ups .follow-up-row{
+ display:grid!important;gap:5px!important;min-width:0!important;
+ padding:14px 18px!important;border-top:1px solid #eee9df!important;
+ background:#fff!important;overflow-wrap:anywhere!important;
+}
+#case-follow-ups .follow-up-row:first-of-type{border-top:0!important}
+#case-follow-ups .follow-up-row:hover{background:#fbf8f2!important}
+#case-follow-ups .follow-up-row small{color:#607080!important;line-height:1.45!important}
+#case-follow-ups .follow-up-group a{color:#102a3a!important;text-decoration-thickness:1px!important;text-underline-offset:3px!important}
+#case-follow-ups .follow-up-group button{border-radius:8px!important}
+@media(max-width:1050px){#case-follow-ups{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:650px){#case-follow-ups{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}}
