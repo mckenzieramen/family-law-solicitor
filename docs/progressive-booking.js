@@ -44,8 +44,8 @@
    const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
    updateSummary();summary.hidden=n!==1||!preferred?.value;
-   back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
-   next.textContent=n===1?(preferred?.value?'Review your inquiry →':'Choose a date & time →'):'Review your inquiry →';
+   back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
+   next.textContent=n===2?'Next: Your details →':'Next: Review enquiry →';
    for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
@@ -81,19 +81,20 @@
    return true;
   }
   next.addEventListener('click',()=>{
-   if(step===1){if(!validateDetails())return;reviewFrom=preferred?.value?1:2;show(preferred?.value?3:2);}
-   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}reviewFrom=2;show(3);}
+   if(step===1){if(!validateDetails())return;reviewFrom=1;show(3);}
+   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}reviewFrom=1;show(1);}
   });
-  back.addEventListener('click',()=>show(step===3?reviewFrom:1));
-  form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
+  back.addEventListener('click',()=>show(step===3?1:2));
+  form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(2);}},true);
   const result=form.querySelector('#consultation-result');
-  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
+  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){document.querySelector('.booking-workflow-dialog')?.close();show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
   const quick=document.createElement('button');
   quick.type='button';
   quick.className='booking-quick-calendar';
   quick.textContent='View consultation dates & times';
   quick.addEventListener('click',()=>show(2));
   steps.before(quick);
+  form.addEventListener('prevail:booking-open',()=>{show(2);});
   show(1);
  }
  new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
