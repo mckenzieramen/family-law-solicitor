@@ -591,6 +591,44 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
  },true);
 })();
 </script>
+
+<style id="availability-calendar-complete-redesign">
+/* Standalone modal styling: never depend on homepage/booking CSS selector ancestry. */
+dialog.availability-dialog{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;width:min(920px,calc(100vw - 32px))!important;max-height:90dvh!important;padding:0!important;border:1px solid #d9cbb5!important;border-radius:22px!important;background:#fffcf7!important;color:#163d32!important;overflow-y:auto!important}
+.availability-dialog .availability-dialog-inner{padding:clamp(20px,3.5vw,36px)!important}
+.availability-dialog .availability-dialog-header{margin-bottom:22px!important}
+.availability-dialog .availability-dialog-header h2{font:500 clamp(26px,4vw,38px)/1.2 Georgia,serif!important;color:#103d31!important;margin:0 0 8px!important}
+.availability-dialog .availability-dialog-header p{font-size:14px!important;color:#62736a!important}
+.availability-dialog .availability-dialog-close{display:grid!important;place-items:center!important;background:#f6f0e6!important;color:#173d32!important;font-size:24px!important}
+.availability-dialog .premium-booking{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;color:#173d32!important}
+.availability-dialog .premium-booking-head{display:none!important}
+.availability-dialog .premium-booking-grid{display:grid!important;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;gap:24px!important;align-items:start!important}
+.availability-dialog .premium-calendar{padding:20px!important;border:1px solid #e2d9c9!important;border-radius:16px!important;background:#fff!important;box-shadow:0 5px 18px #103d310a!important;min-width:0!important}
+.availability-dialog .premium-calendar-header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-bottom:15px!important}
+.availability-dialog .premium-calendar-header strong{font:600 19px/1.3 Georgia,serif!important;color:#173d32!important;text-align:center!important}
+.availability-dialog .premium-calendar-header button{display:grid!important;place-items:center!important;flex:none!important;width:40px!important;height:40px!important;border-radius:10px!important;border:1px solid #e0d5c5!important;background:#f7f3ec!important;color:#173d32!important;font-size:24px!important;cursor:pointer!important}
+.availability-dialog .premium-calendar-header button:disabled{opacity:.35!important;cursor:not-allowed!important}
+.availability-dialog .premium-calendar-weekdays,.availability-dialog .premium-calendar-days{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:5px!important;align-items:center!important}
+.availability-dialog .premium-calendar-weekdays{margin-bottom:7px!important}
+.availability-dialog .premium-calendar-weekdays span{display:block!important;text-align:center!important;padding:7px 0!important;color:#7a887e!important;font:600 11px/1.3 system-ui,sans-serif!important}
+.availability-dialog .premium-calendar-days .premium-blank{display:block!important;visibility:hidden!important}
+.availability-dialog .premium-calendar-days button{display:grid!important;place-items:center!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:0!important;margin:0!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:#173d32!important;font:500 13px/1 system-ui,sans-serif!important;cursor:pointer!important}
+.availability-dialog .premium-calendar-days button:hover:not(:disabled){background:#eaf1eb!important;border-color:#c3d7c8!important}
+.availability-dialog .premium-calendar-days button[aria-pressed="true"]{background:#164c3b!important;color:#fff!important;border-color:#164c3b!important;box-shadow:0 3px 8px #103d3133!important}
+.availability-dialog .premium-calendar-days button:disabled{color:#bfc6c0!important;cursor:not-allowed!important}
+.availability-dialog .premium-times{padding:18px 0!important;min-width:0!important}
+.availability-dialog .premium-times>strong{display:block!important;font:500 24px/1.25 Georgia,serif!important;color:#173d32!important;margin-bottom:8px!important}
+.availability-dialog .premium-times>p{font:400 13px/1.6 system-ui,sans-serif!important;color:#68776c!important;margin:0 0 18px!important}
+.availability-dialog .premium-time-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.availability-dialog .premium-time-grid button{min-height:46px!important;width:100%!important;padding:10px!important;border:1px solid #d9dfd7!important;border-radius:10px!important;background:#fff!important;color:#173d32!important;font:600 13px/1.3 system-ui,sans-serif!important;cursor:pointer!important}
+.availability-dialog .premium-time-grid button:hover{background:#edf4ee!important;border-color:#8da996!important}
+.availability-dialog .premium-time-grid button[aria-pressed="true"]{background:#164c3b!important;border-color:#164c3b!important;color:white!important}
+.availability-dialog .premium-booking-status{font:500 13px/1.6 system-ui,sans-serif!important;color:#315d49!important;margin:18px 0 0!important}
+.availability-dialog .availability-dialog-actions{margin-top:24px!important;padding-top:20px!important}
+.availability-dialog .availability-dialog-continue{min-height:48px!important;padding:12px 24px!important;border-radius:10px!important;font:700 14px/1.2 system-ui,sans-serif!important}
+.availability-dialog :is(button):focus-visible{outline:3px solid #d7b574!important;outline-offset:3px!important}
+@media(max-width:680px){.availability-dialog .premium-booking-grid{grid-template-columns:1fr!important;gap:10px!important}.availability-dialog .premium-times{padding:12px 0!important}.availability-dialog .premium-calendar{padding:14px!important}.availability-dialog .premium-calendar-days button{min-height:39px!important}.availability-dialog .premium-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style>
 </html>
 
 
