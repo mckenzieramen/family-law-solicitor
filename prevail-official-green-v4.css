@@ -3,7 +3,7 @@
 body{background:#fffaf3;color:#12382e}
 .site-header{background:#fffaf3!important;border-bottom:1px solid #e6d5b5!important;min-height:112px!important;padding:10px clamp(20px,5vw,76px)!important;display:flex!important;align-items:center!important;justify-content:space-between!important}
 .site-header .brand{background:transparent!important;box-shadow:none!important;border:0!important;min-width:0!important;width:clamp(220px,28vw,375px)!important;height:94px!important;min-height:94px!important;padding:0!important;display:flex!important;align-items:center!important}
-.site-header .brand::before{content:""!important;display:block!important;width:100%!important;height:100%!important;background:url('/prevail-official-horizontal.png') left center/contain no-repeat!important;filter:none!important;box-shadow:none!important;border:0!important}
+.site-header .brand::before{content:""!important;display:block!important;width:100%!important;height:100%!important;background:url('/docs/prevail-official-logo.png') left center/contain no-repeat!important;filter:none!important;box-shadow:none!important;border:0!important}
 .site-header .brand .brand-monogram,.site-header .brand .brand-name{display:none!important}
 .site-header .header-nav{background:transparent!important}
 .site-header .header-nav a:not(.nav-cta){color:#12382e!important;text-shadow:none!important}
