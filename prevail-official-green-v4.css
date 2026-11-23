@@ -1,0 +1,18 @@
+/* PREVAIL official forest green / cream / gold branding */
+:root{--prevail-green:#073e2f;--prevail-gold:#bd8a2d;--prevail-cream:#fffaf3;--plum:#073e2f;--burgundy:#073e2f;--maroon:#073e2f;--wine:#073e2f;--primary:#073e2f;--brand:#073e2f}
+body{background:#fffaf3;color:#12382e}
+.site-header{background:#fffaf3!important;border-bottom:1px solid #e6d5b5!important;min-height:112px!important;padding:10px clamp(20px,5vw,76px)!important;display:flex!important;align-items:center!important;justify-content:space-between!important}
+.site-header .brand{background:transparent!important;box-shadow:none!important;border:0!important;min-width:0!important;width:clamp(220px,28vw,375px)!important;height:94px!important;min-height:94px!important;padding:0!important;display:flex!important;align-items:center!important}
+.site-header .brand::before{content:""!important;display:block!important;width:100%!important;height:100%!important;background:url('/prevail-official-horizontal.png') left center/contain no-repeat!important;filter:none!important;box-shadow:none!important;border:0!important}
+.site-header .brand .brand-monogram,.site-header .brand .brand-name{display:none!important}
+.site-header .header-nav{background:transparent!important}
+.site-header .header-nav a:not(.nav-cta){color:#12382e!important;text-shadow:none!important}
+.site-header .header-nav .nav-cta,.client-home .hero-actions .hero-link{background:#073e2f!important;border-color:#073e2f!important;color:#fffaf3!important}
+.premium-top-contact{background:#073e2f!important;color:#f6dfab!important}
+.client-home .hero-grid{background:#fffaf3!important}
+.client-home .hero-copy h1,.client-home h2{color:#12382e!important}
+.client-home .hero-copy h1 em{color:#b3832b!important}
+.client-home .hero-actions a:not(.hero-link){color:#073e2f!important;border-color:#bd8a2d!important}
+.admin-sidebar,.workspace-sidebar,.lawyer-sidebar{background:#073e2f!important;color:#fffaf3!important}
+.admin-sidebar a,.workspace-sidebar a,.lawyer-sidebar a{color:#fffaf3!important}
+@media(max-width:800px){.site-header .brand{width:205px!important;height:70px!important;min-height:70px!important}.site-header{min-height:92px!important}}
