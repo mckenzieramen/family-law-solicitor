@@ -15,7 +15,7 @@
   const timeLabel=preferred?.closest('label');
   if(timeLabel)timeLabel.hidden=true;
   const steps=document.createElement('div');steps.className='premium-booking-steps';
-  steps.innerHTML='<span data-step="1">2 · Your details</span><span data-step="2">1 · Date & time</span><span data-step="3">3 · Review</span>';
+  steps.innerHTML='<span data-step="2"><b>01</b><span>Date & time</span></span><span data-step="1"><b>02</b><span>Your details</span></span><span data-step="3"><b>03</b><span>Review & submit</span></span>';
   form.querySelector('h3')?.after(steps);
   const controls=document.createElement('div');controls.className='premium-booking-navigation';
   controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next">Next →</button>';
@@ -46,7 +46,7 @@
    updateSummary();summary.hidden=n!==1||!preferred?.value;
    back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
    next.textContent=n===2?'Next: Your details →':'Next: Review enquiry →';
-   for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
+   for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',(n===2?false:n===1?Number(item.dataset.step)===2:n===3&&Number(item.dataset.step)!==3));}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
     panel.animate?.([{opacity:.86,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});
