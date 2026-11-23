@@ -478,9 +478,6 @@ dialog.booking-workflow-dialog .availability-dialog-inner{padding-bottom:24px!im
 dialog.booking-workflow-dialog .premium-booking-navigation{position:relative!important;bottom:auto!important;padding:18px 0 0!important;border-top:1px solid #e6dfd3!important}
 
 /* Consultation wizard: quiet, aligned footer controls; no on-page enquiry form */
-html body .client-home #consultation-form:not(dialog.booking-workflow-dialog #consultation-form){
- display:none!important;
-}
 dialog.booking-workflow-dialog .premium-booking-navigation{
  display:flex!important;align-items:center!important;justify-content:space-between!important;
  gap:14px!important;margin-top:26px!important;padding:20px 0 4px!important;
@@ -526,10 +523,22 @@ dialog.consultation-success-dialog::backdrop{background:rgba(7,25,38,.68)!import
 
 /* Permanent inline booking section: do not hide or detach the form. */
 html body .client-home section#contact{display:block!important;scroll-margin-top:90px!important}
-html body .client-home section#contact .contact-panel{display:grid!important;grid-template-columns:minmax(220px,.36fr) minmax(0,1fr)!important;align-items:stretch!important;overflow:visible!important}
+html body .client-home section#contact .contact-panel{display:grid!important;grid-template-columns:minmax(275px,34%) minmax(0,1fr)!important;align-items:stretch!important;overflow:visible!important}
 html body .client-home section#contact .consultation-form{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;min-width:0!important;padding:clamp(20px,3vw,36px)!important;background:#fffdf9!important}
 html body .client-home section#contact .consultation-form .premium-booking-steps{display:grid!important}
 html body .client-home section#contact .consultation-form .premium-booking-navigation{display:flex!important;justify-content:space-between!important}
 html body .client-home section#contact .consultation-form .premium-booking-navigation .premium-next{margin-left:auto!important}
 html body .client-home section#contact .consultation-form .premium-booking-navigation .premium-next:disabled{opacity:.45!important;cursor:not-allowed!important}
 @media(max-width:750px){html body .client-home section#contact .contact-panel{grid-template-columns:minmax(0,1fr)!important}}
+
+/* Restored visible embedded consultation: keep content in the right column */
+html body .client-home section#contact .contact-panel > .consultation-intro{
+ min-width:0!important;padding:clamp(25px,3.5vw,48px)!important;
+}
+html body .client-home section#contact .contact-panel > .consultation-form{
+ display:block!important;grid-column:2!important;min-height:500px!important;
+}
+html body .client-home section#contact .contact-panel > .consultation-form .premium-booking{display:block!important}
+@media(max-width:750px){
+ html body .client-home section#contact .contact-panel > .consultation-form{grid-column:1!important;min-height:0!important}
+}
