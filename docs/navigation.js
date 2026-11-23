@@ -38,15 +38,24 @@ menuToggle.addEventListener('click', () => {
   updateMenu();
 });
 
-navigation.addEventListener('click', event => {
+// Route all public section links after the dynamically rendered homepage is ready.
+// This also handles links from the hero, footer and service cards.
+document.addEventListener('click', event => {
   const link = event.target.closest('a[href^="#"]');
-  if (!link || !menuOpen) return;
-  menuOpen = false;
-  updateMenu();
-  const section = document.getElementById(link.hash.slice(1));
-  if (!section) return;
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const id = decodeURIComponent(link.hash.slice(1));
+  if (!id) return;
+  const section = document.getElementById(id);
+  if (!section || section.closest('[hidden]')) return;
+  event.preventDefault();
+  if (section.matches('#services details')) section.open = true;
+  if (menuOpen) { menuOpen = false; updateMenu(); }
+  const destination = section.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height - 18;
+  history.pushState(null, '', '#' + encodeURIComponent(id));
+  window.scrollTo({top: Math.max(0, destination), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
   section.setAttribute('tabindex', '-1');
   section.focus({preventScroll:true});
+  scheduleHighlight();
 });
 
 document.addEventListener('keydown', event => {
@@ -103,3 +112,16 @@ clientApp.addEventListener('click', event => {
 });
 window.addEventListener('hashchange', openServiceFromHash);
 openServiceFromHash();
+
+// Support direct links and browser back/forward, including after home() renders.
+function restoreSectionPosition() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (!id) return;
+  const section = document.getElementById(id);
+  if (!section) return;
+  if (section.matches('#services details')) section.open = true;
+  window.scrollTo({top: Math.max(0, section.getBoundingClientRect().top + window.scrollY - header.offsetHeight - 18), behavior:'instant'});
+  scheduleHighlight();
+}
+window.addEventListener('popstate', restoreSectionPosition);
+window.addEventListener('load', restoreSectionPosition);
