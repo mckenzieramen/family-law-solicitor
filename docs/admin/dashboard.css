@@ -3,11 +3,11 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard {
   --page:#f6f4f7;
   --paper:#fff;
-  --ink:#261b2c;
+  --ink:#173b2e;
   --muted:#655a6a;
-  --line:#e7e0e9;
-  --accent:#563758;
-  --tint:#f3eaf4;
+  --line:#e8deca;
+  --accent:#073e2f;
+  --tint:#f5f0e5;
   --shadow:0 2px 4px #24102c04, 0 14px 32px #24102c07;
   --serif:Georgia,serif;
   display:grid;
@@ -19,8 +19,8 @@ body.solicitor-profile { background:#f6f4f7; }
 }
 .dashboard-sidebar {
   padding:30px 18px;
-  background:linear-gradient(154deg,#39213e,#251629 72%);
-  color:#f6edf6;
+  background:linear-gradient(154deg,#103e31,#173b2e 72%);
+  color:#fffaf3;
 }
 .dashboard-identity {
   display:flex;
@@ -48,7 +48,7 @@ body.solicitor-profile { background:#f6f4f7; }
   padding:10px 13px;
   border:1px solid transparent;
   border-radius:9px;
-  color:#f0e5f0;
+  color:#f5f0e5;
   text-decoration:none;
   font-size:14px;
   font-weight:550;
@@ -83,9 +83,9 @@ body.solicitor-profile { background:#f6f4f7; }
 #staff-login label { display:block; margin:12px 0; }
 #staff-login input { display:block; width:100%; margin-top:5px; padding:10px; border:1px solid #c7b8ca; border-radius:8px; font:inherit; }
 #staff-login button, #staff-logout { cursor:pointer; font:inherit; }
-#staff-logout { padding:9px 12px; border:1px solid var(--line,#e7e0e9); border-radius:8px; background:#fff; color:#412846; font-size:14px; font-weight:600; }
-#staff-logout:hover { background:#f3eaf4; }
-.admin-dashboard :focus-visible { outline:2px solid #8d588c; outline-offset:3px; }
+#staff-logout { padding:9px 12px; border:1px solid var(--line,#e8deca); border-radius:8px; background:#fff; color:#164736; font-size:14px; font-weight:600; }
+#staff-logout:hover { background:#f5f0e5; }
+.admin-dashboard :focus-visible { outline:2px solid #416f55; outline-offset:3px; }
 .dashboard-sidebar :focus-visible { outline-color:#f2d7ba; }
 .dashboard-metrics, .legal-counts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
 .dashboard-metrics { margin-bottom:22px; }
@@ -97,7 +97,7 @@ body.solicitor-profile { background:#f6f4f7; }
 }
 .dashboard-metrics > div, .legal-counts > a { padding:15px clamp(12px,2vw,22px); font-size:14px; color:var(--muted); }
 .dashboard-metrics strong, .legal-counts strong { display:block; margin-top:3px; color:var(--accent); font:34px var(--serif); font-variant-numeric:tabular-nums; }
-.dashboard-metrics progress { display:block; width:100%; height:7px; margin-top:8px; accent-color:#78517b; }
+.dashboard-metrics progress { display:block; width:100%; height:7px; margin-top:8px; accent-color:#426a53; }
 .legal-work-summary { margin-bottom:24px; }
 .legal-work-summary h2, .dashboard-section-title h2 { margin:0 0 12px; font:normal 24px var(--serif); }
 .admin-dashboard #staff-inbox { padding:clamp(17px,3vw,30px); border:1px solid var(--line); border-radius:16px; background:var(--paper); box-shadow:var(--shadow); }
@@ -138,7 +138,7 @@ body.solicitor-profile { background:#f6f4f7; }
 .legal-counts > a:hover { border-color:#a887a9; background:var(--tint); }
 .inbox-controls { display:grid; grid-template-columns:minmax(160px,.6fr) minmax(0,1fr); gap:12px; margin:16px 0; }
 .inbox-controls label { display:grid; gap:5px; color:var(--muted); font-size:14px; font-weight:650; }
-.inbox-controls :is(select,input) { width:100%; min-height:42px; border:1px solid #d9cedd; border-radius:8px; background:var(--paper); padding:8px 10px; font:inherit; color:var(--ink); }
+.inbox-controls :is(select,input) { width:100%; min-height:42px; border:1px solid #e2d7c2; border-radius:8px; background:var(--paper); padding:8px 10px; font:inherit; color:var(--ink); }
 @media(max-width:500px) { .inbox-controls { grid-template-columns:1fr; } }
 
 .inbox-controls { grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)); }
@@ -155,7 +155,7 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard[data-view]:not([data-view="overview"]) #overview-agenda { display:none; }
 .overview-agenda { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow); }
 .overview-agenda h2 { margin:0 0 14px; font:400 26px var(--serif); }
-.overview-agenda-row { display:grid; grid-template-columns:95px minmax(0,1fr) auto; align-items:center; gap:12px; padding:12px; border-top:1px solid var(--line); border-inline-start:3px solid var(--appointment-line,#93639b); overflow-wrap:anywhere; }
+.overview-agenda-row { display:grid; grid-template-columns:95px minmax(0,1fr) auto; align-items:center; gap:12px; padding:12px; border-top:1px solid var(--line); border-inline-start:3px solid var(--appointment-line,#517e60); overflow-wrap:anywhere; }
 .overview-agenda-row small { color:var(--muted); }
 .inbox-split { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,3fr); gap:14px; margin-top:12px; align-items:start; }
 #inbox-list,#inbox-reader { border:1px solid var(--line); border-radius:12px; overflow-wrap:anywhere; min-height:115px; background:var(--paper); }
@@ -175,19 +175,19 @@ body.solicitor-profile { background:#f6f4f7; }
   .overview-agenda-row small { grid-column:2; }
 }
 
-.admin-dashboard { --page:#f7f4f0; --paper:#fffefa; --ink:#251827; --muted:#615461; --line:#e9dfe4; --accent:#532345; --tint:#f3e8ef; background:var(--page); }
-.dashboard-sidebar { background:linear-gradient(165deg,#3b1b34,#271426 76%); }
+.admin-dashboard { --page:#f7f4f0; --paper:#fffefa; --ink:#173b2e; --muted:#615461; --line:#e8deca; --accent:#073e2f; --tint:#f5eee1; background:var(--page); }
+.dashboard-sidebar { background:linear-gradient(165deg,#103e31,#173b2e 76%); }
 .dashboard-sidebar .admin-nav-symbol { width:22px; text-align:center; font-size:17px; color:#e5bcce; }
 .dashboard-sidebar a { display:flex; align-items:center; gap:9px; min-height:43px; }
 .dashboard-header { align-items:center; }
 .admin-section-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
 .admin-section-heading h2 { margin:0; }
 .admin-section-heading > span { color:var(--muted); font-size:14px; }
-.legal-counts > a { border-top:3px solid #896083; padding-block:18px; }
+.legal-counts > a { border-top:3px solid #527a61; padding-block:18px; }
 .legal-counts > a:nth-child(2) { border-top-color:#a65a59; }
 .legal-counts > a:nth-child(3) { border-top-color:#668673; }
 .admin-dashboard .dashboard-metrics > div { background:#fcf8fa; }
-.admin-dashboard .duty-group { border-top:3px solid #896083; }
+.admin-dashboard .duty-group { border-top:3px solid #527a61; }
 .admin-dashboard .duty-item:has(input:checked) { color:var(--muted); }
 .admin-dashboard #inbox-list { background:#faf6f8; }
 .admin-dashboard #inbox-reader { min-height:265px; }
@@ -209,8 +209,8 @@ body.solicitor-profile { background:#f6f4f7; }
 #staff-duty-reference summary { cursor:pointer; font-weight:650; }
 
 /* Plum and ivory staff workspace */
-.admin-dashboard { --page:#f7f1eb; --paper:#fffaf5; --ink:#2d1426; --muted:#66505d; --line:#dcc7d3; --accent:#59203f; --tint:#f5e6eb; }
-.dashboard-sidebar { background:linear-gradient(155deg,#481530,#290e24); }
+.admin-dashboard { --page:#f7f1eb; --paper:#fffaf5; --ink:#103e31; --muted:#66505d; --line:#d8c7a8; --accent:#164736; --tint:#f5eee1; }
+.dashboard-sidebar { background:linear-gradient(155deg,#073e2f,#103e31); }
 .dashboard-monogram { display:inline-flex; position:relative; align-items:center; background:transparent; border:0; color:#f7d389; font:2rem var(--serif); }
 .dashboard-monogram span { position:relative; top:.23em; margin-left:-.12em; }
 .dashboard-identity p { color:#eed9e6; }
@@ -302,15 +302,15 @@ body.solicitor-profile { background:#f6f4f7; }
 .template-preview footer { text-align:right; }
 @media(max-width:760px) { .template-layout { grid-template-columns:minmax(0,1fr); } }
 
-.staff-toast { position:fixed; z-index:50; inset:auto max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) auto; width:min(410px,calc(100% - 32px)); box-sizing:border-box; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:12px; padding:16px; border:1px solid #d8c2cc; border-inline-start:4px solid #ba883c; border-radius:14px; background:#fffaf5; color:#2d1426; box-shadow:0 14px 40px #2c10273b; animation:staff-toast-enter .2s ease-out; }
+.staff-toast { position:fixed; z-index:50; inset:auto max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) auto; width:min(410px,calc(100% - 32px)); box-sizing:border-box; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:12px; padding:16px; border:1px solid #d8c2cc; border-inline-start:4px solid #ba883c; border-radius:14px; background:#fffaf5; color:#103e31; box-shadow:0 14px 40px #2c10273b; animation:staff-toast-enter .2s ease-out; }
 .staff-toast-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#f5e7cc; color:#704510; font-weight:800; }
 .staff-toast[data-tone="error"] { border-inline-start-color:#9e3046; }
 .staff-toast[data-tone="error"] .staff-toast-icon { background:#f5dce1; color:#85263a; }
 .staff-toast strong { display:block; font:700 1.06rem/1.3 var(--serif); }
 .staff-toast p { margin:4px 0 0; color:#66505d; font-size:.875rem; overflow-wrap:anywhere; }
-.staff-toast button { min-width:36px; min-height:36px; border:1px solid #dcc7d3; border-radius:8px; background:transparent; color:#59203f; cursor:pointer; font:1.15rem/1 system-ui,sans-serif; }
-.staff-toast button:hover { background:#f5e6eb; }
-.staff-toast button:focus-visible { outline:2px solid #59203f; outline-offset:2px; }
+.staff-toast button { min-width:36px; min-height:36px; border:1px solid #d8c7a8; border-radius:8px; background:transparent; color:#164736; cursor:pointer; font:1.15rem/1 system-ui,sans-serif; }
+.staff-toast button:hover { background:#f5eee1; }
+.staff-toast button:focus-visible { outline:2px solid #164736; outline-offset:2px; }
 @keyframes staff-toast-enter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @media(prefers-reduced-motion:reduce) { .staff-toast { animation:none; } }
 
