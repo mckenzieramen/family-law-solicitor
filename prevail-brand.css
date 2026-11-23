@@ -416,3 +416,7 @@ dialog.booking-workflow-dialog .consultation-footer button[type=submit]{backgrou
 dialog.booking-workflow-dialog .booking-quick-calendar{display:none!important}
 dialog.booking-workflow-dialog .premium-calendar-header strong,dialog.booking-workflow-dialog .premium-times>strong{color:#102a3a!important}
 @media(max-width:650px){dialog.booking-workflow-dialog .premium-booking-grid{grid-template-columns:1fr!important}dialog.booking-workflow-dialog .availability-dialog-inner{padding:18px!important}}
+
+dialog.booking-workflow-dialog .premium-booking-steps [data-step="2"]{order:1}
+dialog.booking-workflow-dialog .premium-booking-steps [data-step="1"]{order:2}
+dialog.booking-workflow-dialog .premium-booking-steps [data-step="3"]{order:3}
