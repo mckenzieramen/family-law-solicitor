@@ -506,3 +506,20 @@ html body .client-home section#contact{display:block!important}
 html body .client-home section#contact .contact-panel{max-width:1160px;margin-inline:auto}
 html body .client-home section#contact #consultation-form{display:block!important}
 html body dialog.booking-workflow-dialog #consultation-form{display:block!important}
+
+/* Clear, accessible confirmation after successful Firestore submission */
+dialog.consultation-success-dialog{
+ position:fixed!important;inset:0!important;margin:auto!important;
+ width:min(92vw,500px)!important;max-height:90dvh!important;padding:0!important;
+ border:1px solid #d5ae67!important;border-radius:20px!important;
+ background:#fdfaf5!important;color:#102a3a!important;
+ box-shadow:0 28px 85px rgba(6,25,38,.28)!important
+}
+dialog.consultation-success-dialog::backdrop{background:rgba(7,25,38,.68)!important;backdrop-filter:blur(4px)}
+.consultation-success-content{text-align:center;padding:clamp(25px,5vw,42px)}
+.consultation-success-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 19px;border-radius:50%;background:#e7f2ea;color:#145b37;font-size:30px;font-weight:700}
+.consultation-success-content h2{margin:0 0 15px;color:#102a3a;font:500 clamp(25px,4vw,34px)/1.2 Georgia,serif}
+.consultation-success-content p{margin:10px 0;color:#526373;line-height:1.65;font-size:14px}
+.consultation-success-content .consultation-success-note{font-size:13px}
+.consultation-success-ref{overflow-wrap:anywhere;font-size:12px!important;color:#73808a!important}
+.consultation-success-close{margin-top:22px;min-width:140px;padding:13px 24px;border:0;border-radius:10px;background:#102a3a;color:white;font-weight:700;cursor:pointer}
