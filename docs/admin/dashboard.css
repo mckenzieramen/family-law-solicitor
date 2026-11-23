@@ -19,7 +19,7 @@ body.solicitor-profile { background:#f6f4f7; }
 }
 .dashboard-sidebar {
   padding:30px 18px;
-  background:linear-gradient(154deg,#103e31,#173b2e 72%);
+  background:#073e2f;
   color:#fffaf3;
 }
 .dashboard-identity {
@@ -176,7 +176,7 @@ body.solicitor-profile { background:#f6f4f7; }
 }
 
 .admin-dashboard { --page:#f7f4f0; --paper:#fffefa; --ink:#173b2e; --muted:#615461; --line:#e8deca; --accent:#073e2f; --tint:#f5eee1; background:var(--page); }
-.dashboard-sidebar { background:linear-gradient(165deg,#103e31,#173b2e 76%); }
+.dashboard-sidebar { background:#073e2f; }
 .dashboard-sidebar .admin-nav-symbol { width:22px; text-align:center; font-size:17px; color:#e5bcce; }
 .dashboard-sidebar a { display:flex; align-items:center; gap:9px; min-height:43px; }
 .dashboard-header { align-items:center; }
@@ -210,7 +210,7 @@ body.solicitor-profile { background:#f6f4f7; }
 
 /* Plum and ivory staff workspace */
 .admin-dashboard { --page:#f7f1eb; --paper:#fffaf5; --ink:#103e31; --muted:#66505d; --line:#d8c7a8; --accent:#164736; --tint:#f5eee1; }
-.dashboard-sidebar { background:linear-gradient(155deg,#073e2f,#103e31); }
+.dashboard-sidebar { background:#073e2f; }
 .dashboard-monogram { display:inline-flex; position:relative; align-items:center; background:transparent; border:0; color:#f7d389; font:2rem var(--serif); }
 .dashboard-monogram span { position:relative; top:.23em; margin-left:-.12em; }
 .dashboard-identity p { color:#eed9e6; }
@@ -317,7 +317,7 @@ body.solicitor-profile { background:#f6f4f7; }
 /* Workspace layout */
 .admin-dashboard { --page:#f6f1ec; --paper:#fffdf9; --line:#e5d7dc; --shadow:0 5px 20px #38203309; }
 .dashboard-main { box-sizing:border-box; padding-inline:clamp(18px,3vw,44px); }
-.dashboard-sidebar { background:linear-gradient(165deg,#521b37,#2e1328 68%); }
+.dashboard-sidebar { background:#073e2f; }
 .dashboard-sidebar nav a { min-height:44px; }
 .dashboard-sidebar nav a[aria-current="page"] { background:#ffffff1c; box-shadow:inset 3px 0 #f0cb7e; }
 .dashboard-header { min-height:56px; margin-bottom:18px; }
@@ -370,3 +370,7 @@ body.solicitor-profile { background:#f6f4f7; }
 .admin-dashboard:not([data-view="overview"]) .staff-quick-actions { display:none; }
 .staff-quick-actions a { display:inline-flex; align-items:center; min-height:44px; padding:5px 13px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--accent); font-weight:650; text-decoration:none; }
 .staff-quick-actions a:hover { background:#fff2df; border-color:#be9460; }
+
+/* Prevail admin: original sidebar selector */
+.admin-dashboard .dashboard-sidebar,body.solicitor-profile .admin-dashboard .dashboard-sidebar{background:#073e2f!important;background-image:none!important;color:#fffaf3!important}
+.admin-dashboard .dashboard-main{background:#fffaf3!important}
