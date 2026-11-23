@@ -18,7 +18,7 @@
   steps.innerHTML='<span data-step="2"><b>01</b><span>Date & time</span></span><span data-step="1"><b>02</b><span>Your details</span></span><span data-step="3"><b>03</b><span>Review & submit</span></span>';
   form.querySelector('h3')?.after(steps);
   const controls=document.createElement('div');controls.className='premium-booking-navigation';
-  controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next">Next →</button>';
+  controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next" disabled>Next →</button>';
   footer.before(controls);
   const back=controls.querySelector('.premium-back'),next=controls.querySelector('.premium-next'),submit=footer.querySelector('button[type="submit"]');
   const review=document.createElement('div');review.className='premium-booking-review';review.hidden=true;
@@ -27,25 +27,18 @@
   if(originalContinue)originalContinue.hidden=true;
   let step=1;
   let reviewFrom=2;
-  const summary=document.createElement('div');
-  summary.className='booking-selection-summary';
-  summary.hidden=true;
-  fields.before(summary);
-  function updateSummary(){
-   if(!preferred?.value){summary.hidden=true;return;}
-   const display=preferred.value.replace('T',' · ')+' Sydney time';
-   summary.hidden=false;
-   summary.innerHTML='<div><small>Your requested consultation</small><strong></strong><span>Subject to confirmation by the firm</span></div><button type="button" class="booking-change-time">Change time</button>';
-   summary.querySelector('strong').textContent=display;
+  function updateNextState(){
+   const ready=step===2?Boolean(preferred?.value):step===1;
+   next.disabled=!ready;
+   next.setAttribute('aria-disabled',String(!ready));
   }
-  summary.addEventListener('click',e=>{if(e.target.closest('.booking-change-time'))show(2)});
-  preferred?.addEventListener('change',updateSummary);
+  preferred?.addEventListener('change',updateNextState);
   function show(n){
    const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
-   updateSummary();summary.hidden=n!==1||!preferred?.value;
+   updateNextState();
    back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
-   next.textContent=n===2?'Next: Your details →':'Next: Review enquiry →';
+   next.textContent='Next →';
    for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',(n===2?false:n===1?Number(item.dataset.step)===2:n===3&&Number(item.dataset.step)!==3));}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
