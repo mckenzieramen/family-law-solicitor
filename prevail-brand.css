@@ -370,3 +370,20 @@ html body .client-home .premium-journey-intro{max-width:660px!important;margin:0
  html body .client-home .prevail-trust-strip{margin:0 auto!important;width:100%!important;border-radius:0!important;padding:12px!important}
  html body .client-home .premium-journey{padding:52px 18px 65px!important}
 }
+
+/* Final hero transition: a single non-overlapping feature strip */
+html body .client-home .prevail-trust-strip{
+ position:relative!important;inset:auto!important;transform:none!important;
+ width:min(1100px,calc(100% - 40px))!important;
+ margin:-22px auto 0!important;padding:12px 18px!important;
+ border-radius:14px!important;box-sizing:border-box!important;
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ background:#102a3a!important;border:1px solid #d5ae67!important;
+ box-shadow:0 10px 24px rgba(16,42,58,.14)!important;
+}
+html body .client-home .prevail-trust-item{min-width:0!important;justify-content:center!important;align-items:center!important;padding:8px 12px!important}
+html body .client-home .premium-journey{padding-top:clamp(62px,7vw,88px)!important}
+@media(max-width:700px){
+ html body .client-home .prevail-trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin:0 auto!important;width:100%!important}
+ html body .client-home .prevail-trust-item:nth-child(2){border-right:0!important}
+}
