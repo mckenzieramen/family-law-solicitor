@@ -1,4 +1,4 @@
-/* Progressive consultation inquiry: preferred time -> details -> review.
+/* Progressive consultation inquiry: details -> preferred time -> review.
    Existing Firebase clientInbox submission remains unchanged. Slots are requests,
    NOT confirmed bookings: no server-side reservation service exists yet. */
 (() => {
@@ -15,7 +15,7 @@
   const timeLabel=preferred?.closest('label');
   if(timeLabel)timeLabel.hidden=true;
   const steps=document.createElement('div');steps.className='premium-booking-steps';
-  steps.innerHTML='<span data-step="2"><b>01</b><span>Date & time</span></span><span data-step="1"><b>02</b><span>Your details</span></span><span data-step="3"><b>03</b><span>Review & submit</span></span>';
+  steps.innerHTML='<span data-step="1"><b>01</b><span>Your details</span></span><span data-step="2"><b>02</b><span>Date & time</span></span><span data-step="3"><b>03</b><span>Review & submit</span></span>';
   form.querySelector('h3')?.after(steps);
   const controls=document.createElement('div');controls.className='premium-booking-navigation';
   controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next" disabled>Next →</button>';
@@ -25,21 +25,23 @@
   footer.before(review);
   const originalContinue=calendar.querySelector('[data-continue]');
   if(originalContinue)originalContinue.hidden=true;
-  let step=2;
+  let step=1;
   let reviewFrom=2;
   function updateNextState(){
-   const ready=step===2?Boolean(preferred?.value):step===1;
+   const ready=step===2?Boolean(preferred?.value):step===1 && [...fields.querySelectorAll('[required]')].every(field=>field.checkValidity());
    next.disabled=!ready;
    next.setAttribute('aria-disabled',String(!ready));
   }
   preferred?.addEventListener('change',updateNextState);
+  fields.addEventListener('input',updateNextState);
+  fields.addEventListener('change',updateNextState);
   function show(n){
    const changed=n!==step;
    step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
    updateNextState();
-   back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
+   back.hidden=n===1;next.hidden=n===3;footer.hidden=n!==3;
    next.textContent='Next →';
-   for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',(n===2?false:n===1?Number(item.dataset.step)===2:n===3&&Number(item.dataset.step)!==3));}
+   for(const item of steps.children){item.classList.toggle('active',Number(item.dataset.step)===n);item.classList.toggle('completed',Number(item.dataset.step)<n);}
    if(changed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const panel=n===1?fields:n===2?calendar:review;
     panel.animate?.([{opacity:.86,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});
@@ -74,15 +76,15 @@
    return true;
   }
   next.addEventListener('click',()=>{
-   if(step===1){if(!validateDetails())return;reviewFrom=1;show(3);}
-   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}reviewFrom=1;show(1);}
+   if(step===1){if(!validateDetails())return;show(2);}
+   else if(step===2){if(!preferred.value){const status=calendar.querySelector('[data-status]');if(status)status.textContent='Please select a preferred date and time before continuing.';return;}reviewFrom=2;show(3);}
   });
-  back.addEventListener('click',()=>show(step===3?1:2));
-  form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(2);}},true);
+  back.addEventListener('click',()=>show(step===3?2:1));
+  form.addEventListener('submit',e=>{if(step!==3){e.preventDefault();e.stopImmediatePropagation();show(1);}},true);
   const result=form.querySelector('#consultation-result');
-  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){document.querySelector('.booking-workflow-dialog')?.close();show(2);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
-  form.addEventListener('prevail:booking-open',()=>{show(2);});
-  show(2);
+  if(result){const observer=new MutationObserver(()=>{if(/Inquiry received/i.test(result.textContent||'')){document.querySelector('.booking-workflow-dialog')?.close();show(1);}});observer.observe(result,{childList:true,characterData:true,subtree:true});}
+  form.addEventListener('prevail:booking-open',()=>{show(1);});
+  show(1);
  }
  new MutationObserver(()=>{if(document.querySelector('.client-home #consultation-form .premium-booking'))init();}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
