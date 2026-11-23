@@ -411,3 +411,15 @@ body.solicitor-profile { background:#fffaf3; }
 #case-follow-ups .follow-up-group button{border-radius:8px!important}
 @media(max-width:1050px){#case-follow-ups{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:650px){#case-follow-ups{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}}
+
+
+/* Interactive follow-up toolbar and progressive disclosure */
+.followup-tools{display:flex;align-items:end;gap:14px;flex-wrap:wrap;margin:16px 0 4px;padding:16px 18px;border:1px solid #e6dfd3;border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(16,42,58,.05)}
+.followup-tools label{display:grid;gap:6px;min-width:min(100%,210px);flex:1 1 220px;color:#102a3a;font-size:13px;font-weight:700}
+.followup-tools input,.followup-tools select{width:100%;min-height:42px;padding:9px 12px;border:1px solid #d8d0c2;border-radius:9px;background:#fff;color:#102a3a;font:inherit}
+.followup-tools input:focus-visible,.followup-tools select:focus-visible{outline:2px solid #d5ae67;outline-offset:2px}
+.followup-tools #followup-results{margin-left:auto;padding-bottom:10px;color:#526373;font-size:13px}
+#case-follow-ups .follow-up-row[hidden],#case-follow-ups .followup-more[hidden]{display:none!important}
+#case-follow-ups .followup-more{display:block;width:calc(100% - 28px);margin:10px 14px 15px;padding:11px 12px;border:1px solid #d5ae67;border-radius:9px;background:#f7f4ee;color:#102a3a;font-weight:700;cursor:pointer}
+#case-follow-ups .followup-more:hover{background:#f3e6cc}
+@media(max-width:650px){.followup-tools{padding:12px}.followup-tools #followup-results{margin-left:0}}
