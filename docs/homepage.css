@@ -7,13 +7,13 @@ header .brand{text-decoration:none}
 .client-home .hero-photo img{display:block;inset:0;object-position:center 58%}
 .client-home .hero-copy{width:auto;padding:clamp(38px,5.5vw,80px) clamp(24px,5.5vw,84px)}
 .client-home h1{font-size:clamp(44px,5.4vw,81px);line-height:1.03;max-width:15ch;color:var(--plum)}
-.client-home .eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin:0 0 18px}.hero-copy .eyebrow{color:#785039}
+.client-home .eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin:0 0 18px}.hero-copy .eyebrow{color:#42614c}
 .client-home .hero-link{background:var(--plum);color:#fff9ee}.hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.hero-actions>a:last-child{color:var(--plum);text-underline-offset:4px}.hero-link span{margin-left:6px}
-.client-section{width:min(1180px,calc(100% - 48px));margin:auto;padding-block:clamp(36px,6vw,76px);scroll-margin-top:20px}.client-section h2{font:400 clamp(30px,4vw,52px)/1.08 Georgia,serif;color:var(--plum);letter-spacing:-.035em}.client-section p{font-size:16px;color:#51454e;margin:10px 0;max-width:58ch}
-.section-lead{margin-bottom:24px}.service-grid,.client-columns{display:grid;gap:16px}.service-grid{grid-template-columns:repeat(3,1fr)}.service-grid article{background:#fffdf8;border:1px solid var(--line);border-top:3px solid #9d795e;border-radius:6px;padding:23px}.service-grid h3{font-size:23px;color:var(--plum)}
-.client-band{background:#eee8e0}.client-columns{grid-template-columns:1fr 1fr;gap:clamp(20px,6vw,80px)}.client-columns details{border-bottom:1px solid #d6c8c6;padding:13px 0}.client-columns summary{cursor:pointer;font-weight:650}.client-columns #resources h2{font-size:clamp(28px,3vw,39px)}
+.client-section{width:min(1180px,calc(100% - 48px));margin:auto;padding-block:clamp(36px,6vw,76px);scroll-margin-top:20px}.client-section h2{font:400 clamp(30px,4vw,52px)/1.08 Georgia,serif;color:var(--plum);letter-spacing:-.035em}.client-section p{font-size:16px;color:#345b48;margin:10px 0;max-width:58ch}
+.section-lead{margin-bottom:24px}.service-grid,.client-columns{display:grid;gap:16px}.service-grid{grid-template-columns:repeat(3,1fr)}.service-grid article{background:#fffdf8;border:1px solid var(--line);border-top:3px solid #6a8068;border-radius:6px;padding:23px}.service-grid h3{font-size:23px;color:var(--plum)}
+.client-band{background:#eee8e0}.client-columns{grid-template-columns:1fr 1fr;gap:clamp(20px,6vw,80px)}.client-columns details{border-bottom:1px solid #e2dccc;padding:13px 0}.client-columns summary{cursor:pointer;font-weight:650}.client-columns #resources h2{font-size:clamp(28px,3vw,39px)}
 .contact-panel{border:1px solid var(--line);border-radius:8px;background:#fffcf7;padding:clamp(21px,4vw,40px);display:flex;align-items:center;gap:16px;justify-content:space-between}.contact-panel a{color:var(--plum);text-underline-offset:4px}.client-footer{background:#073e2f;color:#fff9ee;display:flex;justify-content:space-between;gap:12px}.client-footer small{color:#eee2cf}
-header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-visible{outline:3px solid #a47a55;outline-offset:4px}
+header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-visible{outline:3px solid #8e774b;outline-offset:4px}
 @media(max-width:850px){.client-home .hero-grid{grid-template-columns:1fr;min-height:0}.client-home .hero-photo{height:clamp(220px,50vw,380px)}.header-nav:not([hidden]){display:flex;flex-wrap:wrap;justify-content:flex-end}}
 @media(max-width:640px){header{flex-wrap:wrap}.header-nav:not([hidden]){justify-content:flex-start;gap:13px}.header-nav a{font-size:13px}.service-grid,.client-columns{grid-template-columns:1fr}.contact-panel{align-items:flex-start;flex-direction:column}}
 
@@ -21,14 +21,14 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 
 .site-header{position:sticky;top:0;z-index:10;min-height:76px}
 .site-header .brand{gap:12px}
-.brand-monogram{display:grid;place-items:center;flex:none;width:43px;height:43px;border:1px solid #f2e0cb;border-radius:9px;outline:1px solid var(--plum);outline-offset:2px;background:var(--plum);color:#fff9ee;font:italic 22px Georgia,serif;letter-spacing:-.07em}
+.brand-monogram{display:grid;place-items:center;flex:none;width:43px;height:43px;border:1px solid #f4ecd9;border-radius:9px;outline:1px solid var(--plum);outline-offset:2px;background:var(--plum);color:#fff9ee;font:italic 22px Georgia,serif;letter-spacing:-.07em}
 .brand-name{line-height:1.05}.brand-name small{display:block;margin-top:4px;font:600 10px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
 .site-header .header-nav{gap:clamp(8px,1.6vw,24px)}
 .site-header .header-nav a{padding:9px 11px;border-radius:5px}.site-header .header-nav .nav-cta{padding:10px 14px}
 .site-header .header-nav a:not(.nav-cta):hover,.site-header .header-nav a:not(.nav-cta)[aria-current=location]{background:#f5eee1;color:#073e2f;text-decoration:none}
 .site-header .nav-cta[aria-current=location]{box-shadow:inset 0 -3px #ca9f7d}
 .site-header .nav-cta span{margin-left:4px}
-.menu-toggle{border:1px solid #cec0c9;border-radius:6px;background:#fffdf8;color:var(--plum);font-weight:650;padding:9px 12px}
+.menu-toggle{border:1px solid #dedacc;border-radius:6px;background:#fffdf8;color:var(--plum);font-weight:650;padding:9px 12px}
 .menu-toggle span{margin-left:5px}
 .client-home [id]{scroll-margin-top:calc(var(--header-height,76px) + 14px)}
 @media(max-width:680px){
@@ -45,10 +45,10 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .consultation-steps ol{counter-reset:consultation-step;list-style:none;padding:0;margin:22px 0 0}
 .consultation-steps li{counter-increment:consultation-step;position:relative;padding:0 0 15px 44px;margin:0 0 13px;border-bottom:1px solid var(--line)}
 .consultation-steps li::before{content:counter(consultation-step);position:absolute;left:0;top:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f5eee1;color:var(--plum);font-weight:700}
-.consultation-steps span{display:block;color:#51454e;font-size:14px;margin-top:4px}
+.consultation-steps span{display:block;color:#345b48;font-size:14px;margin-top:4px}
 .consultation-form h2{font-size:clamp(28px,3.5vw,43px)}
 .consultation-form label{font-weight:650;font-size:14px}
-.consultation-form input,.consultation-form select{display:block;width:100%;min-width:0;padding:10px 12px;border:1px solid #a89ba2;border-radius:5px;background:white;color:var(--ink);min-height:44px}
+.consultation-form input,.consultation-form select{display:block;width:100%;min-width:0;padding:10px 12px;border:1px solid #7c927e;border-radius:5px;background:white;color:var(--ink);min-height:44px}
 .consultation-form button{margin-top:16px}
 #consultation-result:empty{display:none}
 #consultation-result:not(:empty){background:#e5eadb;color:#2f482c;padding:10px 12px;border-radius:5px}
@@ -108,10 +108,10 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .client-band{background:#eee7de;border-top:1px solid #e0d6ca}
 .client-band .client-columns{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center}
 .client-columns .profile-preview-link{display:flex;width:100%;padding:clamp(22px,4vw,36px);border-radius:13px;background:#fffdf8;box-shadow:0 8px 24px #073e2f0a}
-.profile-preview>.eyebrow{color:#785039}
+.profile-preview>.eyebrow{color:#42614c}
 .profile-preview-link img,.profile-intro img{border:4px solid #fffdf8;outline:1px solid #c9aa93}
 .profile-preview-link h2{font-size:clamp(32px,4.3vw,47px)}
-.profile-preview-link .profile-preview-bio{color:#51454e;font-weight:400;font-size:15px}
+.profile-preview-link .profile-preview-bio{color:#345b48;font-weight:400;font-size:15px}
 .profile-link-label{margin-top:8px}
 .client-columns #contact-info{border-left:1px solid #d0c2b6;padding-left:clamp(22px,4vw,46px)}
 .solicitor-profile{background:#f7f0e7}
@@ -128,9 +128,9 @@ header a:focus-visible,.client-home a:focus-visible,.client-home summary:focus-v
 .staff-entry h1{font:400 clamp(39px,5.2vw,65px)/1 Georgia,serif;margin:10px 0}
 .staff-entry h2{font:400 31px/1.05 Georgia,serif;color:#073e2f;margin:0}
 .staff-entry-action{align-self:center}
-.entry-note{color:#51454e}
+.entry-note{color:#345b48}
 .solicitor-profile .profile-button{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:7px;background:#073e2f;color:#fff9ee;text-decoration:none}
-.solicitor-profile a:focus-visible{outline:3px solid #a47a55;outline-offset:4px}
+.solicitor-profile a:focus-visible{outline:3px solid #8e774b;outline-offset:4px}
 @media(max-width:850px){.client-home .hero-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.client-band .client-columns,.staff-entry{grid-template-columns:1fr}.client-columns #contact-info{border-left:0;padding-left:0;border-top:1px solid #d0c2b6;padding-top:22px}}
 
@@ -217,7 +217,7 @@ body:has(.client-home) > .site-header{position:sticky;top:0;z-index:20;backgroun
 .profile-location .profile-portrait{display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 40%,#f7eee5,#e6d6c7)}
 .profile-location .profile-portrait img{width:100%;max-width:150px;height:auto;aspect-ratio:1;border:4px solid #fffdf8}
 .profile-location .profile-copy{padding:clamp(20px,2.8vw,36px);align-self:center}
-.profile-location .profile-copy .eyebrow{margin-bottom:9px;color:#785039}
+.profile-location .profile-copy .eyebrow{margin-bottom:9px;color:#42614c}
 .profile-location .profile-copy h2{font-size:clamp(30px,3.6vw,48px)}
 .profile-location .profile-position{font-size:14px;margin-top:6px}
 .profile-location .profile-preview-bio{margin-top:10px}
