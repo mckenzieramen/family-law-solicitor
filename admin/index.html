@@ -16,8 +16,8 @@
   display: grid;
   place-items: center;
   padding: clamp(16px, 5vw, 48px);
-  background: radial-gradient(ellipse at 50% 0%, #f3e2d9, transparent 65%), #f8f4ef;
-  color: #351d2b;
+  background: radial-gradient(ellipse at 50% 0%, #eee6d5, transparent 65%), #f8f4ef;
+  color: #173b2e;
   font: 400 1rem/1.5 system-ui, sans-serif;
 }
 .admin-sign-in[hidden] { display: none; }
@@ -27,14 +27,14 @@
   border-radius: 20px;
   overflow: hidden;
   background: #fffdf9;
-  box-shadow: 0 20px 55px #4320321a;
+  box-shadow: 0 20px 55px #073e2f1a;
 }
 .admin-sign-in-header {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 22px clamp(20px, 6vw, 36px);
-  background: linear-gradient(130deg, #52182c, #351322);
+  background: linear-gradient(130deg, #073e2f, #103e31);
   color: #fff8ed;
   border-bottom: 2px solid #ceaa6b;
 }
@@ -57,31 +57,31 @@
   box-sizing: border-box;
   min-height: 46px;
   margin: 6px 0 0;
-  border-color: #d7c6cd;
+  border-color: #e0d6c2;
   background: #fff;
-  color: #351d2b;
+  color: #173b2e;
   font-size: 1rem;
 }
 .admin-sign-in #staff-login button {
   width: 100%;
   min-height: 46px;
   margin-top: 4px;
-  border: 1px solid #51182c;
+  border: 1px solid #073e2f;
   border-radius: 9px;
-  background: #51182c;
+  background: #073e2f;
   color: #fffaf4;
   font-weight: 700;
   transition: background-color .16s ease;
 }
-.admin-sign-in #staff-login button:hover:enabled { background: #70253e; }
+.admin-sign-in #staff-login button:hover:enabled { background: #205940; }
 .admin-sign-in #staff-login button:disabled { opacity: .65; cursor: wait; }
 .admin-sign-in :is(input, button):focus-visible { outline: 2px solid #9f652c; outline-offset: 3px; }
-.admin-sign-in #auth-status { margin: 14px 0 0; color: #654b5a; font-size: .875rem; overflow-wrap: anywhere; }
+.admin-sign-in #auth-status { margin: 14px 0 0; color: #526b5a; font-size: .875rem; overflow-wrap: anywhere; }
 .admin-sign-in #auth-status:empty { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .admin-sign-in #staff-login button { transition: none; }
 }
-.staff-preview-link { display:inline-block; margin-top:14px; color:#59203f; font-weight:650; text-underline-offset:3px; }
+.staff-preview-link { display:inline-block; margin-top:14px; color:#205940; font-weight:650; text-underline-offset:3px; }
 </style>
 
 
@@ -90,6 +90,19 @@
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
 <link rel="stylesheet" href="/prevail-brand.css?v=green-final-6">
+<style id="prevail-admin-redesign-2026">
+:root{--plum:#073e2f;--burgundy:#073e2f;--maroon:#073e2f}
+body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
+.admin-sign-in{background:linear-gradient(135deg,#fffaf3,#eee7d7)!important;color:#173b2e!important}
+.admin-sign-in-header{background:#073e2f!important;color:#fffaf3!important}
+.admin-sign-in #staff-login button{background:#073e2f!important;border-color:#073e2f!important}
+.admin-dashboard{--page:#fffaf3;--paper:#fffefa;--ink:#173b2e;--muted:#536a59;--line:#e4d9c5;--accent:#073e2f;--tint:#f1eee3;background:#fffaf3!important;color:#173b2e!important}
+.admin-dashboard .dashboard-sidebar{background:#073e2f!important;background-image:none!important;color:#fffaf3!important}
+.admin-dashboard .dashboard-sidebar :is(a,button){color:#fffaf3}
+.admin-dashboard .dashboard-main{background:#fffaf3!important}
+.admin-dashboard :is(.dashboard-header,.dashboard-metrics,.dashboard-heading){border-color:#e4d9c5}
+.admin-dashboard :is(button,.dashboard-nav a)[aria-current="page"]{border-color:#bb892c}
+</style>
 </head>
 <body class="solicitor-profile">
 <main class="admin-sign-in" id="staff-entry">
