@@ -87,7 +87,7 @@ document.addEventListener('submit', async event => {
   } finally {
     button.disabled = false;
   }
-});
+}, true);
 
 function enableForms() {
   for (const button of document.querySelectorAll('#consultation-form .consultation-footer button[type=submit], #support-form button[type=submit]')) button.disabled = false;
