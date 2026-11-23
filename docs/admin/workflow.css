@@ -200,3 +200,36 @@
 #task-dialog .work-button:not(:disabled):hover { background:#f0cb86; }
 #task-dialog .work-button:disabled { background:var(--tint); }
 #task-dialog :is(input,select,textarea,button):focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+/* Admin calendar: prevent clipped month grid and cramped agenda */
+.admin-dashboard #work-calendar,
+.admin-dashboard #work-calendar .workflow-panel,
+.admin-dashboard #work-calendar .calendar-toolbar{min-width:0!important;max-width:100%!important}
+.admin-dashboard #work-calendar #work-month-grid{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ grid-template-columns:repeat(7,minmax(0,1fr))!important;
+ box-sizing:border-box!important;overflow:hidden!important;
+}
+.admin-dashboard #work-calendar .month-day{
+ box-sizing:border-box!important;min-width:0!important;
+ min-height:clamp(76px,9vw,124px)!important;padding:10px 8px!important;
+ font-size:13px!important;
+}
+.admin-dashboard #work-calendar .month-weekday{
+ padding:11px 3px!important;font-size:12px!important;
+}
+.admin-dashboard #work-calendar .calendar-agenda{
+ min-width:0!important;max-width:100%!important;overflow-wrap:anywhere!important;
+}
+.admin-dashboard #work-calendar .calendar-event{
+ max-width:100%!important;min-width:0!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;
+}
+@media(max-width:900px){
+ .admin-dashboard #work-calendar .month-day{min-height:76px!important;padding:7px 4px!important}
+}
+@media(max-width:560px){
+ .admin-dashboard #work-calendar .month-day{min-height:58px!important;padding:5px 2px!important}
+ .admin-dashboard #work-calendar .month-day strong{font-size:11px!important}
+ .admin-dashboard #work-calendar .month-weekday{font-size:10px!important}
+}
