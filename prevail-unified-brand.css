@@ -1,0 +1,11 @@
+/* Prevail Family Law unified brand palette — visual styling only */
+:root{--prevail-green:#073e2f;--prevail-deep:#092d24;--prevail-gold:#bc8a27;--prevail-cream:#fbf7ef}
+body{--brand:#073e2f;--primary:#073e2f;--accent:#bc8a27;--ink:#102e26}
+.admin-shell,.admin-workspace,.lawyer-workspace,.workspace-shell{--primary:#073e2f;--accent:#bc8a27}
+.admin-sidebar,.sidebar,.workspace-sidebar{background:#073e2f!important;color:#fbf7ef!important}
+.admin-sidebar a,.sidebar a,.workspace-sidebar a{color:#fbf7ef}
+.admin-sidebar a[aria-current="page"],.sidebar a[aria-current="page"]{background:#14513f!important;border-left:3px solid #bc8a27!important}
+.admin-sign-in{background:linear-gradient(135deg,#fbf7ef,#f0e6d4)!important}
+.admin-sign-in h1,.admin-sign-in h2{color:#073e2f!important}
+.admin-sign-in button[type="submit"],.admin-sign-in .primary-button{background:#073e2f!important;color:#fff!important}
+:focus-visible{outline:2px solid #bc8a27;outline-offset:2px}
