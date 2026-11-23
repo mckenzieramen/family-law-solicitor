@@ -585,3 +585,27 @@ html body .client-home section#contact #consultation-form .premium-booking-steps
  html body .client-home section#contact #consultation-form .premium-booking-steps > span{min-height:77px!important;padding:8px 3px 12px!important;font-size:11px!important;gap:7px!important}
  html body .client-home section#contact #consultation-form .premium-booking-steps > span b{width:30px!important;height:30px!important;min-width:30px!important;flex-basis:30px!important}
 }
+
+/* Booking workflow: one active panel at a time, uncluttered first step */
+html body .client-home section#contact #consultation-form .consultation-fields[hidden],
+html body .client-home section#contact #consultation-form .premium-booking[hidden],
+html body .client-home section#contact #consultation-form .premium-booking-review[hidden],
+html body .client-home section#contact #consultation-form .consultation-footer[hidden],
+html body .client-home section#contact #consultation-form .premium-back[hidden],
+html body .client-home section#contact #consultation-form .premium-next[hidden]{
+ display:none!important;
+}
+html body .client-home section#contact #consultation-form .booking-quick-calendar{display:none!important}
+html body .client-home section#contact #consultation-form .premium-booking-navigation{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ gap:14px!important;margin-top:25px!important;padding-top:20px!important;
+ border-top:1px solid #e6dfd3!important;
+}
+html body .client-home section#contact #consultation-form .premium-booking-navigation .premium-next{
+ margin-left:auto!important;min-width:110px!important;border-radius:9px!important;
+ background:#102a3a!important;color:white!important;
+}
+html body .client-home section#contact #consultation-form .premium-booking-navigation .premium-next:disabled{
+ background:#e8e9e8!important;color:#8b9297!important;border:1px solid #d7d9d8!important;
+ opacity:1!important;cursor:not-allowed!important;
+}
