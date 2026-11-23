@@ -523,3 +523,13 @@ dialog.consultation-success-dialog::backdrop{background:rgba(7,25,38,.68)!import
 .consultation-success-content .consultation-success-note{font-size:13px}
 .consultation-success-ref{overflow-wrap:anywhere;font-size:12px!important;color:#73808a!important}
 .consultation-success-close{margin-top:22px;min-width:140px;padding:13px 24px;border:0;border-radius:10px;background:#102a3a;color:white;font-weight:700;cursor:pointer}
+
+/* Permanent inline booking section: do not hide or detach the form. */
+html body .client-home section#contact{display:block!important;scroll-margin-top:90px!important}
+html body .client-home section#contact .contact-panel{display:grid!important;grid-template-columns:minmax(220px,.36fr) minmax(0,1fr)!important;align-items:stretch!important;overflow:visible!important}
+html body .client-home section#contact .consultation-form{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;min-width:0!important;padding:clamp(20px,3vw,36px)!important;background:#fffdf9!important}
+html body .client-home section#contact .consultation-form .premium-booking-steps{display:grid!important}
+html body .client-home section#contact .consultation-form .premium-booking-navigation{display:flex!important;justify-content:space-between!important}
+html body .client-home section#contact .consultation-form .premium-booking-navigation .premium-next{margin-left:auto!important}
+html body .client-home section#contact .consultation-form .premium-booking-navigation .premium-next:disabled{opacity:.45!important;cursor:not-allowed!important}
+@media(max-width:750px){html body .client-home section#contact .contact-panel{grid-template-columns:minmax(0,1fr)!important}}
