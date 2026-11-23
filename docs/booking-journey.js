@@ -21,10 +21,10 @@
     if(!fields)return;fields.before(shell);
     let year=part('year'),month=part('month'),selectedDate='',selectedTime='';
     const monthEl=shell.querySelector('[data-month]'),days=shell.querySelector('[data-days]'),times=shell.querySelector('[data-times]'),status=shell.querySelector('[data-status]');
-    function sync(){
-      input.value=selectedDate&&selectedTime?selectedDate+'T'+selectedTime:'';
+    // Only confirmed bookings supplied by a trusted integration are marked booked.\n    const booked=()=>new Set(Array.isArray(window.PREVAIL_CONFIRMED_BOOKED_SLOTS)?window.PREVAIL_CONFIRMED_BOOKED_SLOTS:[]);\n    const isBooked=(d,t)=>booked().has(d+'T'+t);\n    function sync(){
+      if(selectedDate&&selectedTime&&isBooked(selectedDate,selectedTime))selectedTime='';\n      input.value=selectedDate&&selectedTime?selectedDate+'T'+selectedTime:'';
       input.dispatchEvent(new Event('change',{bubbles:true}));
-      status.textContent=selectedDate&&selectedTime?'Requested: '+new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'))+' at '+selectedTime+' (Sydney time). Awaiting firm confirmation.':'Select a date and time to include in your enquiry.';
+      renderTimes();\n      status.textContent=selectedDate&&selectedTime?'Requested: '+new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'))+' at '+selectedTime+' (Sydney time). Awaiting firm confirmation.':'Select a date and time to include in your enquiry.';
     }
     function renderDays(){
       monthEl.textContent=monthLabel(year,month);days.replaceChildren();
@@ -34,23 +34,38 @@
       for(let i=0;i<first;i++){const blank=document.createElement('span');blank.className='premium-blank';days.append(blank);}
       for(let day=1;day<=count;day++){
         const value=iso(year,month,day),button=document.createElement('button');button.type='button';button.textContent=day;button.disabled=value<today;button.setAttribute('aria-label',value);button.setAttribute('aria-pressed',String(value===selectedDate));
-        button.addEventListener('click',()=>{selectedDate=value;renderDays();sync();});
+        button.dataset.state=button.disabled?'unavailable':'requestable';\n        button.addEventListener('click',()=>{selectedDate=value;selectedTime='';renderDays();sync();});
         days.append(button);
       }
     }
-    for(const time of options){
-      const button=document.createElement('button');button.type='button';
-      button.textContent=new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).format(new Date('2026-01-01T'+time+':00Z'));
-      button.setAttribute('aria-pressed','false');
-      button.addEventListener('click',()=>{selectedTime=time;for(const b of times.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b===button));sync();});
-      times.append(button);
+    function renderTimes(){
+      times.replaceChildren();
+      const fullDate=selectedDate;
+      for(const time of options){
+        const button=document.createElement('button');
+        button.type='button';
+        button.textContent=new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).format(new Date('2026-01-01T'+time+':00Z'));
+        const occupied=!!fullDate&&isBooked(fullDate,time);
+        button.disabled=!fullDate||occupied;
+        button.dataset.state=!fullDate?'unavailable':occupied?'booked':'requestable';
+        button.setAttribute('aria-label',button.textContent+(occupied?' booked':!fullDate?' select a date first':' open for request'));
+        button.setAttribute('aria-pressed',String(!occupied&&selectedTime===time));
+        button.title=occupied?'Already booked':!fullDate?'Select a date first':'Request this time; confirmation required';
+        button.addEventListener('click',()=>{if(occupied)return;selectedTime=time;sync();});
+        times.append(button);
+      }
     }
+    // A calendar integration can update confirmed bookings and dispatch this event.
+    window.addEventListener('prevail:bookings-updated',()=>{
+      if(selectedDate&&selectedTime&&isBooked(selectedDate,selectedTime))selectedTime='';
+      renderDays();sync();
+    });
     function shift(amount){month+=amount;if(month===13){month=1;year++;}if(month===0){month=12;year--;}renderDays();}
     shell.querySelector('[data-prev]').addEventListener('click',()=>shift(-1));
     shell.querySelector('[data-next]').addEventListener('click',()=>shift(1));
     shell.querySelector('[data-continue]').addEventListener('click',()=>{if(!selectedDate||!selectedTime){status.textContent='Choose a preferred date and time first, or use the optional date/time field below.';return;}const first=fields.querySelector('input');first?.focus();});
-    input.addEventListener('change',()=>{if(input.value&&input.value!==selectedDate+'T'+selectedTime){selectedDate=input.value.slice(0,10);selectedTime=input.value.slice(11,16);const [y,m]=selectedDate.split('-').map(Number);year=y;month=m;renderDays();for(const b of times.querySelectorAll('button'))b.setAttribute('aria-pressed',String(options[[...times.querySelectorAll('button')].indexOf(b)]===selectedTime));}});
-    renderDays();
+    input.addEventListener('change',()=>{if(input.value&&input.value!==selectedDate+'T'+selectedTime){selectedDate=input.value.slice(0,10);selectedTime=input.value.slice(11,16);const [y,m]=selectedDate.split('-').map(Number);year=y;month=m;renderDays();renderTimes();}});
+    renderDays();renderTimes();
   }
   function init(){const form=document.querySelector('.client-home #consultation-form');if(form&&form!==currentForm){currentForm=form;setup(form);}}
   new MutationObserver(init).observe(document.getElementById('app')||document.body,{childList:true});
