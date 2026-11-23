@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<base href="/docs/lawyer/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lawyer Workspace | Prevail Family Law</title>
+<link rel="stylesheet" href="/docs/homepage.css?v=editorial-8">
+<style>
+[hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
+</style>
+
+
+
+
+<link rel="icon" type="image/png" href="/favicon.png?v=clean1">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
+<link rel="stylesheet" href="/prevail-brand.css?v=clean1">
+</head>
+<body class="solicitor-profile" data-lawyer>
+<main class="profile-page staff-entry">
+ <section class="staff-entry-intro">
+  <p class="profile-eyebrow">Prevail Family Law · Staff workspace</p>
+  <h1>Lawyer Workspace</h1>
+  <p>Track legal assistant duties and save checklist progress to the firm’s Firebase project.</p>
+ </section>
+ <section class="staff-entry-action">
+  <h2>Staff sign-in</h2>
+  <form id="staff-login" hidden>
+   <label>Email<input name="email" type="email" autocomplete="username" required></label>
+   <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+   <button class="profile-button" type="submit">Sign in</button>
+  </form>
+  <p id="auth-status" class="entry-note" role="status">Connecting to Firebase…</p>
+  <button id="staff-logout" type="button" hidden>Sign out</button>
+ </section>
+</main>
+<section class="profile-page" id="staff-checklist" hidden>
+ <h2>Legal Assistant Duties</h2>
+ <p id="save-status" role="status"></p>
+ <div id="duty-groups" class="duty-groups"></div>
+</section>
+<section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><a href="../admin/">Open admin workspace</a></section><script type="module" src="../admin/firebase-admin.js?v=admin-role"></script>
+</body>
+</html>
+\n\n

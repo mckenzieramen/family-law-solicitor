@@ -1,0 +1,20 @@
+
+:root{--plum:#073e2f;--burgundy:#073e2f;--maroon:#073e2f;--wine:#073e2f;--brand:#073e2f;--primary:#073e2f;--accent:#bb892c}
+html body{background:#fffaf3;color:#12372c}
+html body .premium-top-contact{background:#073e2f!important;color:#f7e2b4!important}
+html body .site-header{background:#fffaf3!important;border:0!important;border-bottom:1px solid #eadfc8!important;display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:112px!important;padding:12px clamp(18px,4.5vw,75px)!important}
+html body .site-header a.brand{width:clamp(225px,29vw,395px)!important;min-width:0!important;max-width:395px!important;height:auto!important;min-height:0!important;display:block!important;flex:0 0 auto!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important}
+html body .site-header a.brand::before,html body .site-header a.brand::after{content:none!important;display:none!important;background:none!important}
+html body .site-header a.brand .brand-monogram,html body .site-header a.brand .brand-name{display:none!important}
+html body .site-header a.brand img.prevail-real-logo{display:block!important;width:100%!important;height:auto!important;max-width:100%!important;object-fit:contain!important;filter:none!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+html body .site-header .header-nav{background:transparent!important}
+html body .site-header .header-nav a:not(.nav-cta){color:#14372e!important;text-shadow:none!important}
+html body .site-header .header-nav a.nav-cta{background:#073e2f!important;color:#fffaf3!important;border-color:#073e2f!important}
+html body .client-home .hero-actions .hero-link,html body .client-home .hero-actions a:first-child{background:#073e2f!important;color:#fffaf3!important;border-color:#073e2f!important}
+html body .client-home .hero-copy h1,html body .client-home h2{color:#12372c!important}
+html body .client-home .hero-copy h1 em{color:#b8862a!important}
+html body .premium-quick-links a{color:#12372c!important}
+html body .admin-sidebar,html body .workspace-sidebar,html body .lawyer-sidebar{background:#073e2f!important;color:#fffaf3!important}
+html body .admin-sidebar a,html body .workspace-sidebar a,html body .lawyer-sidebar a{color:#fffaf3!important}
+@media(max-width:900px){html body .site-header a.brand{width:clamp(180px,38vw,300px)!important}html body .site-header{min-height:88px!important}}
+@media(max-width:600px){html body .site-header a.brand{width:185px!important}html body .site-header{padding:10px 15px!important}}
