@@ -423,3 +423,22 @@ body.solicitor-profile { background:#fffaf3; }
 #case-follow-ups .followup-more{display:block;width:calc(100% - 28px);margin:10px 14px 15px;padding:11px 12px;border:1px solid #d5ae67;border-radius:9px;background:#f7f4ee;color:#102a3a;font-weight:700;cursor:pointer}
 #case-follow-ups .followup-more:hover{background:#f3e6cc}
 @media(max-width:650px){.followup-tools{padding:12px}.followup-tools #followup-results{margin-left:0}}
+
+/* Calendar grid layout: use available width without clipping the agenda */
+.admin-dashboard[data-view="work-calendar"] .dashboard-main,
+.admin-dashboard[data-view="work-calendar"] .dashboard-content,
+.admin-dashboard[data-view="work-calendar"] #staff-workspace,
+.admin-dashboard[data-view="work-calendar"] #work-calendar{
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+}
+.admin-dashboard #work-calendar .calendar-split{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:22px!important;align-items:start!important;width:100%!important;min-width:0!important;
+}
+.admin-dashboard #work-calendar .calendar-split > *{min-width:0!important;max-width:100%!important}
+@media(min-width:1450px){
+ .admin-dashboard #work-calendar .calendar-split{
+  grid-template-columns:minmax(0,1.8fr) minmax(290px,.8fr)!important;
+ }
+}
+.admin-dashboard #work-calendar .calendar-agenda{width:100%!important;box-sizing:border-box!important}
