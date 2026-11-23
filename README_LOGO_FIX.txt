@@ -1,0 +1,1 @@
+Logo fix: original Prevail artwork preserved. Sharpened display copy and 32/64/180px favicon variants. No redrawing. Source is inherently low-resolution, so perfect vector clarity is impossible without official SVG or high-res original. Existing website files retained. Not deployed.
