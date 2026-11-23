@@ -36,10 +36,11 @@ function watchSupport(user, id) {
   });
 }
 
-root.addEventListener('submit', async event => {
+document.addEventListener('submit', async event => {
   const form = event.target;
   if (!['consultation-form', 'support-form'].includes(form.id)) return;
   event.preventDefault();
+  event.stopPropagation();
   const consultation = form.id === 'consultation-form';
   const output = document.getElementById(consultation ? 'consultation-result' : 'support-result');
   const button = form.querySelector('button[type=submit]');
@@ -68,6 +69,15 @@ root.addEventListener('submit', async event => {
     pending.delete(form);
     form.reset();
     output.textContent = consultation ? 'Inquiry received. The team will contact you.' : 'Question sent. Waiting for a staff reply.';
+    if (consultation) {
+      const dialog = document.getElementById('consultation-success-dialog');
+      if (dialog) {
+        const referenceLabel=dialog.querySelector('[data-reference]');
+        if(referenceLabel)referenceLabel.textContent=reference.id;
+        document.querySelector('.booking-workflow-dialog')?.close();
+        dialog.showModal();
+      }
+    }
     if (!consultation) {
       try { localStorage.setItem(supportKey, reference.id); } catch {}
       watchSupport(user, reference.id);
@@ -80,7 +90,7 @@ root.addEventListener('submit', async event => {
 });
 
 function enableForms() {
-  for (const button of root.querySelectorAll('#consultation-form button, #support-form button')) button.disabled = false;
+  for (const button of document.querySelectorAll('#consultation-form .consultation-footer button[type=submit], #support-form button[type=submit]')) button.disabled = false;
 }
 new MutationObserver(enableForms).observe(root, {childList:true});
 enableForms();
