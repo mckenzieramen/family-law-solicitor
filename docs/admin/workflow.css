@@ -233,3 +233,26 @@
  .admin-dashboard #work-calendar .month-day strong{font-size:11px!important}
  .admin-dashboard #work-calendar .month-weekday{font-size:10px!important}
 }
+
+/* Calendar dates: seven equal columns and readable cells */
+.admin-dashboard #work-calendar #work-month-grid{
+ display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+ gap:1px!important;width:100%!important;min-width:0!important;
+}
+.admin-dashboard #work-calendar .month-day,
+.admin-dashboard #work-calendar .month-weekday,
+.admin-dashboard #work-calendar .month-spacer{
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+}
+.admin-dashboard #work-calendar .month-day{
+ min-height:105px!important;padding:9px!important;
+}
+.admin-dashboard #work-calendar .month-day strong{font-size:13px!important}
+@media(max-width:700px){
+ .admin-dashboard #work-calendar .month-day{min-height:70px!important;padding:5px 3px!important}
+ .admin-dashboard #work-calendar .month-day strong{font-size:11px!important}
+}
+@media(max-width:420px){
+ .admin-dashboard #work-calendar .month-day{min-height:54px!important;padding:4px 2px!important}
+ .admin-dashboard #work-calendar .month-weekday{font-size:10px!important}
+}
