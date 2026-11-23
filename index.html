@@ -432,6 +432,48 @@ html body .site-header a.brand{background:transparent!important}
 html body .site-header a.brand::before,html body .site-header a.brand::after{display:none!important;content:none!important}
 html body .site-header a.brand img.prevail-real-logo{display:block!important;max-width:100%!important;height:auto!important}
 </style>
+<style id="prevail-white-header-final">
+/* White header directly in the homepage so it cannot depend on an external CSS load. */
+html body header.site-header,
+html body .site-header,
+body > header.site-header {
+ background:#ffffff!important;
+ background-color:#ffffff!important;
+ background-image:none!important;
+ color:#073e2f!important;
+ border-top:0!important;
+ border-bottom:1px solid #e9e5dd!important;
+ box-shadow:0 4px 20px rgba(7,62,47,.06)!important;
+}
+html body header.site-header nav.header-nav,
+html body .site-header .header-nav {
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+}
+html body .site-header .header-nav a:not(.nav-cta){
+ color:#073e2f!important;
+}
+html body .site-header .header-nav a:not(.nav-cta):hover{color:#bb892c!important}
+html body .site-header .header-nav a.nav-cta{
+ background:#073e2f!important;
+ color:#ffffff!important;
+ border-color:#073e2f!important;
+}
+html body .site-header a.brand{
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+html body .site-header a.brand::before,
+html body .site-header a.brand::after{content:none!important;display:none!important}
+html body .site-header a.brand img.prevail-real-logo{
+ display:block!important;
+ width:100%!important;
+ height:auto!important;
+ object-fit:contain!important;
+}
+</style>
 </html>
 
 
