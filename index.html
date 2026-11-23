@@ -482,6 +482,38 @@ html body .site-header a.brand img.prevail-real-logo{
  object-fit:contain!important;
 }
 </style>
+<script id="prevail-mobile-navigation-fix">
+(function(){
+  function setup(){
+    const header=document.querySelector('header.site-header');
+    const toggle=header?.querySelector('.menu-toggle');
+    const nav=header?.querySelector('#public-navigation');
+    if(!toggle||!nav||toggle.dataset.navReady)return;
+    toggle.dataset.navReady='true';
+    const mq=window.matchMedia('(max-width: 850px)');
+    function sync(){
+      const mobile=mq.matches;
+      toggle.hidden=!mobile;
+      if(!mobile){nav.removeAttribute('data-collapsed');toggle.setAttribute('aria-expanded','false');}
+      else if(toggle.getAttribute('aria-expanded')!=='true'){nav.setAttribute('data-collapsed','true');}
+    }
+    toggle.addEventListener('click',function(){
+      const expanded=toggle.getAttribute('aria-expanded')==='true';
+      toggle.setAttribute('aria-expanded',String(!expanded));
+      if(expanded)nav.setAttribute('data-collapsed','true');
+      else nav.removeAttribute('data-collapsed');
+    });
+    nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',function(){
+      if(mq.matches){toggle.setAttribute('aria-expanded','false');nav.setAttribute('data-collapsed','true');}
+    }));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mq.matches){toggle.setAttribute('aria-expanded','false');nav.setAttribute('data-collapsed','true');}});
+    if(mq.addEventListener)mq.addEventListener('change',sync);else mq.addListener(sync);
+    sync();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);
+  else setup();
+})();
+</script>
 </html>
 
 
