@@ -290,3 +290,27 @@ html body .client-home .premium-step-number{background:#102a3a!important;color:#
 @media(max-width:400px){
  html body .client-home .premium-journey-grid{grid-template-columns:1fr!important}
 }
+
+
+/* Definitive brand cleanup for legacy maroon and emerald widgets */
+html body .client-home .premium-journey .premium-step-number,
+html body .client-home .premium-journey .premium-step-number svg{
+ background:#102a3a!important;color:#d5ae67!important;fill:none!important;
+}
+html body .client-home .premium-journey .premium-step-number{border:2px solid #d5ae67!important;box-shadow:0 4px 12px rgba(16,42,58,.15)!important}
+html body .client-home .premium-journey .premium-step-number svg{stroke:#d5ae67!important}
+html body .client-home .reference-consultation-cta,
+html body .client-home .consultation-band,
+html body .client-home .consultation-cta,
+html body .client-home .booking-banner,
+html body .client-home .booking-cta{
+ background:#102a3a!important;background-image:linear-gradient(125deg,#102a3a,#1d4055)!important;
+ color:#f7f4ee!important;border-color:#d5ae67!important
+}
+html body .client-home .reference-consultation-cta :is(h2,h3,p),
+html body .client-home .consultation-band :is(h2,h3,p),
+html body .client-home .consultation-cta :is(h2,h3,p){color:#f7f4ee!important}
+html body .client-home .premium-quick-links a{background:transparent!important;color:#f7f4ee!important}
+html body .client-home .premium-quick-links a:hover{background:#24465a!important}
+html body .client-home .premium-quick-links a[aria-current]{background:#34485a!important}
+html body .client-home .premium-step h3{color:#102a3a!important}
