@@ -15,7 +15,7 @@
   const timeLabel=preferred?.closest('label');
   if(timeLabel)timeLabel.hidden=true;
   const steps=document.createElement('div');steps.className='premium-booking-steps';
-  steps.innerHTML='<span data-step="1">1 · Your details</span><span data-step="2">2 · Date & time</span><span data-step="3">3 · Review</span>';
+  steps.innerHTML='<span data-step="1">2 · Your details</span><span data-step="2">1 · Date & time</span><span data-step="3">3 · Review</span>';
   form.querySelector('h3')?.after(steps);
   const controls=document.createElement('div');controls.className='premium-booking-navigation';
   controls.innerHTML='<button type="button" class="premium-back" hidden>← Back</button><button type="button" class="premium-next">Next →</button>';
