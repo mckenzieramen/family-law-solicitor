@@ -306,7 +306,7 @@ function home(){
    <div class="consultation-fields">
     <label>First name<input name="firstName" required maxlength="70" autocomplete="off"></label>
     <label>Last name<input name="lastName" required maxlength="70" autocomplete="off"></label>
-    <label><span>Phone <small>(optional)</small></span><input name="phone" type="tel" maxlength="25" autocomplete="off"></label>
+    <label><span>Phone <small>(optional)</small></span><input name="phone" type="tel" inputmode="numeric" maxlength="25" autocomplete="tel" aria-label="Phone number"></label>
     <label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
     <label><span>Postcode <small>(optional)</small></span><input name="postcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></label>
     <label>Are you a new client?<select name="newClient" required><option value="">Select an option</option><option>Yes</option><option>No</option></select></label>
@@ -614,3 +614,14 @@ html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>s
 </style>
 
 </html>
+
+<style id="mobile-form-focus-fix">
+/* Keep mobile form controls at the browser's no-auto-zoom text size. */
+@media (max-width: 767px) {
+  #consultation-form :is(input, select, textarea),
+  #support-form :is(input, select, textarea) {
+    font-size: 16px !important;
+    line-height: 1.4;
+  }
+}
+</style>
