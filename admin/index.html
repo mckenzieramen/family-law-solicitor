@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=client-enquiry-tabs-1">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=clients-enquiries-2">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=matters-route-1">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
@@ -105,7 +105,6 @@
    <p id="dashboard-error" class="dashboard-error" role="alert" hidden></p>
   </section>
   
-    <aside class="contact-detail-panel" id="contact-detail-panel" aria-label="Selected contact details"><div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>Select a contact</h3><p>Contact details and related enquiry information will appear here.</p></div></aside>
    </div>
   </section>
   <section class="admin-module" id="work-approvals" hidden aria-labelledby="approvals-heading">
@@ -292,6 +291,7 @@ if (sampleMode) {
    if (subtitle) subtitle.hidden = !isDashboard;
    if (!isDashboard) sectionTitle.textContent = (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
    for (const module of dashboard.querySelectorAll('.admin-module')) module.hidden = module.id !== route;
+   for (const module of workspace.querySelectorAll('.workflow-panel')) module.hidden = module.id !== route;
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
      else link.removeAttribute('aria-current');
@@ -323,6 +323,7 @@ if (sampleMode) {
    if (location.hash !== hash) history.pushState(null, '', hash);
    render();
    document.getElementById('workspace-content').scrollTop = 0;
+   workspace.scrollTop = 0;
  }
  dashboard.addEventListener('click', event => {
    const link = event.target.closest('.dashboard-sidebar nav a, .dashboard-overview a, .admin-module a');
@@ -371,6 +372,7 @@ if (sampleMode) {
  window.addEventListener('hashchange', render);
  window.addEventListener('popstate', render);
  new MutationObserver(render).observe(inbox, {attributes:true, attributeFilter:['hidden']});
+ new MutationObserver(render).observe(workspace, {childList:true});
  render();
 })();
 </script>
