@@ -305,7 +305,6 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   root.insertAdjacentHTML('beforeend', '<dialog id="calendar-day-dialog" class="schedule-dialog calendar-day-dialog" aria-labelledby="calendar-day-title"><header class="calendar-day-dialog-head"><div><p>Calendar details</p><h2 id="calendar-day-title"></h2><span id="calendar-day-subtitle"></span></div><button type="button" data-close-calendar-day aria-label="Close day details">×</button></header><div id="calendar-day-items" class="calendar-day-items"></div><footer><button type="button" class="work-button" id="calendar-day-add-schedule">Add schedule on this date</button><button type="button" data-close-calendar-day>Close</button></footer></dialog>');
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
-  const sampleDraft = find('#draft-sample');
   const retryCalendar = find('#retry-calendar-access');
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
@@ -335,7 +334,6 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     editor.form.querySelector('h3').textContent = editor.title;
     if (hide && editor.dialog?.open) editor.dialog.close();
     editor.form.hidden = hide;
-    if (editor === editors['Email draft']) sampleDraft.hidden = !editor.form.hidden;
     const cancel = editor.form.querySelector('[data-cancel-editor]');
     if (cancel && editor === editors.Task) cancel.hidden = false;
     message(editor, '');
@@ -1194,8 +1192,6 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       open(editors['Email draft'],null,{title:(mode==='forward'?'Fwd: ':'Re: ')+title,recipient,matter:active.matter||'',notes:mode==='forward'?'Forwarded message:\\n\\n'+(active.notes||''):'\\n\\nOn '+(active.date||'the previous message')+', '+(active.recipient||'the sender')+' wrote:\\n'+(active.notes||'')});
       return;
     }
-    const edit=event.target.closest('[data-edit]'),remove=event.target.closest('[data-remove]');
-    if(edit||remove) root.dispatchEvent(new MouseEvent('click',{bubbles:true}));
   });
 
   const emailImport=find('#attorney-email-form');
