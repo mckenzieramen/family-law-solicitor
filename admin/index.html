@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../docs/inbox.css?v=client-enquiry-tabs-1">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=matters-route-3">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-11">
-<link rel="stylesheet" href="../docs/admin/practice-modules.css?v=sample-demo-1">
+<link rel="stylesheet" href="../docs/admin/practice-modules.css?v=workspace-47">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
 <script defer src="../docs/admin/followup-interactions.js?v=1"></script>
@@ -142,7 +142,7 @@
    <h2 id="inbox-heading">Client enquiries</h2>
    <div class="client-workspace-tabs" role="tablist" aria-label="Client workspace views">
     <button type="button" role="tab" aria-selected="true" data-client-workspace-tab="enquiries">Enquiries</button>
-    <button type="button" role="tab" aria-selected="false" data-client-workspace-tab="directory">Clients &amp; Contacts</button>
+    <button type="button" role="tab" aria-selected="false" data-client-workspace-tab="directory">Enquiry contacts</button>
    </div>
    <div id="client-enquiries-panel" data-client-workspace-panel="enquiries">
    <div class="inbox-summary-cards" aria-label="Inquiry overview">
@@ -178,7 +178,7 @@
    </div>
    </div>
    <section class="client-directory-view" id="client-directory-panel" data-client-workspace-panel="directory" hidden aria-label="Clients and contacts directory">
-    <header class="contacts-page-head"><div><p class="contacts-eyebrow">CLIENT DIRECTORY</p><h3>Clients &amp; Contacts</h3><p>Website enquiry contacts in one searchable list.</p></div><button type="button" class="contact-primary-action" data-client-workspace-view="enquiries">Back to enquiries</button></header>
+    <header class="contacts-page-head"><div><p class="contacts-eyebrow">CLIENT DIRECTORY</p><h3>Enquiry contacts</h3><p>Website enquiry contacts in one searchable list.</p></div><button type="button" class="contact-primary-action" data-client-workspace-view="enquiries">Back to enquiries</button></header>
     <div class="contacts-toolbar">
      <label class="contact-search"><span class="sr-only">Search contacts</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="contact-search" type="search" placeholder="Search by name, email, phone or matter…"></label>
      <div class="contact-filter-row">
@@ -224,7 +224,7 @@
    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.8c-1.2.9-1.9 1.4-1.9 2.8M12 17h.01"/></svg><span class="help-widget-sr-only">Help &amp; Support</span>
   </button>
  </aside>
-<script src="../docs/admin/practice-modules.js?v=sample-demo-1"></script>
+<script src="../docs/admin/practice-modules.js?v=workspace-47"></script>
 <script type="module">
 const url = new URL(location.href);
 const status = document.getElementById('auth-status');
@@ -285,6 +285,7 @@ if (sampleMode) {
    if (subtitle) subtitle.hidden = !isDashboard;
    if (!isDashboard) sectionTitle.textContent = (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
    for (const module of dashboard.querySelectorAll('.admin-module')) module.hidden = module.id !== route;
+   document.getElementById('staff-inbox').hidden = route !== 'inbox';
    for (const module of workspace.querySelectorAll('.workflow-panel')) module.hidden = module.id !== route;
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
@@ -322,6 +323,7 @@ if (sampleMode) {
  dashboard.addEventListener('click', event => {
    const link = event.target.closest('.dashboard-sidebar nav a, .dashboard-overview a, .admin-module a');
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+   if (!link.hash || link.origin !== location.origin || link.pathname !== location.pathname || !views.has(link.hash) && link.hash !== '#work-templates') return;
    event.preventDefault();
    go(link.hash);
    if (link.closest('.help-widget')) closeHelp();

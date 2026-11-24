@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/docs/homepage.css?v=editorial-8">
 <style>
 [hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
-</style>
+.lawyer-shortcuts{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.lawyer-shortcuts a{border:1px solid currentColor;border-radius:6px;padding:10px 14px;text-decoration:none;color:inherit}</style>
 
 
 
@@ -40,7 +40,7 @@
  <p id="save-status" role="status"></p>
  <div id="duty-groups" class="duty-groups"></div>
 </section>
-<section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><a href="../admin/">Open admin workspace</a></section><script type="module" src="../admin/firebase-admin.js?v=admin-role"></script>
+<section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><nav aria-label="Solicitor workspace shortcuts" class="lawyer-shortcuts"><a href="/admin/#work-matters">Matters</a><a href="/admin/#work-approvals">Approvals</a><a href="/admin/#work-calendar">Calendar</a><a href="/admin/#work-documents">Documents</a><a href="/admin/#work-queue">Tasks</a><a href="/admin/">Full workspace</a></nav></section><script type="module" src="../admin/firebase-admin.js?v=admin-role"></script>
 </body>
 </html>
 \n\n

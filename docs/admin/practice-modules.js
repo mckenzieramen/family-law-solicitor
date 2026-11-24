@@ -42,7 +42,7 @@
        dialog('pm-reconcile','Reconcile trust account',field('Statement date','date','date','required')+field('Statement closing balance (AUD)','balance','number','required step="0.01"')+field('Bank statement reference','reference','text','maxlength="120"')+area('Reconciliation notes','notes',3,'maxlength="1200"'),'Start reconciliation')
     },
     'work-contacts': {
-      html: header('Directory','Contacts','Manage clients, other parties, barristers, mediators, courts and referrers.',button('Add contact','pm-contact'))+
+      html: header('Directory','Clients &amp; Contacts','Manage clients, other parties, barristers, mediators, courts and referrers.',button('Add contact','pm-contact'))+
        '<div class="pm-panel">'+toolbar(field('Search contacts','search','search','placeholder="Name, email, phone or firm"')+select('Contact type','type',['All contact types','Client','Other party','Barrister','Mediator','Court','Referrer','Other'])+select('Linked matter','matter',['All matters'])+select('Status','status',['All statuses','Active','Inactive'])+'<button type="button" class="pm-link" data-clear-filters>Clear filters</button>')+
        '<div class="pm-content-grid"><div>'+table(['Name','Type','Email / phone','Linked matter','Last contact','Status'],'No contacts have been saved yet.')+'</div><aside class="pm-detail-card"><h3>Contact details</h3><div class="pm-tabs" role="tablist"><button type="button" aria-selected="true">Details</button><button type="button">Matters</button><button type="button">Notes</button><button type="button">Communications</button></div><p>Select a contact to see linked matters, notes and communication history.</p></aside></div></div>'+
        dialog('pm-contact','Add contact',field('First name','firstName','text','required maxlength="70"')+field('Last name','lastName','text','required maxlength="70"')+select('Contact type','type',['Client','Other party','Barrister','Mediator','Court','Referrer','Other'])+field('Organisation / firm','firm','text','maxlength="160"')+field('Email','email','email','maxlength="254"')+field('Phone','phone','tel','maxlength="25"')+field('Address','address','text','maxlength="250"')+field('Linked matter reference','matter','text','maxlength="80"')+select('Status','status',['Active','Inactive'])+area('Internal notes','notes',4,'maxlength="2000"'),'Save contact')
@@ -75,7 +75,7 @@
       section.setAttribute('aria-labelledby',id+'-heading');
       const nav=document.querySelector('#staff-navigation');
       const link=document.createElement('a'); link.href='#'+id;
-      link.innerHTML=id==='work-trust'?'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18L12 3 3 9zM5 9v9M9 9v9M15 9v9M19 9v9M3 21h18M2 18h20"/></svg></span><span>Trust</span>':'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5.7 16a3.4 3.4 0 0 1 6.6 0M14 10h4M14 14h4"/></svg></span><span>Contacts</span>';
+      link.innerHTML=id==='work-trust'?'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18L12 3 3 9zM5 9v9M9 9v9M15 9v9M19 9v9M3 21h18M2 18h20"/></svg></span><span>Trust</span>':'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5.7 16a3.4 3.4 0 0 1 6.6 0M14 10h4M14 14h4"/></svg></span><span>Clients &amp; Contacts</span>';
       const before=nav.querySelector('a[href="#work-settings"]'); nav.insertBefore(link,before);
       document.querySelector('#workspace-content').append(section);
     }
@@ -101,9 +101,11 @@
   const workflowRoot=byId('staff-workspace');
   if(workflowRoot)rootWatch.observe(workflowRoot,{childList:true,subtree:true});
   document.addEventListener('input',event=>{
+    if(event.target.closest('.pm-searchbar,.pm-toolbar') && event.target.type==='search')renderRecords();
     if(event.target.matches('#matter-search')){matterPage=1;renderMatterDirectory();}
   });
   document.addEventListener('change',event=>{
+    if(event.target.closest('.pm-searchbar,.pm-toolbar'))renderRecords();
     if(event.target.matches('#matter-type-filter,#matter-status-filter,#matter-solicitor-filter')){matterPage=1;renderMatterDirectory();}
   });
   document.addEventListener('click',event=>{
@@ -125,7 +127,7 @@
     if(event.target.closest('[data-not-saved]')){const panel=event.target.closest('.pm-setting-panel');panel.querySelector('[role="status"]').textContent='Nothing was saved. Secure settings storage is not connected.';return;}
     if(event.target.closest('[data-report]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent=practiceContext?.sampleMode?'Sample report refreshed from the fictional workspace records shown below.':'No live report source is connected yet. Connect the secure matter, task, time and billing records to generate this report.';return;}
     if(event.target.closest('[data-export]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent=practiceContext?.sampleMode?'The table below contains fictional preview records. No live records have been exported.':'There are no connected report records to export.';return;}
-    if(event.target.closest('[data-clear-filters]')){const panel=event.target.closest('.pm-panel');panel.querySelectorAll('input,select').forEach(x=>{if(x.type==='search'||x.type==='text')x.value='';else if(x.type==='date'||x.type==='month')x.value='';else x.selectedIndex=0;});}
+    if(event.target.closest('[data-clear-filters]')){const panel=event.target.closest('.pm-panel');panel.querySelectorAll('input,select').forEach(x=>{if(x.type==='search'||x.type==='text')x.value='';else if(x.type==='date'||x.type==='month')x.value='';else x.selectedIndex=0;});renderRecords();}
   });
   document.addEventListener('change', event => {
     if(event.target.matches('input[name="logo"][type="file"]')){
@@ -243,8 +245,24 @@
     for(const [moduleId,type,cells] of tableTargets){
       const module=byId(moduleId); if(!module)continue;
       let body=module.querySelector('.pm-table tbody'); if(!body)continue;
-      const rows=recordRows(type);
-      if(!rows.length)continue;
+      let rows=recordRows(type);
+      if(type==='contact') rows=[...rows,...recordRows('client').map(r=>({...r,payload:{...r.payload,type:'Client'}}))];
+      const filters=module.querySelector('.pm-searchbar,.pm-toolbar');
+      if(filters){
+        for(const select of filters.querySelectorAll('select[name="matter"],select[name="client"],select[name="staff"]')){
+          const key=select.name, current=select.value, first=select.options[0]?.textContent||'All';
+          const values=[...new Set(rows.map(r=>String(r.payload[key]||'')).filter(Boolean))].sort();
+          select.replaceChildren(new Option(first,first),...values.map(v=>new Option(v,v))); if(values.includes(current))select.value=current;
+        }
+        rows=rows.filter(r=>[...filters.querySelectorAll('input,select')].every(f=>{
+          const v=f.value.trim().toLowerCase(); if(!v||f.tagName==='SELECT'&&f.selectedIndex===0)return true;
+          if(f.type==='search')return Object.values(r.payload).join(' ').toLowerCase().includes(v);
+          if(f.name==='uploadedDate')return sydneyDate(r.createdAt)===sydneyDate(new Date(f.value+'T12:00:00Z'));
+          if(f.type==='month')return String(r.payload.date||'').startsWith(v);
+          return String(r.payload[f.name]||'').toLowerCase()===v;
+        }));
+      }
+      if(!rows.length){if(moduleId==='work-time')continue;body.innerHTML=emptyRows(module.querySelectorAll('.pm-table thead th').length,'No records match the current filters.');continue;}
       body.innerHTML=rows.map(record=>'<tr>'+cells(record).map(cell=>'<td>'+safeText(cell)+'</td>').join('')+'</tr>').join('');
     }
     if(practiceContext?.sampleMode){

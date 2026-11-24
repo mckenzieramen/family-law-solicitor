@@ -126,3 +126,8 @@
 .matter-legacy-tools{display:none!important}
 @media(max-width:1020px){.matter-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.matter-directory-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.matter-clear-filters{justify-self:start}}
 @media(max-width:620px){.matter-page-heading{align-items:flex-start;flex-direction:column;padding:17px}.matter-page-heading>div{align-items:flex-start}.matter-new-button{width:100%}.matter-summary-cards{grid-template-columns:1fr;padding:12px}.matter-directory-card{margin:0 12px 14px;padding:12px}.matter-directory-toolbar{grid-template-columns:1fr}.matter-table-footer{align-items:flex-start;flex-direction:column}}
+
+/* Keep standalone workspaces usable at every record count. */
+.admin-dashboard[data-view^="work-"]:not([data-view="work-calendar"]) .dashboard-main{overflow-y:auto;overscroll-behavior:contain}
+.admin-module:not([hidden]){flex:1 0 auto;min-height:calc(100dvh - 180px);align-content:start}
+.admin-module:not([hidden]) .pm-panel{min-width:0}
