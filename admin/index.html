@@ -7,7 +7,8 @@
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-8">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-7">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-8">
+<link rel="stylesheet" href="../docs/admin/practice-modules.css?v=practice-modules-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
 <script defer src="../docs/admin/followup-interactions.js?v=1"></script>
@@ -47,9 +48,9 @@
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span>Consultation Enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 12 3 3 7-7"/></svg></span><span>Tasks & Workflows</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-documents"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg></span><span>Documents</span></a>
-   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg></span><span>Communications</span></a>
+   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg></span><span>Correspondence</span></a>
    <a href="#work-time"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>Time & Expenses</span></a>
-   <a href="#work-billing"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><span>Billing</span></a>
+   <a href="#work-billing"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><span>Invoices</span></a>
    <a href="#work-reports"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span>Reports</span></a>
    <a href="#work-approvals"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6zM9 12l2 2 4-4"/></svg></span><span>Approvals</span><span class="nav-notification" id="nav-approval-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-employees"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span>Employees</span></a>
@@ -178,6 +179,7 @@
    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.8c-1.2.9-1.9 1.4-1.9 2.8M12 17h.01"/></svg><span class="help-widget-sr-only">Help &amp; Support</span>
   </button>
  </aside>
+<script src="../docs/admin/practice-modules.js?v=practice-modules-1"></script>
 <script type="module">
 const url = new URL(location.href);
 const status = document.getElementById('auth-status');

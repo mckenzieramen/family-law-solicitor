@@ -148,7 +148,7 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .admin-dashboard[data-view^="work-"] .dashboard-overview{display:none}
 .admin-dashboard[data-view="overview"] #staff-workspace,.admin-dashboard[data-view="inbox"] #staff-workspace{display:none}
 .admin-dashboard[data-view^="work-"] #staff-workspace{display:block}
-.admin-dashboard[data-view="work-clients"] #staff-workspace,.admin-dashboard[data-view="work-approvals"] #staff-workspace,.admin-dashboard[data-view="work-documents"] #staff-workspace,.admin-dashboard[data-view="work-time"] #staff-workspace,.admin-dashboard[data-view="work-billing"] #staff-workspace,.admin-dashboard[data-view="work-reports"] #staff-workspace,.admin-dashboard[data-view="work-employees"] #staff-workspace,.admin-dashboard[data-view="work-settings"] #staff-workspace,.admin-dashboard[data-view="work-help"] #staff-workspace{display:none}
+.admin-dashboard[data-view="work-clients"] #staff-workspace,.admin-dashboard[data-view="work-approvals"] #staff-workspace,.admin-dashboard[data-view="work-documents"] #staff-workspace,.admin-dashboard[data-view="work-time"] #staff-workspace,.admin-dashboard[data-view="work-billing"] #staff-workspace,.admin-dashboard[data-view="work-reports"] #staff-workspace,.admin-dashboard[data-view="work-employees"] #staff-workspace,.admin-dashboard[data-view="work-settings"] #staff-workspace,.admin-dashboard[data-view="work-trust"] #staff-workspace,.admin-dashboard[data-view="work-contacts"] #staff-workspace,.admin-dashboard[data-view="work-help"] #staff-workspace{display:none}
 .admin-dashboard[data-view="work-clients"] #work-clients,
 .admin-dashboard[data-view="work-approvals"] #work-approvals,
 .admin-dashboard[data-view="work-documents"] #work-documents,
@@ -157,6 +157,8 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .admin-dashboard[data-view="work-reports"] #work-reports,
 .admin-dashboard[data-view="work-employees"] #work-employees,
 .admin-dashboard[data-view="work-settings"] #work-settings,
+.admin-dashboard[data-view="work-trust"] #work-trust,
+.admin-dashboard[data-view="work-contacts"] #work-contacts,
 .admin-dashboard[data-view="work-help"] #work-help{display:grid}
 .admin-dashboard[data-view="work-queue"] #work-queue,
 .admin-dashboard[data-view="work-calendar"] #work-calendar,
