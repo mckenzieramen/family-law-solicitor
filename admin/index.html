@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-6">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=ticket-workspace-1">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-dialog-alerts-4">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-1">
 <style>
 .admin-sign-in {
   min-height: 100vh;
@@ -138,7 +138,7 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client Messages</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span></a>
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Calendar</span></a>
-   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7l2 2h9v12H3z"/></svg></span><span>Cases</span></a>
+   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7l2 2h9v12H3z"/></svg></span><span>Matters</span></a>
    <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8"/></svg></span><span>Email drafts</span></a>
    <a href="#work-templates"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z M3 12l9 5 9-5 M3 16l9 5 9-5"/></svg></span><span>Templates</span></a>
 
@@ -228,7 +228,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=calendar-dialog-alerts-2'),
+      import('../docs/admin/workflow.js?v=practice-workflow-1'),
       import('../docs/admin/inbox.js?v=ticket-workspace-3')
     ]);
     mountWorkflow(null, null, true);
