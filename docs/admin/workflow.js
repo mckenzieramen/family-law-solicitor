@@ -267,6 +267,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    <div class="matter-table-scroll"><table id="pm-matter-table" class="pm-table matter-table"><thead><tr><th scope="col">Matter ref</th><th scope="col">Matter</th><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Next date</th><th scope="col">Responsible</th></tr></thead><tbody><tr><td class="pm-empty" colspan="7">Loading matters…</td></tr></tbody></table></div>
    <footer class="matter-table-footer"><span id="matter-page-count">Loading matter records…</span><div><button type="button" id="matter-page-prev" aria-label="Previous page" disabled>‹</button><span id="matter-page-current">1</span><button type="button" id="matter-page-next" aria-label="Next page" disabled>›</button></div></footer>
   </section>
+  <button type="button" id="new-follow-up" hidden>Add follow-up</button>
   <div class="matter-legacy-tools" hidden aria-hidden="true">  <section class="matter-workflow-box" aria-labelledby="matter-workflow-title">
    <div><span class="matter-workflow-eyebrow">STANDARDISED MATTER WORKFLOW</span><h3 id="matter-workflow-title">Start a family law workflow</h3><p>Creates linked tasks in the matter file. Add deadlines after checking them with the solicitor.</p></div>
    <form id="matter-workflow-form">
