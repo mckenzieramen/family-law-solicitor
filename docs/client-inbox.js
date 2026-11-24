@@ -86,7 +86,9 @@ document.addEventListener('submit', async event => {
     console.error('Consultation enquiry submission failed:', error);
     const code = String(error?.code || '');
     output.textContent = code.includes('permission-denied')
-      ? 'Unable to send: Firebase permissions rejected the enquiry. Please contact the firm or try again later.'
+      ? 'Your enquiry could not be saved because the form permissions need attention. Please contact the firm directly.'
+      : code === 'auth/operation-not-allowed' || code === 'auth/admin-restricted-operation'
+      ? 'The enquiry form is not fully enabled yet. Please contact the firm directly while this is being fixed.'
       : code.includes('network-request-failed') || code.includes('unavailable')
       ? 'Connection problem. Your enquiry was not confirmed. Please try again.'
       : 'Could not send your enquiry. Please try again or contact the firm directly.';
