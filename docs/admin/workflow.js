@@ -697,6 +697,8 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const allItems = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
     const received = records.filter(isAttorneyEmail);
     const emailItems = [...received,...allItems].sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+    const emailBadge=document.getElementById('nav-email-badge');
+    if(emailBadge){emailBadge.textContent=received.length>99?'99+':String(received.length);emailBadge.hidden=received.length===0;}
     const query = find('#correspondence-search').value.trim().toLowerCase();
     const sort = find('#correspondence-sort').value;
     const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email')
