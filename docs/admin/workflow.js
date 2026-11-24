@@ -267,7 +267,21 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    <div class="matter-table-scroll"><table id="pm-matter-table" class="pm-table matter-table"><thead><tr><th scope="col">Matter ref</th><th scope="col">Matter</th><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Next date</th><th scope="col">Responsible</th></tr></thead><tbody><tr><td class="pm-empty" colspan="7">Loading matters…</td></tr></tbody></table></div>
    <footer class="matter-table-footer"><span id="matter-page-count">Loading matter records…</span><div><button type="button" id="matter-page-prev" aria-label="Previous page" disabled>‹</button><span id="matter-page-current">1</span><button type="button" id="matter-page-next" aria-label="Next page" disabled>›</button></div></footer>
   </section>
-  <div class="matter-legacy-tools" hidden aria-hidden="true">${legacy}</div>
+  <div class="matter-legacy-tools" hidden aria-hidden="true">  <section class="matter-workflow-box" aria-labelledby="matter-workflow-title">
+   <div><span class="matter-workflow-eyebrow">STANDARDISED MATTER WORKFLOW</span><h3 id="matter-workflow-title">Start a family law workflow</h3><p>Creates linked tasks in the matter file. Add deadlines after checking them with the solicitor.</p></div>
+   <form id="matter-workflow-form">
+    <label>Matter reference<input name="matter" maxlength="80" placeholder="e.g. FAM-2026-014" required></label>
+    <label>Workflow<select name="workflow"><option value="parenting">Parenting arrangements</option><option value="property">Property settlement</option><option value="agreement">Financial agreement</option><option value="general">General family law</option></select></label>
+    <button class="work-button" type="submit">Create linked tasks</button><p id="matter-workflow-status" role="status"></p>
+   </form>
+  </section>
+  <section id="case-follow-ups" aria-label="Open follow-ups"></section>
+  <div class="legal-actions">
+   <label>Search matters<input id="work-matter-query" type="search" placeholder="Matter reference or item title"></label>
+   <label>Show<select id="work-matter-kind"><option value="">All work items</option><option>Task</option><option>Appointment</option><option>Email draft</option></select></label>
+   <label>Sort matters<select id="work-matter-sort"><option value="reference">Reference A–Z</option><option value="activity">Most recent activity</option></select></label>
+  </div>
+  <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></div>
  </section>
  <section class="workflow-panel correspondence-workspace" id="work-email">
   <header class="correspondence-page-head">
