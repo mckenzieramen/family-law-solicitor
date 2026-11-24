@@ -225,6 +225,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
    </div>
   </div>
  </section>`;
+  root.insertAdjacentHTML('beforeend', '<dialog id="calendar-day-dialog" class="schedule-dialog calendar-day-dialog" aria-labelledby="calendar-day-title"><header class="calendar-day-dialog-head"><div><p>Calendar details</p><h2 id="calendar-day-title"></h2><span id="calendar-day-subtitle"></span></div><button type="button" data-close-calendar-day aria-label="Close day details">×</button></header><div id="calendar-day-items" class="calendar-day-items"></div><footer><button type="button" class="work-button" id="calendar-day-add-schedule">Add schedule on this date</button><button type="button" data-close-calendar-day>Close</button></footer></dialog>');
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
   const sampleDraft = find('#draft-sample');
@@ -281,7 +282,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     if (item.kind === 'Consultation request') {
       const contact = item.contact || {};
       const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
-      return `<details class="work-row consultation-request-row">
+      return `<details class="work-row consultation-request-row" data-consultation-date="${escape(item.date)}">
         <summary><strong>${escape(name)}</strong> <span class="status">Pending confirmation</span>
         <small>Consultation request · ${escape(item.date)} · ${escape(item.time || 'Time not set')} Sydney</small></summary>
         <dl class="consultation-request-details">
@@ -528,6 +529,8 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     });
   }
   retryCalendar.addEventListener('click', listenForWorkItems);
+  let consultationFeedReady = false;
+  let consultationRequestIds = new Set();
   function listenForConsultationRequests() {
     stopConsultations?.();
     if (sampleMode) {
@@ -549,6 +552,18 @@ export function mountWorkflow(db, uid, sampleMode = false) {
       query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)),
       snapshot => {
         if (current !== session) return;
+        const newConsultationDocs = snapshot.docs.filter(document => document.data().kind === 'consultation');
+        if (consultationFeedReady) {
+          const arrived = newConsultationDocs.filter(document => !consultationRequestIds.has(document.id));
+          if (arrived.length) notify(
+            arrived.length === 1 ? 'New consultation enquiry' : 'New consultation enquiries',
+            arrived.length === 1
+              ? 'A client sent a new request. Open Client Messages to review it.'
+              : arrived.length + ' new client requests arrived. Open Client Messages to review them.'
+          );
+        }
+        consultationRequestIds = new Set(newConsultationDocs.map(document => document.id));
+        consultationFeedReady = !snapshot.metadata.fromCache;
         consultationRequests = snapshot.docs.map(document => {
           const record = document.data();
           if (record.kind !== 'consultation') return null;
@@ -619,6 +634,79 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     }
     open(editor, null, defaults);
   }
+  function showCalendarDayDialog(dayKey) {
+    const dialog = find('#calendar-day-dialog');
+    const title = find('#calendar-day-title');
+    const subtitle = find('#calendar-day-subtitle');
+    const itemsRoot = find('#calendar-day-items');
+    const day = new Date(dayKey + 'T12:00:00Z');
+    title.textContent = new Intl.DateTimeFormat('en-AU', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone:'UTC'
+    }).format(day);
+    const items = [
+      ...records.filter(item => item.date === dayKey && item.kind !== 'Email draft' && calendarFor(item) === scope.value),
+      ...(scope.value === 'admin' ? consultationRequests.filter(item => item.date === dayKey) : [])
+    ].sort((a,b)=>(a.time||'').localeCompare(b.time||'')||order(a,b));
+    subtitle.textContent = items.length
+      ? items.length + (items.length === 1 ? ' scheduled item' : ' scheduled items') + ' · ' + (scope.value === 'admin' ? 'Admin calendar' : 'Client calendar')
+      : 'No items scheduled · ' + (scope.value === 'admin' ? 'Admin calendar' : 'Client calendar');
+    itemsRoot.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement('p');
+      empty.className = 'calendar-day-empty';
+      empty.textContent = 'There are no appointments or deadlines on this date yet.';
+      itemsRoot.append(empty);
+    }
+    for (const item of items) {
+      const isConsultation = item.kind === 'Consultation request';
+      const card = document.createElement('article');
+      card.className = 'calendar-day-item' + (isConsultation ? ' is-consultation' : '');
+      const top = document.createElement('div');
+      top.className = 'calendar-day-item-top';
+      const heading = document.createElement('h3');
+      heading.textContent = item.title || (isConsultation ? 'Consultation enquiry' : 'Scheduled item');
+      const status = document.createElement('span');
+      status.className = 'calendar-day-item-status';
+      status.textContent = isConsultation ? 'Pending confirmation'
+        : item.done ? 'Completed' : item.kind === 'Task' ? 'Task' : 'Scheduled';
+      top.append(heading, status);
+      const meta = document.createElement('p');
+      const time = item.time ? new Intl.DateTimeFormat('en-AU', {
+        hour:'numeric', minute:'2-digit', timeZone:'UTC'
+      }).format(new Date('2026-01-01T' + item.time + ':00Z')) + ' Sydney time' : 'Time not set';
+      meta.className = 'calendar-day-item-meta';
+      meta.textContent = [item.kind, time, item.matter].filter(Boolean).join(' · ');
+      card.append(top, meta);
+      if (isConsultation && item.contact) {
+        const contact = document.createElement('p');
+        contact.className = 'calendar-day-item-contact';
+        contact.textContent = [
+          item.contact.email,
+          item.contact.phone,
+          item.contact.topic && 'Topic: ' + item.contact.topic
+        ].filter(Boolean).join(' · ');
+        if (contact.textContent) card.append(contact);
+      }
+      if (item.notes) {
+        const notes = document.createElement('p');
+        notes.className = 'calendar-day-item-notes';
+        notes.textContent = item.notes;
+        card.append(notes);
+      }
+      if (isConsultation) {
+        const link = document.createElement('a');
+        link.href = '#staff-inbox';
+        link.className = 'calendar-day-inbox-link';
+        link.textContent = 'Review inquiry in Client Messages';
+        link.addEventListener('click', () => dialog.close(), {once:true});
+        card.append(link);
+      }
+      itemsRoot.append(card);
+    }
+    dialog.dataset.date = dayKey;
+    if (!dialog.open) dialog.showModal();
+  }
+
   find('[data-create-schedule]').addEventListener('click', () => showNew(scheduleEditor, {calendar:scope.value, date:calendarDate()}));
   find('#new-work-task').addEventListener('click', () => showNew(editors.Task, {}));
   find('#add-day-note').addEventListener('click', () => showNew(noteEditor, {date:calendarDate()}));
@@ -649,7 +737,27 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     if (!day) return;
     selectedDay = day.dataset.calendarDay;
     renderCalendar();
-    find('[data-calendar-day="'+selectedDay+'"]').focus();
+    showCalendarDayDialog(selectedDay);
+  });
+  root.addEventListener('click', event => {
+    const summary = event.target.closest('.consultation-request-row > summary');
+    if (!summary) return;
+    event.preventDefault();
+    const day = summary.parentElement.dataset.consultationDate;
+    if (!day) return;
+    selectedDay = day;
+    month.value = day.slice(0, 7);
+    renderCalendar();
+    showCalendarDayDialog(day);
+  });
+  for (const button of root.querySelectorAll('[data-close-calendar-day]')) {
+    button.addEventListener('click', () => find('#calendar-day-dialog').close());
+  }
+  find('#calendar-day-add-schedule').addEventListener('click', () => {
+    const dialog = find('#calendar-day-dialog');
+    const day = dialog.dataset.date || calendarDate();
+    dialog.close();
+    showNew(scheduleEditor, {calendar:scope.value, date:day});
   });
   find('#legal-task-filter').addEventListener('change', render);
   find('#work-matter-query').addEventListener('input', renderMatters);
