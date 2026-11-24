@@ -94,3 +94,8 @@ html.booking-popup-view .client-home .premium-booking-footer{margin-top:10px!imp
  html.booking-popup-view .client-home .premium-booking-steps>span>span{font-size:10px!important}
  html.booking-popup-view .client-home #consultation-demo{font-size:11px!important}
 }
+
+/* Keep the first booking screen focused on choosing a date and time. */
+html.booking-popup-view .client-home #consultation-form.booking-step-2 .premium-booking-steps,
+html.booking-popup-view .client-home #consultation-form.booking-step-2 #consultation-demo{display:none!important}
+html.booking-popup-view .client-home #consultation-form.booking-step-2 .premium-booking{margin-top:0!important}
