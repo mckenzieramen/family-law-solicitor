@@ -7,8 +7,8 @@
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-9">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-9">
-<link rel="stylesheet" href="../docs/admin/practice-modules.css?v=practice-modules-2">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
+<link rel="stylesheet" href="../docs/admin/practice-modules.css?v=practice-modules-3">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
 <script defer src="../docs/admin/followup-interactions.js?v=1"></script>
@@ -172,14 +172,14 @@
  <aside class="help-widget" aria-label="Help and support">
   <section class="help-widget-panel" id="help-widget-panel" aria-labelledby="help-widget-title" hidden>
    <header><div><p>STAFF SUPPORT</p><h2 id="help-widget-title">Help &amp; Support</h2></div><button type="button" id="help-widget-close" aria-label="Close Help and Support">×</button></header>
-   <p>Need help with an enquiry? Open Consultation Enquiries to review website messages and support conversations.</p>
-   <a href="#staff-inbox">Open Consultation Enquiries</a>
+   <p>Jump straight to the workspace area you need.</p>
+   <nav class="help-widget-links" aria-label="Help and support shortcuts"><a href="#staff-inbox">Consultation Enquiries</a><a href="#work-calendar">Calendar</a><a href="#work-queue">Tasks &amp; Workflows</a></nav>
   </section>
   <button type="button" class="help-widget-toggle" id="help-widget-toggle" aria-label="Help and Support" title="Help and Support" aria-expanded="false" aria-controls="help-widget-panel">
    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.8c-1.2.9-1.9 1.4-1.9 2.8M12 17h.01"/></svg><span class="help-widget-sr-only">Help &amp; Support</span>
   </button>
  </aside>
-<script src="../docs/admin/practice-modules.js?v=practice-modules-2"></script>
+<script src="../docs/admin/practice-modules.js?v=practice-modules-3"></script>
 <script type="module">
 const url = new URL(location.href);
 const status = document.getElementById('auth-status');
@@ -251,7 +251,7 @@ if (sampleMode) {
  const helpToggle = document.getElementById('help-widget-toggle');
  const helpPanel = document.getElementById('help-widget-panel');
  const helpClose = document.getElementById('help-widget-close');
- const helpInboxLink = document.querySelector('.help-widget-panel a');
+ const helpLinks = [...helpPanel.querySelectorAll('a[href^="#"]')];
  function closeHelp() {
    helpPanel.hidden = true;
    helpToggle.setAttribute('aria-expanded', 'false');
@@ -263,7 +263,8 @@ if (sampleMode) {
    if (open) helpClose.focus();
  });
  helpClose.addEventListener('click', () => { closeHelp(); helpToggle.focus(); });
- helpInboxLink.addEventListener('click', event => { event.preventDefault(); closeHelp(); go('#staff-inbox'); });
+ helpLinks.forEach(link => link.addEventListener('click', event => { event.preventDefault(); const route=link.getAttribute('href'); closeHelp(); go(route); title.setAttribute('tabindex','-1'); title.focus({preventScroll:true}); }));
+ document.addEventListener('click', event => { if (!helpPanel.hidden && !event.target.closest('.help-widget')) closeHelp(); });
  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !helpPanel.hidden) { closeHelp(); helpToggle.focus(); } });
  function go(hash) {
    if (location.hash !== hash) history.pushState(null, '', hash);
