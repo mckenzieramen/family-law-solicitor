@@ -227,8 +227,8 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   </div>
   <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-form-title">
   ${editorMarkup('schedule-form', 'Add schedule', `
-   <label>Event type<select name="eventType" required>${Object.entries(appointmentTypes).map(([value,detail]) =>
-    `<option value="${value}">${detail.label}</option>`).join('')}</select></label>
+   <label>Event type<div class="schedule-event-type" id="schedule-event-type" data-appointment-type="client-meeting"><span id="schedule-event-type-icon">${appointmentIcon({eventType:'client-meeting'})}</span><select name="eventType" required>${Object.entries(appointmentTypes).map(([value,detail]) =>
+    `<option value="${value}">${detail.label}</option>`).join('')}</select></div></label>
    <label>Title<input name="title" maxlength="160" required placeholder="e.g. Initial parenting consultation"></label>${matterField}
    <label>Calendar<select name="calendar">${calendarOptions}</select></label>
    <label>Date (Sydney)<input name="date" type="date" required></label>
@@ -381,6 +381,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const input = field(editor, name);
       if (input) input.value = value ?? '';
     }
+    if (editor === editors.Appointment) syncScheduleEventType();
     if (item) {
       editor.id = item.id;
       editor.calendar = calendarFor(item);
@@ -808,6 +809,15 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   }
   renderCalendar();
   const scheduleEditor = editors.Appointment;
+  const scheduleTypeSelect = field(scheduleEditor, 'eventType');
+  const scheduleTypeWrap = find('#schedule-event-type');
+  const scheduleTypeIcon = find('#schedule-event-type-icon');
+  const syncScheduleEventType = () => {
+    const value = appointmentTypes[scheduleTypeSelect.value] ? scheduleTypeSelect.value : 'client-meeting';
+    scheduleTypeWrap.dataset.appointmentType = value;
+    scheduleTypeIcon.innerHTML = appointmentIcon({eventType:value});
+  };
+  scheduleTypeSelect.addEventListener('change', syncScheduleEventType);
   const followUpOverview = document.getElementById('overview-follow-ups');
   if (followUpOverview) followUpOverview.onclick = event => {
     const button = event.target.closest('[data-overview-follow-up]');
