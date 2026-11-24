@@ -64,7 +64,7 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 <link rel="stylesheet" href="editorial-redesign.css?v=1">
 <link rel="stylesheet" href="booking-journey.css?v=1">
 <link rel="stylesheet" href="approved-visual.css?v=smooth-nav-7">
-<link rel="stylesheet" href="progressive-booking.css?v=calendar-first-2">
+<link rel="stylesheet" href="progressive-booking.css?v=calendar-first-3">
 <link rel="stylesheet" href="top-contact.css?v=2">
 <style>
 .client-home .client-band .profile-location{--profile-gap:18px;gap:var(--profile-gap);align-items:stretch}
@@ -431,7 +431,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 <script src="homepage-motion.js?v=1" defer></script>
 <script src="premium-experience.js?v=1" defer></script>
 <script src="booking-journey.js?v=calendar-syntax-fix-2" defer></script>
-<script src="progressive-booking.js?v=calendar-first-9" defer></script>
+<script src="progressive-booking.js?v=calendar-first-10" defer></script>
 <script src="top-contact.js?v=1" defer></script>
 <script>
 (() => {
@@ -665,5 +665,23 @@ html.booking-popup-view #app .client-home section#contact .contact-panel{display
 html.booking-popup-view #app .client-home section#contact .consultation-intro{display:none!important}
 html.booking-popup-view #app .client-home section#contact .consultation-form{display:block!important;grid-column:1!important;padding:clamp(14px,3vw,28px)!important;min-height:0!important}
 @media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}.consultation-frame-top{height:52px;padding:0 14px;font-size:19px}.consultation-frame-dialog iframe{height:calc(100% - 52px)}}
+</style>
+
+<style id="consultation-first-screen-space-fix">
+/* Keep the booking modal focused on choosing a date and time. */
+html.booking-popup-view #app .client-home section#contact{padding:0!important}
+html.booking-popup-view #app .client-home #consultation-form{
+ padding:4px 10px 10px!important;min-height:0!important;border-top:0!important;
+}
+html.booking-popup-view #app .client-home #consultation-form .premium-booking-steps,
+html.booking-popup-view #app .client-home #consultation-form #consultation-demo{
+ display:none!important;margin:0!important;padding:0!important;
+}
+html.booking-popup-view #app .client-home #consultation-form .premium-booking{
+ margin:0!important;padding:8px 10px!important;
+}
+html.booking-popup-view #app .client-home #consultation-form .premium-booking-head{
+ margin:0 0 6px!important;
+}
 </style>
 </html>
