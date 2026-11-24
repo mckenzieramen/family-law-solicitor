@@ -549,3 +549,14 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
   min-height:0!important;
   padding:4px 2px!important;
 }
+
+.admin-dashboard[data-view="work-calendar"] #work-calendar #work-month-grid{
+  height:auto!important;
+  max-height:min(100%,calc(100dvh - 430px))!important;
+  flex:1 1 auto;
+}
+@media(max-width:760px){
+ .admin-dashboard[data-view="work-calendar"] #work-calendar #work-month-grid{
+  max-height:min(100%,calc(100dvh - 390px))!important;
+ }
+}
