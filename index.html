@@ -531,31 +531,44 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
 }
 </style>
 <script id="availability-dialog-controller">
-/* Keep the homepage booking form mounted; show an independent copy in a modal frame. */
 (() => {
- const isPopup = new URLSearchParams(location.search).has('bookingPopup');
- const selectors = '.client-home .hero-actions .hero-link, .client-home .reference-consultation-cta a.action, .site-header .header-nav a.nav-cta, .client-home a[data-open-availability], a[href="#contact"].nav-cta';
- if (isPopup) {
-  document.documentElement.classList.add('booking-popup-view');
-  return;
- }
+ const selectors = '.client-home a[href="#contact"], .site-header .header-nav a.nav-cta';
  const modal = document.createElement('dialog');
  modal.className = 'consultation-frame-dialog';
- modal.setAttribute('aria-label', 'Book a Consultation');
- modal.innerHTML = '<div class="consultation-frame-top"><strong>Book a Consultation</strong><button type="button" aria-label="Close booking dialog" class="consultation-frame-close">×</button></div><iframe title="Consultation booking form" loading="eager"></iframe>';
- const mount = () => { if(!modal.isConnected) document.body.appendChild(modal); };
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
- modal.querySelector('.consultation-frame-close').addEventListener('click',()=>modal.close());
- modal.addEventListener('close',()=>{modal.querySelector('iframe').removeAttribute('src');});
- document.addEventListener('click',event=>{
-  const link=event.target.closest(selectors);
-  if(!link)return;
+ modal.setAttribute('aria-labelledby', 'consultation-dialog-title');
+ modal.innerHTML = '<div class="consultation-frame-top"><strong id="consultation-dialog-title">Book a Consultation</strong><button type="button" aria-label="Close booking dialog" class="consultation-frame-close">×</button></div><div class="consultation-frame-body"></div>';
+ const body = modal.querySelector('.consultation-frame-body');
+ let formSection = null;
+ let anchor = null;
+ let opener = null;
+ document.body.appendChild(modal);
+
+ const restoreForm = () => {
+  if (anchor && formSection) anchor.replaceWith(formSection);
+  anchor = null;
+  formSection = null;
+  if (opener && opener.isConnected) opener.focus();
+ };
+ modal.querySelector('.consultation-frame-close').addEventListener('click', () => modal.close());
+ modal.addEventListener('click', event => {
+  if (event.target === modal) modal.close();
+ });
+ modal.addEventListener('close', restoreForm);
+
+ document.addEventListener('click', event => {
+  const link = event.target.closest(selectors);
+  if (!link) return;
+  const section = document.querySelector('#app .client-home section#contact');
+  if (!section || modal.contains(section)) return;
   event.preventDefault();
-  mount();
-  const frame=modal.querySelector('iframe');
-  frame.src=location.pathname+'?bookingPopup=1#contact';
-  if(!modal.open)modal.showModal();
- },true);
+  opener = link;
+  formSection = section;
+  anchor = document.createComment('consultation-form-location');
+  section.before(anchor);
+  body.replaceChildren(section);
+  modal.showModal();
+  body.scrollTop = 0;
+ }, true);
 })();
 </script>
 
@@ -570,44 +583,22 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
 .availability-dialog .premium-calendar-days button[data-state="unavailable"]{background:#f3f4f6!important;color:#a3a3a3!important}
 </style>
 
-<style id="consultation-popup-dual-mode">
-dialog.consultation-frame-dialog{position:fixed;inset:0;margin:auto;width:min(900px,calc(100vw - 24px));height:min(88dvh,850px);max-width:none;max-height:none;padding:0;border:1px solid #d8c6a9;border-radius:18px;background:#fffaf4;box-shadow:0 26px 90px #071a2a66;overflow:hidden}
+<style id="consultation-popup">
+dialog.consultation-frame-dialog{position:fixed;inset:0;margin:auto;width:min(920px,calc(100vw - 24px));height:min(90dvh,860px);max-width:none;max-height:none;padding:0;border:1px solid #d8c6a9;border-radius:18px;background:#fffaf4;color:#102a3a;box-shadow:0 26px 90px #071a2a66;overflow:hidden}
+dialog.consultation-frame-dialog[open]{display:grid;grid-template-rows:60px minmax(0,1fr)}
 dialog.consultation-frame-dialog::backdrop{background:#071a2ab8;backdrop-filter:blur(4px)}
-.consultation-frame-top{height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 22px;border-bottom:1px solid #e9dcc8;color:#102a3a;font:500 23px Georgia,serif}
+.consultation-frame-top{display:flex;justify-content:space-between;align-items:center;padding:0 22px;border-bottom:1px solid #e9dcc8;color:#102a3a;font:500 23px Georgia,serif}
 .consultation-frame-close{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #d9cbb5;background:#fff;color:#102a3a;font-size:25px;cursor:pointer}
-.consultation-frame-dialog iframe{display:block;width:100%;height:calc(100% - 60px);border:0;background:#fffaf4}
-html.booking-popup-view body{background:#fffaf4!important}
-html.booking-popup-view body > *:not(#app):not(script):not(style){display:none!important}
-html.booking-popup-view #app .site-header,
-html.booking-popup-view #app .site-footer,
-html.booking-popup-view #app .client-home > :not(#contact){display:none!important}
-html.booking-popup-view #app .client-home section#contact{display:block!important;margin:0!important;padding:12px!important}
-html.booking-popup-view #app .client-home section#contact .contact-panel{display:block!important;max-width:none!important;border:0!important;box-shadow:none!important}
-html.booking-popup-view #app .client-home section#contact .consultation-intro{display:none!important}
-html.booking-popup-view #app .client-home section#contact .consultation-form{display:block!important;grid-column:1!important;padding:clamp(14px,3vw,28px)!important;min-height:0!important}
-@media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}.consultation-frame-top{height:52px;padding:0 14px;font-size:19px}.consultation-frame-dialog iframe{height:calc(100% - 52px)}}
-
-/* Compact first view; open the calendar immediately. */
-
-/* Keep the booking modal focused on choosing a date and time. */
-html.booking-popup-view #app .client-home section#contact{padding:0!important}
-html.booking-popup-view #app .client-home #consultation-form{
- padding:4px 10px 10px!important;min-height:0!important;border-top:0!important;
-}
-html.booking-popup-view #app .client-home #consultation-form .premium-booking-steps,
-html.booking-popup-view #app .client-home #consultation-form #consultation-demo{
- display:none!important;margin:0!important;padding:0!important;
-}
-html.booking-popup-view #app .client-home #consultation-form .premium-booking{
- margin:0!important;padding:8px 10px!important;
-}
-html.booking-popup-view #app .client-home #consultation-form .premium-booking-head{
- margin:0 0 6px!important;
-}
-
-
-html.booking-popup-view #app .client-home>footer.client-footer{display:none!important}
-html.booking-popup-view #app .client-home{min-height:0!important}
+.consultation-frame-body{min-height:0;overflow:auto;overscroll-behavior:contain}
+.consultation-frame-dialog #contact{display:block!important;width:100%;margin:0!important;padding:0!important}
+.consultation-frame-dialog #contact .contact-panel{display:block!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.consultation-frame-dialog #contact .consultation-intro{display:none!important}
+.consultation-frame-dialog #consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
+.consultation-frame-dialog #consultation-form .premium-booking-steps,
+.consultation-frame-dialog #consultation-form #consultation-demo{display:none!important;margin:0!important;padding:0!important}
+.consultation-frame-dialog #consultation-form .premium-booking{margin:0!important;padding:8px 10px!important}
+.consultation-frame-dialog #consultation-form .premium-booking-head{margin:0 0 6px!important}
+@media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}dialog.consultation-frame-dialog[open]{grid-template-rows:52px minmax(0,1fr)}.consultation-frame-top{padding:0 14px;font-size:19px}}
 </style>
 
 </html>
