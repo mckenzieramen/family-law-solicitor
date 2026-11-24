@@ -163,7 +163,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel" id="work-calendar">
-  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments and deadlines in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
+  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments, deadlines and pending consultation requests in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
   <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-form-title">
   ${editorMarkup('schedule-form', 'Add schedule', `
    <label>Appointment title<input name="title" maxlength="160" required></label>${matterField}
@@ -349,7 +349,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
       ? 'Checking for consultation requests…'
       : scope.value === 'admin' && consultationRequests.length && !requestedItems.length
         ? 'No appointments or consultation requests in this calendar view.'
-        : loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
+        : loaded ? 'No appointments, consultation requests or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
     renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), emptyMessage);
     const requestStatus = find('#consultation-calendar-status');
     const displayedRequests = requestedItems.filter(item => !selectedDay || item.date === selectedDay).length;
