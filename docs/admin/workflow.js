@@ -612,8 +612,9 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
 
   function contactDateLabel(value) {
     if (!value) return '—';
-    const dateValue = String(value).slice(0, 10);
-    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(dateValue) ? new Date(dateValue + 'T12:00:00Z') : new Date(value);
+    const dateValue = value?.toDate ? value.toDate() : value instanceof Date ? value : null;
+    const raw = dateValue ? dateValue.toISOString().slice(0, 10) : String(value).slice(0, 10);
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? new Date(raw + 'T12:00:00Z') : new Date(value);
     return Number.isNaN(parsed.getTime()) ? '—' : new Intl.DateTimeFormat('en-AU', {day:'2-digit',month:'short',year:'numeric',timeZone:'Australia/Sydney'}).format(parsed);
   }
 
@@ -699,21 +700,23 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const type = typeFor(contact);
       const status = statusFor(item);
       const matter = contact.matter || contact.matterReference || item.matter || '—';
-      return '<button type="button" class="contact-list-row' + (entry.key === selectedContactKey ? ' is-selected' : '') + '" data-contact-key="' + escape(entry.key) + '" aria-pressed="' + (entry.key === selectedContactKey) + '">'
-        + '<span class="contact-avatar">' + escape(initials || 'C') + '</span>'
-        + '<span class="contact-list-name"><strong>' + escape(name) + '</strong><small>' + escape(contact.email || 'No email provided') + '</small></span>'
-        + '<span class="contact-type-pill">' + (type === 'new' ? 'New client' : 'Enquiry') + '</span>'
-        + '<span class="contact-list-secondary">' + escape(contact.phone || 'No phone provided') + (entry.requests.length > 1 ? ' · ' + entry.requests.length + ' enquiries' : '') + '</span>'
-        + '<span class="contact-list-matter">' + escape(matter) + '</span>'
-        + '<span class="contact-list-last">' + escape(contactDateLabel(item.date)) + '</span>'
-        + '<span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span>'
-        + '</button>';
-    }).join('') : '<p class="contact-empty-state">' + (consultationRequestsLoaded ? 'No contacts match these filters.' : 'Loading enquiry contacts…') + '</p>';
+      return '<tr class="contact-table-row' + (entry.key === selectedContactKey ? ' is-selected' : '') + '" data-contact-key="' + escape(entry.key) + '" tabindex="0" role="button" aria-selected="' + (entry.key === selectedContactKey) + '">'
+        + '<td><span class="contact-table-person"><span class="contact-avatar">' + escape(initials || 'C') + '</span><strong>' + escape(name) + '</strong></span></td>'
+        + '<td><span class="contact-type-pill">' + (type === 'new' ? 'New client' : 'Enquiry') + '</span></td>'
+        + '<td class="contact-table-email">' + escape(contact.email || '—') + '<small>' + escape(contact.phone || '—') + '</small></td>'
+        + '<td>' + escape(matter) + '</td>'
+        + '<td>' + escape(contactDateLabel(item.createdAt)) + '</td>'
+        + '<td><span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span></td>'
+        + '</tr>';
+    }).join('') : '<tr><td colspan="6" class="contact-empty-state">' + (consultationRequestsLoaded ? 'No contacts match these filters.' : 'Loading enquiry contacts…') + '</td></tr>';
     list.querySelectorAll('[data-contact-key]').forEach(button => {
       button.onclick = () => {
         selectedContactKey = button.dataset.contactKey;
         activeContactTab = 'details';
         renderDashboard();
+      };
+      button.onkeydown = event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); button.click(); }
       };
     });
     if (!active) {
@@ -732,10 +735,10 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     } else if (activeContactTab === 'notes') {
       tabContent = '<section class="contact-detail-section"><h4>Enquiry notes</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '<small>From the original website enquiry</small></div></section>';
     } else if (activeContactTab === 'communications') {
-      tabContent = '<section class="contact-detail-section"><h4>Communications</h4><article class="contact-communication-card"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>Received ' + escape(contactDateLabel(item.date)) + '</small></div><span class="contact-type-pill">Received</span></article><a class="contact-record-action" href="#staff-inbox">Open Client Messages</a></section>';
+      tabContent = '<section class="contact-detail-section"><h4>Communications</h4><article class="contact-communication-card"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>Received ' + escape(contactDateLabel(item.createdAt)) + '</small></div><span class="contact-type-pill">Received</span></article><a class="contact-record-action" href="#staff-inbox">Open Client Messages</a></section>';
     } else {
       const topic = String(contact.topic || 'General enquiry').replaceAll('-', ' ');
-      tabContent = '<section class="contact-detail-section"><h4>Contact Details</h4><dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + escape(contact.email || 'Not provided') + '</dd></div><div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div><div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div><div><dt>New client</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div><div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div><div><dt>Received</dt><dd>' + escape(contactDateLabel(item.date)) + '</dd></div></dl></section>'
+      tabContent = '<section class="contact-detail-section"><h4>Contact Details</h4><dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + escape(contact.email || 'Not provided') + '</dd></div><div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div><div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div><div><dt>New client</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div><div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div><div><dt>Received</dt><dd>' + escape(contactDateLabel(item.createdAt)) + '</dd></div></dl></section>'
         + '<section class="contact-detail-section"><h4>Linked Matter</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Related matter</span></article>' : '<p class="contact-detail-muted">No matter linked yet.</p>') + '</section>'
         + '<section class="contact-detail-section"><h4>Enquiry Message</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '</div></section>';
     }
