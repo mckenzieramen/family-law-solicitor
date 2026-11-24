@@ -246,7 +246,7 @@ if (sampleMode) {
     status.textContent = 'The sample workspace could not load. Refresh the page to try again.';
   }
 } else {
-  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-5');
+  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-6');
 }
 </script>
 <script>
@@ -262,7 +262,7 @@ if (sampleMode) {
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
-   title.textContent = active === links[0] ? 'Dashboard' : active.lastElementChild.textContent.trim();
+   title.textContent = active === links[0] ? 'Dashboard' : (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
      else link.removeAttribute('aria-current');
