@@ -352,8 +352,9 @@ export function mountWorkflow(db, uid, sampleMode = false) {
         : loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
     renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), emptyMessage);
     const requestStatus = find('#consultation-calendar-status');
+    const displayedRequests = requestedItems.filter(item => !selectedDay || item.date === selectedDay).length;
     if (requestStatus) requestStatus.textContent = consultationRequestsLoaded
-      ? (consultationRequests.length ? consultationRequests.length + ' pending consultation request' + (consultationRequests.length === 1 ? '' : 's') + ' shown in the Admin Calendar.' : 'No pending consultation requests.')
+      ? (displayedRequests ? displayedRequests + ' pending consultation request' + (displayedRequests === 1 ? '' : 's') + ' shown in this calendar view.' : 'No pending consultation requests in this calendar view.')
       : 'Checking for pending consultation requests…';
   }
   function render() {
@@ -552,7 +553,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
           const record = document.data();
           if (record.kind !== 'consultation') return null;
           const contact = record.contact || {};
-          const match = /^(\\d{4}-\\d{2}-\\d{2})(?:T(\\d{2}:\\d{2}))?/.exec(String(contact.preferredTime || ''));
+          const match = /^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}))?/.exec(String(contact.preferredTime || ''));
           if (!match) return null;
           const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
           return {
