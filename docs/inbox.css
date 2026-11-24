@@ -87,3 +87,88 @@
  .admin-dashboard[data-view="inbox"] #staff-inbox{min-height:0;padding:14px 10px}
  .admin-dashboard[data-view="inbox"] .staff-header-tools{width:100%}
 }
+
+/* Lock the Client Messages view to the viewport; scroll the ticket panes only. */
+.admin-dashboard[data-view="inbox"]{
+  box-sizing:border-box;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+}
+.admin-dashboard[data-view="inbox"] .dashboard-sidebar{
+  box-sizing:border-box;
+  height:100dvh;
+  min-height:0;
+  overflow:auto;
+}
+.admin-dashboard[data-view="inbox"] .dashboard-main{
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+}
+.admin-dashboard[data-view="inbox"] .dashboard-header{
+  flex:none;
+}
+.admin-dashboard[data-view="inbox"] #staff-inbox{
+  flex:1 1 auto;
+  height:auto;
+  min-height:0;
+  margin:0;
+  overflow:hidden;
+}
+.admin-dashboard[data-view="inbox"] #staff-inbox>h2,
+.admin-dashboard[data-view="inbox"] #staff-inbox .inbox-summary-cards,
+.admin-dashboard[data-view="inbox"] #staff-inbox .inbox-controls,
+.admin-dashboard[data-view="inbox"] #inbox-count,
+.admin-dashboard[data-view="inbox"] #inbox-status,
+.admin-dashboard[data-view="inbox"] #inbox-retry{
+  flex:none;
+}
+.admin-dashboard[data-view="inbox"] #staff-inbox .inbox-split{
+  flex:1 1 0;
+  min-height:0;
+  overflow:hidden;
+}
+.admin-dashboard[data-view="inbox"] #inbox-list,
+.admin-dashboard[data-view="inbox"] #inbox-reader{
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.admin-dashboard[data-view="inbox"] #inbox-list{
+  max-height:none;
+}
+@media(max-width:760px){
+  .admin-dashboard[data-view="inbox"]{
+    grid-template-rows:auto minmax(0,1fr);
+  }
+  .admin-dashboard[data-view="inbox"] .dashboard-sidebar{
+    height:auto;
+    max-height:145px;
+    overflow:hidden;
+  }
+  .admin-dashboard[data-view="inbox"] .dashboard-main{
+    height:auto;
+    min-height:0;
+    padding:8px 10px 10px;
+  }
+  .admin-dashboard[data-view="inbox"] #staff-inbox{
+    padding:12px 10px;
+  }
+}
+@media(max-width:700px){
+  .admin-dashboard[data-view="inbox"] #staff-inbox .inbox-split{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(110px,.8fr) minmax(130px,1.2fr);
+  }
+  .admin-dashboard[data-view="inbox"] #inbox-list{
+    max-height:none;
+  }
+  .admin-dashboard[data-view="inbox"] #inbox-reader{
+    min-height:0;
+  }
+}
