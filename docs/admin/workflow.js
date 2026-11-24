@@ -729,24 +729,83 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const initials = name.split(/\s+/).map(part => part[0] || '').slice(0, 2).join('').toUpperCase();
     const matter = contact.matter || contact.matterReference || item.matter || '';
     const status = statusFor(item);
+    const topicLabels = {
+      separation:'Separation and divorce',
+      parenting:'Parenting arrangements',
+      property:'Property settlement',
+      consent:'Consent orders',
+      financial:'Financial agreement',
+      financialAgreement:'Financial agreement',
+      divorce:'Divorce',
+      other:'Other family law'
+    };
+    const topic = topicLabels[contact.topic] || String(contact.topic || 'General enquiry').replaceAll('-', ' ');
+    const received = contactDateLabel(item.createdAt);
     let tabContent = '';
     if (activeContactTab === 'matters') {
-      tabContent = '<section class="contact-detail-section"><h4>Linked Matters (' + (matter ? '1' : '0') + ')</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Linked to this contact</span></article>' : '<p class="contact-detail-muted">No matter has been linked to this contact yet.</p>') + '</section>';
+      const linkedMatters = [...new Set(active.requests.map(request =>
+        request.contact?.matter || request.contact?.matterReference || request.matter
+      ).filter(Boolean))];
+      tabContent = '<section class="contact-detail-section"><div class="contact-section-heading"><span class="contact-section-icon" aria-hidden="true">▤</span><div><h4>Linked matters</h4><p>Matters associated with this client record.</p></div><span class="contact-section-count">' + linkedMatters.length + '</span></div>'
+        + (linkedMatters.length
+          ? '<div class="contact-matter-list">' + linkedMatters.map(reference => '<article class="contact-matter-card"><strong>' + escape(reference) + '</strong><span>Linked matter</span></article>').join('') + '</div>'
+          : '<div class="contact-tab-empty"><span aria-hidden="true">▱</span><strong>No linked matters yet</strong><p>A matter will appear here once it is connected to this contact.</p></div>')
+        + '</section>';
     } else if (activeContactTab === 'notes') {
-      tabContent = '<section class="contact-detail-section"><h4>Enquiry notes</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '<small>From the original website enquiry</small></div></section>';
+      const enquiryMessage = String(item.notes || '').trim();
+      tabContent = '<section class="contact-detail-section"><div class="contact-section-heading"><span class="contact-section-icon" aria-hidden="true">▤</span><div><h4>Enquiry notes</h4><p>Message provided by the client through the website form.</p></div></div>'
+        + (enquiryMessage
+          ? '<blockquote class="contact-enquiry-note">' + escape(enquiryMessage) + '<footer>Submitted ' + escape(received) + '</footer></blockquote>'
+          : '<div class="contact-tab-empty"><span aria-hidden="true">▤</span><strong>No enquiry note provided</strong><p>This client did not include a message with the consultation request.</p></div>')
+        + '</section>';
     } else if (activeContactTab === 'communications') {
-      tabContent = '<section class="contact-detail-section"><h4>Communications</h4><article class="contact-communication-card"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>Received ' + escape(contactDateLabel(item.createdAt)) + '</small></div><span class="contact-type-pill">Received</span></article><a class="contact-record-action" href="#staff-inbox">Open Client Messages</a></section>';
+      const history = [...active.requests].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      tabContent = '<section class="contact-detail-section"><div class="contact-section-heading"><span class="contact-section-icon" aria-hidden="true">✉</span><div><h4>Communication history</h4><p>Website enquiries received for this client.</p></div><span class="contact-section-count">' + history.length + '</span></div>'
+        + (history.length
+          ? '<ol class="contact-communication-list">' + history.map(request => {
+              const requestDate = contactDateLabel(request.createdAt);
+              const requestTopic = topicLabels[request.contact?.topic] || String(request.contact?.topic || 'General enquiry').replaceAll('-', ' ');
+              const approval = statusFor(request);
+              return '<li class="contact-communication-item"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>' + escape(requestDate) + ' · ' + escape(requestTopic) + '</small></div><span class="contact-status-pill is-' + approval + '">' + escape(labelForStatus(approval)) + '</span></li>';
+            }).join('') + '</ol>'
+          : '<div class="contact-tab-empty"><span aria-hidden="true">✉</span><strong>No communication history</strong><p>Messages from this client will appear here.</p></div>');
     } else {
-      const topic = String(contact.topic || 'General enquiry').replaceAll('-', ' ');
-      tabContent = '<section class="contact-detail-section"><h4>Contact Details</h4><dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + escape(contact.email || 'Not provided') + '</dd></div><div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div><div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div><div><dt>New client</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div><div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div><div><dt>Received</dt><dd>' + escape(contactDateLabel(item.createdAt)) + '</dd></div></dl></section>'
-        + '<section class="contact-detail-section"><h4>Linked Matter</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Related matter</span></article>' : '<p class="contact-detail-muted">No matter linked yet.</p>') + '</section>'
-        + '<section class="contact-detail-section"><h4>Enquiry Message</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '</div></section>';
+      tabContent = '<section class="contact-detail-section"><div class="contact-section-heading"><span class="contact-section-icon" aria-hidden="true">♙</span><div><h4>Contact details</h4><p>Information submitted with the latest enquiry.</p></div></div>'
+        + '<dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + (contact.email ? '<a href="mailto:' + escape(contact.email) + '">' + escape(contact.email) + '</a>' : 'Not provided') + '</dd></div>'
+        + '<div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div>'
+        + '<div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div>'
+        + '<div><dt>Client status</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div>'
+        + '<div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div>'
+        + '<div><dt>Received</dt><dd>' + escape(received) + '</dd></div></dl></section>';
     }
     detail.innerHTML = '<header class="contact-detail-head"><span class="contact-avatar contact-avatar-large">' + escape(initials || 'C') + '</span><div><h3>' + escape(name) + '</h3><span class="contact-type-pill">' + (typeFor(contact) === 'new' ? 'New client' : 'Prospective client') + '</span></div><span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span></header>'
-      + '<div class="contact-detail-tabs" role="tablist" aria-label="Contact details"><button type="button" role="tab" aria-selected="' + (activeContactTab === 'details') + '" data-contact-tab="details">Details</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'matters') + '" data-contact-tab="matters">Matters</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'notes') + '" data-contact-tab="notes">Notes</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'communications') + '" data-contact-tab="communications">Communications</button></div>'
-      + '<div class="contact-detail-body">' + tabContent + '</div><footer class="contact-detail-footer"><a class="contact-record-action" href="#staff-inbox">Review enquiry</a></footer>';
+      + '<div class="contact-detail-tabs" role="tablist" aria-label="Contact details">'
+      + [['details','Details'],['matters','Matters'],['notes','Notes'],['communications','Communications']].map(([key,label]) => '<button type="button" role="tab" id="contact-tab-' + key + '" aria-controls="contact-tabpanel-' + key + '" aria-selected="' + (activeContactTab === key) + '" tabindex="' + (activeContactTab === key ? '0' : '-1') + '" data-contact-tab="' + key + '">' + label + '</button>').join('')
+      + '</div><div class="contact-detail-body" id="contact-tabpanel-' + activeContactTab + '" role="tabpanel" aria-labelledby="contact-tab-' + activeContactTab + '" tabindex="0">' + tabContent + '</div>'
+      + '<footer class="contact-detail-footer"><button type="button" class="contact-record-action" data-contact-open-enquiry>Open enquiry in inbox</button></footer>';
     detail.querySelectorAll('[data-contact-tab]').forEach(button => {
       button.onclick = () => { activeContactTab = button.dataset.contactTab; renderDashboard(); };
+      button.onkeydown = event => {
+        const tabs = [...detail.querySelectorAll('[data-contact-tab]')];
+        const currentIndex = tabs.indexOf(button);
+        const nextIndex = event.key === 'ArrowRight' ? (currentIndex + 1) % tabs.length
+          : event.key === 'ArrowLeft' ? (currentIndex - 1 + tabs.length) % tabs.length
+          : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : -1;
+        if (nextIndex < 0) return;
+        event.preventDefault();
+        activeContactTab = tabs[nextIndex].dataset.contactTab;
+        renderDashboard();
+        detail.querySelector('[data-contact-tab="' + activeContactTab + '"]')?.focus();
+      };
+    });
+    detail.querySelector('[data-contact-open-enquiry]')?.addEventListener('click', () => {
+      if (location.hash !== '#staff-inbox') document.getElementById('inbox-nav')?.click();
+      document.querySelector('[data-client-workspace-tab="enquiries"]')?.click();
+      const inboxSearch = document.getElementById('inbox-search');
+      if (inboxSearch) {
+        inboxSearch.value = contact.email || name;
+        inboxSearch.dispatchEvent(new Event('input', {bubbles:true}));
+      }
     });
   }
 
