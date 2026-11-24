@@ -206,8 +206,15 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
     <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
  </section>
- <section class="workflow-panel" id="work-calendar">
-  <div class="calendar-toolbar"><div><h2 id="calendar-month-title">Calendar</h2><p class="calendar-description">Appointments, deadlines and pending consultation requests in Sydney time.</p></div><button type="button" class="work-button" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog">Add schedule</button></div>
+ <section class="workflow-panel calendar-workspace" id="work-calendar" data-calendar-mode="month">
+  <div class="calendar-page-title"><div><p class="module-eyebrow">Firm schedule</p><h2>Calendar</h2><p>Manage appointments, deadlines and client consultation requests in Sydney time.</p></div></div>
+  <div class="calendar-controls">
+   <div class="calendar-date-controls"><button type="button" id="work-calendar-today">Today</button><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><button type="button" data-month-step="1" aria-label="Next month">›</button><label class="calendar-month-label"><span id="calendar-month-title">November 2026</span><input id="work-month" type="month" aria-label="Choose calendar month"></label></div>
+   <div class="calendar-view-switch" role="tablist" aria-label="Calendar view">${['month','week','agenda'].map(view=>'<button type="button" role="tab" data-calendar-view="'+view+'" aria-selected="'+(view==='month')+'">'+view[0].toUpperCase()+view.slice(1)+'</button>').join('')}</div>
+   <label class="calendar-filter-label">Calendar<select id="work-calendar-scope">${calendarOptions}</select></label>
+   <label class="calendar-filter-label">Staff<select id="work-calendar-staff"><option value="">All staff</option></select></label>
+   <button type="button" class="work-button calendar-add-event" data-create-schedule aria-haspopup="dialog" aria-controls="schedule-dialog"><span aria-hidden="true">＋</span> Add Event</button>
+  </div>
   <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-form-title">
   ${editorMarkup('schedule-form', 'Add schedule', `
    <label>Appointment title<input name="title" maxlength="160" required></label>${matterField}
@@ -219,19 +226,26 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    'Appointment notes', 'Save schedule', true)}
   <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
-  <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><div class="calendar-month-nav"><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><label>Month <input id="work-month" type="month"></label><button type="button" data-month-step="1" aria-label="Next month">›</button></div><button type="button" id="work-calendar-today">Today</button><button type="button" id="work-show-month">Show whole month</button></div>
-  <p class="consultation-calendar-status" id="consultation-calendar-status" role="status">Checking for pending consultation requests…</p>
-  <div class="calendar-split"><div><div id="work-month-grid"></div>
-  <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
-  <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
-  </div><aside class="calendar-approval-panel" aria-labelledby="calendar-approval-title">
-   <div class="calendar-approval-header"><div><span>ATTORNEY REVIEW</span><h3 id="calendar-approval-title">Approval queue</h3></div><strong id="calendar-approval-count">0</strong></div>
-   <p class="calendar-approval-intro">Review consultation requests before confirming an appointment.</p>
-   <div id="calendar-approval-list" aria-live="polite"></div>
-  </aside></div>
+  <p class="consultation-calendar-status" id="consultation-calendar-status" role="status"></p>
+  <div class="calendar-main-layout">
+   <main class="calendar-month-card"><div id="work-month-grid" data-calendar-mode="month"></div>
+    <div class="calendar-legend" aria-label="Event colours"><span data-event-type="appointment">Appointment</span><span data-event-type="consultation">Consultation request</span><span data-event-type="task">Task / deadline</span><span data-event-type="note">Calendar note</span></div>
+    <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
+    <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
+   </main>
+   <aside class="calendar-right-rail">
+    <section class="calendar-upcoming-card" aria-labelledby="calendar-upcoming-title"><header><h3 id="calendar-upcoming-title">Upcoming Events</h3><time id="calendar-today-label"></time></header><div id="calendar-upcoming-list" aria-live="polite"></div><h4>Later This Week</h4><div id="calendar-later-list" aria-live="polite"></div></section>
+    <section class="calendar-approval-panel" aria-labelledby="calendar-approval-title">
+     <div class="calendar-approval-header"><div><span>ATTORNEY REVIEW</span><h3 id="calendar-approval-title">Approval queue</h3></div><strong id="calendar-approval-count">0</strong></div>
+     <p class="calendar-approval-intro">Review consultation requests before confirming an appointment.</p>
+     <div id="calendar-approval-list" aria-live="polite"></div>
+    </section>
+   </aside>
+  </div>
   <div class="calendar-agenda" hidden aria-hidden="true"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
+  <button type="button" id="work-show-month" hidden>Show whole month</button>
  </section>
- <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2><button type="button" class="work-button" id="new-follow-up">Add follow-up</button></div>
+<section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2><button type="button" class="work-button" id="new-follow-up">Add follow-up</button></div>
   <section class="matter-workflow-box" aria-labelledby="matter-workflow-title">
    <div><span class="matter-workflow-eyebrow">STANDARDISED MATTER WORKFLOW</span><h3 id="matter-workflow-title">Start a family law workflow</h3><p>Creates linked tasks in the matter file. Add deadlines after checking them with the solicitor.</p></div>
    <form id="matter-workflow-form">
@@ -299,6 +313,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   const retryCalendar = find('#retry-calendar-access');
   const month = find('#work-month');
   const scope = find('#work-calendar-scope');
+  const staffFilter = find('#work-calendar-staff');
   const agenda = document.getElementById('overview-agenda-items');
   const upcoming = document.getElementById('overview-upcoming-items');
   const editors = {
@@ -308,6 +323,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     Note: {form:find('#day-note-form'), title:'Add day note', editTitle:'Edit day note', saved:'Day note saved.', view:'work-calendar'}
   };
   let selectedDay = '';
+  let calendarMode = 'month';
   let selectedMatter;
   month.value = today().slice(0,7);
   const calendarDate = () => selectedDay || (month.value && !today().startsWith(month.value) ? month.value + '-01' : today());
@@ -419,59 +435,76 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   }
   function renderCalendar() {
     renderApprovalQueue();
-    const date = today();
-    const [year, monthNumber] = month.value.split('-').map(Number);
-    const grid = find('#work-month-grid');
-    if (!year || !monthNumber) {
-      grid.replaceChildren();
-      renderRows('#work-agenda', [], 'Choose a month to see scheduled items.');
-      return;
+    const date=today();
+    const selectedMonth=month.value||date.slice(0,7);
+    const parts=selectedMonth.split('-').map(Number);
+    const year=parts[0], monthNumber=parts[1];
+    const grid=find('#work-month-grid');
+    const page=find('#work-calendar');
+    if(!year||!monthNumber){grid.replaceChildren();return;}
+    const monthDate=new Date(Date.UTC(year,monthNumber-1,1));
+    find('#calendar-month-title').textContent=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric',timeZone:'UTC'}).format(monthDate);
+    if(page)page.dataset.calendarMode=calendarMode;
+    grid.dataset.calendarMode=calendarMode;
+    for(const tab of find('#work-calendar').querySelectorAll('[data-calendar-view]'))tab.setAttribute('aria-selected',String(tab.dataset.calendarView===calendarMode));
+    const staffFor=item=>item.assignee||item.staff||item.assignedTo||'';
+    const staffNames=[...new Set([...records,...consultationRequests].map(staffFor).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    if(staffFilter){const prior=staffFilter.value;staffFilter.innerHTML='<option value="">All staff</option>'+staffNames.map(name=>'<option value="'+escape(name)+'">'+escape(name)+'</option>').join('');staffFilter.value=staffNames.includes(prior)?prior:'';}
+    const isVisibleCalendar=item=>item.kind!=='Email draft'&&calendarFor(item)===scope.value&&(!staffFilter?.value||staffFor(item)===staffFilter.value);
+    const monthItems=records.filter(item=>item.date&&item.date.startsWith(selectedMonth)&&isVisibleCalendar(item));
+    const monthRequests=scope.value==='admin'?consultationRequests.filter(item=>item.approvalStatus!=='declined'&&item.date&&item.date.startsWith(selectedMonth)&&(!staffFilter?.value||staffFor(item)===staffFilter.value)):[];
+    const monthEvents=[...monthItems,...monthRequests];
+    const byDay=new Map();
+    for(const item of monthEvents){if(!byDay.has(item.date))byDay.set(item.date,[]);byDay.get(item.date).push(item);}
+    const eventType=item=>item.kind==='Consultation request'?(item.approvalStatus==='approved'?'approved-consultation':'consultation'):isNote(item)?'note':item.kind==='Appointment'?'appointment':'task';
+    const eventMarkup=item=>'<span class="calendar-event" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-color="'+appointmentColor(item)+'"':'')+'>'+escape([item.time,item.title].filter(Boolean).join(' '))+'</span>';
+    const makeDayButton=(d,monthTag='')=>{
+      const key=d.toISOString().slice(0,10), items=byDay.get(key)||[];
+      const current=key===date?' is-today':'';
+      const outside=monthTag&&key.slice(0,7)!==selectedMonth?' is-outside':'';
+      return '<button type="button" class="month-day'+current+outside+'" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+d.getUTCDate()+'</strong>'+items.slice(0,3).map(eventMarkup).join('')+(items.length>3?'<small class="calendar-more">+'+(items.length-3)+' more</small>':'')+'</button>';
+    };
+    if(calendarMode==='month'){
+      const first=new Date(Date.UTC(year,monthNumber-1,1));
+      const offset=(first.getUTCDay()+6)%7;
+      const cursor=new Date(Date.UTC(year,monthNumber-1,1-offset));
+      const cells=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="month-weekday">'+day+'</span>');
+      for(let i=0;i<42;i++){cells.push(makeDayButton(cursor,'month'));cursor.setUTCDate(cursor.getUTCDate()+1);}
+      grid.innerHTML=cells.join('');
+    }else if(calendarMode==='week'){
+      const anchor=new Date((selectedDay||date)+'T12:00:00Z');
+      const offset=(anchor.getUTCDay()+6)%7;
+      anchor.setUTCDate(anchor.getUTCDate()-offset);
+      const cells=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="month-weekday">'+day+'</span>');
+      for(let i=0;i<7;i++){cells.push(makeDayButton(anchor));anchor.setUTCDate(anchor.getUTCDate()+1);}
+      grid.innerHTML=cells.join('');
+      const weekStart=new Date((selectedDay||date)+'T12:00:00Z');weekStart.setUTCDate(weekStart.getUTCDate()-((weekStart.getUTCDay()+6)%7));
+      const weekEnd=new Date(weekStart);weekEnd.setUTCDate(weekEnd.getUTCDate()+6);
+      find('#work-agenda-title').textContent=new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',timeZone:'UTC'}).format(weekStart)+' – '+new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(weekEnd);
+    }else{
+      const rows=monthEvents.filter(item=>item.date).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99:99').localeCompare(b.time||'99:99'));
+      grid.innerHTML='<div class="calendar-agenda-view">'+(rows.length?rows.map(item=>'<button type="button" class="calendar-agenda-row" data-calendar-day="'+escape(item.date)+'"><time>'+escape(new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(item.date+'T12:00:00Z')))+(item.time?' · '+escape(item.time):'')+'</time>'+eventMarkup(item)+'</button>').join(''):'<p class="work-empty">No events in this month.</p>')+'</div>';
     }
-    const monthDate = new Date(Date.UTC(year, monthNumber - 1, 1));
-    find('#calendar-month-title').textContent = new Intl.DateTimeFormat('en-AU', {
-      month:'long', year:'numeric', timeZone:'UTC'
-    }).format(monthDate);
-    const scheduledItems = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
-      calendarFor(item) === scope.value);
-    const requestedItems = scope.value === 'admin' ? consultationRequests.filter(item => item.approvalStatus !== 'declined' && item.date?.startsWith(month.value)) : [];
-    const matching = [...scheduledItems, ...requestedItems];
-    const byDay = new Map();
-    for (const item of matching) {
-      if (!byDay.has(item.date)) byDay.set(item.date, []);
-      byDay.get(item.date).push(item);
-    }
-    const first = (monthDate.getUTCDay() + 6) % 7;
-    const days = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
-    const cells = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => '<span class="month-weekday">'+day+'</span>');
-    const spacer = '<span class="month-spacer" aria-hidden="true"></span>';
-    for (let i = 0; i < first; i++) cells.push(spacer);
-    for (let day = 1; day <= days; day++) {
-      const key = month.value + '-' + String(day).padStart(2, '0');
-      const items = byDay.get(key) || [];
-      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(item.kind === 'Consultation request' ? (item.approvalStatus === 'approved' ? 'approved-consultation' : 'consultation') : isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
-    }
-    const trailing = (7 - (first + days) % 7) % 7;
-    for (let i = 0; i < trailing; i++) cells.push(spacer);
-    grid.innerHTML = cells.join('');
-    find('#work-agenda-title').textContent = selectedDay ? new Intl.DateTimeFormat('en-AU', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'}).format(new Date(selectedDay+'T00:00:00Z')) : 'Scheduled items this month';
-    const emptyMessage = scope.value === 'admin' && !consultationRequestsLoaded
-      ? 'Checking for consultation requests…'
-      : scope.value === 'admin' && consultationRequests.length && !requestedItems.length
-        ? 'No appointments or consultation requests in this calendar view.'
-        : loaded ? 'No appointments, consultation requests or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
-    const agendaItems = matching.filter(item => item.kind !== 'Consultation request' && (!selectedDay || item.date === selectedDay))
-      .sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b));
-    const agendaEmpty = selectedDay && requestedItems.some(item => item.date === selectedDay)
-      ? 'Consultation request shown in blue on the calendar. Select the date to review it.'
-      : emptyMessage;
-    renderRows('#work-agenda', agendaItems, agendaEmpty);
-    const requestStatus = find('#consultation-calendar-status');
-    const displayedRequests = requestedItems.filter(item => !selectedDay || item.date === selectedDay).length;
-    if (requestStatus) {
-      const waiting = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending').length;
-      requestStatus.textContent = consultationRequestsLoaded
-        ? (waiting ? waiting + ' consultation request' + (waiting === 1 ? ' needs' : 's need') + ' attorney review.' : 'No consultation requests are waiting for attorney review.')
-        : 'Checking for consultation requests…';
+    const allEvents=[...records.filter(item=>item.date&&item.date>=date&&isVisibleCalendar(item)),...(scope.value==='admin'?consultationRequests.filter(item=>item.date&&item.date>=date&&item.approvalStatus!=='declined'&&(!staffFilter?.value||staffFor(item)===staffFilter.value)):[])].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99:99').localeCompare(b.time||'99:99'));
+    const todayEvents=allEvents.filter(item=>item.date===date);
+    const weekEnd=new Date(date+'T12:00:00Z');weekEnd.setUTCDate(weekEnd.getUTCDate()+7);
+    const weekEndKey=weekEnd.toISOString().slice(0,10);
+    const laterEvents=allEvents.filter(item=>item.date>date&&item.date<=weekEndKey).slice(0,4);
+    const shortDate=d=>new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'));
+    const timeText=t=>t?new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).format(new Date('2026-01-01T'+t+':00Z')):'All day';
+    const kindText=item=>item.kind==='Consultation request'?'Client consultation request':isNote(item)?'Calendar note':item.kind==='Appointment'?'Appointment':'Task / deadline';
+    const rightEvent=(item)=>'<button type="button" class="calendar-upcoming-row" data-calendar-day="'+escape(item.date)+'" data-event-type="'+eventType(item)+'"><span class="calendar-upcoming-time">'+escape(timeText(item.time))+'</span><span class="calendar-upcoming-copy"><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></span></button>';
+    const dateLabel=find('#calendar-today-label');
+    if(dateLabel)dateLabel.textContent=new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
+    find('#calendar-upcoming-list').innerHTML=todayEvents.length?todayEvents.slice(0,4).map(rightEvent).join(''):'<p class="work-empty calendar-empty">No events scheduled for today.</p>';
+    find('#calendar-later-list').innerHTML=laterEvents.length?laterEvents.map(item=>'<div class="calendar-later-row" data-event-type="'+eventType(item)+'"><span>'+escape(shortDate(item.date))+'<small>'+escape(timeText(item.time))+'</small></span><div><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></div><button type="button" data-calendar-day="'+escape(item.date)+'" aria-label="Open '+escape(item.title||'event')+'">View</button></div>').join(''):'<p class="work-empty calendar-empty">No later events this week.</p>';
+    find('#work-agenda-title').textContent=selectedDay?new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(selectedDay+'T12:00:00Z')):'Scheduled items this month';
+    const agendaItems=monthEvents.filter(item=>item.kind!=='Consultation request'&&(!selectedDay||item.date===selectedDay)).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b));
+    renderRows('#work-agenda',agendaItems,monthEvents.length?'No scheduled items for this date.':'No appointments, requests or deadlines in this calendar view.');
+    const requestStatus=find('#consultation-calendar-status');
+    if(requestStatus){
+      const waiting=consultationRequests.filter(item=>(item.approvalStatus||'pending')==='pending').length;
+      requestStatus.textContent=consultationRequestsLoaded?(waiting?waiting+' consultation request'+(waiting===1?' needs':'s need')+' attorney review.':''): 'Checking for consultation requests…';
     }
   }
   function render() {
@@ -1065,6 +1098,12 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   }
   month.addEventListener('change', () => { selectedDay = ''; render(); });
   scope.addEventListener('change', () => { selectedDay = ''; render(); });
+  staffFilter.addEventListener('change', () => { selectedDay = ''; renderCalendar(); });
+  for(const tab of find('#work-calendar').querySelectorAll('[data-calendar-view]'))tab.addEventListener('click',()=>{calendarMode=tab.dataset.calendarView;renderCalendar();});
+  for(const list of [find('#calendar-upcoming-list'),find('#calendar-later-list')])list.addEventListener('click',event=>{
+    const item=event.target.closest('[data-calendar-day]');if(!item)return;
+    selectedDay=item.dataset.calendarDay;calendarMode='week';month.value=selectedDay.slice(0,7);renderCalendar();showCalendarDayDialog(selectedDay);
+  });
   find('#work-calendar-today').addEventListener('click', () => {
     selectedDay = today();
     month.value = selectedDay.slice(0,7);
