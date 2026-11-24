@@ -232,7 +232,9 @@
     if(prev)prev.disabled=matterPage<=1;
     if(next)next.disabled=matterPage>=pages;
   }
-  function renderRecords() {
+  function publishEnquiryStaff(){window.dispatchEvent(new CustomEvent('enquiry-staff-directory',{detail:{sampleMode:!!practiceContext?.sampleMode,staff:practiceRecords.filter(r=>r.recordType==='employee'&&r.payload?.status==='Active'&&(practiceContext?.sampleMode||r.payload.uid)).map(r=>({id:r.payload.uid||r.id,name:r.payload.name,email:r.payload.email}))}}));}
+  window.addEventListener('enquiry-staff-request',publishEnquiryStaff);
+  function renderRecords() {publishEnquiryStaff();
     const tableTargets = [
       ['work-documents','document', r=>[r.payload.title||r.payload.fileName||'Document',r.payload.category||'—',r.payload.matter||'—',r.payload.uploadedBy||practiceContext?.user?.displayName||'Staff',sydneyDate(r.createdAt),'Saved']],
       ['work-time','timeEntry', r=>[r.payload.date||'—',r.payload.staff||practiceContext?.user?.displayName||'Staff',r.payload.matter||'—',r.payload.description||'—',(r.payload.hours||0)+' hrs',r.payload.billable||'—',r.payload.status||'Unbilled']],
