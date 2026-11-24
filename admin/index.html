@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=client-enquiry-tabs-1">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=clients-enquiries-2">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=client-detail-tabs-3">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
@@ -240,7 +240,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=clients-enquiries-2'),
+      import('../docs/admin/workflow.js?v=client-detail-tabs-3'),
       import('../docs/admin/inbox.js?v=client-enquiry-tabs-2')
     ]);
     mountWorkflow(null, null, true);
@@ -261,7 +261,7 @@ if (sampleMode) {
   }
 } else {
   try {
-    await import('../docs/admin/firebase-admin.js?v=admin-dashboard-9');
+    await import('../docs/admin/firebase-admin.js?v=admin-dashboard-10');
   } catch (error) {
     status.dataset.state = 'error';
     status.setAttribute('role', 'alert');
