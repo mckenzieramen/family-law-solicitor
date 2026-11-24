@@ -37,7 +37,7 @@
   fields.addEventListener('change',updateNextState);
   function show(n){
    const changed=n!==step;
-   step=n;fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
+   step=n;form.classList.toggle('booking-step-2',n===2);fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
    updateNextState();
    back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
    next.textContent='Next →';
