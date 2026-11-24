@@ -78,6 +78,7 @@ export function mountInbox(db, sampleMode = false) {
   let alive = true;
   let ready = false;
   let selectedId;
+  let activeReaderTab = 'details';
   const drafts = new Map();
   for (const card of quickCards) card.onclick = () => { filter.value = card.dataset.inboxQuickFilter; render(); };
   function render() {
@@ -145,6 +146,7 @@ export function mountInbox(db, sampleMode = false) {
       row.setAttribute('aria-pressed', String(record.id === selectedId));
       row.addEventListener('click', () => {
         selectedId = record.id;
+        activeReaderTab = 'details';
         render();
         reader.querySelector('h3')?.focus();
       });
@@ -183,6 +185,16 @@ export function mountInbox(db, sampleMode = false) {
       readerMeta.textContent=[ticketCode(record),contact.email,date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
       summary.append(kicker,titleRow,readerMeta); details.append(summary);
       if(consultation){
+        const tabs=document.createElement('div'); tabs.className='inbox-contact-tabs'; tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Client enquiry details');
+        const tabNames=[['details','Details'],['matters','Matters'],['notes','Notes'],['communications','Communications']];
+        for(const [key,label] of tabNames){
+          const tab=document.createElement('button'); tab.type='button'; tab.setAttribute('role','tab'); tab.setAttribute('aria-selected',String(activeReaderTab===key)); tab.textContent=label;
+          tab.addEventListener('click',()=>{activeReaderTab=key;render();});
+          tabs.append(tab);
+        }
+        details.append(tabs);
+      }
+      if(consultation && activeReaderTab==='details'){
         const fields=document.createElement('div'); fields.className='inbox-ticket-fields';
         const topics={separation:'Separation and divorce',parenting:'Parenting arrangements',property:'Property and finances',consent:'Consent orders'};
         addTicketField(fields,'Inquiry type',topics[contact.topic]||contact.topic);
@@ -192,13 +204,31 @@ export function mountInbox(db, sampleMode = false) {
         details.append(fields);
         if(contact.preferredTime){const notice=document.createElement('p');notice.className='inbox-ticket-notice';notice.textContent='Requested appointment time · pending confirmation by the firm';details.append(notice);}
       }
-      const messageSection=document.createElement('section'); messageSection.className='inbox-ticket-message';
-      const messageLabel=document.createElement('strong'); messageLabel.className='inbox-ticket-message-label';
-      messageLabel.textContent=consultation?'Client message':'Message';
-      message.textContent=String(record.message??'').trim()||'No message details provided.';
-      if(record.kind==='support'){message.className='chat-message';const sender=document.createElement('strong');sender.textContent='Visitor';message.prepend(sender);}
-      messageSection.append(messageLabel,message); details.append(messageSection);
-      if (consultation && /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(contact.email || '')) {
+      if(consultation && activeReaderTab==='matters'){
+        const linkedMatter=contact.matter || contact.matterReference || '';
+        const matterSection=document.createElement('section'); matterSection.className='inbox-ticket-message inbox-contact-tab-panel';
+        const matterHeading=document.createElement('strong'); matterHeading.className='inbox-ticket-message-label'; matterHeading.textContent='Linked matters';
+        const matterCopy=document.createElement('p'); matterCopy.textContent=linkedMatter?'Matter · '+linkedMatter:'No matter is linked to this consultation enquiry yet.';
+        matterSection.append(matterHeading,matterCopy); details.append(matterSection);
+      } else if(consultation && activeReaderTab==='notes'){
+        const noteSection=document.createElement('section'); noteSection.className='inbox-ticket-message inbox-contact-tab-panel';
+        const noteHeading=document.createElement('strong'); noteHeading.className='inbox-ticket-message-label'; noteHeading.textContent='Internal notes';
+        const noteCopy=document.createElement('p'); noteCopy.textContent=record.internalNote || 'No internal note has been added to this enquiry.';
+        noteSection.append(noteHeading,noteCopy); details.append(noteSection);
+      } else if(consultation && activeReaderTab==='communications'){
+        const communication=document.createElement('section'); communication.className='inbox-ticket-message inbox-contact-tab-panel';
+        const communicationHeading=document.createElement('strong'); communicationHeading.className='inbox-ticket-message-label'; communicationHeading.textContent='Communications';
+        const communicationCopy=document.createElement('p'); communicationCopy.textContent='Website consultation enquiry · '+(date||'Received date unavailable');
+        communication.append(communicationHeading,communicationCopy); details.append(communication);
+      } else if(!consultation || activeReaderTab==='details') {
+        const messageSection=document.createElement('section'); messageSection.className='inbox-ticket-message';
+        const messageLabel=document.createElement('strong'); messageLabel.className='inbox-ticket-message-label';
+        messageLabel.textContent=consultation?'Client message':'Message';
+        message.textContent=String(record.message??'').trim()||'No message details provided.';
+        if(record.kind==='support'){message.className='chat-message';const sender=document.createElement('strong');sender.textContent='Visitor';message.prepend(sender);}
+        messageSection.append(messageLabel,message); details.append(messageSection);
+      }
+      if (consultation && activeReaderTab==='communications' && /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(contact.email || '')) {
         const email = document.createElement('a');
         email.className = 'inbox-email-action';
         email.href = 'mailto:' + contact.email.split('@').map(encodeURIComponent).join('@') + '?subject=' +
