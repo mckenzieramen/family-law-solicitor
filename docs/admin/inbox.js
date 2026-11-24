@@ -202,6 +202,26 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .eq-save{background:#101d30;color:white;border:0;border-radius:7px;padding:12px 18px;cursor:pointer}
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:1fr}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
   `;document.head.append(exact);
+  exact.textContent += `
+  #staff-inbox .enquiry-metrics button{grid-template-columns:36px minmax(0,1fr);min-height:98px;padding:12px;column-gap:12px}
+  #staff-inbox .enquiry-metrics small{font:13px Georgia,serif}
+  #staff-inbox .enquiry-pipeline button{background:linear-gradient(110deg,#f8f4ef,#f1e5d5);filter:drop-shadow(1px 0 #c9b79e)}
+  #staff-inbox .enquiry-pipeline button[aria-pressed=true]{background:linear-gradient(110deg,#b59459,#80602d)}
+  #staff-inbox .enquiry-left{gap:12px}
+  #staff-inbox #inbox-list{border-radius:10px 10px 0 0;background:#fcf9f5}
+  #staff-inbox .enquiry-pager{margin-top:-12px;border:1px solid #dfd3c4;border-top:0;border-radius:0 0 10px 10px;padding:14px}
+  #staff-inbox .enquiry-table td{height:52px;box-sizing:border-box;padding:8px 10px;overflow-wrap:anywhere}
+  #staff-inbox .enquiry-status{display:inline-block;border-radius:20px;padding:5px 12px;background:#efdbad;font:13px Georgia,serif}
+  #staff-inbox .eq-profile a{display:flex;gap:8px;align-items:center}
+  #staff-inbox .eq-profile svg,#staff-inbox .eq-contact svg{width:17px;height:17px;flex:none;color:#987740}
+  #staff-inbox .eq-contact{display:flex;align-items:center;gap:7px}
+  #staff-inbox .eq-more{border:0;background:transparent;font-size:20px;cursor:pointer;color:#101827}
+  #staff-inbox .enquiry-table tr{transition:background-color 150ms ease}
+  #staff-inbox .inbox-reader-card{padding:0;background:transparent;border:0;box-shadow:none}
+  #staff-inbox .eq-form-grid>*{min-width:0}
+  #staff-inbox .eq-form-grid input{min-width:0}
+  `;
+  const eqIcon=(kind)=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('aria-hidden','true');svg.innerHTML=kind==='mail'?'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>':'<path d="M5 3 3 6c0 8 7 15 15 15l3-3-5-4-3 3c-3-1-5-3-6-6l3-3Z"/>';return svg;};
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -259,7 +279,7 @@ export function mountInbox(db, sampleMode = false) {
     const consultations=entries.filter(r=>r.kind==='consultation'&&inRange(r));stageSelect.value=stageFilter;assignSelect.replaceChildren(new Option('Assigned To: All',''),new Option('Unassigned','Unassigned'));for(const name of new Set(entries.map(r=>r.assignedTo).filter(Boolean)))assignSelect.add(new Option(name,name));assignSelect.value=assignedFilter;
     for(const [container,labels] of [[metrics,['Total Enquiries',...stages]],[pipeline,stages]]){
       container.replaceChildren();
-      for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
+      for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;const sub=document.createElement('small');sub.textContent=label==='Total Enquiries'?(dateRange==='all'?'All time':'Last '+dateRange+' days'):label==='Converted'?'(to Client)':label==='Closed'?'(Not Proceeding)':'';if(sub.textContent)caption.append(document.createElement('br'),sub);b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
     }
     page=Math.min(page,Math.max(0,Math.ceil(visible.length/8)-1));
     const pageRows=visible.slice(page*8,page*8+8);
@@ -273,7 +293,7 @@ export function mountInbox(db, sampleMode = false) {
     if (!selected) reader.textContent = 'No message to display.';
 
     status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
-    const table=document.createElement('table');table.className='enquiry-table';const head=table.createTHead().insertRow();for(const label of ['Received','Name','Subject','Preferred contact','Assigned to','Status','Follow-up']){const th=document.createElement('th');th.textContent=label;head.append(th);}const tbody=table.createTBody();list.append(table);
+    const table=document.createElement('table');table.className='enquiry-table';const head=table.createTHead().insertRow();for(const label of ['Received','Name','Subject','Preferred contact','Assigned to','Status','Follow-up','Actions']){const th=document.createElement('th');th.textContent=label;head.append(th);}const tbody=table.createTBody();list.append(table);
     for (const record of pageRows) {
       const row = document.createElement('button');
       row.type = 'button';
@@ -306,13 +326,13 @@ export function mountInbox(db, sampleMode = false) {
       const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
       const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
-      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
+      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}const cc=tr.cells[3];const cv=cc.textContent;const wrap=document.createElement('span');wrap.className='eq-contact';wrap.append(eqIcon(contact.email?'mail':'phone'),document.createTextNode(cv));cc.replaceChildren(wrap);const more=document.createElement('button');more.type='button';more.className='eq-more';more.textContent='⋯';more.setAttribute('aria-label','View enquiry details');more.onclick=e=>{e.stopPropagation();row.click();};tr.insertCell().append(more);tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
       if(record.id!==selectedId) continue;
       if(consultation){
         const el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;if(cls)n.className=cls;return n;};
         const top=el('div','','eq-top');const badge=el('span',stageOf(record),'enquiry-status');badge.dataset.stage=stageOf(record);top.append(el('h3','Enquiry Details'),badge);details.append(top);
         const profile=el('div','','eq-profile');const avatar=el('div',(senderName(record)||'Unknown').split(' ').map(x=>x[0]).slice(0,2).join(''),'eq-avatar');const identity=el('div');identity.append(el('h3',senderName(record)||'Consultation enquiry'));
-        for(const [value,scheme] of [[contact.email,'mailto:'],[contact.phone,'tel:'],[contact.postcode,'']])if(value){const a=el(scheme?'a':'div',value);if(scheme)a.href=scheme+value;identity.append(a);}
+        for(const [value,scheme] of [[contact.email,'mailto:'],[contact.phone,'tel:'],[contact.postcode,'']])if(value){const a=el(scheme?'a':'div',value);if(scheme){a.href=scheme+value;a.prepend(eqIcon(scheme==='mailto:'?'mail':'phone'));}identity.append(a);}
         profile.append(avatar,identity);details.append(profile);
         const fields=el('div','','inbox-ticket-fields');addTicketField(fields,'Subject',contact.topic||'Not specified');addTicketField(fields,'Received',date);addTicketField(fields,'Preferred Contact',contact.preferredContact||(contact.email?'Email':'Phone'));details.append(fields);
         const msg=el('section','','eq-section');msg.append(el('strong','Inquiry Summary'),el('p',record.message||'No message provided.'));details.append(msg);
