@@ -3,8 +3,8 @@ import { getStorage } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-s
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
-import { mountInbox, clearInbox } from './inbox.js?v=ticket-workspace-8';
-import { mountWorkflow, clearWorkflow } from './workflow.js?v=practice-workflow-8';
+import { mountInbox, clearInbox } from './inbox.js?v=ticket-workspace-9';
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=practice-workflow-9';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',
