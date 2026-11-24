@@ -171,10 +171,18 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
   <section id="overview-upcoming" class="overview-agenda" aria-labelledby="overview-upcoming-title"><div class="admin-section-heading"><h2 id="overview-upcoming-title">Upcoming appointments</h2><a href="#work-calendar">Open calendar</a></div><div id="overview-upcoming-items">Loading appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Client enquiries</h2>
+   <div class="inbox-summary-cards" aria-label="Inquiry overview">
+    <button type="button" class="inbox-summary-card" data-inbox-quick-filter="newToday" aria-pressed="false"><span>New today</span><strong id="inbox-stat-new-today">0</strong><small>Consultation enquiries</small></button>
+    <button type="button" class="inbox-summary-card" data-inbox-quick-filter="appointment" aria-pressed="false"><span>Appointment requests</span><strong id="inbox-stat-appointments">0</strong><small>Awaiting firm confirmation</small></button>
+    <button type="button" class="inbox-summary-card" data-inbox-quick-filter="unanswered" aria-pressed="false"><span>Needs reply</span><strong id="inbox-stat-needs-reply">0</strong><small>Support conversations</small></button>
+    <button type="button" class="inbox-summary-card" data-inbox-quick-filter="replied" aria-pressed="false"><span>Replied</span><strong id="inbox-stat-replied">0</strong><small>Support conversations</small></button>
+   </div>
    <div class="inbox-controls">
     <label>Search tickets<input type="search" id="inbox-search" placeholder="Client, email or message"></label>
     <label>Ticket type <select id="inbox-filter">
      <option value="all">All tickets</option>
+     <option value="newToday">New today</option>
+     <option value="appointment">Appointment requests</option>
      <option value="consultation">Consultation enquiries</option>
      <option value="support">All support chats</option>
      <option value="unanswered">Support awaiting reply</option>
@@ -221,7 +229,7 @@ if (sampleMode) {
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
       import('../docs/admin/workflow.js?v=calendar-dialog-alerts-2'),
-      import('../docs/admin/inbox.js?v=ticket-workspace-1')
+      import('../docs/admin/inbox.js?v=ticket-workspace-2')
     ]);
     mountWorkflow(null, null, true);
     mountInbox(null, true);
