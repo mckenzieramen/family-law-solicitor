@@ -71,3 +71,19 @@
 @media(max-width:950px){.admin-dashboard #staff-inbox .inbox-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:540px){.admin-dashboard #staff-inbox .inbox-summary-cards{gap:8px}.admin-dashboard #staff-inbox .inbox-summary-card{min-height:82px;padding:11px}.inbox-summary-card>span{font-size:13px}.inbox-summary-card>strong{font-size:25px}.inbox-summary-card>small{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.admin-dashboard #staff-inbox .inbox-summary-card{transition:none}}
+
+/* Client Messages: remove duplicate page title and use the available workspace */
+.admin-dashboard[data-view="inbox"] .dashboard-main{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:10px clamp(12px,1.5vw,24px) 18px}
+.admin-dashboard[data-view="inbox"] .dashboard-header{justify-content:flex-end;min-height:0;margin:0 0 6px;padding:0;border:0}
+.admin-dashboard[data-view="inbox"] .dashboard-heading{display:none}
+.admin-dashboard[data-view="inbox"] .staff-header-tools{justify-content:flex-end;margin-left:auto;gap:8px}
+.admin-dashboard[data-view="inbox"] .staff-sydney-clock{padding:6px 10px;box-shadow:none}
+.admin-dashboard[data-view="inbox"] .staff-sydney-clock span{font-size:12px}
+.admin-dashboard[data-view="inbox"] .staff-sydney-clock time{font-size:14px}
+.admin-dashboard[data-view="inbox"] #staff-inbox{min-height:calc(100vh - 88px);padding:clamp(16px,1.8vw,26px)}
+@media(max-width:760px){
+ .admin-dashboard[data-view="inbox"] .dashboard-main{padding:8px 10px 14px}
+ .admin-dashboard[data-view="inbox"] .dashboard-header{margin-bottom:4px}
+ .admin-dashboard[data-view="inbox"] #staff-inbox{min-height:0;padding:14px 10px}
+ .admin-dashboard[data-view="inbox"] .staff-header-tools{width:100%}
+}
