@@ -57,3 +57,14 @@
 .admin-dashboard.reference-collapsed .dashboard-sidebar nav a .nav-notification:not([hidden]){position:absolute!important;top:5px!important;right:9px!important;bottom:auto!important;left:auto!important;transform:none!important;width:8px!important;height:8px!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;background:#DC2626!important;color:transparent!important;font-size:0!important;line-height:0!important;box-shadow:0 0 0 2px #0D1B2A!important;overflow:hidden!important;pointer-events:none}
 .admin-dashboard.reference-collapsed .dashboard-sidebar nav a .nav-notification[hidden]{display:none!important}
 }
+
+@media(min-width:761px) and (prefers-reduced-motion:no-preference){
+.admin-dashboard{transition:grid-template-columns 320ms cubic-bezier(.22,1,.36,1)}
+.admin-dashboard .dashboard-sidebar{min-width:0;overflow-x:hidden;transition:padding 320ms cubic-bezier(.22,1,.36,1)}
+.admin-dashboard .dashboard-sidebar nav a{overflow:hidden;white-space:nowrap;transition:padding 320ms cubic-bezier(.22,1,.36,1),gap 320ms cubic-bezier(.22,1,.36,1),background-color 160ms ease}
+.admin-dashboard .dashboard-sidebar nav a>span:nth-child(2){display:block;min-width:0;max-width:180px;opacity:1;overflow:hidden;transition:max-width 280ms ease,opacity 180ms ease}
+.admin-dashboard.reference-collapsed .dashboard-sidebar nav a>span:nth-child(2){display:block;max-width:0;opacity:0}
+.admin-dashboard .admin-nav-symbol{flex-shrink:0}
+.admin-dashboard .dashboard-identity{transition:min-height 320ms cubic-bezier(.22,1,.36,1),padding 320ms ease;overflow:hidden}
+.admin-dashboard .dashboard-main{min-width:0}
+}
