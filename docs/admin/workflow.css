@@ -247,6 +247,14 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
   overflow:auto;
 }
 #staff-workspace > .workflow-panel[hidden]{display:none!important}
+/* Keep every selected workspace page expanded when its record list is short; overflow stays scrollable as data grows. */
+.admin-dashboard[data-view^="work-"] #staff-workspace > .workflow-panel:not([hidden]){box-sizing:border-box;min-height:100%;margin-bottom:0}
+.admin-dashboard[data-view^="work-"] #workspace-content > .admin-module:not([hidden]){box-sizing:border-box;flex:1 0 auto;min-height:max(520px,calc(100dvh - 240px));overflow:auto}
+.admin-dashboard[data-view^="work-"] .admin-module .module-heading h2,
+.admin-dashboard[data-view="work-settings"] #settings-heading,
+.admin-dashboard[data-view="work-calendar"] #work-calendar .calendar-toolbar h2,
+.admin-dashboard[data-view="work-queue"] #work-queue .admin-section-heading h2,
+.admin-dashboard[data-view="inbox"] #inbox-heading{display:none}
 .admin-dashboard[data-view="overview"] .dashboard-main{overflow:auto}
 .admin-dashboard[data-view="work-calendar"] .dashboard-main,
 .admin-dashboard[data-view="work-calendar"] #staff-workspace{overflow:hidden}
