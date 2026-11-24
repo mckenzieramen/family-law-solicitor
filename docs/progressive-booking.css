@@ -36,66 +36,12 @@
   .client-home .premium-booking-navigation .premium-next { flex:1; }
 }
 
-
-/* Booking popup: put the date picker in view as soon as the modal opens. */
-html.booking-popup-view .client-home section#contact{padding:4px!important}
-html.booking-popup-view .client-home section#contact .consultation-form{
- padding:8px 12px 14px!important;
-}
-html.booking-popup-view .client-home #consultation-form>h3{
- position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;
- overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
-}
-html.booking-popup-view .client-home #consultation-demo{
- margin:4px 0 8px!important;padding:3px 9px!important;
- border-left:2px solid #c79d5b!important;background:#f8f3eb!important;
- color:#58645d!important;font:500 12px/1.35 system-ui,sans-serif!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps{
- display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;
- margin:8px 0 10px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span{
- display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
- min-height:34px!important;padding:4px 8px!important;border:1px solid #e1d8ca!important;border-radius:8px!important;
- background:#fff!important;color:#53645a!important;text-align:center!important;
- font:600 12px/1.2 system-ui,sans-serif!important;box-shadow:none!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span>b{
- display:grid!important;place-items:center!important;width:21px!important;height:21px!important;flex:none!important;
- border-radius:50%!important;background:#f3eee5!important;color:#315142!important;font:700 10px/1 system-ui,sans-serif!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span>span{
- display:inline!important;padding:0!important;border:0!important;border-radius:0!important;
- background:transparent!important;color:inherit!important;font:inherit!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span.active{
- border-color:#174b3b!important;background:#174b3b!important;color:#fff!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span.active>b,
-html.booking-popup-view .client-home .premium-booking-steps>span.completed>b{
- background:#f2d69c!important;color:#173d32!important;
-}
-html.booking-popup-view .client-home .premium-booking-steps>span.completed{
- border-color:#c9d9cd!important;background:#edf4ee!important;color:#174b3b!important;
-}
-html.booking-popup-view .client-home .premium-booking{
- margin:0!important;padding:12px!important;border-radius:14px!important;
-}
-html.booking-popup-view .client-home .premium-booking-head{margin:0 0 10px!important}
-html.booking-popup-view .client-home .premium-booking-grid{gap:16px!important}
-html.booking-popup-view .client-home .premium-calendar{padding:12px!important}
-html.booking-popup-view .client-home .premium-calendar-days button{min-height:36px!important}
-html.booking-popup-view .client-home .premium-booking-footer{margin-top:10px!important}
-@media(max-width:600px){
- html.booking-popup-view .client-home .premium-booking-steps{gap:4px!important}
- html.booking-popup-view .client-home .premium-booking-steps>span{gap:4px!important;padding:3px 4px!important;font-size:11px!important}
- html.booking-popup-view .client-home .premium-booking-steps>span>b{width:19px!important;height:19px!important}
- html.booking-popup-view .client-home .premium-booking-steps>span>span{font-size:10px!important}
- html.booking-popup-view .client-home #consultation-demo{font-size:11px!important}
-}
-
-/* Keep the first booking screen focused on choosing a date and time. */
-html.booking-popup-view .client-home #consultation-form.booking-step-2 .premium-booking-steps,
-html.booking-popup-view .client-home #consultation-form.booking-step-2 #consultation-demo{display:none!important}
-html.booking-popup-view .client-home #consultation-form.booking-step-2 .premium-booking{margin-top:0!important}
+/* Smooth progress feedback for the three booking steps. */
+.client-home .premium-booking-steps>span{transition:background-color .28s ease,color .28s ease,border-color .28s ease,box-shadow .28s ease,transform .28s ease}
+.client-home .premium-booking-steps>span.active{transform:translateY(-2px)}
+.client-home .premium-booking-steps>span.completing>b{position:relative;color:transparent!important}
+.client-home .premium-booking-steps>span.completing>b::after{content:"";position:absolute;inset:4px;border:2px solid #f2d69c;border-right-color:transparent;border-radius:50%;animation:booking-step-spin .68s linear infinite}
+.client-home .premium-booking-steps>span.completed>b{animation:booking-check-in .24s ease-out both}
+@keyframes booking-step-spin{to{transform:rotate(360deg)}}
+@keyframes booking-check-in{from{opacity:.3;transform:scale(.68)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.client-home .premium-booking-steps>span{transition:none}.client-home .premium-booking-steps>span.completing>b::after{animation:none;border-right-color:#f2d69c}}
