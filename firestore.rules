@@ -1,34 +1,74 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function hasRole(role) {
-      let profile = /databases/$(database)/documents/users/$(request.auth.uid);
-      return exists(profile) && get(profile).data.role == role;
+    function signedIn() {
+      return request.auth != null;
     }
 
-    function isActiveAdmin() {
-      let profile = /databases/$(database)/documents/users/$(request.auth.uid);
-      return hasRole('admin') && get(profile).data.get('Active', false) == true;
+    function profilePath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function hasRole(role) {
+      return signedIn()
+        && (request.auth.token.get('role', '') == role
+          || (exists(profilePath(request.auth.uid))
+            && get(profilePath(request.auth.uid)).data.get('role', '') == role));
     }
 
     function isSolicitor() {
-      return request.auth != null
-        && (request.auth.token.get('role', '') == 'solicitor' || hasRole('solicitor'));
+      return hasRole('solicitor');
+    }
+
+    function isActiveAdmin() {
+      return signedIn()
+        && exists(profilePath(request.auth.uid))
+        && get(profilePath(request.auth.uid)).data.get('role', '') == 'admin'
+        && get(profilePath(request.auth.uid)).data.get('Active', false) == true;
+    }
+
+    function isEmployee() {
+      return signedIn()
+        && exists(profilePath(request.auth.uid))
+        && get(profilePath(request.auth.uid)).data.get('role', '') == 'employee';
+    }
+
+    function isFirmStaff() {
+      return isSolicitor() || isActiveAdmin() || isEmployee();
+    }
+
+    function belongsToFirm(firmUid) {
+      return signedIn()
+        && ((isSolicitor() && request.auth.uid == firmUid)
+          || (exists(profilePath(request.auth.uid))
+            && get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid
+            && (get(profilePath(request.auth.uid)).data.get('role', '') == 'employee'
+              || (get(profilePath(request.auth.uid)).data.get('role', '') == 'admin'
+                && get(profilePath(request.auth.uid)).data.get('Active', false) == true))));
+    }
+
+    function managesFirm(firmUid) {
+      return (isSolicitor() && request.auth.uid == firmUid)
+        || (isActiveAdmin()
+          && get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid);
     }
 
     match /users/{uid} {
-      allow get: if request.auth != null && request.auth.uid == uid;
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list: if isSolicitor();
       allow create: if isSolicitor()
         && request.auth.uid != uid
         && request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
+        && request.resource.data.keys().hasAll(['role', 'lawyerUid'])
         && request.resource.data.role == 'employee'
         && request.resource.data.lawyerUid == request.auth.uid;
+      allow update, delete: if false;
     }
 
     function ownsChecklist(uid) {
-      return request.auth != null
+      return signedIn()
         && request.auth.uid == uid
-        && (isSolicitor() || isActiveAdmin() || hasRole('employee'));
+        && isFirmStaff();
     }
 
     function validChecklist() {
@@ -44,41 +84,58 @@ service cloud.firestore {
         && request.resource.data.updatedAt == request.time;
     }
 
-    match /staffWorkspaces/{uid}/items/{itemId} {
-      allow get, list, delete: if ownsChecklist(uid);
-      allow create, update: if ownsChecklist(uid) && validWorkItem();
-    }
-
     function validWorkItem() {
       let d = request.resource.data;
-      return d.keys().hasOnly(['kind', 'title', 'notes', 'matter', 'date', 'priority', 'done', 'recipient', 'updatedAt', 'calendar', 'time', 'followUpStatus'])
-        && d.keys().hasAll(['kind', 'title', 'notes', 'matter', 'date', 'priority', 'done', 'recipient', 'updatedAt'])
+      return d.keys().hasOnly([
+          'kind', 'title', 'notes', 'matter', 'date', 'priority', 'done',
+          'recipient', 'updatedAt', 'calendar', 'time', 'followUpStatus'
+        ])
+        && d.keys().hasAll([
+          'kind', 'title', 'notes', 'matter', 'date', 'priority',
+          'done', 'recipient', 'updatedAt'
+        ])
         && d.kind in ['Task', 'Appointment', 'Email draft']
         && d.title is string && d.title.size() > 0 && d.title.size() <= 160
         && d.notes is string && d.notes.size() <= 8000
         && d.matter is string && d.matter.size() <= 80
-        && d.date is string && (d.date == '' || d.date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}'))
+        && d.date is string
+        && (d.date == '' || d.date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}'))
         && d.priority in ['Urgent', 'High', 'Normal', 'Low']
         && d.done is bool
         && d.recipient is string && d.recipient.size() <= 254
         && d.get('calendar', 'admin') in ['admin', 'client']
-        && d.get('time', '') is string && d.get('time', '').matches('(([01][0-9]|2[0-3]):[0-5][0-9])?')
+        && d.get('time', '') is string
+        && d.get('time', '').matches('(([01][0-9]|2[0-3]):[0-5][0-9])?')
         && d.get('followUpStatus', '') in ['', 'client', 'solicitor', 'review']
         && (d.get('followUpStatus', '') == '' || d.kind == 'Task')
         && d.updatedAt == request.time;
     }
 
+    match /staffWorkspaces/{uid}/items/{itemId} {
+      allow get, list: if ownsChecklist(uid);
+      allow create: if ownsChecklist(uid) && validWorkItem();
+      allow update: if ownsChecklist(uid) && validWorkItem();
+      allow delete: if ownsChecklist(uid);
+    }
+
     function inboxStaff() {
-      return request.auth != null && (isSolicitor() || isActiveAdmin());
+      return signedIn() && (isSolicitor() || isActiveAdmin());
     }
 
     function validContact(c) {
       return c is map
-        && c.keys().hasAll(['firstName', 'lastName', 'email', 'phone', 'postcode', 'topic', 'newClient', 'preferredTime'])
-        && c.keys().hasOnly(['firstName', 'lastName', 'email', 'phone', 'postcode', 'topic', 'newClient', 'preferredTime'])
+        && c.keys().hasAll([
+          'firstName', 'lastName', 'email', 'phone', 'postcode',
+          'topic', 'newClient', 'preferredTime'
+        ])
+        && c.keys().hasOnly([
+          'firstName', 'lastName', 'email', 'phone', 'postcode',
+          'topic', 'newClient', 'preferredTime'
+        ])
         && c.firstName is string && c.firstName.size() > 0 && c.firstName.size() <= 70
         && c.lastName is string && c.lastName.size() > 0 && c.lastName.size() <= 70
-        && c.email is string && c.email.size() <= 254 && c.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && c.email is string && c.email.size() <= 254
+        && c.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
         && c.phone is string && c.phone.size() <= 25
         && c.postcode is string && c.postcode.matches('([0-9]{4})?')
         && c.topic in ['separation', 'parenting', 'property', 'consent']
@@ -87,21 +144,31 @@ service cloud.firestore {
     }
 
     match /clientInbox/{messageId} {
-      allow create: if request.auth != null
+      allow create: if signedIn()
         && request.auth.token.firebase.sign_in_provider == 'anonymous'
-        && request.resource.data.keys().hasAll(['kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'])
-        && request.resource.data.keys().hasOnly(['kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'])
+        && request.resource.data.keys().hasAll([
+          'kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'kind', 'ownerUid', 'message', 'contact', 'createdAt', 'reply'
+        ])
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.createdAt == request.time
         && request.resource.data.reply == ''
-        && request.resource.data.message is string && request.resource.data.message.size() > 0
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
         && ((request.resource.data.kind == 'consultation'
-          && request.resource.data.message.size() <= 1500 && validContact(request.resource.data.contact))
+          && request.resource.data.message.size() <= 1500
+          && validContact(request.resource.data.contact))
           || (request.resource.data.kind == 'support'
-          && request.resource.data.message.size() <= 600 && request.resource.data.contact == {}));
-      allow get: if inboxStaff() || (request.auth != null && resource.data.kind == 'support'
-        && resource.data.ownerUid == request.auth.uid);
+          && request.resource.data.message.size() <= 600
+          && request.resource.data.contact == {}));
+
+      allow get: if inboxStaff()
+        || (signedIn() && resource.data.kind == 'support'
+          && resource.data.ownerUid == request.auth.uid);
       allow list: if inboxStaff() && request.query.limit <= 100;
+
       allow update: if inboxStaff() && (
         (resource.data.kind == 'support'
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply'])
@@ -120,11 +187,71 @@ service cloud.firestore {
           && request.resource.data.approvalUpdatedAt == request.time
           && request.resource.data.approvalUpdatedBy == request.auth.uid)
       );
+      allow delete: if false;
+    }
+
+    function validFirmRecord(data, firmUid, creating) {
+      return data.keys().hasOnly([
+          'firmUid', 'recordType', 'payload', 'createdBy',
+          'createdAt', 'updatedBy', 'updatedAt'
+        ])
+        && data.keys().hasAll([
+          'firmUid', 'recordType', 'payload', 'createdBy',
+          'createdAt', 'updatedBy', 'updatedAt'
+        ])
+        && data.firmUid == firmUid
+        && data.recordType in [
+          'matter', 'client', 'task', 'appointment', 'document',
+          'invoice', 'trustTransaction', 'timeEntry', 'expense',
+          'contact', 'employee', 'correspondence', 'setting'
+        ]
+        && data.payload is map
+        && data.payload.size() <= 40
+        && data.createdBy is string
+        && data.updatedBy == request.auth.uid
+        && data.updatedAt == request.time
+        && (creating
+          ? data.createdBy == request.auth.uid && data.createdAt == request.time
+          : data.createdBy == resource.data.createdBy
+            && data.createdAt == resource.data.createdAt
+            && data.firmUid == resource.data.firmUid);
+    }
+
+    match /firmRecords/{recordId} {
+      allow get, list: if isFirmStaff()
+        && belongsToFirm(resource.data.firmUid)
+        && request.query.limit <= 250;
+      allow create: if isFirmStaff()
+        && belongsToFirm(request.resource.data.firmUid)
+        && validFirmRecord(request.resource.data, request.resource.data.firmUid, true);
+      allow update: if isFirmStaff()
+        && belongsToFirm(resource.data.firmUid)
+        && validFirmRecord(request.resource.data, resource.data.firmUid, false);
+      allow delete: if managesFirm(resource.data.firmUid);
+    }
+
+    match /firmSettings/{firmUid} {
+      allow get: if isFirmStaff() && belongsToFirm(firmUid);
+      allow list: if false;
+      allow create, update: if managesFirm(firmUid)
+        && request.resource.data.keys().hasOnly([
+          'firmUid', 'payload', 'updatedBy', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'firmUid', 'payload', 'updatedBy', 'updatedAt'
+        ])
+        && request.resource.data.firmUid == firmUid
+        && request.resource.data.payload is map
+        && request.resource.data.payload.size() <= 40
+        && request.resource.data.updatedBy == request.auth.uid
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
     }
 
     match /solicitorChecklists/{uid} {
       allow get: if ownsChecklist(uid);
       allow create, update: if ownsChecklist(uid) && validChecklist();
+      allow list, delete: if false;
     }
   }
 }
