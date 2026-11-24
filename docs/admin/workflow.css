@@ -700,3 +700,46 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
 .correspondence-message-actions button[data-generate-email-task]{border-color:#bd9147!important;background:#f5ead2!important;color:#624619!important;font-weight:700}
 
 .correspondence-sort .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+
+/* Calendar event categories: type selection drives the icon and colour. */
+.calendar-event[data-appointment-type="client-meeting"]{--cal-ink:#28543a;--cal-bg:#e5f2dd;--cal-line:#b9d6aa}
+.calendar-event[data-appointment-type="court-hearing"]{--cal-ink:#2c5179;--cal-bg:#e4effb;--cal-line:#b5cce7}
+.calendar-event[data-appointment-type="filing-deadline"]{--cal-ink:#8b4938;--cal-bg:#ffebe4;--cal-line:#f2c3b1}
+.calendar-event[data-appointment-type="internal-meeting"]{--cal-ink:#523b78;--cal-bg:#f0e7fb;--cal-line:#d3c0ea}
+.calendar-event[data-appointment-type="other"]{--cal-ink:#78551c;--cal-bg:#fbefdc;--cal-line:#e8c693}
+.calendar-event[data-appointment-type]{display:flex;align-items:center;gap:4px;border-color:var(--cal-line);background:var(--cal-bg);color:var(--cal-ink)}
+.calendar-event-icon{flex:0 0 13px;width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.calendar-event[data-appointment-type] span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calendar-upcoming-row[data-appointment-type],.calendar-later-row[data-appointment-type]{border-left:3px solid var(--cal-line);padding-left:8px}
+.calendar-legend [data-appointment-type]{display:inline-flex;align-items:center;gap:5px}
+.calendar-legend [data-appointment-type] svg{width:14px;height:14px;fill:none;stroke:#9b7029;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.calendar-legend [data-appointment-type="client-meeting"]{color:#28543a}
+.calendar-legend [data-appointment-type="court-hearing"]{color:#2c5179}
+.calendar-legend [data-appointment-type="filing-deadline"]{color:#8b4938}
+.calendar-legend [data-appointment-type="internal-meeting"]{color:#523b78}
+.calendar-legend [data-appointment-type="other"]{color:#78551c}
+/* Refined day detail dialog matching the firm calendar. */
+dialog.calendar-day-dialog{width:min(540px,calc(100vw - 32px));max-width:none;max-height:min(82vh,720px);padding:0;overflow:hidden;border:1px solid #e0ceb0;border-radius:17px;background:#fffdf9;color:#17283b;box-shadow:0 28px 90px rgba(10,22,39,.32)}
+dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filter:blur(4px)}
+.calendar-day-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 25px 18px;border-bottom:1px solid #e7ddce;background:linear-gradient(115deg,#fffaf0,#fffdf9)}
+.calendar-day-dialog-head>div>p{margin:0 0 6px;color:#a17732;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.calendar-day-dialog-head h2{margin:0;color:#102239;font:700 clamp(21px,4vw,27px)/1.15 Georgia,serif}
+.calendar-day-dialog-head span{display:block;margin-top:7px;color:#596778;font-size:12px}
+.calendar-day-dialog-head button{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border:1px solid #e0ceb0;border-radius:50%;background:#fff;color:#24364a;font-size:21px;cursor:pointer}
+.calendar-day-items{display:grid;gap:10px;max-height:calc(82vh - 145px);overflow:auto;padding:18px 24px}
+.calendar-day-empty{display:grid;justify-items:center;gap:9px;margin:0;padding:24px 14px;border:1px dashed #decba9;border-radius:12px;background:#fcf8ef;color:#627083;text-align:center;font-size:13px}
+.calendar-day-empty:before{content:"";width:34px;height:34px;border:1px solid #ead9b7;border-radius:11px;background:#f7edd9}
+.calendar-day-item{padding:14px 15px;border:1px solid #e3d8c7;border-left:4px solid #bca46e;border-radius:11px;background:#fffdfa}
+.calendar-day-item[data-appointment-type="client-meeting"]{border-left-color:#74a76d;background:#f3f8ef}
+.calendar-day-item[data-appointment-type="court-hearing"]{border-left-color:#5d91c5;background:#f1f6fc}
+.calendar-day-item[data-appointment-type="filing-deadline"]{border-left-color:#dc8e72;background:#fff5f0}
+.calendar-day-item[data-appointment-type="internal-meeting"]{border-left-color:#9b79c6;background:#f8f4fc}
+.calendar-day-item[data-appointment-type="other"]{border-left-color:#c59b4f;background:#fdf8ed}
+.calendar-day-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.calendar-day-item-top h3{margin:0;color:#17283b;font-size:14px}
+.calendar-day-item-status{flex:0 0 auto;padding:4px 8px;border:1px solid #dfd2bd;border-radius:999px;background:#f8f0df;color:#644b24;font-size:10px;font-weight:700}
+.calendar-day-item-meta,.calendar-day-item-contact,.calendar-day-item-notes{margin:8px 0 0;color:#536477;font-size:11px;line-height:1.5}
+.calendar-day-dialog footer{display:flex;justify-content:flex-end;gap:9px;padding:14px 24px 18px;border-top:1px solid #eee5d8;background:#fffdfa}
+.calendar-day-dialog footer button{min-height:40px;padding:9px 14px;border:1px solid #d9c8aa;border-radius:9px;background:#fff;color:#23364a;font-size:12px;font-weight:700;cursor:pointer}
+.calendar-day-dialog footer .calendar-day-add{border-color:#a47a32;background:linear-gradient(135deg,#cba658,#a67b32);color:white}
+@media(max-width:560px){.calendar-day-dialog-head{padding:18px}.calendar-day-items{padding:14px 16px}.calendar-day-dialog footer{padding:12px 16px 16px}}
