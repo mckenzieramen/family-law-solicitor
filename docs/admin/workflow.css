@@ -743,3 +743,30 @@ dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filt
 .calendar-day-dialog footer button{min-height:40px;padding:9px 14px;border:1px solid #d9c8aa;border-radius:9px;background:#fff;color:#23364a;font-size:12px;font-weight:700;cursor:pointer}
 .calendar-day-dialog footer .calendar-day-add{border-color:#a47a32;background:linear-gradient(135deg,#cba658,#a67b32);color:white}
 @media(max-width:560px){.calendar-day-dialog-head{padding:18px}.calendar-day-items{padding:14px 16px}.calendar-day-dialog footer{padding:12px 16px 16px}}
+
+/* Premium schedule editor and live category icon preview. */
+#schedule-dialog{width:min(620px,calc(100vw - 28px));border-color:#d9c6a3;border-radius:17px}
+#schedule-dialog::backdrop{background:rgba(15,28,46,.64);backdrop-filter:blur(4px)}
+#schedule-dialog .work-form{padding:24px 28px 25px;background:linear-gradient(135deg,#fffdf8,#fffaf0)}
+#schedule-dialog .work-form h3{margin:0 0 19px;padding:0 0 15px;border-bottom:1px solid #e9dcc7;color:#102239;font:700 25px/1.15 Georgia,serif}
+#schedule-dialog .work-form h3:before{content:"FIRM CALENDAR";display:block;margin:0 0 6px;color:#9b7029;font:800 9px/1.2 system-ui,sans-serif;letter-spacing:.16em}
+#schedule-dialog .work-fields{gap:12px 14px}
+#schedule-dialog .work-fields label{display:grid;gap:6px;color:#334458;font-size:11px;font-weight:750}
+#schedule-dialog .work-fields label:first-child{grid-column:auto}
+#schedule-dialog .work-fields input,#schedule-dialog .work-fields select,#schedule-dialog .work-fields textarea{min-height:41px;border-color:#ded2bf;border-radius:8px;background:#fff;color:#182c42;font:500 12px/1.35 system-ui,sans-serif}
+#schedule-dialog .work-fields textarea{min-height:78px}
+.schedule-event-type{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:8px}
+.schedule-event-type>span{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--cal-line,#b9d6aa);border-radius:9px;background:var(--cal-bg,#e5f2dd);color:var(--cal-ink,#28543a)}
+.schedule-event-type svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.schedule-event-type[data-appointment-type="court-hearing"]{--cal-ink:#2c5179;--cal-bg:#e4effb;--cal-line:#b5cce7}
+.schedule-event-type[data-appointment-type="filing-deadline"]{--cal-ink:#8b4938;--cal-bg:#ffebe4;--cal-line:#f2c3b1}
+.schedule-event-type[data-appointment-type="internal-meeting"]{--cal-ink:#523b78;--cal-bg:#f0e7fb;--cal-line:#d3c0ea}
+.schedule-event-type[data-appointment-type="other"]{--cal-ink:#78551c;--cal-bg:#fbefdc;--cal-line:#e8c693}
+#schedule-dialog .work-form>[type=submit]{min-height:43px;padding:10px 17px;border:1px solid #a47a32;border-radius:9px;background:linear-gradient(135deg,#cba658,#a67b32);color:#fff;font-weight:750}
+#schedule-dialog .work-form>[data-cancel-editor]{min-height:43px;margin-left:7px;border:1px solid #d9c8aa;border-radius:9px;background:#fff;color:#26394d;font-weight:700}
+.calendar-upcoming-row[data-appointment-type="client-meeting"],.calendar-later-row[data-appointment-type="client-meeting"]{--cal-line:#b9d6aa}
+.calendar-upcoming-row[data-appointment-type="court-hearing"],.calendar-later-row[data-appointment-type="court-hearing"]{--cal-line:#b5cce7}
+.calendar-upcoming-row[data-appointment-type="filing-deadline"],.calendar-later-row[data-appointment-type="filing-deadline"]{--cal-line:#f2c3b1}
+.calendar-upcoming-row[data-appointment-type="internal-meeting"],.calendar-later-row[data-appointment-type="internal-meeting"]{--cal-line:#d3c0ea}
+.calendar-upcoming-row[data-appointment-type="other"],.calendar-later-row[data-appointment-type="other"]{--cal-line:#e8c693}
+@media(max-width:560px){#schedule-dialog .work-form{padding:19px}#schedule-dialog .work-fields{grid-template-columns:minmax(0,1fr)}}
