@@ -85,6 +85,7 @@
    if(transitioning)return;
    const current=[...steps.children].find(item=>Number(item.dataset.step)===step);
    if(!current){show(to);return;}
+   const scroller=form.closest('.consultation-frame-body');if(scroller)scroller.scrollTop=0;
    transitioning=true;updateNextState();
    current.classList.add('completing');current.setAttribute('aria-busy','true');
    const badge=current.querySelector('b');if(badge)badge.textContent='';
