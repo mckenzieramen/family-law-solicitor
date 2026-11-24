@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, limit, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
+import { addDoc, collection, deleteDoc, doc, limit, onSnapshot, orderBy, query, serverTimestamp, updateDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 const root = document.getElementById('staff-workspace');
 const templates = {
@@ -45,6 +45,40 @@ const followUpStates = {
   review:'Ready for review'
 };
 const priorities = ['Urgent', 'High', 'Normal', 'Low'];
+const matterWorkflowSteps = {
+  parenting: [
+    'Confirm client objectives and key dates with solicitor',
+    'Complete intake and conflict check',
+    'Request current parenting arrangements and relevant documents',
+    'Prepare a chronology and questions for solicitor review',
+    'Record mediation or court milestones',
+    'Prepare client update after solicitor review'
+  ],
+  property: [
+    'Confirm scope and key dates with solicitor',
+    'Complete intake and conflict check',
+    'Request asset and liability disclosure documents securely',
+    'Prepare an asset and liability schedule for solicitor review',
+    'Track valuation requests and outstanding disclosure',
+    'Record negotiation outcomes and the next agreed step'
+  ],
+  agreement: [
+    'Confirm agreement scope and advice requirements with solicitor',
+    'Complete intake and conflict check',
+    'Request relevant financial information securely',
+    'Track draft versions and client comments',
+    'Schedule solicitor review of the latest draft',
+    'File the executed agreement and confirm records are indexed'
+  ],
+  general: [
+    'Confirm matter scope and key dates with solicitor',
+    'Complete intake and conflict check',
+    'Request relevant client documents securely',
+    'Prepare a matter chronology for solicitor review',
+    'Record upcoming milestones and follow-up actions',
+    'Prepare a client update after solicitor review'
+  ]
+};
 let stop;
 let stopConsultations;
 let session = 0;
@@ -180,9 +214,22 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   <div class="calendar-split"><div><div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
-  </div><div class="calendar-agenda"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div></div>
+  </div><aside class="calendar-approval-panel" aria-labelledby="calendar-approval-title">
+   <div class="calendar-approval-header"><div><span>ATTORNEY REVIEW</span><h3 id="calendar-approval-title">Approval queue</h3></div><strong id="calendar-approval-count">0</strong></div>
+   <p class="calendar-approval-intro">Review consultation requests before confirming an appointment.</p>
+   <div id="calendar-approval-list" aria-live="polite"></div>
+  </aside></div>
+  <div class="calendar-agenda" hidden aria-hidden="true"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
  </section>
  <section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2><button type="button" class="work-button" id="new-follow-up">Add follow-up</button></div>
+  <section class="matter-workflow-box" aria-labelledby="matter-workflow-title">
+   <div><span class="matter-workflow-eyebrow">STANDARDISED MATTER WORKFLOW</span><h3 id="matter-workflow-title">Start a family law workflow</h3><p>Creates linked tasks in the matter file. Add deadlines after checking them with the solicitor.</p></div>
+   <form id="matter-workflow-form">
+    <label>Matter reference<input name="matter" maxlength="80" placeholder="e.g. FAM-2026-014" required></label>
+    <label>Workflow<select name="workflow"><option value="parenting">Parenting arrangements</option><option value="property">Property settlement</option><option value="agreement">Financial agreement</option><option value="general">General family law</option></select></label>
+    <button class="work-button" type="submit">Create linked tasks</button><p id="matter-workflow-status" role="status"></p>
+   </form>
+  </section>
   <section id="case-follow-ups" aria-label="Open follow-ups"></section>
   <div class="legal-actions">
    <label>Search matters<input id="work-matter-query" type="search" placeholder="Matter reference or item title"></label>
@@ -541,7 +588,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     if (sampleMode) {
       consultationRequests = [{
         id:'sample-consultation-1', requestId:'sample-consultation-1', kind:'Consultation request',
-        title:'Jordan Lee', date:today(), time:'10:00', calendar:'admin', priority:'High',
+        title:'Jordan Lee', date:today(), time:'10:00', calendar:'admin', priority:'High', approvalStatus:'pending',
         notes:'Sample request to discuss parenting arrangements.', contact:{
           firstName:'Jordan', lastName:'Lee', email:'jordan.lee@example.com', phone:'0400 123 456',
           topic:'parenting', newClient:'Yes'
@@ -578,8 +625,8 @@ export function mountWorkflow(db, uid, sampleMode = false) {
           const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
           return {
             id:'consultation-' + document.id, requestId:document.id, kind:'Consultation request',
-            title:name, notes:String(record.message || ''), contact, date:match[1], time:match[2] || '',
-            calendar:'admin', priority:'High', done:false
+            title:name, notes:String(record.message || ''), contact, date:match?.[1] || '', time:match?.[2] || '',
+            calendar:'admin', priority:'High', done:false, approvalStatus:record.approvalStatus || 'pending'
           };
         }).filter(Boolean);
         consultationRequestsLoaded = true;
