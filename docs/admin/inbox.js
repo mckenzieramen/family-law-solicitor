@@ -28,7 +28,7 @@ const formatPreferredTime = value => {
 const addTicketField = (grid, label, value) => {
   if (value === undefined || value === null || String(value).trim() === '') return;
   const field=document.createElement('div'); field.className='inbox-ticket-field';
-  const caption=document.createElement('span'); caption.textContent=label;
+  const caption=document.createElement('span'); caption.textContent=label; if(label==='Total Enquiries'||label==='Converted'||label==='Closed'){const sub=document.createElement('small');sub.textContent=label==='Total Enquiries'?(dateRange==='all'?'All time':'Last '+dateRange+' days'):label==='Converted'?'(to Client)':'(Not Proceeding)';caption.append(document.createElement('br'),sub);}
   const content=document.createElement('strong'); content.textContent=String(value);
   field.append(caption,content); grid.append(field);
 };
@@ -93,13 +93,29 @@ export function mountInbox(db, sampleMode = false) {
   let activeReaderTab = 'details';
   const drafts = new Map();
   for (const card of quickCards) card.onclick = () => { filter.value = card.dataset.inboxQuickFilter; render(); };
-  let stageFilter='all', page=0;
+  let stageFilter='all', page=0; let assignedFilter='', dateRange='30'; filter.value='consultation';
   const stages=['New','Contacted','Consultation Booked','Converted','Closed'];
-  const stageOf=r=>r.approvalStatus==='declined'?'Closed':r.approvalStatus==='approved'?'Consultation Booked':stages.includes(r.enquiryStatus)?r.enquiryStatus:'New';
+  const stageOf=r=>stages.includes(r.enquiryStatus)?r.enquiryStatus:r.approvalStatus==='declined'?'Closed':r.approvalStatus==='approved'?'Consultation Booked':'New';
   const pipeline=document.createElement('div');pipeline.className='enquiry-pipeline';
   const metrics=document.createElement('div');metrics.className='enquiry-metrics';
   const pager=document.createElement('div');pager.className='enquiry-pager';
-  list.before(pipeline);list.before(metrics);list.after(pager);
+  panel.querySelector('#inbox-heading').textContent='Consultation Enquiries';
+  const controls=panel.querySelector('.inbox-controls'), split=list.parentElement;
+  panel.querySelector('.client-workspace-tabs').hidden=true;
+  panel.querySelector('.inbox-summary-cards').hidden=true;
+  count.hidden=true; filter.closest('label').hidden=true; sort.closest('label').hidden=true;
+  search.closest('label').firstChild.textContent='';search.placeholder='Search enquiries (name, subject, email, phone)…';
+  const makeSelect=(label,options)=>{const el=document.createElement('select');el.setAttribute('aria-label',label);for(const [v,t] of options)el.add(new Option(t,v));controls.append(el);return el;};
+  const stageSelect=makeSelect('Status',[['all','Status: All'],...stages.map(t=>[t,t])]);
+  const assignSelect=makeSelect('Assigned to',[['','Assigned To: All'],['Unassigned','Unassigned']]);
+  const dateSelect=makeSelect('Date range',[['30','Date Range: Last 30 days'],['7','Last 7 days'],['all','All time']]);
+  const clear=document.createElement('button');clear.type='button';clear.textContent='Clear';controls.append(clear);
+  stageSelect.onchange=()=>{stageFilter=stageSelect.value;page=0;render();};
+  assignSelect.onchange=()=>{assignedFilter=assignSelect.value;page=0;render();};
+  dateSelect.onchange=()=>{dateRange=dateSelect.value;page=0;render();};
+  clear.onclick=()=>{search.value='';stageFilter='all';assignedFilter='';dateRange='30';dateSelect.value='30';page=0;render();};
+  split.before(metrics,pipeline);const left=document.createElement('div');left.className='enquiry-left';split.prepend(left);left.append(controls,list,pager);
+  
   const css=document.createElement('style');css.textContent=`
   #staff-inbox .inbox-summary-cards{display:none}
   #staff-inbox .inbox-split{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(280px,1fr);gap:14px;align-items:start}
@@ -154,6 +170,38 @@ export function mountInbox(db, sampleMode = false) {
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox .enquiry-pipeline{overflow-x:auto}#staff-inbox .enquiry-pipeline button{min-width:120px}#staff-inbox .inbox-controls{flex-wrap:wrap}}
   @media(max-width:520px){#staff-inbox .enquiry-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
   `;document.head.append(polish);
+  const exact=document.createElement('style');exact.textContent=`
+  #staff-inbox [hidden]{display:none!important}
+  #staff-inbox #inbox-heading{font:700 40px/1.15 Georgia,serif;margin:0 0 20px}
+  #staff-inbox .enquiry-metrics{margin-bottom:25px}
+  #staff-inbox .enquiry-pipeline{margin-bottom:20px;min-height:44px;background:#f8f4ef}
+  #staff-inbox .enquiry-pipeline button{clip-path:polygon(0 0,calc(100% - 17px) 0,100% 50%,calc(100% - 17px) 100%,0 100%,17px 50%);margin-left:-12px;padding-left:25px}
+  #staff-inbox .enquiry-pipeline button:first-child{margin-left:0;clip-path:polygon(0 0,calc(100% - 17px) 0,100% 50%,calc(100% - 17px) 100%,0 100%)}
+  #staff-inbox .inbox-split{grid-template-columns:minmax(0,2.18fr) minmax(300px,1fr);align-items:stretch}
+  #staff-inbox .enquiry-left{min-width:0;display:flex;flex-direction:column;gap:12px}
+  #staff-inbox .inbox-controls{display:flex;align-items:center;gap:8px;margin:0;flex-wrap:wrap}
+  #staff-inbox .inbox-controls label:first-child{flex:2;min-width:160px}
+  #staff-inbox .inbox-controls select{flex:1;min-width:90px;width:auto;font:14px Georgia,serif}
+  #staff-inbox .inbox-controls button{background:none;border:0;text-decoration:underline;cursor:pointer}
+  #staff-inbox #inbox-list{flex:1;min-height:440px}
+  #staff-inbox #inbox-reader{grid-column:2;grid-row:1;min-width:0;height:auto;min-height:620px}
+  #staff-inbox .enquiry-pager{justify-content:flex-end;gap:5px}
+  #staff-inbox .enquiry-pager span{margin-right:auto}
+  #staff-inbox .enquiry-pager [aria-current=page]{background:#987740;color:white}
+  #staff-inbox .eq-top,#staff-inbox .eq-profile{display:flex;align-items:center;gap:18px}
+  #staff-inbox .eq-top{justify-content:space-between}
+  #staff-inbox .eq-top h3,#staff-inbox .eq-profile h3{font:700 22px Georgia,serif;margin:0}
+  #staff-inbox .eq-avatar{width:60px;height:60px;border-radius:50%;background:#e8dac8;color:#80602d;display:grid;place-items:center;font:24px Georgia,serif;flex-shrink:0}
+  #staff-inbox .eq-profile{margin:18px 0;align-items:flex-start}
+  #staff-inbox .eq-profile a,#staff-inbox .eq-profile div div{display:block;color:#101827;font:15px/1.5 Georgia,serif;overflow-wrap:anywhere}
+  #staff-inbox .eq-section,#staff-inbox .eq-form{border-top:1px solid #dfd3c4;padding-top:12px;margin-top:12px;font:15px/1.35 Georgia,serif}
+  #staff-inbox .eq-form label{display:flex;flex-direction:column;gap:6px;font-weight:bold}
+  #staff-inbox .eq-form textarea,#staff-inbox .eq-form input{width:100%;box-sizing:border-box;border:1px solid #c8c2b9;border-radius:6px;background:#fcfaf7;padding:9px;font:14px Georgia,serif}
+  #staff-inbox .eq-form textarea{min-height:72px;resize:vertical}
+  #staff-inbox .eq-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  #staff-inbox .eq-save{background:#101d30;color:white;border:0;border-radius:7px;padding:12px 18px;cursor:pointer}
+  @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:1fr}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
+  `;document.head.append(exact);
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -190,7 +238,9 @@ export function mountInbox(db, sampleMode = false) {
       const target = document.getElementById(countTargets[key]);
       if (target) target.textContent = String(summaryCounts[key] ?? 0);
     }
+    const inRange=r=>dateRange==='all'||(r.createdAt?.toDate?.()?.getTime()||0)>=Date.now()-Number(dateRange)*86400000;
     const visible = entries.filter(record => {
+      if(record.kind!=='consultation'||!inRange(record)||(assignedFilter&&(record.assignedTo||'Unassigned')!==assignedFilter))return false;
       if(stageFilter!=='all'&&(record.kind!=='consultation'||stageOf(record)!==stageFilter))return false;
       const {kind, contact, message, reply} = record;
       if (type === 'unanswered' && (kind !== 'support' || reply)) return false;
@@ -198,7 +248,7 @@ export function mountInbox(db, sampleMode = false) {
       if (type === 'newToday' && (kind !== 'consultation' || !receivedToday(record))) return false;
       if (type === 'appointment' && (kind !== 'consultation' || !contact?.preferredTime)) return false;
       if (['consultation', 'support'].includes(type) && type !== kind) return false;
-      return !term || [contact?.firstName, contact?.lastName, contact?.email, contact?.topic, message]
+      return !term || [contact?.firstName, contact?.lastName, contact?.email, contact?.phone, contact?.topic, message]
         .filter(Boolean).join(' ').toLowerCase().includes(term);
     });
     if (sort.value === 'oldest') visible.reverse();
@@ -206,15 +256,16 @@ export function mountInbox(db, sampleMode = false) {
     if (sort.value === 'email') visible.sort((a, b) => sortText(a.contact?.email, b.contact?.email));
     count.textContent = 'Showing ' + visible.length + ' of ' + entries.length + ' loaded messages' +
       (entries.length === 100 ? ' · latest 100' : '');
-    const consultations=entries.filter(r=>r.kind==='consultation');
-    for(const [container,labels] of [[metrics,['All enquiries',...stages]],[pipeline,['All',...stages]]]){
+    const consultations=entries.filter(r=>r.kind==='consultation'&&inRange(r));stageSelect.value=stageFilter;assignSelect.replaceChildren(new Option('Assigned To: All',''),new Option('Unassigned','Unassigned'));for(const name of new Set(entries.map(r=>r.assignedTo).filter(Boolean)))assignSelect.add(new Option(name,name));assignSelect.value=assignedFilter;
+    for(const [container,labels] of [[metrics,['Total Enquiries',...stages]],[pipeline,stages]]){
       container.replaceChildren();
-      for(const label of labels){const key=label.startsWith('All')?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
+      for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
     }
     page=Math.min(page,Math.max(0,Math.ceil(visible.length/8)-1));
     const pageRows=visible.slice(page*8,page*8+8);
     pager.replaceChildren();const info=document.createElement('span');info.textContent='Showing '+(visible.length?page*8+1:0)+'–'+Math.min(visible.length,page*8+8)+' of '+visible.length;pager.append(info);
     for(const [label,delta] of [['Previous',-1],['Next',1]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.disabled=delta<0?page===0:(page+1)*8>=visible.length;b.onclick=()=>{page+=delta;render();};pager.append(b);}
+    for(let n=0;n<Math.ceil(visible.length/8);n++){const b=document.createElement('button');b.textContent=n+1;b.type='button';b.setAttribute('aria-current',n===page?'page':'false');b.onclick=()=>{page=n;render();};pager.insertBefore(b,pager.lastChild);}
     const selected = pageRows.find(record => record.id === selectedId) ?? pageRows[0];
     selectedId = selected?.id;
     list.replaceChildren();
@@ -257,6 +308,20 @@ export function mountInbox(db, sampleMode = false) {
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
       rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
       if(record.id!==selectedId) continue;
+      if(consultation){
+        const el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;if(cls)n.className=cls;return n;};
+        const top=el('div','','eq-top');const badge=el('span',stageOf(record),'enquiry-status');badge.dataset.stage=stageOf(record);top.append(el('h3','Enquiry Details'),badge);details.append(top);
+        const profile=el('div','','eq-profile');const avatar=el('div',(senderName(record)||'Unknown').split(' ').map(x=>x[0]).slice(0,2).join(''),'eq-avatar');const identity=el('div');identity.append(el('h3',senderName(record)||'Consultation enquiry'));
+        for(const [value,scheme] of [[contact.email,'mailto:'],[contact.phone,'tel:'],[contact.postcode,'']])if(value){const a=el(scheme?'a':'div',value);if(scheme)a.href=scheme+value;identity.append(a);}
+        profile.append(avatar,identity);details.append(profile);
+        const fields=el('div','','inbox-ticket-fields');addTicketField(fields,'Subject',contact.topic||'Not specified');addTicketField(fields,'Received',date);addTicketField(fields,'Preferred Contact',contact.preferredContact||(contact.email?'Email':'Phone'));details.append(fields);
+        const msg=el('section','','eq-section');msg.append(el('strong','Inquiry Summary'),el('p',record.message||'No message provided.'));details.append(msg);
+        const form=el('form','','eq-form');const note=el('textarea');note.placeholder='Add a note (visible to your firm only)…';note.value=record.internalNote||'';const nl=el('label','Internal Note');nl.append(note);form.append(nl);
+        const grid=el('div','','eq-form-grid');const assign=el('input');assign.value=record.assignedTo||'';assign.placeholder='Unassigned';const al=el('label','Assign to');al.append(assign);const follow=el('input');follow.type='date';follow.value=record.followUpDate||'';const fl=el('label','Follow-up Date');fl.append(follow);grid.append(al,fl);form.append(grid);
+        const save=el('button','Save details','eq-save');save.type='submit';const feedback=el('p');feedback.setAttribute('role','status');form.append(save,feedback);
+        form.onsubmit=async e=>{e.preventDefault();save.disabled=true;const patch={internalNote:note.value,assignedTo:assign.value,followUpDate:follow.value};try{if(sampleMode){Object.assign(record,patch);render();}else await updateDoc(doc(db,'clientInbox',record.id),patch);status.textContent='Details saved.';}catch{feedback.textContent='Unable to save. Check staff permissions.';}finally{save.disabled=false;}};
+        details.append(form);reader.append(details);continue;
+      }
       const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
       const titleRow=document.createElement('div'); titleRow.className='inbox-ticket-title-row';
       const heading=document.createElement('h3'); heading.textContent=title.textContent; heading.tabIndex=-1;
