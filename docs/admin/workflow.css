@@ -982,3 +982,9 @@ dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filt
 .contact-table-email small{display:block;margin-top:4px;color:#657286;font-size:10px}
 .contact-directory-table .contact-empty-state{display:table-cell;padding:28px;text-align:center;color:#687588;font-size:12px}
 @media(max-width:760px){.contacts-layout{grid-template-columns:minmax(0,1fr)}.contact-table-wrap{max-height:54vh}.client-workspace-tabs{overflow-x:auto}.client-workspace-tabs button{flex:0 0 auto}}
+
+/* Calendar rail: appointments only; consultation approvals remain in Approvals. */
+.admin-dashboard[data-view="work-calendar"] .calendar-approval-panel,.calendar-right-rail>.calendar-approval-panel{display:none!important}
+.admin-dashboard[data-view="work-calendar"] .calendar-right-rail,.calendar-right-rail{display:flex!important;flex-direction:column;align-self:stretch;min-height:0;height:auto!important;max-height:none!important}
+.admin-dashboard[data-view="work-calendar"] .calendar-upcoming-card,.calendar-right-rail>.calendar-upcoming-card{flex:1 1 auto;min-height:100%;height:auto!important;max-height:none!important;box-sizing:border-box}
+.calendar-right-rail #calendar-upcoming-list,.calendar-right-rail #calendar-later-list{flex:1 1 0;min-height:100px;overflow-y:auto}
