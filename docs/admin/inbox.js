@@ -149,13 +149,16 @@ export function mountInbox(db, sampleMode = false) {
       const contact=record.contact??{};
       const title=document.createElement('strong'), meta=document.createElement('span'), preview=document.createElement('span');
       const consultation=record.kind==='consultation';
-      const stateText=consultation?'New enquiry':record.reply?'Replied':'Needs reply';
+      const approvalStatus=record.approvalStatus||'pending';
+      const stateText=consultation
+        ? approvalStatus==='approved'?'Approved & scheduled':approvalStatus==='declined'?'Declined':'Needs approval'
+        : record.reply?'Replied':'Needs reply';
       title.textContent=consultation?senderName(record)||'Consultation inquiry':'Website support request';
       meta.className='inbox-message-meta'; meta.textContent=[ticketCode(record),date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
       preview.className='inbox-message-preview'; preview.textContent=String(record.message??'').replace(/\s+/g,' ').trim()||'No message details provided.';
       const rowTop=document.createElement('span'); rowTop.className='inbox-row-topline';
       const rowTitle=document.createElement('strong'); rowTitle.className='inbox-row-title'; rowTitle.textContent=title.textContent;
-      const rowState=document.createElement('span'); rowState.className='inbox-row-state'; rowState.textContent=stateText;
+      const rowState=document.createElement('span'); rowState.className='inbox-row-state'+(consultation?(approvalStatus==='approved'?' is-done':approvalStatus==='declined'?' is-declined':' is-waiting'):''); rowState.textContent=stateText;
       const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
       const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
@@ -164,8 +167,10 @@ export function mountInbox(db, sampleMode = false) {
       const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
       const titleRow=document.createElement('div'); titleRow.className='inbox-ticket-title-row';
       const heading=document.createElement('h3'); heading.textContent=title.textContent; heading.tabIndex=-1;
-      const state=document.createElement('span'); state.className='inbox-ticket-state'+(consultation?' is-new':record.reply?' is-done':' is-waiting');
-      state.textContent=consultation?'Awaiting review':record.reply?'Replied':'Awaiting reply';
+      const state=document.createElement('span'); state.className='inbox-ticket-state'+(consultation?(approvalStatus==='approved'?' is-done':approvalStatus==='declined'?' is-declined':' is-waiting'):record.reply?' is-done':' is-waiting');
+      state.textContent=consultation
+        ? approvalStatus==='approved'?'Approved & scheduled':approvalStatus==='declined'?'Declined':'Needs attorney approval'
+        : record.reply?'Replied':'Awaiting reply';
       titleRow.append(heading,state);
       const readerMeta=document.createElement('span'); readerMeta.className='inbox-message-meta';
       readerMeta.textContent=[ticketCode(record),contact.email,date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
