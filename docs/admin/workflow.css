@@ -569,3 +569,26 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
   height:calc(100dvh - 390px)!important;
  }
 }
+
+.attorney-mail-import{margin:0 0 20px;padding:18px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(130deg,#fffaf3,#f7f4eb)}
+.attorney-mail-import>header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.attorney-mail-import h3{margin:3px 0;font:normal 23px var(--serif)}
+.attorney-mail-import header p{margin:0;color:var(--muted);font-size:13px}
+.attorney-mail-kicker,.attorney-email-card>div>span{font-size:10px;font-weight:800;letter-spacing:.1em;color:#82612c}
+.attorney-email-list{display:grid;gap:9px;margin-top:14px}
+.attorney-email-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.attorney-email-card h4{margin:3px 0;font:normal 18px var(--serif);overflow-wrap:anywhere}
+.attorney-email-card p{margin:0;color:var(--muted);font-size:12px}
+.attorney-email-card details{grid-column:1/-1;padding-top:9px;border-top:1px solid var(--line)}
+.attorney-email-card summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.attorney-email-card pre{max-height:260px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.55 system-ui,sans-serif;color:var(--ink)}
+.attorney-mail-import form small{display:block;color:var(--muted);font-size:12px}
+.email-task-dialog{width:min(650px,calc(100% - 24px))}
+.email-task-dialog .work-form{margin:0}
+.email-task-source{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+@media(max-width:560px){.attorney-mail-import>header{align-items:flex-start;flex-direction:column}.attorney-email-card{grid-template-columns:minmax(0,1fr)}.attorney-email-card button{justify-self:start}}
+.task-priority{display:inline-flex;align-items:center;justify-content:center;min-width:64px;padding:4px 9px;border:1px solid transparent;border-radius:999px;font-size:12px;font-weight:750;line-height:1.2}
+.task-priority[data-priority="Urgent"]{background:#fde8e7;border-color:#e8a5a1;color:#9e2825}
+.task-priority[data-priority="High"]{background:#e5f3e9;border-color:#9ac4a5;color:#27623a}
+.task-priority[data-priority="Normal"]{background:#eef0f2;border-color:#d3d8dd;color:#53616d}
+.task-priority[data-priority="Low"]{background:#e8eff8;border-color:#b6c9df;color:#3e5e7f}

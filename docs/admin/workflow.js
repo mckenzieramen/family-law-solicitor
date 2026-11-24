@@ -116,6 +116,7 @@ export function clearWorkflow() {
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[char]);
 
+const isAttorneyEmail = item => item.kind === 'Email draft' && item.title.startsWith('[ATTY EMAIL] ');
 const isNote = item => item.kind === 'Task' && item.title === 'Calendar note' &&
   Boolean(item.calendar) && !item.matter;
 const calendarFor = item => item.calendar || (item.kind === 'Appointment' && item.matter ? 'client' : 'admin');
@@ -134,7 +135,7 @@ function editorMarkup(id, title, fields, notesLabel, action, hidden = false) {
   </form>`;
 }
 
-export function mountWorkflow(db, uid, sampleMode = false) {
+export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   if (!root) return;
   clearWorkflow();
   const current = session;
@@ -178,6 +179,14 @@ export function mountWorkflow(db, uid, sampleMode = false) {
    <label>Follow-up status<select name="followUpStatus"><option value="">Regular task</option>${Object.entries(followUpStates).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
    <label>Priority<select name="priority">${priorities.map(priority => `<option${priority === 'Normal' ? ' selected' : ''}>${priority}</option>`).join('')}</select></label>`,
    'Task notes', 'Save task', true)}
+ </dialog>
+ <dialog id="email-task-dialog" class="schedule-dialog email-task-dialog" aria-labelledby="email-task-title">
+  <form id="email-task-form" class="work-form"><h3 id="email-task-title">Review suggested task</h3><p id="email-task-summary" role="status"></p>
+   <label>Task title<input name="title" maxlength="160" required></label>
+   <div class="work-fields"><label>Matter reference<input name="matter" maxlength="80"></label><label>Deadline (Sydney)<input name="date" type="date"></label><label>Priority<select name="priority"><option>Urgent</option><option>High</option><option selected>Normal</option><option>Low</option></select></label></div>
+   <label>Task notes<textarea name="notes" rows="4" maxlength="8000"></textarea></label><p class="email-task-source"></p>
+   <button class="work-button" type="submit">Create task</button><button type="button" data-close-email-task>Cancel</button><p role="status"></p>
+  </form>
  </dialog>
  <dialog id="work-delete-dialog" class="schedule-dialog work-delete-dialog" aria-labelledby="work-delete-title" aria-describedby="work-delete-description">
   <form id="work-delete-form">
@@ -238,6 +247,16 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   </div>
   <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></section>
  <section class="workflow-panel" id="work-email">
+  <section class="attorney-mail-import" aria-labelledby="attorney-mail-title">
+   <header><div><span class="attorney-mail-kicker">ATTORNEY CORRESPONDENCE</span><h3 id="attorney-mail-title">Attorney email inbox</h3><p>Save an email from your solicitor, read the full message and prepare a deadline task.</p></div><button type="button" class="work-button" id="attorney-email-toggle" aria-expanded="false">Add received email</button></header>
+   <form id="attorney-email-form" class="work-form" hidden>
+    <div class="work-fields"><label>From<input name="sender" type="email" maxlength="254" placeholder="attorney@example.com" required></label><label>Subject<input name="subject" maxlength="160" required></label><label>Received date<input name="received" type="date"></label><label>Matter reference<input name="matter" maxlength="80"></label></div>
+    <label>Full email<textarea name="body" rows="6" maxlength="8000" required placeholder="Paste the email text here"></textarea></label>
+    <button type="submit" class="work-button">Save email</button><button type="button" id="attorney-email-cancel">Cancel</button><p id="attorney-email-status" role="status"></p>
+    <small>Email auto-sync needs a connected mailbox. AI task suggestions send the selected email to the firm’s configured OpenAI service.</small>
+   </form>
+   <div id="attorney-email-list" class="attorney-email-list"><p class="work-empty">Attorney emails appear here after you add them.</p></div>
+  </section>
   <header class="draft-toolbar">
    <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
    <button class="work-button" type="button" data-new-draft="blank">New draft</button>
@@ -342,14 +361,14 @@ export function mountWorkflow(db, uid, sampleMode = false) {
         <a class="consultation-request-link" href="#staff-inbox">Open Client Messages</a>
       </details>`;
     }
-    const badge = isNote(item) ? 'Day note' : item.kind === 'Email draft' ? 'Draft' :
+    const badge = isAttorneyEmail(item) ? 'Received email' : isNote(item) ? 'Day note' : item.kind === 'Email draft' ? 'Draft' :
       item.done ? 'Completed' : item.date && item.date < today() ?
       (item.kind === 'Appointment' ? 'Past appointment' : 'Overdue') : item.kind === 'Appointment' ? 'Scheduled' : item.priority;
     const color = item.kind === 'Appointment' ? ` data-appointment-color="${appointmentColor(item)}"` : '';
     return `<details class="work-row"${color}><summary><strong>${escape(item.title)}</strong> <span class="status">${escape(badge)}</span><small>${escape([item.kind, item.matter, item.date, item.time && item.time + ' Sydney'].filter(Boolean).join(' · '))}</small></summary>
-    ${item.recipient ? '<p>To: '+escape(item.recipient)+'</p>' : ''}
+    ${item.recipient ? '<p>'+(isAttorneyEmail(item)?'From: ':'To: ')+escape(item.recipient)+'</p>' : ''}
     ${item.notes ? '<p class="work-notes">'+escape(item.notes)+'</p>' : ''}
-    <div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button>${(item.kind === 'Email draft' || isNote(item)) ? '' : `<button type="button" data-toggle="${escape(item.id)}">${item.done?'Reopen':'Mark complete'}</button>`}<button type="button" data-remove="${escape(item.id)}">Delete</button></div></details>`;
+    <div class="work-actions">${isAttorneyEmail(item)?'<button type="button" class="work-button" data-generate-email-task="'+escape(item.id)+'">Generate task</button>':''}<button type="button" data-edit="${escape(item.id)}">Edit</button>${(item.kind === 'Email draft' || isNote(item)) ? '' : `<button type="button" data-toggle="${escape(item.id)}">${item.done?'Reopen':'Mark complete'}</button>`}<button type="button" data-remove="${escape(item.id)}">Delete</button></div></details>`;
   }
   const renderRows = (selector, entries, empty) => {
     const container = find(selector);
@@ -362,6 +381,10 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     const count = find("#calendar-approval-count");
     const pending = consultationRequests.filter(item => (item.approvalStatus || "pending") === "pending");
     count.textContent = String(pending.length);
+    const navBadge=document.getElementById("nav-calendar-badge");
+    if(navBadge){navBadge.textContent=pending.length>99?"99+":String(pending.length);navBadge.hidden=pending.length===0;}
+    const pendingMetric=document.getElementById("dashboard-stat-pending-enquiries");
+    if(pendingMetric)pendingMetric.textContent=String(pending.length);
     if (!consultationRequestsLoaded) {
       list.innerHTML = "<p class='approval-empty'>Loading consultation requests…</p>";
       return;
@@ -448,6 +471,18 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     const date = today();
     const tasks = records.filter(item => item.kind === 'Task' && !isNote(item));
     const overdue = item => !item.done && item.date && item.date < date;
+    const openTasks = tasks.filter(item => !item.done);
+    const pendingApprovals = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending').length;
+    for (const [id,value] of [
+      ['dashboard-stat-open-tasks',openTasks.length],
+      ['dashboard-stat-overdue',tasks.filter(overdue).length],
+      ['dashboard-stat-pending-enquiries',pendingApprovals],
+      ['dashboard-stat-matters',new Set(openTasks.map(item=>item.matter).filter(Boolean)).size]
+    ]) { const node=document.getElementById(id); if(node) node.textContent=String(value); }
+    const taskBadge=document.getElementById('nav-task-badge');
+    if(taskBadge){const value=tasks.filter(item=>overdue(item)||(!item.done&&item.date===date)).length;taskBadge.textContent=value>99?'99+':String(value);taskBadge.hidden=value===0;}
+    const calendarBadge=document.getElementById('nav-calendar-badge');
+    if(calendarBadge){calendarBadge.textContent=pendingApprovals>99?'99+':String(pendingApprovals);calendarBadge.hidden=pendingApprovals===0;}
     const filter = find('#legal-task-filter').value;
     const taskQuery = find('#work-task-search').value.trim().toLowerCase();
     const priority = find('#work-task-priority').value;
@@ -514,7 +549,14 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     }).join('');
   }
   function renderDrafts() {
-    const drafts = records.filter(item => item.kind === 'Email draft');
+    const attorneyEmails = records.filter(isAttorneyEmail).sort((a,b)=>(b.updatedAt?.toMillis?.()??0)-(a.updatedAt?.toMillis?.()??0));
+    const emailList=find('#attorney-email-list');
+    if(emailList) emailList.innerHTML = attorneyEmails.map(item =>
+      '<article class="attorney-email-card"><div><span>RECEIVED EMAIL</span><h4>'+escape(item.title.replace(/^\\[ATTY EMAIL\\] /,''))+'</h4><p>'+escape(item.recipient||'Unknown sender')+(item.date?' · '+escape(item.date):'')+'</p></div><details><summary>Read full email</summary><pre>'+escape(item.notes||'')+'</pre></details><button type="button" class="work-button" data-generate-email-task="'+escape(item.id)+'">Generate task</button></article>'
+    ).join('') || '<p class="work-empty">No attorney emails saved yet.</p>';
+    const emailBadge=document.getElementById('nav-email-badge');
+    if(emailBadge){emailBadge.textContent=attorneyEmails.length>99?'99+':String(attorneyEmails.length);emailBadge.hidden=attorneyEmails.length===0;}
+    const drafts = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
     const query = find('#work-draft-search').value.trim().toLowerCase();
     const matching = drafts.filter(item => [item.title, item.recipient, item.matter].join(' ').toLowerCase().includes(query))
       .sort((a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
@@ -942,6 +984,33 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   find('#work-task-search').addEventListener('input', render);
   find('#work-task-priority').addEventListener('change', render);
   find('#work-draft-search').addEventListener('input', renderDrafts);
+  const emailImport=find('#attorney-email-form');
+  const emailToggle=find('#attorney-email-toggle');
+  emailToggle.addEventListener('click',()=>{emailImport.hidden=!emailImport.hidden;emailToggle.setAttribute('aria-expanded',String(!emailImport.hidden));if(!emailImport.hidden)emailImport.querySelector('input').focus();});
+  find('#attorney-email-cancel').addEventListener('click',()=>{emailImport.reset();emailImport.hidden=true;emailToggle.setAttribute('aria-expanded','false');});
+  emailImport.addEventListener('submit',async event=>{
+    event.preventDefault();if(!loaded)return;
+    const values=new FormData(emailImport);const sender=String(values.get('sender')||'').trim();const subject=String(values.get('subject')||'').trim();const body=String(values.get('body')||'').trim();
+    const output=find('#attorney-email-status');const save=emailImport.querySelector('[type="submit"]');
+    if(!sender||!subject||!body){output.textContent='Enter the sender, subject and full email.';return;}
+    save.disabled=true;output.textContent='Saving email…';
+    const data={kind:'Email draft',title:'[ATTY EMAIL] '+subject.slice(0,145),notes:body,matter:String(values.get('matter')||'').trim(),date:String(values.get('received')||''),priority:'Normal',done:false,recipient:sender,updatedAt:serverTimestamp()};
+    try{if(sampleMode){records.unshift({...data,id:crypto.randomUUID(),updatedAt:{toMillis:()=>Date.now()}});render();}else await addDoc(items,data);emailImport.reset();emailImport.hidden=true;emailToggle.setAttribute('aria-expanded','false');output.textContent='';notify('Attorney email saved','Open the full message, then generate a task for review.');}
+    catch{output.textContent='Could not save this email. Check workspace access and try again.';}
+    finally{save.disabled=false;}
+  });
+  const taskDialog=find('#email-task-dialog');const taskForm=find('#email-task-form');let sourceEmail=null;
+  find('[data-close-email-task]').addEventListener('click',()=>taskDialog.close());
+  taskForm.addEventListener('submit',async event=>{
+    event.preventDefault();if(!loaded||!sourceEmail)return;
+    const values=new FormData(taskForm);const save=taskForm.querySelector('[type="submit"]');const output=taskForm.querySelector('[role="status"]');
+    const title=String(values.get('title')||'').trim();if(!title){output.textContent='Enter a task title.';return;}
+    save.disabled=true;output.textContent='Saving task…';
+    const data={kind:'Task',title:title.slice(0,160),notes:String(values.get('notes')||'').trim(),matter:String(values.get('matter')||'').trim(),date:String(values.get('date')||''),priority:String(values.get('priority')||'Normal'),done:false,recipient:'',updatedAt:serverTimestamp()};
+    try{if(sampleMode){records.unshift({...data,id:crypto.randomUUID(),updatedAt:{toMillis:()=>Date.now()}});render();}else await addDoc(items,data);taskDialog.close();notify('Task created',title);}
+    catch{output.textContent='Could not create the task. Check workspace access and try again.';}
+    finally{save.disabled=false;}
+  });
   find('#copy-draft-body').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(field(draftEditor, 'notes').value);
@@ -1089,6 +1158,29 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   }
   selectTemplate('followup');
   root.onclick = async event => {
+    const generateEmailTask=event.target.closest('[data-generate-email-task]');
+    if(generateEmailTask){
+      sourceEmail=records.find(item=>item.id===generateEmailTask.dataset.generateEmailTask);
+      if(!sourceEmail||!loaded)return;
+      const subject=sourceEmail.title.replace(/^\\[ATTY EMAIL\\] /,'');
+      const summary=find('#email-task-summary');summary.textContent='Creating a task suggestion…';
+      taskForm.elements.title.value='';taskForm.elements.matter.value=sourceEmail.matter||'';taskForm.elements.date.value='';taskForm.elements.priority.value='Normal';taskForm.elements.notes.value='';
+      find('.email-task-source').textContent='Source: '+(sourceEmail.recipient||'Attorney')+' · '+subject;
+      taskDialog.showModal();const submit=taskForm.querySelector('[type="submit"]');submit.disabled=true;
+      try{
+        if(!authUser)throw new Error('Signed-in account is unavailable.');
+        const token=await authUser.getIdToken();
+        const response=await fetch('/api/summarize-attorney-email',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({from:sourceEmail.recipient,subject,received:sourceEmail.date,body:sourceEmail.notes})});
+        const result=await response.json();if(!response.ok)throw new Error(result.error||'AI task generation is unavailable.');
+        summary.textContent=result.summary||'Summary ready for review.';
+        taskForm.elements.title.value=result.task?.title||'Review attorney email: '+subject;
+        taskForm.elements.notes.value=result.task?.notes||result.summary||'Review the email and confirm the next steps.';
+        taskForm.elements.date.value=result.task?.deadline||'';
+        taskForm.elements.priority.value=['Urgent','High','Normal','Low'].includes(result.task?.priority)?result.task.priority:'Normal';
+      }catch(error){summary.textContent=error.message||'AI task generation is unavailable. You can still complete the task details manually.';taskForm.elements.title.value='Review attorney email: '+subject;taskForm.elements.notes.value='Review the attorney email and confirm the next steps.\n\nEmail summary: ';}
+      finally{submit.disabled=false;}
+      return;
+    }
     const matter = event.target.closest('[data-matter]');
     if (matter) {
       selectedMatter = matter.dataset.matter;

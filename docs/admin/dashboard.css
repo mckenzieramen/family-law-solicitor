@@ -442,3 +442,18 @@ body.solicitor-profile { background:#fffaf3; }
  }
 }
 .admin-dashboard #work-calendar .calendar-agenda{width:100%!important;box-sizing:border-box!important}
+
+/* Admin dashboard summary and compact notification counters */
+.admin-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.admin-kpi-grid>a{display:grid;gap:2px;min-width:0;padding:15px 17px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);text-decoration:none;box-shadow:var(--shadow);transition:transform .16s ease,border-color .16s ease}
+.admin-kpi-grid>a:hover{transform:translateY(-2px);border-color:#b88740}
+.admin-kpi-grid span{font-size:13px;font-weight:650;color:var(--muted)}
+.admin-kpi-grid strong{font:normal 30px/1.15 var(--serif);color:var(--accent)}
+.admin-kpi-grid small{font-size:12px;color:var(--muted)}
+.dashboard-sidebar nav a{display:flex;align-items:center;gap:10px}
+.dashboard-sidebar nav a>span:nth-child(2){flex:1;min-width:0}
+.nav-notification{display:inline-grid!important;place-items:center;flex:0 0 22px!important;width:22px;height:22px;min-width:22px;border-radius:50%;background:#c9353d;color:#fff!important;font:700 11px/1 system-ui,sans-serif;box-shadow:0 0 0 2px #073e2f}
+.nav-notification[hidden]{display:none!important}
+@media(max-width:900px){.admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.admin-kpi-grid{gap:8px}.admin-kpi-grid>a{padding:12px}.admin-kpi-grid strong{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.admin-kpi-grid>a{transition:none}}

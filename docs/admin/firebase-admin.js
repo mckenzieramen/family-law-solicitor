@@ -192,7 +192,7 @@ onIdTokenChanged(auth, async user => {
       sampleLink.href = sampleUrl.href;
       sampleLink.textContent = sampleMode ? 'Back to live records' : 'View sample data';
       document.getElementById('staff-sample-banner').hidden = !sampleMode;
-      mountWorkflow(db, user.uid, sampleMode);
+      mountWorkflow(db, user.uid, sampleMode, user);
       if (admin || role === 'solicitor') mountInbox(db, sampleMode);
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';

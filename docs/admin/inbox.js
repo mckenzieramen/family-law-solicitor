@@ -35,6 +35,7 @@ const nav = document.getElementById('inbox-nav');
 const overviewLink = document.getElementById('overview-inbox-link');
 const overviewCount = document.getElementById('overview-inbox-count');
 const overviewAttention = document.getElementById('overview-inbox-attention');
+const inboxBadge = document.getElementById('nav-inbox-badge');
 let stop;
 
 function showOverviewInbox(total) {
@@ -61,6 +62,7 @@ export function clearInbox() {
   panel.hidden = nav.hidden = true;
   if (overviewLink) overviewLink.hidden = true;
   showOverviewInbox();
+  if(inboxBadge){inboxBadge.textContent='0';inboxBadge.hidden=true;}
   list.replaceChildren();
   reader.replaceChildren();
   retry.onclick = null;
@@ -97,6 +99,11 @@ export function mountInbox(db, sampleMode = false) {
       unanswered: entries.filter(record => record.kind === 'support' && !record.reply).length,
       replied: entries.filter(record => record.kind === 'support' && Boolean(record.reply)).length
     };
+    const newEnquiries=entries.filter(record=>record.kind==='consultation'&&(record.approvalStatus||'pending')==='pending').length;
+    const inboxNotifications=newEnquiries+summaryCounts.unanswered;
+    if(inboxBadge){inboxBadge.textContent=inboxNotifications>99?'99+':String(inboxNotifications);inboxBadge.hidden=inboxNotifications===0;}
+    const overviewInboxTotal=document.getElementById('dashboard-stat-pending-enquiries');
+    if(overviewInboxTotal)overviewInboxTotal.textContent=String(newEnquiries);
     const countTargets = {
       newToday:'inbox-stat-new-today', appointment:'inbox-stat-appointments',
       unanswered:'inbox-stat-needs-reply', replied:'inbox-stat-replied'
