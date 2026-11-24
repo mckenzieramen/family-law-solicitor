@@ -261,49 +261,45 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    <label>Sort matters<select id="work-matter-sort"><option value="reference">Reference A–Z</option><option value="activity">Most recent activity</option></select></label>
   </div>
   <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></section>
- <section class="workflow-panel" id="work-email">
-  <section class="attorney-mail-import" aria-labelledby="attorney-mail-title">
-   <header><div><span class="attorney-mail-kicker">ATTORNEY CORRESPONDENCE</span><h3 id="attorney-mail-title">Attorney email inbox</h3><p>Save an email from your solicitor, read the full message and prepare a deadline task.</p></div><button type="button" class="work-button" id="attorney-email-toggle" aria-expanded="false">Add received email</button></header>
-   <form id="attorney-email-form" class="work-form" hidden>
-    <div class="work-fields"><label>From<input name="sender" type="email" maxlength="254" placeholder="attorney@example.com" required></label><label>Subject<input name="subject" maxlength="160" required></label><label>Received date<input name="received" type="date"></label><label>Matter reference<input name="matter" maxlength="80"></label></div>
-    <label>Full email<textarea name="body" rows="6" maxlength="8000" required placeholder="Paste the email text here"></textarea></label>
-    <button type="submit" class="work-button">Save email</button><button type="button" id="attorney-email-cancel">Cancel</button><p id="attorney-email-status" role="status"></p>
-    <small>Email auto-sync needs a connected mailbox. AI task suggestions send the selected email to the firm’s configured OpenAI service.</small>
-   </form>
-   <div id="attorney-email-list" class="attorney-email-list"><p class="work-empty">Attorney emails appear here after you add them.</p></div>
-  </section>
-  <header class="draft-toolbar">
-   <div><h2>Correspondence</h2><p>Prepare and review client emails.</p></div>
-   <button class="work-button" type="button" data-new-draft="blank">New draft</button>
+ <section class="workflow-panel correspondence-workspace" id="work-email">
+  <header class="correspondence-page-head">
+   <div><span class="correspondence-accent" aria-hidden="true"></span><div><h2>Correspondence</h2><p>Review received emails and prepare clear, matter-linked replies.</p></div></div>
+   <button class="work-button correspondence-log-button" type="button" id="attorney-email-toggle" aria-expanded="false"><span aria-hidden="true">＋</span> Log correspondence</button>
   </header>
-  <div class="draft-layout">
-   <aside class="draft-library" aria-label="Draft library">
-    <h3>Saved drafts</h3>
-    <label>Search drafts<input id="work-draft-search" type="search" placeholder="Subject, recipient or matter"></label>
-    <p class="work-result-count" id="work-draft-count" role="status"></p>
-    <div id="work-drafts"><p class="work-empty">Connecting to your saved drafts…</p></div>
-    <h3>Templates</h3>
-    <button type="button" data-new-draft="followup">Client follow-up</button>
-    <button type="button" data-new-draft="documents">Document request</button>
-   </aside>
-   <div class="draft-reading">
-    <article id="draft-sample" class="draft-example">
-     <span class="draft-example-tag">Sample draft</span>
-     <h3>Following up on your consultation</h3>
-     <dl><div><dt>To</dt><dd>avery@example.com</dd></div><div><dt>Matter</dt><dd>Sample FL-1024</dd></div></dl>
-     <div class="draft-example-body">
-      <p>Hi Avery,</p>
-      <p>Thank you for meeting with us. I’m writing to check whether you have any questions about the next steps we discussed.</p>
-      <p>If you’d like to arrange a follow-up appointment, please let us know which days and times work for you.</p>
-      <p>Kind regards,<br>Family Law Team</p>
-     </div>
-     <button type="button" data-new-draft="followup">Use follow-up template</button>
-    </article>
-  ${editorMarkup('draft-form', 'New email draft', `
-   <label>Subject<input name="title" maxlength="160" required></label>
-   <label>Recipient<input type="email" name="recipient" maxlength="254"></label>${matterField}`,
-   'Email body', 'Save draft', true).replace('<p role="status">', '<button type="button" id="copy-draft-body">Copy text</button><p role="status">')}
+  <form id="attorney-email-form" class="work-form correspondence-log-form" hidden>
+   <div class="work-fields"><label>From<input name="sender" type="email" maxlength="254" placeholder="attorney@example.com" required></label><label>Subject<input name="subject" maxlength="160" required></label><label>Received date<input name="received" type="date"></label><label>Matter reference<input name="matter" maxlength="80"></label></div>
+   <label>Full email<textarea name="body" rows="5" maxlength="8000" required placeholder="Paste the email text here"></textarea></label>
+   <div class="correspondence-form-actions"><button type="submit" class="work-button">Save email</button><button type="button" id="attorney-email-cancel">Cancel</button><p id="attorney-email-status" role="status"></p></div>
+   <small>Email auto-sync needs a connected mailbox. AI task suggestions send the selected email to the firm’s configured OpenAI service.</small>
+  </form>
+  <div class="correspondence-toolbar">
+   <label class="correspondence-search"><span class="sr-only">Search correspondence</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 5 5"></path></svg><input id="correspondence-search" type="search" placeholder="Search correspondence (subject, sender, recipient or matter)"></label>
+   <div class="correspondence-filters" role="tablist" aria-label="Filter correspondence">
+    <button type="button" role="tab" aria-selected="true" data-corr-filter="all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6"></path></svg>All</button>
+    <button type="button" role="tab" aria-selected="false" data-corr-filter="email"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>Email</button>
+    <button type="button" role="tab" aria-selected="false" data-corr-filter="phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h3l2 5-2 2a14 14 0 0 0 5 5l2-2 5 2v3c0 1-1 2-2 2C10 19 5 14 4 5c0-1 1-2 2-2z"></path></svg>Phone</button>
+    <button type="button" role="tab" aria-selected="false" data-corr-filter="letter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"></path></svg>Letter</button>
+    <button type="button" role="tab" aria-selected="false" data-corr-filter="note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg>Internal note</button>
    </div>
+   <label class="correspondence-sort"><span class="sr-only">Sort correspondence</span><select id="correspondence-sort" aria-label="Sort correspondence"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></label>
+   <button type="button" class="correspondence-list-open" id="correspondence-list-open" aria-label="Show correspondence list" hidden>☰ Inbox</button>
+  </div>
+  <div class="correspondence-layout" id="correspondence-layout">
+   <aside class="correspondence-list-pane" id="correspondence-list-pane" aria-label="Correspondence list">
+    <div class="correspondence-list-heading"><div><strong id="correspondence-count">Correspondence</strong><span id="work-draft-count" class="work-result-count" role="status"></span></div><button type="button" id="correspondence-list-close" aria-label="Hide correspondence list">‹</button></div>
+    <div id="correspondence-items"><p class="work-empty">Loading correspondence…</p></div>
+    <div id="work-drafts" hidden></div><div id="attorney-email-list" hidden></div>
+    <div class="correspondence-list-footer"><button type="button" data-new-draft="blank">＋ New email draft</button><button type="button" data-new-draft="followup">Client follow-up template</button></div>
+   </aside>
+   <section class="correspondence-reader" id="correspondence-reader" aria-label="Selected correspondence">
+    <div class="correspondence-reader-toolbar"><button type="button" id="correspondence-reader-close" aria-label="Close message">×</button><span>Message details</span><button type="button" class="correspondence-reader-list" id="correspondence-reader-list">☰ Inbox</button></div>
+    <div id="correspondence-reader-content"><div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div></div>
+    <div id="draft-sample" class="draft-example" hidden></div>
+    ${editorMarkup('draft-form', 'New email draft', `
+     <label>Subject<input name="title" maxlength="160" required></label>
+     <label>Recipient<input type="email" name="recipient" maxlength="254"></label>${matterField}`,
+     'Email body', 'Save draft', true).replace('<p role="status">', '<button type="button" id="copy-draft-body">Copy text</button><p role="status">')}
+   </section>
   </div>
  </section>`;
   root.insertAdjacentHTML('beforeend', '<dialog id="calendar-day-dialog" class="schedule-dialog calendar-day-dialog" aria-labelledby="calendar-day-title"><header class="calendar-day-dialog-head"><div><p>Calendar details</p><h2 id="calendar-day-title"></h2><span id="calendar-day-subtitle"></span></div><button type="button" data-close-calendar-day aria-label="Close day details">×</button></header><div id="calendar-day-items" class="calendar-day-items"></div><footer><button type="button" class="work-button" id="calendar-day-add-schedule">Add schedule on this date</button><button type="button" data-close-calendar-day>Close</button></footer></dialog>');
@@ -325,6 +321,8 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   let selectedDay = '';
   let calendarMode = 'month';
   let selectedMatter;
+  let correspondenceFilter = 'all';
+  let selectedCorrespondenceId = '';
   month.value = today().slice(0,7);
   const calendarDate = () => selectedDay || (month.value && !today().startsWith(month.value) ? month.value + '-01' : today());
   const field = (editor, name) => editor.form.elements.namedItem(name);
@@ -698,19 +696,42 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     }).join('');
   }
   function renderDrafts() {
-    const attorneyEmails = records.filter(isAttorneyEmail).sort((a,b)=>(b.updatedAt?.toMillis?.()??0)-(a.updatedAt?.toMillis?.()??0));
-    const emailList=find('#attorney-email-list');
-    if(emailList) emailList.innerHTML = attorneyEmails.map(item =>
-      '<article class="attorney-email-card"><div><span>RECEIVED EMAIL</span><h4>'+escape(item.title.replace(/^\[ATTY EMAIL\] /,''))+'</h4><p>'+escape(item.recipient||'Unknown sender')+(item.date?' · '+escape(item.date):'')+'</p></div><details><summary>Read full email</summary><pre>'+escape(item.notes||'')+'</pre></details><button type="button" class="work-button" data-generate-email-task="'+escape(item.id)+'">Generate task</button></article>'
-    ).join('') || '<p class="work-empty">No attorney emails saved yet.</p>';
-    const emailBadge=document.getElementById('nav-email-badge');
-    if(emailBadge){emailBadge.textContent=attorneyEmails.length>99?'99+':String(attorneyEmails.length);emailBadge.hidden=attorneyEmails.length===0;}
-    const drafts = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
-    const query = find('#work-draft-search').value.trim().toLowerCase();
-    const matching = drafts.filter(item => [item.title, item.recipient, item.matter].join(' ').toLowerCase().includes(query))
-      .sort((a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
-    find('#work-draft-count').textContent = loaded ? `${matching.length} of ${drafts.length} drafts` : '';
-    renderRows('#work-drafts', matching, loaded ? (query ? 'No drafts match your search.' : 'No drafts saved.') : (loadError || 'Loading drafts…'));
+    const allItems = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
+    const received = records.filter(isAttorneyEmail);
+    const emailItems = [...received,...allItems].sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+    const query = find('#correspondence-search').value.trim().toLowerCase();
+    const sort = find('#correspondence-sort').value;
+    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email')
+      .filter(item => [item.title,item.recipient,item.matter,item.notes].join(' ').toLowerCase().includes(query))
+      .sort((a,b) => {
+        const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
+        return sort==='oldest'?delta:-delta;
+      });
+    const count=find('#correspondence-count');
+    if(count) count.textContent='Correspondence ('+filtered.length+')';
+    find('#work-draft-count').textContent=loaded ? (filtered.length+' of '+emailItems.length+' messages') : '';
+    const list=find('#correspondence-items');
+    const icon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>';
+    list.innerHTML=filtered.length ? filtered.map(item=>{
+      const incoming=isAttorneyEmail(item);
+      const title=item.title.replace(/^\[ATTY EMAIL\] /,'');
+      const selected=item.id===selectedCorrespondenceId;
+      const sender=(incoming?'From: ':'To: ')+(item.recipient||'No recipient');
+      return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+icon+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
+    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(correspondenceFilter==='all'||correspondenceFilter==='email'?'No correspondence yet':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
+    const available = filtered.some(item=>item.id===selectedCorrespondenceId) ? filtered : filtered.slice(0,1);
+    if(available.length) selectedCorrespondenceId=available[0].id;
+    const active=emailItems.find(item=>item.id===selectedCorrespondenceId);
+    const reader=find('#correspondence-reader-content');
+    if(!active){
+      reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
+      return;
+    }
+    const incoming=isAttorneyEmail(active);
+    const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
+    const stamp=active.date?escape(active.date):'Saved draft';
+    const body=active.notes||'No message body has been saved.';
+    reader.innerHTML='<article class="correspondence-message"><div class="correspondence-message-top"><span class="correspondence-type-badge">'+icon+' '+(incoming?'Email received':'Email draft')+'</span><div class="correspondence-message-actions"><button type="button" data-edit="'+escape(active.id)+'">Edit</button><button type="button" data-remove="'+escape(active.id)+'" aria-label="Delete correspondence">Delete</button></div></div><h3>'+escape(title)+'</h3><dl class="correspondence-meta"><div><dt>From</dt><dd>'+escape(incoming?active.recipient||'Unknown sender':'Prevail Family Law staff')+'</dd></div><div><dt>To</dt><dd>'+escape(incoming?'Prevail Family Law staff':active.recipient||'No recipient added')+'</dd></div><div><dt>Date</dt><dd>'+stamp+'</dd></div><div><dt>Matter</dt><dd>'+escape(active.matter||'No matter linked')+'</dd></div></dl><div class="correspondence-message-body"><pre>'+escape(body)+'</pre></div>'+(incoming?'<div class="correspondence-internal-note"><strong>Private internal note</strong><p>Keep internal notes in the matter record. The received message is shown above.</p></div>':'')+'<div class="correspondence-compose-tabs" role="group" aria-label="Reply actions"><button type="button" class="is-active" data-correspondence-compose="reply">↶ Reply</button><button type="button" data-correspondence-compose="reply-all">⇇ Reply all</button><button type="button" data-correspondence-compose="forward">↪ Forward</button></div></article>';
   }
   function renderMatters() {
     const query = find('#work-matter-query').value.trim().toLowerCase();
@@ -1144,6 +1165,39 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   find('#work-task-search').addEventListener('input', render);
   find('#work-task-priority').addEventListener('change', render);
   find('#work-draft-search').addEventListener('input', renderDrafts);
+  find('#correspondence-search').addEventListener('input',renderDrafts);
+  find('#correspondence-sort').addEventListener('change',renderDrafts);
+  for(const tab of root.querySelectorAll('[data-corr-filter]')) tab.addEventListener('click',()=>{
+    correspondenceFilter=tab.dataset.corrFilter;
+    for(const other of root.querySelectorAll('[data-corr-filter]')) other.setAttribute('aria-selected',String(other===tab));
+    renderDrafts();
+  });
+  find('#correspondence-items').addEventListener('click',event=>{
+    const row=event.target.closest('[data-correspondence-id]');if(!row)return;
+    selectedCorrespondenceId=row.dataset.correspondenceId;
+    find('#correspondence-layout').classList.remove('is-reader-closed');
+    renderDrafts();
+  });
+  const correspondenceLayout=find('#correspondence-layout');
+  find('#correspondence-list-close').addEventListener('click',()=>{correspondenceLayout.classList.add('is-list-collapsed');find('#correspondence-list-open').hidden=false;});
+  find('#correspondence-list-open').addEventListener('click',()=>{correspondenceLayout.classList.remove('is-list-collapsed');find('#correspondence-list-open').hidden=true;});
+  find('#correspondence-reader-close').addEventListener('click',()=>correspondenceLayout.classList.add('is-reader-closed'));
+  find('#correspondence-reader-list').addEventListener('click',()=>correspondenceLayout.classList.remove('is-list-collapsed'));
+  find('#correspondence-reader-content').addEventListener('click',event=>{
+    const compose=event.target.closest('[data-correspondence-compose]');
+    if(compose){
+      const active=records.find(item=>item.id===selectedCorrespondenceId);if(!active)return;
+      const incoming=isAttorneyEmail(active);
+      const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
+      const mode=compose.dataset.correspondenceCompose;
+      const recipient=mode==='forward'?'':(incoming?active.recipient||'':active.recipient||'');
+      open(editors['Email draft'],null,{title:(mode==='forward'?'Fwd: ':'Re: ')+title,recipient,matter:active.matter||'',notes:mode==='forward'?'Forwarded message:\\n\\n'+(active.notes||''):'\\n\\nOn '+(active.date||'the previous message')+', '+(active.recipient||'the sender')+' wrote:\\n'+(active.notes||'')});
+      return;
+    }
+    const edit=event.target.closest('[data-edit]'),remove=event.target.closest('[data-remove]');
+    if(edit||remove) root.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+  });
+
   const emailImport=find('#attorney-email-form');
   const emailToggle=find('#attorney-email-toggle');
   emailToggle.addEventListener('click',()=>{emailImport.hidden=!emailImport.hidden;emailToggle.setAttribute('aria-expanded',String(!emailImport.hidden));if(!emailImport.hidden)emailImport.querySelector('input').focus();});
