@@ -792,3 +792,26 @@ dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filt
 .calendar-upcoming-row[data-event-type="approved-consultation"]{border-left:3px solid #b8d8bc;padding-left:8px}
 .calendar-later-row[data-event-type="consultation"]{border-left:3px solid #e8b89c;padding-left:8px}
 .calendar-later-row[data-event-type="approved-consultation"]{border-left:3px solid #b8d8bc;padding-left:8px}
+
+/* Keep the calendar heading compact and make month navigation feel intentional. */
+.admin-dashboard[data-view="work-calendar"] .dashboard-header{min-height:0;padding-bottom:8px;margin-bottom:8px}
+.admin-dashboard[data-view="work-calendar"] .dashboard-heading{display:none}
+.admin-dashboard[data-view="work-calendar"] #work-calendar .calendar-page-title{display:none!important}
+.calendar-controls{align-items:center}
+.calendar-controls button.calendar-step-btn{display:grid;place-items:center;flex:0 0 36px;width:36px;min-width:36px;height:36px;min-height:36px;padding:0!important;border:1px solid #d7c7a9;border-radius:10px;background:linear-gradient(180deg,#fffefa,#f7f1e5);color:#19334b;box-shadow:0 1px 2px rgba(24,39,56,.06);transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease}
+.calendar-controls button.calendar-step-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.calendar-controls button.calendar-step-btn:hover{border-color:#bd944f;background:#f6ead1;color:#17304a;box-shadow:0 3px 9px rgba(28,43,58,.11);transform:translateY(-1px)}
+.calendar-controls button.calendar-step-btn:focus-visible{outline:3px solid rgba(199,158,84,.35);outline-offset:2px}
+.calendar-month-label:after{content:"";width:7px;height:7px;margin:-4px 0 0 2px;border-right:1.6px solid #9c7535;border-bottom:1.6px solid #9c7535;transform:rotate(45deg);transition:transform .16s ease}
+.calendar-month-label:focus-within:after{transform:translateY(3px) rotate(225deg)}
+/* Keep each schedule list independently scrollable as the calendar fills up. */
+.admin-dashboard[data-view="work-calendar"] #calendar-upcoming-list,
+.admin-dashboard[data-view="work-calendar"] #calendar-later-list{flex:1 1 0;min-height:58px;max-height:270px;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#c6a361 #f5f0e7;overscroll-behavior:contain}
+.admin-dashboard[data-view="work-calendar"] #calendar-later-list{max-height:190px}
+.admin-dashboard[data-view="work-calendar"] #calendar-upcoming-list::-webkit-scrollbar,
+.admin-dashboard[data-view="work-calendar"] #calendar-later-list::-webkit-scrollbar{width:7px}
+.admin-dashboard[data-view="work-calendar"] #calendar-upcoming-list::-webkit-scrollbar-thumb,
+.admin-dashboard[data-view="work-calendar"] #calendar-later-list::-webkit-scrollbar-thumb{border-radius:8px;background:#c6a361}
+.admin-dashboard[data-view="work-calendar"] #calendar-upcoming-list::-webkit-scrollbar-track,
+.admin-dashboard[data-view="work-calendar"] #calendar-later-list::-webkit-scrollbar-track{background:#f5f0e7}
+@media(max-width:700px){.calendar-date-controls{gap:6px}.calendar-controls button.calendar-step-btn{flex-basis:34px;width:34px;min-width:34px;height:34px;min-height:34px}.calendar-month-label{font-size:18px}}
