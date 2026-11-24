@@ -593,9 +593,9 @@ dialog.consultation-frame-dialog::backdrop{background:#071a2ab8;backdrop-filter:
 .consultation-frame-dialog .client-home{display:block!important;width:100%;min-height:0!important;margin:0!important;padding:0!important}
 .consultation-frame-dialog .client-home>:not(#contact){display:none!important}
 .consultation-frame-dialog .client-home>section#contact{display:block!important;width:100%;margin:0!important;padding:0!important}
-.consultation-frame-dialog #contact .contact-panel{display:block!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel{display:block!important;grid-template-columns:minmax(0,1fr)!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
 .consultation-frame-dialog #contact .consultation-intro{display:none!important}
-.consultation-frame-dialog #consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
+html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel > .consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
 .consultation-frame-dialog #consultation-form .premium-booking-steps,
 .consultation-frame-dialog #consultation-form #consultation-demo{display:none!important;margin:0!important;padding:0!important}
 .consultation-frame-dialog #consultation-form .premium-booking{margin:0!important;padding:8px 10px!important}
