@@ -10,7 +10,7 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .admin-sign-in[hidden]{display:none}
 .admin-sign-in-card{width:min(100%,28rem);overflow:hidden;border:1px solid #ded8cc;border-radius:18px;background:#fffefa;box-shadow:0 20px 55px #10233b17}
 .admin-sign-in-header{display:flex;align-items:center;gap:14px;padding:20px clamp(20px,6vw,34px);border-bottom:2px solid #bd914c;background:#0c1e33;color:#fff}
-.admin-brand-logo{display:block;width:min(164px,100%);max-height:44px;object-fit:contain;padding:4px 8px;border-radius:6px;background:#fffefa}
+.admin-brand-logo,.dashboard-brand-logo{display:block;width:min(190px,100%);height:auto;max-height:none;object-fit:contain;object-position:center;padding:7px 9px;border:1px solid #d0b07655;border-radius:9px;background:#fffefa;box-sizing:border-box}
 .admin-sign-in-brand{font:1.2rem Georgia,serif}
 .admin-sign-in-body{padding:clamp(20px,6vw,34px)}
 .admin-sign-in h1{margin:0 0 20px;color:inherit;font:400 2rem/1.12 Georgia,serif}
@@ -29,7 +29,7 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .admin-dashboard{--page:#f7f5f0;--paper:#fffefa;--ink:#14263d;--muted:#66717e;--line:#e0dacf;--accent:#14263d;--gold:#b88943;--tint:#f6f0e5;--shadow:0 2px 10px #152b4010;display:grid;grid-template-columns:252px minmax(0,1fr);height:100vh;height:100dvh;min-height:0;overflow:hidden;background:var(--page);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
 .dashboard-sidebar{position:sticky;top:0;display:flex;flex-direction:column;gap:12px;height:100dvh;min-width:0;box-sizing:border-box;padding:18px 13px 16px;overflow:auto;background:#0a1c30;color:#fff}
 .dashboard-identity{display:grid;justify-items:center;gap:9px;padding:3px 8px 18px;border-bottom:1px solid #ffffff20;text-align:center}
-.dashboard-brand-logo{display:block;width:min(172px,100%);max-height:98px;object-fit:contain;object-position:center;padding:8px 12px;border:1px solid #d0b07645;border-radius:9px;background:#fffefa}
+
 .dashboard-identity p{margin:0;color:#c9d0d7;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .dashboard-sidebar nav{display:grid;gap:3px}
 .dashboard-sidebar nav a{display:flex;align-items:center;gap:12px;min-height:42px;padding:7px 11px;border:1px solid transparent;border-radius:8px;color:#f7f7f4;text-decoration:none;font-size:13px;font-weight:560;transition:background .15s,border-color .15s,color .15s}
@@ -183,7 +183,7 @@ button,a{ -webkit-tap-highlight-color:transparent}
  .admin-dashboard{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
  .dashboard-sidebar{position:relative;height:auto;max-height:130px;overflow:hidden;padding:9px 12px}
  .dashboard-identity{display:flex;justify-items:initial;justify-content:flex-start;align-items:center;gap:10px;padding:0;border:0;text-align:left}
- .dashboard-brand-logo{width:118px;max-height:48px;padding:4px 7px}
+ .admin-brand-logo,.dashboard-brand-logo{width:min(160px,100%);height:auto;max-height:none;padding:6px 8px}
  #staff-menu-toggle{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 10px;border:1px solid #ffffff3d;border-radius:7px;background:#ffffff12;color:#fff;font-weight:700}
  .dashboard-sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;max-height:40vh;overflow:auto}
  #staff-menu-toggle[aria-expanded="false"]+nav{display:none}

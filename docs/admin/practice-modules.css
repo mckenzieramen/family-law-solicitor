@@ -58,7 +58,7 @@
 .pm-line-items>strong{display:block;margin-bottom:10px}.pm-line-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:10px}
 .pm-report-placeholder{margin:16px 0;padding:24px;border:1px dashed #d2bb93;border-radius:12px;background:linear-gradient(135deg,#fbf7ef,#fffdfa)}
 .pm-report-placeholder h3{margin:0 0 5px}.pm-report-placeholder p{margin:0}
-.pm-settings{border:1px solid #e3d5bf;border-radius:14px;background:#fffdfa;overflow:hidden}
+.pm-logo-preview{display:block;width:min(100%,380px);height:auto;max-height:175px;object-fit:contain;padding:10px;border:1px solid #e3d5bf;border-radius:12px;background:#fbf8f2;box-sizing:border-box}.pm-settings{border:1px solid #e3d5bf;border-radius:14px;background:#fffdfa;overflow:hidden}
 .pm-setting-tabs{display:flex;gap:6px;overflow:auto;padding:12px 14px 0;border-bottom:1px solid #dcc9a9;background:#fcf9f4}
 .pm-setting-tabs button{flex:0 0 auto;padding:12px 16px;border:1px solid transparent;border-radius:9px 9px 0 0;background:transparent;color:#324358;cursor:pointer}
 .pm-setting-tabs button[aria-selected=true]{border-color:#e3d5bf;border-bottom-color:#fffdfa;background:#fffdfa;color:#78551e;font-weight:800}
