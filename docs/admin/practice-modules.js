@@ -123,8 +123,8 @@
     const tab=event.target.closest('[data-setting-tab]');
     if(tab){const wrap=tab.closest('.pm-settings');wrap.querySelectorAll('[data-setting-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===tab)));wrap.querySelectorAll('[data-setting-panel]').forEach(x=>x.hidden=x.dataset.settingPanel!==tab.dataset.settingTab);return;}
     if(event.target.closest('[data-not-saved]')){const panel=event.target.closest('.pm-setting-panel');panel.querySelector('[role="status"]').textContent='Nothing was saved. Secure settings storage is not connected.';return;}
-    if(event.target.closest('[data-report]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent='No live report source is connected yet. Connect the secure matter, task, time and billing records to generate this report.';return;}
-    if(event.target.closest('[data-export]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent='There are no connected report records to export.';return;}
+    if(event.target.closest('[data-report]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent=practiceContext?.sampleMode?'Sample report refreshed from the fictional workspace records shown below.':'No live report source is connected yet. Connect the secure matter, task, time and billing records to generate this report.';return;}
+    if(event.target.closest('[data-export]')){event.target.closest('.pm-panel').querySelector('.pm-report-placeholder p').textContent=practiceContext?.sampleMode?'The table below contains fictional preview records. No live records have been exported.':'There are no connected report records to export.';return;}
     if(event.target.closest('[data-clear-filters]')){const panel=event.target.closest('.pm-panel');panel.querySelectorAll('input,select').forEach(x=>{if(x.type==='search'||x.type==='text')x.value='';else if(x.type==='date'||x.type==='month')x.value='';else x.selectedIndex=0;});}
   });
   document.addEventListener('change', event => {
@@ -236,7 +236,7 @@
       ['work-time','timeEntry', r=>[r.payload.date||'—',r.payload.staff||practiceContext?.user?.displayName||'Staff',r.payload.matter||'—',r.payload.description||'—',(r.payload.hours||0)+' hrs',r.payload.billable||'—',r.payload.status||'Unbilled']],
       ['work-time','expense', r=>[r.payload.date||'—',r.payload.staff||practiceContext?.user?.displayName||'Staff',r.payload.matter||'—',r.payload.description||r.payload.type||'Expense','AUD '+Number(r.payload.amount||0).toFixed(2),'—','Saved']],
       ['work-billing','invoice', r=>[r.payload.number||'—',r.payload.client||'—',r.payload.matter||'—',r.payload.issueDate||'—',r.payload.dueDate||'—','AUD '+Number((Number(r.payload.quantity)||0)*(Number(r.payload.rate)||0)).toFixed(2),r.payload.status||'Draft','Saved']],
-      ['work-trust','trustTransaction', r=>[r.payload.date||'—',r.payload.reference||'—',[r.payload.matter,r.payload.client||r.payload.payee].filter(Boolean).join(' / ')||'—',r.payload.transactionType||'—',r.payload.transactionType==='Receipt'?'AUD '+Number(r.payload.amount||0).toFixed(2):'—',r.payload.transactionType==='Withdrawal'?'AUD '+Number(r.payload.amount||0).toFixed(2):'—',r.payload.transactionType==='Reconciliation'?'Reconciliation saved':'—']],
+      ['work-trust','trustTransaction', r=>[r.payload.date||'—',r.payload.reference||'—',[r.payload.matter,r.payload.client||r.payload.payee].filter(Boolean).join(' / ')||'—',r.payload.transactionType||'—',r.payload.transactionType==='Receipt'?'AUD '+Number(r.payload.amount||0).toFixed(2):'—',r.payload.transactionType==='Withdrawal'?'AUD '+Number(r.payload.amount||0).toFixed(2):'—',r.payload.balance!=null?'AUD '+Number(r.payload.balance).toFixed(2):r.payload.transactionType==='Reconciliation'?'Reconciled':'—']],
       ['work-contacts','contact', r=>[[r.payload.firstName,r.payload.lastName].filter(Boolean).join(' '),r.payload.type||'—',[r.payload.email,r.payload.phone].filter(Boolean).join(' · ')||'—',r.payload.matter||'—',sydneyDate(r.createdAt),r.payload.status||'Active']],
       ['work-employees','employee', r=>[r.payload.name||'Team member',r.payload.email||'—',r.payload.role||'Employee',r.payload.jobTitle||'—',r.payload.status||'Active',r.payload.matter||'—']]
     ];
@@ -247,8 +247,60 @@
       if(!rows.length)continue;
       body.innerHTML=rows.map(record=>'<tr>'+cells(record).map(cell=>'<td>'+safeText(cell)+'</td>').join('')+'</tr>').join('');
     }
+    if(practiceContext?.sampleMode){
+      const times=recordRows('timeEntry'), expenses=recordRows('expense'), invoices=recordRows('invoice'), transactions=recordRows('trustTransaction');
+      const sum=(rows,fn)=>rows.reduce((total,row)=>total+fn(row.payload||{}),0);
+      const timeModule=byId('work-time');
+      if(timeModule){
+        const timeBody=timeModule.querySelector('.pm-table tbody');
+        const combined=[...times.map(r=>({date:r.payload.date,staff:r.payload.staff,matter:r.payload.matter,description:r.payload.description,amount:(Number(r.payload.hours)||0).toFixed(2)+' hrs',billable:r.payload.billable||'—',status:r.payload.status||'Unbilled'})),...expenses.map(r=>({date:r.payload.date,staff:r.payload.staff,matter:r.payload.matter,description:r.payload.description||r.payload.type,amount:'AUD '+Number(r.payload.amount||0).toFixed(2),billable:'—',status:r.payload.status||'Saved'}))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+        if(timeBody)timeBody.innerHTML=combined.map(r=>'<tr>'+[r.date,r.staff,r.matter,r.description,r.amount,r.billable,r.status].map(cell=>'<td>'+safeText(cell||'—')+'</td>').join('')+'</tr>').join('');
+        const unbilled=sum(times,p=>String(p.status).toLowerCase()==='unbilled'?Number(p.hours)||0:0);
+        const billable=sum(times,p=>String(p.billable).toLowerCase()==='yes'?Number(p.hours)||0:0);
+        const timeAmount=sum(times,p=>String(p.billable).toLowerCase()==='yes'?(Number(p.hours)||0)*(Number(p.rate)||0):0);
+        const expenseAmount=sum(expenses,p=>Number(p.amount)||0);
+        const kpis=timeModule.querySelectorAll('.pm-kpis article');
+        [[unbilled.toFixed(2)+' hrs','Sample unbilled entries'],[billable.toFixed(2)+' hrs','Sample billable entries'],['AUD '+expenseAmount.toFixed(2),expenses.length+' sample expenses'],['AUD '+(timeAmount+expenseAmount).toFixed(2),'Time and expenses']].forEach(([value,label],i)=>{if(kpis[i]){kpis[i].querySelector('strong').textContent=value;kpis[i].querySelector('small').textContent=label;}});
+        const totals=timeModule.querySelectorAll('.pm-dl dd');
+        [billable.toFixed(2)+' hrs',unbilled.toFixed(2)+' hrs','AUD '+expenseAmount.toFixed(2),'AUD '+(timeAmount+expenseAmount).toFixed(2)].forEach((value,i)=>{if(totals[i])totals[i].textContent=value;});
+        const recent=timeModule.querySelector('.pm-content-grid aside p');
+        if(recent)recent.textContent='Latest: '+(times[0]?.payload.description||expenses[0]?.payload.description||'Sample time entry')+' · demo only';
+      }
+      const billing=byId('work-billing');
+      if(billing){
+        const kpis=billing.querySelectorAll('.pm-kpis article');
+        ['Draft','Sent','Overdue','Paid'].forEach((state,i)=>{const matches=invoices.filter(r=>r.payload.status===state);if(kpis[i]){kpis[i].querySelector('strong').textContent=String(matches.length);kpis[i].querySelector('small').textContent='AUD '+sum(matches,p=>(Number(p.quantity)||0)*(Number(p.rate)||0)).toFixed(2);}});
+      }
+      const trust=byId('work-trust');
+      if(trust){
+        const receipts=sum(transactions,p=>p.transactionType==='Receipt'?Number(p.amount)||0:0);
+        const withdrawals=sum(transactions,p=>p.transactionType==='Withdrawal'?Number(p.amount)||0:0);
+        const banner=trust.querySelector('.pm-trust-banner');
+        if(banner){banner.querySelector('strong').textContent='AUD '+(receipts-withdrawals).toFixed(2);banner.querySelector('small').textContent='Illustrative sample ledger';const values=banner.querySelectorAll('dd');[receipts,withdrawals,receipts-withdrawals].forEach((value,i)=>{if(values[i])values[i].textContent='AUD '+value.toFixed(2);});}
+        const callout=trust.querySelector('.pm-callout');if(callout)callout.textContent='Sample reconciliation: balanced to the illustrative statement dated '+(transactions[0]?.payload.date||'today')+'. Example values only; not a live trust ledger.';
+      }
+      const reports=byId('work-reports');
+      if(reports){
+        const reportRows=[
+          ['25 Nov 2026','PF-100348','Client consultation','J. Nguyen','Completed'],
+          ['25 Nov 2026','PF-100347','Review parenting proposal','M. Clarke','In progress'],
+          ['26 Nov 2026','PF-100345','File response evidence','L. Wilson','Due soon'],
+          ['27 Nov 2026','PF-100346','Disclosure deadline','S. Patel','Upcoming']
+        ];
+        const body=reports.querySelector('.pm-table tbody');if(body)body.innerHTML=reportRows.map(row=>'<tr>'+row.map(cell=>'<td>'+safeText(cell)+'</td>').join('')+'</tr>').join('');
+        const metrics=reports.querySelectorAll('.pm-kpis strong');[5,8,4,billableHours(times)].forEach((value,i)=>{if(metrics[i])metrics[i].textContent=i===3?Number(value).toFixed(2)+' hrs':String(value);});
+        const preview=reports.querySelector('.pm-report-placeholder');if(preview){preview.innerHTML='<h3>Workspace record overview</h3><p>Illustrative activity for the last six months. These fictional figures are for preview only.</p><div class="pm-sample-bars" aria-label="Sample open matters by month"><span style="--bar:56%"><b>Jun</b><i>38</i></span><span style="--bar:61%"><b>Jul</b><i>41</i></span><span style="--bar:66%"><b>Aug</b><i>44</i></span><span style="--bar:74%"><b>Sep</b><i>49</i></span><span style="--bar:82%"><b>Oct</b><i>52</i></span><span style="--bar:90%"><b>Nov</b><i>56</i></span></div>';}
+      }
+      const documentModule=byId('work-documents');
+      if(documentModule){const detail=documentModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Document details</h3><strong>Consent Orders Draft.pdf</strong><p>Court documents · PF-100348 — Wilson v Wilson</p><dl class="pm-dl"><div><dt>Client</dt><dd>Emma Wilson</dd></div><div><dt>Uploaded by</dt><dd>E. Parker</dd></div><div><dt>File type</dt><dd>PDF · 1.2 MB</dd></div><div><dt>Pages</dt><dd>8</dd></div></dl><div class="pm-actions"><button disabled>Download</button><button disabled>Share</button><button disabled>Rename</button><button disabled>Move</button><button disabled>Delete</button></div><small>Sample preview only; no file is stored.</small>';}
+      const contactModule=byId('work-contacts');
+      if(contactModule){const detail=contactModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Jordan Reeves</h3><span class="matter-status-pill">Mediator</span><div class="pm-tabs" role="tablist"><button type="button" aria-selected="true">Details</button><button type="button" aria-selected="false">Matters</button><button type="button" aria-selected="false">Notes</button><button type="button" aria-selected="false">Communications</button></div><p><strong>Resolution Chambers</strong><br>j.reeves@example.com<br>(02) 5550 1305<br>Linked matter: PF-100348 — Wilson v Wilson</p><p>Sample contact profile for workspace preview.</p>';}
+      const employeeModule=byId('work-employees');
+      if(employeeModule){const detail=employeeModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Team member details</h3><strong>Emily Carter</strong><p>Solicitor · Senior Family Law Solicitor</p><p>emily.carter@example.com<br>+61 2 7946 1284</p><h4>Role-based access summary</h4><ul><li>Manage assigned matters</li><li>Create and edit client records</li><li>Record time for assigned matters</li></ul><p><strong>Current workload</strong><br>28 assigned matters · 7 active tasks · 42.5 hrs this month</p><small>Illustrative sample profile; no account access was created.</small>';}
+    }
     renderMatterDirectory();
   }
+  function billableHours(rows){return rows.reduce((total,row)=>total+(String(row.payload.billable).toLowerCase()==='yes'?(Number(row.payload.hours)||0):0),0);}
   async function connectPractice(context) {
     practiceStop?.(); practiceStop=null; practiceSettingsStop?.(); practiceSettingsStop=null; practiceRecords=[]; practiceContext=context;
     if(!context||context.sampleMode||!context.db||!context.user||!context.firmUid){
@@ -262,7 +314,36 @@
           {reference:'PF-100345',title:'Hughes v Hughes',client:'Mark Hughes',type:'Property settlement',status:'In Progress',solicitor:'L. Wilson',opened:offset(-5),nextDate:offset(6)},
           {reference:'PF-100344',title:'Patel v Patel',client:'Asha Patel',type:'Parenting arrangements',status:'On Hold',solicitor:'J. Nguyen',opened:offset(-45),nextDate:''}
         ];
-        practiceRecords=demos.map((payload,index)=>({id:'sample-matter-'+index,firmUid:'sample',recordType:'matter',payload,createdAt:new Date(payload.opened+'T12:00:00Z'),updatedAt:new Date(payload.opened+'T12:00:00Z')}));
+        const examples=[
+          ['document',{title:'Consent Orders Draft.pdf',category:'Court documents',matter:'PF-100348 — Wilson v Wilson',uploadedBy:'E. Parker',client:'Emma Wilson',fileName:'Consent Orders Draft.pdf'},-1],
+          ['document',{title:'Financial Disclosure.xlsx',category:'Financial documents',matter:'PF-100348 — Wilson v Wilson',uploadedBy:'E. Parker',client:'Emma Wilson',fileName:'Financial Disclosure.xlsx'},-2],
+          ['document',{title:'Parenting Plan Draft.pdf',category:'Client documents',matter:'PF-100347 — Chen v Li',uploadedBy:'M. Clarke',client:'Daniel Chen',fileName:'Parenting Plan Draft.pdf'},-3],
+          ['document',{title:'Client Correspondence.docx',category:'Correspondence',matter:'PF-100345 — Hughes v Hughes',uploadedBy:'L. Wilson',client:'Mark Hughes',fileName:'Client Correspondence.docx'},-4],
+          ['timeEntry',{staff:'Emma Carter',matter:'PF-100348 — Wilson v Wilson',description:'Review financial disclosure and prepare document index',hours:2.5,rate:420,billable:'Yes',status:'Unbilled'},-1],
+          ['timeEntry',{staff:'James Miller',matter:'PF-100347 — Chen v Li',description:'Prepare for mediation conference',hours:1.8,rate:380,billable:'Yes',status:'Billed'},-2],
+          ['timeEntry',{staff:'Sophie Monroe',matter:'PF-100346 — Roberts v Roberts',description:'Client conference and attendance note',hours:1.2,rate:350,billable:'Yes',status:'Unbilled'},-3],
+          ['expense',{staff:'Emma Carter',matter:'PF-100348 — Wilson v Wilson',description:'Court filing fee',type:'Court filing fee',amount:334,status:'Pending'},-1],
+          ['expense',{staff:'James Miller',matter:'PF-100347 — Chen v Li',description:'Process server disbursement',type:'Disbursement',amount:165,status:'Pending'},-4],
+          ['invoice',{number:'INV-1032',client:'Emma Wilson',matter:'PF-100348 — Wilson v Wilson',issueDate:offset(-3),dueDate:offset(11),quantity:4,rate:420,status:'Draft'},-3],
+          ['invoice',{number:'INV-1031',client:'Daniel Chen',matter:'PF-100347 — Chen v Li',issueDate:offset(-5),dueDate:offset(9),quantity:6,rate:380,status:'Sent'},-5],
+          ['invoice',{number:'INV-1030',client:'Samantha Roberts',matter:'PF-100346 — Roberts v Roberts',issueDate:offset(-18),dueDate:offset(-2),quantity:5,rate:360,status:'Overdue'},-18],
+          ['invoice',{number:'INV-1029',client:'Mark Hughes',matter:'PF-100345 — Hughes v Hughes',issueDate:offset(-24),dueDate:offset(-10),quantity:3,rate:400,status:'Paid'},-24],
+          ['trustTransaction',{date:offset(-3),reference:'TR-001458',matter:'PF-100348',client:'Emma Wilson',transactionType:'Receipt',amount:10000,balance:10000},-3],
+          ['trustTransaction',{date:offset(-2),reference:'TR-001457',matter:'PF-100347',client:'Daniel Chen',transactionType:'Withdrawal',amount:2500,balance:7500},-2],
+          ['trustTransaction',{date:offset(-1),reference:'TR-001456',matter:'PF-100346',client:'Samantha Roberts',transactionType:'Receipt',amount:15000,balance:22500},-1],
+          ['trustTransaction',{date:offset(0),reference:'TR-001455',matter:'PF-100345',client:'Mark Hughes',transactionType:'Withdrawal',amount:1000,balance:21500},0],
+          ['contact',{firstName:'Jordan',lastName:'Reeves',type:'Mediator',firm:'Resolution Chambers',email:'j.reeves@example.com',phone:'(02) 5550 1305',matter:'PF-100348 — Wilson v Wilson',status:'Active'},-1],
+          ['contact',{firstName:'Casey',lastName:'Turner',type:'Client',email:'casey.turner@example.com',phone:'(02) 5550 1101',matter:'PF-100348 — Wilson v Wilson',status:'Active'},-2],
+          ['contact',{firstName:'Morgan',lastName:'Wells',type:'Barrister',firm:'Chambers Law',email:'m.wells@example.com',phone:'(02) 5550 1200',matter:'PF-100346 — Roberts v Roberts',status:'Active'},-3],
+          ['contact',{firstName:'Family Court',lastName:'— Central Registry',type:'Court',firm:'Federal Circuit and Family Court',email:'registry@example.com',phone:'(02) 5550 1400',matter:'PF-100347 — Chen v Li',status:'Active'},-4],
+          ['employee',{name:'Emily Carter',email:'emily.carter@example.com',role:'Solicitor',jobTitle:'Senior Family Law Solicitor',status:'Active',matter:'28'},-1],
+          ['employee',{name:'James Whitfield',email:'james.whitfield@example.com',role:'Solicitor',jobTitle:'Family Law Solicitor',status:'Active',matter:'21'},-2],
+          ['employee',{name:'Sophie Monroe',email:'sophie.monroe@example.com',role:'Practice manager',jobTitle:'Practice Manager',status:'Active',matter:'6'},-3],
+          ['employee',{name:'Daniel Reeves',email:'daniel.reeves@example.com',role:'Admin',jobTitle:'Operations Administrator',status:'Active',matter:'3'},-4],
+          ['employee',{name:'Aisha Rahman',email:'aisha.rahman@example.com',role:'Employee',jobTitle:'Legal Assistant',status:'Active',matter:'12'},-5]
+        ];
+        const record=(recordType,payload,index,daysAgo)=>{const createdAt=new Date((recordType==='matter'?payload.opened:offset(daysAgo))+'T12:00:00Z');return{id:'sample-'+recordType+'-'+index,firmUid:'sample',recordType,payload,createdAt,updatedAt:{toMillis:()=>createdAt.getTime()}};};
+        practiceRecords=[...demos.map((payload,index)=>record('matter',payload,index,Number(payload.opened.slice(-2))-Number(today.slice(-2)))),...examples.map(([type,payload,daysAgo],index)=>record(type,{...payload,...(['timeEntry','expense'].includes(type)?{date:offset(daysAgo)}:{})},index,daysAgo))];
         renderRecords();
       }else document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Sign in to the live workspace to save records.',true));
       return;
