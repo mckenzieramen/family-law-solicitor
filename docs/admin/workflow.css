@@ -929,3 +929,29 @@ dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filt
 @media(max-width:1100px){.contacts-layout{grid-template-columns:minmax(0,1fr) minmax(300px,.85fr)}}
 @media(max-width:760px){.contacts-page-head{align-items:flex-start;flex-direction:column}.contacts-layout{grid-template-columns:minmax(0,1fr)}.contact-list-column-head{display:none}.contact-list-row{grid-template-columns:36px minmax(0,1fr) auto;gap:5px 10px;padding:11px}.contact-list-name{grid-column:2;grid-row:1}.contact-list-row>.contact-type-pill{grid-column:3;grid-row:1}.contact-list-secondary{grid-column:2;grid-row:2}.contact-list-row>.contact-list-matter{grid-column:2;grid-row:3}.contact-list-row>.contact-list-last{grid-column:2;grid-row:4}.contact-list-row>.contact-status-pill{grid-column:3;grid-row:2/5}.contacts-layout{min-height:0}.contact-directory-list{max-height:52vh}.contact-detail-panel{min-height:360px}.contact-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-tabs button{border-radius:8px}.settings-form-grid,.matter-type-list{grid-template-columns:1fr}}
 @media(max-width:480px){.contact-filter-row{grid-template-columns:1fr}.settings-page-head{align-items:flex-start}.settings-card{padding:16px}.contact-detail-grid>div{grid-template-columns:105px minmax(0,1fr)}}
+
+
+/* Keep the client directory inside the Client enquiries workspace. */
+.client-workspace-tabs{display:flex;gap:5px;margin:0 0 15px;padding:0 0 7px;border-bottom:1px solid #d8c39b}
+.client-workspace-tabs button{min-height:38px;padding:8px 14px;border:1px solid transparent;border-radius:8px 8px 0 0;background:transparent;color:#465568;font-size:12px;font-weight:750;cursor:pointer}
+.client-workspace-tabs button[aria-selected=true]{border-color:#e3d1b1;background:linear-gradient(135deg,#f4e5c9,#efd6a9);color:#312614}
+.client-directory-view{padding-top:4px}
+.contacts-page-head h3{margin:0;color:#11233a;font:700 clamp(23px,2.7vw,31px)/1.1 Georgia,serif}
+.contacts-page-head .contact-primary-action{font-family:inherit;cursor:pointer}
+.contacts-layout{grid-template-columns:minmax(0,1.15fr) minmax(330px,.9fr)}
+.contact-list-pane{overflow:hidden}
+.contact-table-wrap{width:100%;overflow:auto;overscroll-behavior:contain}
+.contact-directory-table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;color:#17283b;font-size:12px}
+.contact-directory-table thead th{position:sticky;top:0;z-index:1;padding:11px 10px;border-bottom:1px solid #e5dbc9;background:#f4f0e9;color:#28394d;text-align:left;font-size:10px;font-weight:800;white-space:nowrap}
+.contact-directory-table tbody td{padding:10px;border-bottom:1px solid #eee8de;vertical-align:middle}
+.contact-table-row{outline:none;cursor:pointer;transition:background .14s ease}
+.contact-table-row:hover{background:#fbf6eb}
+.contact-table-row.is-selected{background:#fbf1de;box-shadow:inset 3px 0 #b48a3d}
+.contact-table-row:focus-visible{outline:2px solid #b48a3d;outline-offset:-2px}
+.contact-table-person{display:flex;align-items:center;gap:9px;min-width:0}
+.contact-table-person strong{overflow:hidden;color:#17283b;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.contact-directory-table .contact-type-pill,.contact-directory-table .contact-status-pill{white-space:nowrap}
+.contact-table-email{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.contact-table-email small{display:block;margin-top:4px;color:#657286;font-size:10px}
+.contact-directory-table .contact-empty-state{display:table-cell;padding:28px;text-align:center;color:#687588;font-size:12px}
+@media(max-width:760px){.contacts-layout{grid-template-columns:minmax(0,1fr)}.contact-table-wrap{max-height:54vh}.client-workspace-tabs{overflow-x:auto}.client-workspace-tabs button{flex:0 0 auto}}
