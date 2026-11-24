@@ -245,22 +245,30 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   <div class="calendar-agenda" hidden aria-hidden="true"><h3 id="work-agenda-title">Scheduled items</h3><div id="work-agenda"></div></div>
   <button type="button" id="work-show-month" hidden>Show whole month</button>
  </section>
-<section class="workflow-panel" id="work-matters"><div class="admin-section-heading"><h2>Matter activity</h2><button type="button" class="work-button" id="new-follow-up">Add follow-up</button></div>
-  <section class="matter-workflow-box" aria-labelledby="matter-workflow-title">
-   <div><span class="matter-workflow-eyebrow">STANDARDISED MATTER WORKFLOW</span><h3 id="matter-workflow-title">Start a family law workflow</h3><p>Creates linked tasks in the matter file. Add deadlines after checking them with the solicitor.</p></div>
-   <form id="matter-workflow-form">
-    <label>Matter reference<input name="matter" maxlength="80" placeholder="e.g. FAM-2026-014" required></label>
-    <label>Workflow<select name="workflow"><option value="parenting">Parenting arrangements</option><option value="property">Property settlement</option><option value="agreement">Financial agreement</option><option value="general">General family law</option></select></label>
-    <button class="work-button" type="submit">Create linked tasks</button><p id="matter-workflow-status" role="status"></p>
-   </form>
+<section class="workflow-panel matter-management" id="work-matters">
+  <header class="matter-page-heading">
+   <div><span class="matter-page-accent" aria-hidden="true"></span><div><p>Manage open files, clients, matter types and important dates.</p></div></div>
+   <button type="button" class="pm-button pm-primary matter-new-button" data-open-dialog="pm-matter-dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New Matter</button>
+  </header>
+  <section class="matter-summary-cards" aria-label="Matter summary">
+   <article><span class="matter-summary-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM8 8V5h8v3M3 12h18"></path></svg></span><div><small>Open matters</small><strong id="matter-stat-open">0</strong></div></article>
+   <article><span class="matter-summary-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M12 8v8M8 12h8"></path></svg></span><div><small>New this month</small><strong id="matter-stat-new">0</strong></div></article>
+   <article><span class="matter-summary-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 11a3 3 0 1 0 0-6M17 15a5 5 0 0 1 4 5"></path></svg></span><div><small>Active clients</small><strong id="matter-stat-clients">0</strong></div></article>
+   <article><span class="matter-summary-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 3 3 5-6"></path></svg></span><div><small>Finalised this month</small><strong id="matter-stat-finalised">0</strong></div></article>
   </section>
-  <section id="case-follow-ups" aria-label="Open follow-ups"></section>
-  <div class="legal-actions">
-   <label>Search matters<input id="work-matter-query" type="search" placeholder="Matter reference or item title"></label>
-   <label>Show<select id="work-matter-kind"><option value="">All work items</option><option>Task</option><option>Appointment</option><option>Email draft</option></select></label>
-   <label>Sort matters<select id="work-matter-sort"><option value="reference">Reference A–Z</option><option value="activity">Most recent activity</option></select></label>
-  </div>
-  <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></section>
+  <section class="matter-directory-card" aria-label="Matter directory">
+   <div class="matter-directory-toolbar">
+    <label class="matter-search"><span>Search matters</span><input id="matter-search" type="search" placeholder="Matter reference, name or client"></label>
+    <label><span>Type</span><select id="matter-type-filter"><option value="">All types</option><option>Parenting arrangements</option><option>Property settlement</option><option>Separation</option><option>Financial agreement</option><option>Consent orders</option><option>Other family law</option></select></label>
+    <label><span>Status</span><select id="matter-status-filter"><option value="">All statuses</option><option>Active</option><option>In Progress</option><option>On Hold</option><option>Closed</option></select></label>
+    <label><span>Responsible</span><select id="matter-solicitor-filter"><option value="">All staff</option></select></label>
+    <button type="button" class="matter-clear-filters" id="matter-clear-filters">Clear filters</button>
+   </div>
+   <div class="matter-table-scroll"><table id="pm-matter-table" class="pm-table matter-table"><thead><tr><th scope="col">Matter ref</th><th scope="col">Matter</th><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Next date</th><th scope="col">Responsible</th></tr></thead><tbody><tr><td class="pm-empty" colspan="7">Loading matters…</td></tr></tbody></table></div>
+   <footer class="matter-table-footer"><span id="matter-page-count">Loading matter records…</span><div><button type="button" id="matter-page-prev" aria-label="Previous page" disabled>‹</button><span id="matter-page-current">1</span><button type="button" id="matter-page-next" aria-label="Next page" disabled>›</button></div></footer>
+  </section>
+  <div class="matter-legacy-tools" hidden aria-hidden="true">${legacy}</div>
+ </section>
  <section class="workflow-panel correspondence-workspace" id="work-email">
   <header class="correspondence-page-head">
    <div><span class="correspondence-accent" aria-hidden="true"></span><div><p>Review received emails and prepare clear, matter-linked replies.</p></div></div>
