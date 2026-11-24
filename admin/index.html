@@ -134,7 +134,7 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
   </div>
   <button type="button" id="staff-menu-toggle" aria-expanded="false" aria-controls="staff-navigation">Menu <span aria-hidden="true">☰</span></button>
   <nav id="staff-navigation" aria-label="Staff navigation">
-   <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Overview</span></a>
+   <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client Messages</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="new messages">0</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="tasks requiring attention">0</span></a>
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Calendar</span><span class="nav-notification" id="nav-calendar-badge" hidden aria-label="consultations awaiting approval">0</span></a>
@@ -246,7 +246,7 @@ if (sampleMode) {
     status.textContent = 'The sample workspace could not load. Refresh the page to try again.';
   }
 } else {
-  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-3');
+  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-4');
 }
 </script>
 <script>
@@ -262,7 +262,7 @@ if (sampleMode) {
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
-   title.textContent = active === links[0] ? 'Overview' : active.lastElementChild.textContent.trim();
+   title.textContent = active === links[0] ? 'Dashboard' : active.lastElementChild.textContent.trim();
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
      else link.removeAttribute('aria-current');

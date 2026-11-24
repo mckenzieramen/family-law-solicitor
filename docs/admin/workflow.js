@@ -552,7 +552,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const attorneyEmails = records.filter(isAttorneyEmail).sort((a,b)=>(b.updatedAt?.toMillis?.()??0)-(a.updatedAt?.toMillis?.()??0));
     const emailList=find('#attorney-email-list');
     if(emailList) emailList.innerHTML = attorneyEmails.map(item =>
-      '<article class="attorney-email-card"><div><span>RECEIVED EMAIL</span><h4>'+escape(item.title.replace(/^\\[ATTY EMAIL\\] /,''))+'</h4><p>'+escape(item.recipient||'Unknown sender')+(item.date?' · '+escape(item.date):'')+'</p></div><details><summary>Read full email</summary><pre>'+escape(item.notes||'')+'</pre></details><button type="button" class="work-button" data-generate-email-task="'+escape(item.id)+'">Generate task</button></article>'
+      '<article class="attorney-email-card"><div><span>RECEIVED EMAIL</span><h4>'+escape(item.title.replace(/^\[ATTY EMAIL\] /,''))+'</h4><p>'+escape(item.recipient||'Unknown sender')+(item.date?' · '+escape(item.date):'')+'</p></div><details><summary>Read full email</summary><pre>'+escape(item.notes||'')+'</pre></details><button type="button" class="work-button" data-generate-email-task="'+escape(item.id)+'">Generate task</button></article>'
     ).join('') || '<p class="work-empty">No attorney emails saved yet.</p>';
     const emailBadge=document.getElementById('nav-email-badge');
     if(emailBadge){emailBadge.textContent=attorneyEmails.length>99?'99+':String(attorneyEmails.length);emailBadge.hidden=attorneyEmails.length===0;}
@@ -1162,12 +1162,13 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     if(generateEmailTask){
       sourceEmail=records.find(item=>item.id===generateEmailTask.dataset.generateEmailTask);
       if(!sourceEmail||!loaded)return;
-      const subject=sourceEmail.title.replace(/^\\[ATTY EMAIL\\] /,'');
+      const subject=sourceEmail.title.replace(/^\[ATTY EMAIL\] /,'');
       const summary=find('#email-task-summary');summary.textContent='Creating a task suggestion…';
       taskForm.elements.title.value='';taskForm.elements.matter.value=sourceEmail.matter||'';taskForm.elements.date.value='';taskForm.elements.priority.value='Normal';taskForm.elements.notes.value='';
       find('.email-task-source').textContent='Source: '+(sourceEmail.recipient||'Attorney')+' · '+subject;
       taskDialog.showModal();const submit=taskForm.querySelector('[type="submit"]');submit.disabled=true;
       try{
+        if(sampleMode){summary.textContent='Sample mode does not send email content to AI. Enter the task details below to continue.';taskForm.elements.title.value='Review attorney email: '+subject;taskForm.elements.notes.value='Review the attorney email and confirm the next steps.';return;}
         if(!authUser)throw new Error('Signed-in account is unavailable.');
         const token=await authUser.getIdToken();
         const response=await fetch('/api/summarize-attorney-email',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({from:sourceEmail.recipient,subject,received:sourceEmail.date,body:sourceEmail.notes})});
