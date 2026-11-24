@@ -181,6 +181,24 @@
 #work-matters #work-matter-query { max-width:440px; }
 #work-queue .legal-actions { align-items:end; }
 #work-queue .work-row { background:#fffefa; }
+#work-queue .staff-table-scroll{width:100%;max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:11px;background:#fffefa;}
+#work-queue .staff-task-table{width:100%;min-width:820px;border-collapse:separate;border-spacing:0;table-layout:fixed;color:var(--ink);font:14px/1.45 system-ui,sans-serif;}
+#work-queue .staff-task-table th{padding:12px 14px;background:#f3eee5;color:#26374c;text-align:left;font-size:12px;font-weight:750;white-space:nowrap;border-bottom:1px solid var(--line);}
+#work-queue .staff-task-table td{padding:12px 14px;border-bottom:1px solid #ece5da;vertical-align:middle;overflow-wrap:anywhere;}
+#work-queue .staff-task-table tbody tr:last-child td{border-bottom:0;}
+#work-queue .staff-task-table tbody tr:hover{background:#fcf7ed;}
+#work-queue .staff-task-table th:nth-child(1){width:36%;}
+#work-queue .staff-task-table th:nth-child(2){width:15%;}
+#work-queue .staff-task-table th:nth-child(3){width:12%;}
+#work-queue .staff-task-table th:nth-child(4){width:14%;}
+#work-queue .staff-task-table th:nth-child(5){width:23%;}
+#work-queue .staff-task-table td:first-child strong{display:block;font-size:14px;line-height:1.4;}
+#work-queue .staff-task-table td:first-child small{display:inline-flex;margin-top:5px;padding:2px 8px;border-radius:999px;background:#edf3eb;color:#3e6945;font-size:11px;font-weight:700;}
+#work-queue .staff-task-table td:first-child small:where(:not(:empty)){white-space:nowrap;}
+#work-queue .staff-task-table .task-priority{display:inline-flex;justify-content:center;min-width:66px;padding:4px 9px;border:1px solid #ded8cb;border-radius:999px;background:#f4f1eb;color:#455064;font-size:12px;font-weight:700;}
+#work-queue .staff-task-table .task-priority[data-priority="High"]{border-color:#d1dfcc;background:#edf5e9;color:#376344;}
+#work-queue .staff-task-table .work-actions{flex-wrap:nowrap;gap:6px;}
+#work-queue .staff-task-table .work-actions button{min-height:34px;padding:6px 9px;font-size:12px;white-space:nowrap;}
 .draft-toolbar { border-bottom:1px solid var(--line); margin-bottom:18px; }
 
 /* Daily work summaries */
