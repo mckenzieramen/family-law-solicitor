@@ -325,9 +325,12 @@ export function mountInbox(db, sampleMode = false) {
   retry.onclick = connect;
   if (sampleMode) {
     entries = [
-      {kind:'consultation', contact:{firstName:'Mia', lastName:'Bennett', email:'mia@example.com', phone:'0400 123 456', postcode:'2060', topic:'parenting', newClient:'Yes', preferredTime:'2026-11-25T13:00'}, message:'Hello, I’d like to arrange an initial consultation about school-holiday arrangements. Do you have any availability next week?'},
-      {kind:'support', contact:{}, message:'Could you confirm whether I should upload my statements before the appointment?'},
-      {kind:'support', contact:{}, message:'Can I move my consultation to an afternoon slot?', reply:'Please share two afternoon times that work for you and we’ll check availability.'}
+      {kind:'consultation', contact:{firstName:'Mia', lastName:'Bennett', email:'mia.bennett@example.com', phone:'0400 234 567', postcode:'2060', topic:'parenting', newClient:'Yes', preferredTime:'2026-11-26T13:00'}, message:'Hello, I’d like to arrange an initial consultation about school-holiday arrangements. Do you have any availability next week?'},
+      {kind:'consultation', contact:{firstName:'Jordan', lastName:'Lee', email:'jordan.lee@example.com', phone:'0400 123 456', postcode:'2000', topic:'parenting', newClient:'Yes', preferredTime:'2026-11-25T10:00'}, message:'I need advice about a proposed parenting arrangement and the upcoming school holidays. Could someone contact me about an initial consultation?'},
+      {kind:'consultation', contact:{firstName:'Alex', lastName:'Taylor', email:'alex.taylor@example.com', phone:'0400 345 678', postcode:'2065', topic:'property settlement', newClient:'Yes', preferredTime:'2026-11-27T11:30'}, message:'I am looking for advice about a property settlement following separation. I have started gathering our financial documents.'},
+      {kind:'support', contact:{firstName:'Casey', lastName:'Turner', email:'casey.turner@example.com'}, message:'Could you confirm whether I should upload my bank statements before the appointment?'},
+      {kind:'support', contact:{firstName:'Samantha', lastName:'Roberts', email:'samantha.roberts@example.com'}, message:'Can I move my consultation to an afternoon slot?', reply:'Please share two afternoon times that work for you and we’ll check availability.'},
+      {kind:'support', contact:{firstName:'Mark', lastName:'Hughes', email:'mark.hughes@example.com'}, message:'I have uploaded the signed authority form. Please let me know if anything else is required.'}
     ].map((item, index) => ({id:'sample-message-' + index, reply:'', ...item, createdAt:{toDate:() => new Date(Date.now() - (index + 1) * 3600000)}}));
     ready = true;
     showOverviewInbox(entries.filter(item => item.kind === 'support' && !item.reply).length);
