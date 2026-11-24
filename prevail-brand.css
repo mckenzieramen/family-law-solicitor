@@ -623,3 +623,40 @@ html body .client-home #consultation-form .consultation-footer[hidden]{display:n
 html body .client-home #consultation-form .premium-booking-steps [data-step="2"]{order:1!important}
 html body .client-home #consultation-form .premium-booking-steps [data-step="1"]{order:2!important}
 html body .client-home #consultation-form .premium-booking-steps [data-step="3"]{order:3!important}
+
+/* Staff portal identity uses the same official wordmark as the public site. */
+html body .admin-dashboard .dashboard-identity{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ gap:8px!important;padding-block:18px!important
+}
+html body .admin-dashboard .dashboard-brand-logo{
+ display:block!important;width:min(100%,164px)!important;height:auto!important;max-height:44px!important;
+ object-fit:contain!important;object-position:left center!important;padding:5px 7px!important;
+ box-sizing:border-box!important;background:#fffaf3!important;border-radius:7px!important
+}
+html body .admin-dashboard .dashboard-identity>p{margin:0!important;color:#fffaf3!important;font-size:12px!important}
+html body .admin-sign-in-header .admin-brand-logo{
+ display:block!important;width:min(100%,200px)!important;height:auto!important;max-height:50px!important;
+ object-fit:contain!important;padding:5px 7px!important;box-sizing:border-box!important;
+ background:#fffaf3!important;border-radius:7px!important
+}
+html body .admin-sign-in-header .admin-sign-in-brand{font:600 12px/1.4 system-ui,sans-serif!important;letter-spacing:.08em!important;text-transform:uppercase!important}
+
+/* Primary calls to action keep readable contrast while hovered or keyboard-focused. */
+html body .site-header .header-nav .nav-cta:hover,
+html body .client-home .hero-link:hover,
+html body .client-home .action:hover,
+html body .solicitor-profile .profile-button:hover,
+html body .consultation-form button[type="submit"]:hover,
+html body .contact-button:hover{
+ background:#073e2f!important;color:#fffaf3!important;border-color:#d5ae67!important;
+ box-shadow:0 8px 20px rgba(7,62,47,.18)!important;transform:translateY(-1px)
+}
+html body .site-header .header-nav .nav-cta:focus-visible,
+html body .client-home .hero-link:focus-visible,
+html body .client-home .action:focus-visible,
+html body .solicitor-profile .profile-button:focus-visible,
+html body .consultation-form button[type="submit"]:focus-visible,
+html body .contact-button:focus-visible{
+ outline:3px solid #d5ae67!important;outline-offset:3px!important
+}
