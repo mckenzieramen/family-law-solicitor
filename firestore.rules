@@ -55,7 +55,6 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
-      allow list: if isSolicitor();
       allow create: if isSolicitor()
         && request.auth.uid != uid
         && request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
@@ -218,7 +217,8 @@ service cloud.firestore {
     }
 
     match /firmRecords/{recordId} {
-      allow get, list: if isFirmStaff()
+      allow get: if isFirmStaff() && belongsToFirm(resource.data.firmUid);
+      allow list: if isFirmStaff()
         && belongsToFirm(resource.data.firmUid)
         && request.query.limit <= 250;
       allow create: if isFirmStaff()
