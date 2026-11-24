@@ -225,6 +225,12 @@ export function mountInbox(db, sampleMode = false) {
   @media(max-width:850px){#staff-inbox .inbox-split:has(>.enquiry-left){grid-template-columns:minmax(0,1fr)!important}#staff-inbox .inbox-split>#inbox-reader{grid-column:1!important;grid-row:2!important}}
   `;document.head.append(layoutFix);
   layoutFix.textContent += `
+  #staff-inbox .eq-profile .eq-profile-line{display:flex!important;align-items:center;gap:7px;min-height:23px;flex-wrap:wrap}
+  #staff-inbox .eq-profile-line a{display:inline!important;overflow-wrap:anywhere;min-width:0}
+  #staff-inbox .eq-copy{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;padding:3px;background:transparent;border:1px solid transparent;border-radius:5px;cursor:pointer;color:#987740}
+  #staff-inbox .eq-copy:hover,#staff-inbox .eq-copy:focus-visible{background:#f3e5d2;border-color:#dfd3c4}
+  #staff-inbox .eq-copy-feedback{font:12px Georgia,serif;color:#476342}
+
   #staff-inbox .enquiry-pipeline button{min-height:50px!important;padding:10px 18px!important;gap:8px!important;margin-left:0!important;flex:1 0 0!important;min-width:125px!important}
   #staff-inbox .eq-form select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #c8c2b9;border-radius:6px;background:#fcfaf7;color:#101827;padding:9px;font:14px Georgia,serif}
 
@@ -260,7 +266,7 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .eq-form-grid>*{min-width:0}
   #staff-inbox .eq-form-grid input{min-width:0}
   `;
-  const eqIcon=(kind)=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('aria-hidden','true');svg.innerHTML=kind==='mail'?'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>':'<path d="M5 3 3 6c0 8 7 15 15 15l3-3-5-4-3 3c-3-1-5-3-6-6l3-3Z"/>';return svg;};
+  const eqIcon=(kind)=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('aria-hidden','true');svg.innerHTML=kind==='location'?'<path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>':kind==='copy'?'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>':kind==='mail'?'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>':'<path d="M5 3 3 6c0 8 7 15 15 15l3-3-5-4-3 3c-3-1-5-3-6-6l3-3Z"/>';return svg;};
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -371,7 +377,7 @@ export function mountInbox(db, sampleMode = false) {
         const el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;if(cls)n.className=cls;return n;};
         const top=el('div','','eq-top');const badge=el('span',stageOf(record),'enquiry-status');badge.dataset.stage=stageOf(record);top.append(el('h3','Enquiry Details'),badge);details.append(top);
         const profile=el('div','','eq-profile');const avatar=el('div',(senderName(record)||'Unknown').split(' ').map(x=>x[0]).slice(0,2).join(''),'eq-avatar');const identity=el('div');identity.append(el('h3',senderName(record)||'Consultation enquiry'));
-        for(const [value,scheme] of [[contact.email,'mailto:'],[contact.phone,'tel:'],[contact.postcode,'']])if(value){const a=el(scheme?'a':'div',value);if(scheme){a.href=scheme+value;a.prepend(eqIcon(scheme==='mailto:'?'mail':'phone'));}identity.append(a);}
+        for(const [value,scheme,kind] of [[contact.email,'mailto:','mail'],[contact.phone,'tel:','phone'],[contact.postcode,'','location']])if(value){const line=el('div','','eq-profile-line');const a=el(scheme?'a':'span',value);if(scheme)a.href=scheme+value;line.append(eqIcon(kind),a);if(kind==='mail'){const copy=el('button','','eq-copy');copy.type='button';copy.title='Copy email address';copy.setAttribute('aria-label','Copy email address');copy.append(eqIcon('copy'));const feedback=el('span','','eq-copy-feedback');feedback.setAttribute('role','status');copy.onclick=async()=>{try{await navigator.clipboard.writeText(value);feedback.textContent='Copied!';}catch{feedback.textContent='Unable to copy';}setTimeout(()=>{feedback.textContent='';},2200);};line.append(copy,feedback);}identity.append(line);}
         profile.append(avatar,identity);details.append(profile);
         const fields=el('div','','inbox-ticket-fields');addTicketField(fields,'Subject',contact.topic||'Not specified');addTicketField(fields,'Received',date);addTicketField(fields,'Preferred Contact',contact.preferredContact||(contact.email?'Email':'Phone'));details.append(fields);
         const msg=el('section','','eq-section');msg.append(el('strong','Inquiry Summary'),el('p',record.message||'No message provided.'));details.append(msg);
