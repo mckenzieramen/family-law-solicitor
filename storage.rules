@@ -1,0 +1,66 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profilePath(uid) {
+      return /databases/(default)/documents/users/$(uid);
+    }
+
+    function profileExists() {
+      return signedIn() && firestore.exists(profilePath(request.auth.uid));
+    }
+
+    function isSolicitor() {
+      return signedIn()
+        && (request.auth.token.get('role', '') == 'solicitor'
+          || (profileExists()
+            && firestore.get(profilePath(request.auth.uid)).data.get('role', '') == 'solicitor'));
+    }
+
+    function isActiveAdmin() {
+      return profileExists()
+        && firestore.get(profilePath(request.auth.uid)).data.get('role', '') == 'admin'
+        && firestore.get(profilePath(request.auth.uid)).data.get('Active', false) == true;
+    }
+
+    function isEmployee() {
+      return profileExists()
+        && firestore.get(profilePath(request.auth.uid)).data.get('role', '') == 'employee';
+    }
+
+    function isFirmMember(firmUid) {
+      return signedIn()
+        && ((isSolicitor() && request.auth.uid == firmUid)
+          || (profileExists()
+            && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid
+            && (isEmployee() || isActiveAdmin())));
+    }
+
+    function managesFirm(firmUid) {
+      return (isSolicitor() && request.auth.uid == firmUid)
+        || (isActiveAdmin()
+          && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid);
+    }
+
+    function validUpload() {
+      return request.resource.size > 0
+        && request.resource.size <= 25 * 1024 * 1024
+        && request.resource.contentType.matches(
+          '(application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.ms-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/vnd.ms-powerpoint|application/vnd.openxmlformats-officedocument.presentationml.presentation|image/(jpeg|png)|text/(plain|csv))'
+        );
+    }
+
+    match /firmFiles/{firmUid}/{recordId}/{fileName} {
+      allow read: if isFirmMember(firmUid);
+      allow create, update: if isFirmMember(firmUid) && validUpload();
+      allow delete: if managesFirm(firmUid);
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
