@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-events-2">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-events-3">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
@@ -188,7 +188,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=calendar-events-2'),
+      import('../docs/admin/workflow.js?v=calendar-events-3'),
       import('../docs/admin/inbox.js?v=ticket-workspace-8')
     ]);
     mountWorkflow(null, null, true);
