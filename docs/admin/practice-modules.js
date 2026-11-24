@@ -335,6 +335,33 @@
       const employeeModule=byId('work-employees');
       if(employeeModule){const detail=employeeModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Team member details</h3><strong>Emily Carter</strong><p>Solicitor · Senior Family Law Solicitor</p><p>emily.carter@example.com<br>+61 2 7946 1284</p><h4>Role-based access summary</h4><ul><li>Manage assigned matters</li><li>Create and edit client records</li><li>Record time for assigned matters</li></ul><p><strong>Current workload</strong><br>28 assigned matters · 7 active tasks · 42.5 hrs this month</p><small>Illustrative sample profile; no account access was created.</small>';}
     }
+    const tm=byId('work-time');
+    if(tm){
+      const body=tm.querySelector('.pm-table tbody'),aside=tm.querySelector('.pm-content-grid aside');
+      if(body&&aside){
+        aside.querySelector('[data-time-preview]')?.remove();
+        const records=[...recordRows('timeEntry'),...recordRows('expense')];
+        const rows=[...body.querySelectorAll('tr')].filter(tr=>tr.cells.length===7);
+        rows.forEach(tr=>{
+          tr.tabIndex=0;tr.style.cursor='pointer';tr.title='View transaction details';
+          const open=()=>{
+            rows.forEach(row=>{row.style.background=row===tr?'#F5EDDF':'';row.setAttribute('aria-selected',String(row===tr));});
+            aside.querySelector('[data-time-preview]')?.remove();
+            const values=[...tr.cells].map(c=>c.textContent.trim());
+            const record=records.find(r=>{const p=r.payload||{};return String(p.date||'')===values[0]&&String(p.matter||'—')===values[2]&&String(p.description||p.type||'Expense')===values[3]&&(!p.staff||p.staff===values[1]);});
+            const p=record?.payload||{};
+            const panel=document.createElement('section');panel.dataset.timePreview='';panel.style.cssText='border-top:1px solid #DAD8D3;margin-top:18px;padding-top:16px';
+            const fields=[['Date',values[0]],['Staff',values[1]],['Matter',values[2]],['Description',values[3]],['Hours / amount',values[4]],['Billable',values[5]],['Status',values[6]]];
+            if(p.rate!=null)fields.push(['Hourly rate','AUD '+Number(p.rate).toFixed(2)]);
+            if(p.notes)fields.push(['Notes',p.notes]);
+            panel.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3>Transaction preview</h3><button type="button" class="pm-link" aria-label="Close transaction preview">Close ×</button></div><dl class="pm-dl">'+fields.map(([k,v])=>'<div><dt>'+safeText(k)+'</dt><dd style="overflow-wrap:anywhere;white-space:pre-wrap">'+safeText(v||'Not recorded')+'</dd></div>').join('')+'</dl>'+(practiceContext?.sampleMode?'<small>Sample transaction — demo only.</small>':'');
+            panel.querySelector('button').onclick=()=>{panel.remove();rows.forEach(row=>{row.style.background='';row.setAttribute('aria-selected','false');});};
+            aside.append(panel);
+          };
+          tr.onclick=open;tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};
+        });
+      }
+    }
     renderMatterDirectory();
   }
   function billableHours(rows){return rows.reduce((total,row)=>total+(String(row.payload.billable).toLowerCase()==='yes'?(Number(row.payload.hours)||0):0),0);}
