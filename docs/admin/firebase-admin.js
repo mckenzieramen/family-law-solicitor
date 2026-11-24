@@ -41,6 +41,16 @@ const logout = document.getElementById('staff-logout');
 const panel = document.getElementById('staff-checklist');
 const list = document.getElementById('duty-groups');
 const authStatus = document.getElementById('auth-status');
+function showAuthError(message) {
+  authStatus.dataset.state = 'error';
+  authStatus.setAttribute('role', 'alert');
+  authStatus.textContent = message;
+}
+function showAuthStatus(message) {
+  delete authStatus.dataset.state;
+  authStatus.setAttribute('role', 'status');
+  authStatus.textContent = message;
+}
 const saveStatus = document.getElementById('save-status');
 let generation = 0;
 let checklist;
@@ -115,7 +125,7 @@ login.addEventListener('submit', async event => {
   const button = login.querySelector('button');
   const data = new FormData(login);
   button.disabled = true;
-  authStatus.textContent = 'Signing in…';
+  showAuthStatus('Signing in…');
   try {
     await signInWithEmailAndPassword(auth, data.get('email').trim(), data.get('password'));
     login.reset();
@@ -128,7 +138,7 @@ login.addEventListener('submit', async event => {
       'auth/network-request-failed': 'Could not reach Firebase Authentication. Check your internet connection and try again.',
       'auth/invalid-api-key': 'The Firebase connection is misconfigured. Contact your Firebase administrator.'
     };
-    authStatus.textContent = messages[error?.code] || 'Sign-in failed. Contact your Firebase administrator.';
+    showAuthError(messages[error?.code] || 'Sign-in failed. Contact your Firebase administrator.');
   } finally {
     button.disabled = false;
   }
@@ -157,7 +167,7 @@ onIdTokenChanged(auth, async user => {
   list.replaceChildren();
   login.hidden = Boolean(user);
   logout.hidden = !user;
-  authStatus.textContent = user ? 'Checking staff access…' : 'Sign in with your staff account.';
+  showAuthStatus(user ? 'Checking staff access…' : 'Sign in with your staff account.');
   if (!user) return;
   try {
     const { claims } = await getIdTokenResult(user);
@@ -168,7 +178,7 @@ onIdTokenChanged(auth, async user => {
     const admin = role === 'admin' && profile?.Active === true;
     if (current !== generation) return;
     if (role !== 'solicitor' && (employeePanel || (!admin && role !== 'employee'))) {
-      authStatus.textContent = 'This account does not have access to this workspace.';
+      showAuthError('This account does not have access to this workspace. Contact your Firebase administrator.');
       return;
     }
     if (employeePanel) employeePanel.hidden = false;
@@ -196,8 +206,10 @@ onIdTokenChanged(auth, async user => {
       if (admin || role === 'solicitor') mountInbox(db, sampleMode);
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
-  } catch {
-    if (current === generation) authStatus.textContent = 'Checklist unavailable. Verify the Firestore database and access rules.';
+  } catch (error) {
+    if (current === generation) showAuthError(error?.code === 'permission-denied'
+      ? 'Access denied by Firestore. Verify your staff role and published access rules.'
+      : 'Workspace connection error. Check Firestore and refresh the page.');
   }
 });
 

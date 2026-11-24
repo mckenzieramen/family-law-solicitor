@@ -7,7 +7,7 @@
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-4">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-5">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-7">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
@@ -52,8 +52,6 @@
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="new messages">0</span></a>
    <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8"/></svg></span><span>Email &amp; drafts</span><span class="nav-notification" id="nav-email-badge" hidden aria-label="incoming attorney emails">0</span></a>
    <a href="#work-templates"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z M3 12l9 5 9-5 M3 16l9 5 9-5"/></svg></span><span>Templates</span></a>
-   <span class="dashboard-nav-label">Workspace</span>
-   <a href="#workspace-settings"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.09-.03a1.7 1.7 0 0 0-1.78.35l-.07.06h-3.4l-.02-.09a1.7 1.7 0 0 0-1.23-1.31l-.09-.02-1.7-2.94.06-.06A1.7 1.7 0 0 0 10.1 14l-.08-.04v-3.4l.08-.04a1.7 1.7 0 0 0 1.21-1.3l.02-.1h3.4l.07.06a1.7 1.7 0 0 0 1.78.35l.09-.03 1.7 2.94-.06.06A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span>Workspace setup</span></a>
   </nav> </aside>
  <div class="dashboard-main" id="workspace-content" tabindex="-1">
   <header class="dashboard-header">
@@ -116,35 +114,6 @@
    </div>
   </section>
   <div id="staff-workspace"></div>
-  <section id="workspace-settings" class="workspace-settings" hidden aria-labelledby="workspace-settings-title">
-   <header class="workspace-settings-heading">
-    <div><p class="workspace-eyebrow">Workspace setup</p><h2 id="workspace-settings-title">Practice workspace status</h2><p>See which parts of the staff workspace are live and which still need a real service connection.</p></div>
-   </header>
-   <div class="workspace-status-grid">
-    <section class="workspace-status-card" aria-labelledby="workspace-live-title">
-     <div class="workspace-status-card-heading"><span class="workspace-status-mark is-live" aria-hidden="true"></span><div><p class="workspace-eyebrow">Available in this workspace</p><h3 id="workspace-live-title">Connected workflows</h3></div></div>
-     <ul class="workspace-feature-list">
-      <li><a href="#staff-inbox">Client enquiries and support inbox</a><span>Firebase inbox</span></li>
-      <li><a href="#work-calendar">Calendar and consultation review queue</a><span>Staff calendar</span></li>
-      <li><a href="#work-queue">Tasks and workflow board</a><span>Staff work items</span></li>
-      <li><a href="#work-matters">Matter reference board</a><span>Linked work items</span></li>
-      <li><a href="#work-email">Email drafts and templates</a><span>Draft workspace</span></li>
-     </ul>
-    </section>
-    <section class="workspace-status-card" aria-labelledby="workspace-setup-title">
-     <div class="workspace-status-card-heading"><span class="workspace-status-mark is-setup" aria-hidden="true"></span><div><p class="workspace-eyebrow">Requires configuration</p><h3 id="workspace-setup-title">Services not yet connected</h3></div></div>
-     <ul class="workspace-requirement-list">
-      <li><strong>Client and contact directory</strong><span>There is no dedicated client record module yet. Enquiries remain in the inbox.</span></li>
-      <li><strong>Secure document storage</strong><span>Connect Firebase Storage and define staff access rules before adding client-file uploads.</span></li>
-      <li><strong>Attorney email sync</strong><span>Email intake is manual; Gmail or Outlook has not been connected.</span></li>
-      <li><strong>AI email summaries</strong><span>The server endpoint needs an <code>OPENAI_API_KEY</code>; email text should only be processed with staff consent.</span></li>
-      <li><strong>Time, expenses, billing and reports</strong><span>These need real data models and workflows before they can be used safely.</span></li>
-      <li><strong>Approval permissions</strong><span>Calendar approval writes require the matching Firestore rules to be published to Firebase.</span></li>
-     </ul>
-    </section>
-   </div>
-   <p class="workspace-settings-note">This status reflects the features in the current code. It does not create records or connect external accounts.</p>
-  </section>
   <aside class="staff-toast" id="staff-toast" hidden>
    <span class="staff-toast-icon" aria-hidden="true"></span>
    <div role="status" aria-live="polite" aria-atomic="true"><strong id="staff-toast-title"></strong><p id="staff-toast-message"></p></div>
@@ -163,9 +132,9 @@
 </section>
 <script type="module">
 const url = new URL(location.href);
+const status = document.getElementById('auth-status');
 const sampleMode = url.searchParams.get('sample') === '1';
 if (sampleMode) {
-  const status = document.getElementById('auth-status');
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
@@ -183,10 +152,18 @@ if (sampleMode) {
     document.getElementById('staff-entry').hidden = true;
     document.getElementById('staff-checklist').hidden = false;
   } catch {
-    status.textContent = 'The sample workspace could not load. Refresh the page to try again.';
+    status.dataset.state = 'error';
+    status.setAttribute('role', 'alert');
+    status.textContent = 'Sample workspace error. The admin tools could not load. Refresh the page to try again.';
   }
 } else {
-  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-7');
+  try {
+    await import('../docs/admin/firebase-admin.js?v=admin-dashboard-8');
+  } catch (error) {
+    status.dataset.state = 'error';
+    status.setAttribute('role', 'alert');
+    status.textContent = 'Admin connection error. Firebase could not load. Check your connection and refresh the page.';
+  }
 }
 </script>
 <script>
@@ -197,13 +174,11 @@ if (sampleMode) {
  const inbox = document.getElementById('inbox-nav');
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
- const settings = document.getElementById('workspace-settings');
  function render() {
    const hash = ['#duties-all','#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#work-templates' : location.hash;
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
-   settings.hidden = active.hash !== '#workspace-settings';
    title.textContent = active === links[0] ? 'Dashboard' : (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
@@ -220,7 +195,7 @@ if (sampleMode) {
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a, .workspace-settings a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a');
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);

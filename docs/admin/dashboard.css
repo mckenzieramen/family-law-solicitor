@@ -434,29 +434,6 @@ body.solicitor-profile { background:#fffaf3; }
 /* Keep dashboard-only summary cards on the Dashboard tab. */
 .admin-dashboard:not([data-view="overview"]) .admin-kpi-grid{display:none}
 
-/* Workspace setup page */
-.workspace-settings{display:grid;gap:16px;min-width:0}
-.workspace-settings-heading{padding:4px 0 14px;border-bottom:1px solid var(--line)}
-.workspace-settings-heading h2{margin:0;font:400 clamp(25px,2.5vw,34px)/1.15 var(--serif);letter-spacing:-.025em}
-.workspace-settings-heading p:last-child{margin:7px 0 0;color:var(--muted);font-size:14px}
-.workspace-eyebrow{margin:0 0 4px;color:#8b6729;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-.workspace-status-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
-.workspace-status-card{min-width:0;padding:17px;border:1px solid var(--line);border-radius:13px;background:var(--paper);box-shadow:var(--shadow)}
-.workspace-status-card-heading{display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid var(--line)}
-.workspace-status-card-heading h3{margin:0;color:var(--ink);font:400 21px/1.2 var(--serif)}
-.workspace-status-mark{width:10px;height:10px;flex:none;border-radius:50%}
-.workspace-status-mark.is-live{background:#477c5a;box-shadow:0 0 0 4px #e8f1e9}
-.workspace-status-mark.is-setup{background:#bc8736;box-shadow:0 0 0 4px #f7eddb}
-.workspace-feature-list,.workspace-requirement-list{display:grid;gap:0;margin:0;padding:0;list-style:none}
-.workspace-feature-list li,.workspace-requirement-list li{display:grid;gap:4px;padding:12px 2px;border-bottom:1px solid #eee7dc}
-.workspace-feature-list li:last-child,.workspace-requirement-list li:last-child{border-bottom:0}
-.workspace-feature-list a{color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;text-underline-offset:3px}
-.workspace-feature-list a:hover{text-decoration:underline}
-.workspace-feature-list span,.workspace-requirement-list span{color:var(--muted);font-size:12px;line-height:1.45}
-.workspace-requirement-list strong{color:var(--ink);font-size:13px}
-.workspace-requirement-list code{font-size:.9em}
-.workspace-settings-note{margin:0;color:var(--muted);font-size:12px}
-.workspace-settings a:focus-visible{outline:2px solid #a3733e;outline-offset:3px}
-@media(max-width:850px){.workspace-status-grid{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:760px){.admin-dashboard[data-view="inbox"] .dashboard-main{height:calc(100svh - 178px);min-height:360px;padding-bottom:12px;overflow:hidden;display:flex;flex-direction:column}.admin-dashboard[data-view="inbox"] #staff-inbox{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden}.admin-dashboard[data-view="inbox"] .inbox-split{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(110px,27%) minmax(0,1fr);flex:1;min-height:0;overflow:hidden}.admin-dashboard[data-view="inbox"] #inbox-list{max-height:none;min-height:0;overflow:auto}.admin-dashboard[data-view="inbox"] #inbox-reader{min-height:0;overflow:auto}.workspace-status-card{padding:14px}}
-@media(min-width:761px){.admin-dashboard[data-view="inbox"] .dashboard-main{height:100dvh;overflow:hidden;display:flex;flex-direction:column}.admin-dashboard[data-view="inbox"] #staff-inbox{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden}.admin-dashboard[data-view="inbox"] .inbox-split{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);flex:1;min-height:0;overflow:hidden}.admin-dashboard[data-view="inbox"] #inbox-list{max-height:none;min-height:0;overflow:auto}.admin-dashboard[data-view="inbox"] #inbox-reader{min-height:0;overflow:auto}}
+
+/* Clear, accessible Firebase connection and permission errors. */
+#auth-status[data-state="error"]{display:block;margin-top:14px;padding:11px 13px;border:1px solid #edc6c2;border-inline-start:4px solid #a3443f;border-radius:9px;background:#fff1ef;color:#7d2925;font-weight:650;line-height:1.4}
