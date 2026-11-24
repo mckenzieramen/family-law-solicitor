@@ -1164,7 +1164,6 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   find('#work-matter-sort').addEventListener('change', renderMatters);
   find('#work-task-search').addEventListener('input', render);
   find('#work-task-priority').addEventListener('change', render);
-  find('#work-draft-search').addEventListener('input', renderDrafts);
   find('#correspondence-search').addEventListener('input',renderDrafts);
   find('#correspondence-sort').addEventListener('change',renderDrafts);
   for(const tab of root.querySelectorAll('[data-corr-filter]')) tab.addEventListener('click',()=>{
