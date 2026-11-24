@@ -55,7 +55,6 @@
    <a href="#work-approvals"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6zM9 12l2 2 4-4"/></svg></span><span>Approvals</span><span class="nav-notification" id="nav-approval-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-employees"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span>Employees</span></a>
    <a href="#work-settings"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 2.9-.1-.1a1.7 1.7 0 0 0-1.8.4l-.1.1h-3.4l-.1-.1a1.7 1.7 0 0 0-1.2-1.3l-.1-.1-1.7-2.9.1-.1A1.7 1.7 0 0 0 10.1 14l-.1-.1v-3.4l.1-.1a1.7 1.7 0 0 0 1.2-1.3l.1-.1h3.4l.1.1a1.7 1.7 0 0 0 1.8.4l.1-.1 1.7 2.9-.1.1a1.7 1.7 0 0 0 .1 1.9z"/></svg></span><span>Settings</span></a>
-   <a href="#work-help"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.7c-1.2 1-1.9 1.4-1.9 3M12 17h.01"/></svg></span><span>Help & Support</span></a>
   </nav></aside>
  <div class="dashboard-main" id="workspace-content" tabindex="-1">
 
@@ -119,7 +118,6 @@
   <section class="admin-module" id="work-reports" hidden aria-labelledby="reports-heading"><header class="module-heading"><p class="module-eyebrow">Practice insights</p><h2 id="reports-heading">Reports</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Limited reporting</strong><span>Operational counts use current work items only; financial and full matter reports are unavailable.</span></p></div></header></section>
   <section class="admin-module" id="work-employees" hidden aria-labelledby="employees-heading"><header class="module-heading"><p class="module-eyebrow">Staff access</p><h2 id="employees-heading">Employees</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Directory not connected</strong><span>Staff access is role-based in Firebase, but no employee directory is available in this workspace.</span></p></div></header></section>
   <section class="admin-module" id="work-settings" hidden aria-labelledby="settings-heading"><header class="module-heading"><p class="module-eyebrow">Configuration</p><h2 id="settings-heading">Settings</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Workspace settings</strong><span>Authentication and access are managed through the existing Firebase project. No external mail or storage integration is currently configured.</span></p></div></header></section>
-  <section class="admin-module" id="work-help" hidden aria-labelledby="help-heading"><header class="module-heading"><p class="module-eyebrow">Staff help</p><h2 id="help-heading">Help &amp; Support</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Need help with an enquiry?</strong><span>Open Consultation Enquiries to review website messages and support conversations.</span></p><a class="module-link" href="#staff-inbox">Open Consultation Enquiries</a></div></header></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Client enquiries</h2>
    <div class="inbox-summary-cards" aria-label="Inquiry overview">
@@ -171,6 +169,16 @@
   </details>
  </div>
 </section>
+ <aside class="help-widget" aria-label="Help and support">
+  <section class="help-widget-panel" id="help-widget-panel" aria-labelledby="help-widget-title" hidden>
+   <header><div><p>STAFF SUPPORT</p><h2 id="help-widget-title">Help &amp; Support</h2></div><button type="button" id="help-widget-close" aria-label="Close Help and Support">×</button></header>
+   <p>Need help with an enquiry? Open Consultation Enquiries to review website messages and support conversations.</p>
+   <a href="#staff-inbox">Open Consultation Enquiries</a>
+  </section>
+  <button type="button" class="help-widget-toggle" id="help-widget-toggle" aria-expanded="false" aria-controls="help-widget-panel">
+   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.8c-1.2.9-1.9 1.4-1.9 2.8M12 17h.01"/></svg><span>Help &amp; Support</span>
+  </button>
+ </aside>
 <script type="module">
 const url = new URL(location.href);
 const status = document.getElementById('auth-status');
@@ -239,6 +247,23 @@ if (sampleMode) {
  menu.addEventListener('click', () => {
    menu.setAttribute('aria-expanded', String(menu.getAttribute('aria-expanded') === 'false'));
  });
+ const helpToggle = document.getElementById('help-widget-toggle');
+ const helpPanel = document.getElementById('help-widget-panel');
+ const helpClose = document.getElementById('help-widget-close');
+ const helpInboxLink = document.querySelector('.help-widget-panel a');
+ function closeHelp() {
+   helpPanel.hidden = true;
+   helpToggle.setAttribute('aria-expanded', 'false');
+ }
+ helpToggle.addEventListener('click', () => {
+   const open = helpPanel.hidden;
+   helpPanel.hidden = !open;
+   helpToggle.setAttribute('aria-expanded', String(open));
+   if (open) helpClose.focus();
+ });
+ helpClose.addEventListener('click', () => { closeHelp(); helpToggle.focus(); });
+ helpInboxLink.addEventListener('click', event => { event.preventDefault(); closeHelp(); go('#staff-inbox'); });
+ document.addEventListener('keydown', event => { if (event.key === 'Escape' && !helpPanel.hidden) { closeHelp(); helpToggle.focus(); } });
  function go(hash) {
    if (location.hash !== hash) history.pushState(null, '', hash);
    render();
@@ -249,6 +274,7 @@ if (sampleMode) {
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
+   if (link.closest('.help-widget')) closeHelp();
    if (link.closest('#staff-navigation') && menu.getAttribute('aria-expanded') === 'true' && menu.getClientRects().length) {
      menu.setAttribute('aria-expanded', 'false');
      title.focus({preventScroll:true});
