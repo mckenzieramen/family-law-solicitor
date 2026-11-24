@@ -215,14 +215,14 @@
       const p=r.payload||{};
       return (!query||[p.reference,p.title,p.client,p.type,p.solicitor].join(' ').toLowerCase().includes(query))
         &&(!type||p.type===type)&&(!status||p.status===status)&&(!solicitor||p.solicitor===solicitor);
-    }).sort((a,b)=>String(a.payload.reference||'').localeCompare(String(b.payload.reference||''),undefined,{numeric:true}));
+    }).sort((a,b)=>String(b.payload.reference||'').localeCompare(String(a.payload.reference||''),undefined,{numeric:true}));
     const pages=Math.max(1,Math.ceil(filtered.length/5)); matterPage=Math.min(Math.max(1,matterPage),pages);
     const start=(matterPage-1)*5; const shown=filtered.slice(start,start+5);
     const body=section.querySelector('#pm-matter-table tbody');
     if(body)body.innerHTML=shown.length?shown.map(r=>{
       const p=r.payload||{};
       const state=String(p.status||'Active');
-      return '<tr><td><strong class="matter-reference">'+safeText(p.reference||'—')+'</strong></td><td>'+safeText(p.title||'—')+'</td><td>'+safeText(p.client||'—')+'</td><td>'+safeText(p.type||'—')+'</td><td><span class="matter-status-pill" data-status="'+safeText(state.toLowerCase().replaceAll(' ','-'))+'">'+safeText(state)+'</span></td><td>'+safeText(p.nextDate||'—')+'</td><td>'+safeText(p.solicitor||'—')+'</td></tr>';
+      return '<tr><td><strong class="matter-reference">'+safeText(p.reference||'—')+'</strong></td><td>'+safeText(p.title||'—')+'</td><td>'+safeText(p.client||'—')+'</td><td>'+safeText(p.type||'—')+'</td><td><span class="matter-status-pill" data-status="'+safeText(state.toLowerCase().replaceAll(' ','-'))+'">'+safeText(state)+'</span></td><td>'+safeText(p.nextDate?new Intl.DateTimeFormat('en-AU',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(p.nextDate+'T12:00:00Z')):'—')+'</td><td>'+safeText(p.solicitor||'—')+'</td></tr>';
     }).join(''):emptyRows(7,'No matters match these filters yet.');
     set('matter-page-count',filtered.length?('Showing '+(start+1)+'–'+(start+shown.length)+' of '+filtered.length+' matters'):'Showing 0 matters');
     set('matter-page-current',matterPage);
