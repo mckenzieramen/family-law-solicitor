@@ -10,6 +10,9 @@ const search = document.getElementById('inbox-search');
 const sort = document.getElementById('inbox-sort');
 const count = document.getElementById('inbox-count');
 const quickCards = [...(panel?.querySelectorAll('[data-inbox-quick-filter]') ?? [])];
+const clientWorkspaceTabs = [...(panel?.querySelectorAll('[data-client-workspace-tab]') ?? [])];
+const clientWorkspaceBack = [...(panel?.querySelectorAll('[data-client-workspace-view]') ?? [])];
+const clientWorkspacePanels = [...(panel?.querySelectorAll('[data-client-workspace-panel]') ?? [])];
 const senderName = record => [record.contact?.firstName, record.contact?.lastName].filter(Boolean).join(' ');
 const ticketCode = record => 'INQ-' + String(record.id || '').slice(-6).toUpperCase();
 const formatPreferredTime = value => {
@@ -67,12 +70,21 @@ export function clearInbox() {
   reader.replaceChildren();
   retry.onclick = null;
   retry.hidden = true;
+  for (const tab of clientWorkspaceTabs) tab.onclick = null;
+  for (const button of clientWorkspaceBack) button.onclick = null;
 }
 
 export function mountInbox(db, sampleMode = false) {
   if (!panel) return;
   panel.hidden = nav.hidden = false;
   if (overviewLink) overviewLink.hidden = false;
+  const setWorkspaceView = view => {
+    for (const tab of clientWorkspaceTabs) tab.setAttribute('aria-selected', String(tab.dataset.clientWorkspaceTab === view));
+    for (const section of clientWorkspacePanels) section.hidden = section.dataset.clientWorkspacePanel !== view;
+  };
+  for (const tab of clientWorkspaceTabs) tab.onclick = () => setWorkspaceView(tab.dataset.clientWorkspaceTab);
+  for (const button of clientWorkspaceBack) button.onclick = () => setWorkspaceView(button.dataset.clientWorkspaceView);
+  setWorkspaceView('enquiries');
   status.textContent = 'Loading messages…';
   let entries = [];
   let alive = true;
