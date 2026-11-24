@@ -276,6 +276,18 @@ export function mountInbox(db, sampleMode = false) {
     const msg=document.createElement('p');msg.textContent=message;msg.style.cssText='margin:0 0 22px;line-height:1.5';
     const close=document.createElement('button');close.type='button';close.textContent='OK';close.style.cssText='background:#101d30;color:white;border:0;border-radius:7px;padding:11px 36px;cursor:pointer;font:16px Georgia,serif';close.onclick=()=>dialog.close();dialog.addEventListener('close',()=>dialog.remove());dialog.append(mark,title,msg,close);document.body.append(dialog);dialog.showModal();
   }
+  const inlineStyle=document.createElement('style');inlineStyle.textContent=`
+  #staff-inbox #inbox-list{position:relative;min-height:440px!important}
+  #staff-inbox #inbox-reader{position:relative}
+  #staff-inbox .eq-empty{position:absolute;inset:55px 12px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#756b5d;font:16px Georgia,serif;pointer-events:none}
+  #staff-inbox .eq-empty svg{width:36px;height:36px;color:#987740}
+  #staff-inbox .eq-inline-select{width:100%;min-width:0;max-width:100%;border:1px solid #dfd3c4;border-radius:6px;background:#fcfaf7;color:#101827;padding:6px 3px;font:12px Georgia,serif;cursor:pointer}
+  #staff-inbox .eq-inline-select.enquiry-status{border-radius:16px;padding:5px 3px;background:#efdbad}
+  #staff-inbox .eq-inline-select[data-stage="Contacted"]{background:#d5e6f7}
+  #staff-inbox .eq-inline-select[data-stage="Consultation Booked"]{background:#e2def1}
+  #staff-inbox .eq-inline-select[data-stage="Converted"]{background:#d5e8cf}
+  #staff-inbox .eq-inline-select[data-stage="Closed"]{background:#e1dfdc}
+  `;document.head.append(inlineStyle);
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -344,10 +356,11 @@ export function mountInbox(db, sampleMode = false) {
     selectedId = selected?.id;
     list.replaceChildren();
     reader.replaceChildren();
-    if (!selected) reader.textContent = 'No message to display.';
+    if (!selected) {const empty=document.createElement('div');empty.className='eq-empty';empty.textContent='No enquiry selected';reader.append(empty);}
 
-    status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
+    status.textContent = '';
     const table=document.createElement('table');table.className='enquiry-table';const head=table.createTHead().insertRow();for(const label of ['Received','Name','Subject','Preferred contact','Assigned to','Status','Follow-up','Actions']){const th=document.createElement('th');th.textContent=label;head.append(th);}const tbody=table.createTBody();list.append(table);
+    if(!pageRows.length){const empty=document.createElement('div');empty.className='eq-empty';empty.setAttribute('role','status');empty.append(eqIcon('mail'),document.createTextNode(term?'No enquiries match your search.':'No enquiries found.'));list.append(empty);}
     for (const record of pageRows) {
       const row = document.createElement('button');
       row.type = 'button';
@@ -380,7 +393,10 @@ export function mountInbox(db, sampleMode = false) {
       const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
       const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
-      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}const cc=tr.cells[3];const cv=cc.textContent;const wrap=document.createElement('span');wrap.className='eq-contact';wrap.append(eqIcon(contact.email?'mail':'phone'),document.createTextNode(cv));cc.replaceChildren(wrap);const more=document.createElement('button');more.type='button';more.className='eq-more';more.textContent='⋯';more.setAttribute('aria-label','View enquiry details');more.onclick=e=>{e.stopPropagation();row.click();};tr.insertCell().append(more);tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
+      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}const inlineSave=async(patch,message,control)=>{control.disabled=true;try{if(sampleMode)Object.assign(record,patch);else await updateDoc(doc(db,'clientInbox',record.id),patch);render();eqToast(message);}catch{render();eqToast('Unable to save. Check staff permissions.',true);}};
+      const assignment=document.createElement('select');assignment.className='eq-inline-select';assignment.setAttribute('aria-label','Assign '+title.textContent);assignment.add(new Option('Unassigned',''));for(const m of staffDirectory)assignment.add(new Option(m.name,m.id));if(record.assignedToUid&&!staffDirectory.some(m=>m.id===record.assignedToUid))assignment.add(new Option(record.assignedTo||'Unavailable',record.assignedToUid));assignment.value=record.assignedToUid||'';assignment.onclick=e=>e.stopPropagation();assignment.onkeydown=e=>e.stopPropagation();assignment.onchange=()=>{const m=staffDirectory.find(m=>m.id===assignment.value);if(assignment.value&&!m){render();return;}inlineSave({assignedTo:m?.name||'',assignedToUid:m?.id||''},m?'Enquiry successfully assigned to '+m.name+'.':'Enquiry successfully unassigned.',assignment);};tr.cells[4].replaceChildren(assignment);
+      const stageControl=document.createElement('select');stageControl.className='eq-inline-select enquiry-status';stageControl.setAttribute('aria-label','Change status for '+title.textContent);for(const st of stages){const opt=new Option(st,st);if(st==='Consultation Booked'&&record.approvalStatus!=='approved')opt.disabled=true;if(st==='Converted'&&stageOf(record)!=='Converted')opt.disabled=true;stageControl.add(opt);}stageControl.value=stageOf(record);stageControl.dataset.stage=stageControl.value;stageControl.onclick=e=>e.stopPropagation();stageControl.onkeydown=e=>e.stopPropagation();stageControl.onchange=()=>inlineSave({enquiryStatus:stageControl.value},'Enquiry status successfully updated to '+stageControl.value+'.',stageControl);statusCell.replaceChildren(stageControl);
+      const cc=tr.cells[3];const cv=cc.textContent;const wrap=document.createElement('span');wrap.className='eq-contact';wrap.append(eqIcon(contact.email?'mail':'phone'),document.createTextNode(cv));cc.replaceChildren(wrap);const more=document.createElement('button');more.type='button';more.className='eq-more';more.textContent='⋯';more.setAttribute('aria-label','View enquiry details');more.onclick=e=>{e.stopPropagation();row.click();};tr.insertCell().append(more);tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
       if(record.id!==selectedId) continue;
       if(consultation){
         const el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;if(cls)n.className=cls;return n;};
