@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-controls-1">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=contacts-unified-1">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
@@ -44,7 +44,7 @@
    <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span>Calendar</span></a>
    <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><span>Matters</span></a>
-   <a href="#work-clients"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Clients</span></a>
+   <a href="#work-clients"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Clients &amp; Contacts</span></a>
    <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span>Consultation Enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 12 3 3 7-7"/></svg></span><span>Tasks & Workflows</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-documents"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg></span><span>Documents</span></a>
@@ -104,9 +104,28 @@
    </div>
    <p id="dashboard-error" class="dashboard-error" role="alert" hidden></p>
   </section>
-  <section class="admin-module" id="work-clients" hidden aria-labelledby="clients-heading">
-   <header class="module-heading"><p class="module-eyebrow">Client records</p><h2 id="clients-heading">Clients</h2><p>Contacts below come from website enquiries. A separate client and matter record system is not connected yet.</p></header>
-   <div class="dashboard-card module-card"><div class="module-table-wrap"><table class="dashboard-matters-table"><thead><tr><th>Client</th><th>Email</th><th>Phone</th><th>Enquiry type</th><th>Received</th></tr></thead><tbody id="dashboard-client-directory"><tr><td colspan="5" class="dashboard-empty-cell">Loading enquiry contacts…</td></tr></tbody></table></div></div>
+  <section class="admin-module contacts-module" id="work-clients" hidden aria-labelledby="clients-heading">
+   <header class="contacts-page-head">
+    <div><p class="contacts-eyebrow">CLIENT DIRECTORY</p><h2 id="clients-heading">Clients &amp; Contacts</h2><p>One searchable directory for people who have contacted the firm.</p></div>
+    <a class="contact-primary-action" href="#staff-inbox">Review enquiries</a>
+   </header>
+   <div class="contacts-toolbar">
+    <label class="contact-search"><span class="sr-only">Search contacts</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="contact-search" type="search" placeholder="Search by name, email, phone or matter…"></label>
+    <div class="contact-filter-row">
+     <label>Contact type<select id="contact-filter-type"><option value="all">All contact types</option><option value="new">New clients</option><option value="enquiry">Enquiries</option></select></label>
+     <label>Linked matter<select id="contact-filter-matter"><option value="all">All matters</option></select></label>
+     <label>Status<select id="contact-filter-status"><option value="all">All statuses</option><option value="pending">Awaiting approval</option><option value="approved">Active</option><option value="declined">Declined</option></select></label>
+     <button type="button" id="contact-clear-filters" class="contact-clear-filter">Clear filters</button>
+    </div>
+   </div>
+   <p class="contact-result-count" id="contact-result-count" aria-live="polite">Loading contacts…</p>
+   <div class="contacts-layout">
+    <section class="contact-list-pane" aria-label="Contact list">
+     <div class="contact-list-column-head"><span></span><span>Contact record</span><span>Status</span></div>
+     <div class="contact-directory-list" id="contact-directory-list"><p class="contact-empty-state">Loading enquiry contacts…</p></div>
+    </section>
+    <aside class="contact-detail-panel" id="contact-detail-panel" aria-label="Selected contact details"><div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>Select a contact</h3><p>Contact details and related enquiry information will appear here.</p></div></aside>
+   </div>
   </section>
   <section class="admin-module" id="work-approvals" hidden aria-labelledby="approvals-heading">
    <header class="module-heading"><p class="module-eyebrow">Attorney review</p><h2 id="approvals-heading">Approvals</h2><p>Review consultation requests received through the website. Appointment requests stay pending until the firm confirms them.</p></header>
@@ -117,7 +136,34 @@
   <section class="admin-module" id="work-billing" hidden aria-labelledby="billing-heading"><header class="module-heading"><p class="module-eyebrow">Accounts</p><h2 id="billing-heading">Billing</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Not connected</strong><span>No invoice ledger or payment provider is connected. This page does not create invoices or accept payments.</span></p></div></header></section>
   <section class="admin-module" id="work-reports" hidden aria-labelledby="reports-heading"><header class="module-heading"><p class="module-eyebrow">Practice insights</p><h2 id="reports-heading">Reports</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Limited reporting</strong><span>Operational counts use current work items only; financial and full matter reports are unavailable.</span></p></div></header></section>
   <section class="admin-module" id="work-employees" hidden aria-labelledby="employees-heading"><header class="module-heading"><p class="module-eyebrow">Staff access</p><h2 id="employees-heading">Employees</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Directory not connected</strong><span>Staff access is role-based in Firebase, but no employee directory is available in this workspace.</span></p></div></header></section>
-  <section class="admin-module" id="work-settings" hidden aria-labelledby="settings-heading"><header class="module-heading"><p class="module-eyebrow">Configuration</p><h2 id="settings-heading">Settings</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Workspace settings</strong><span>Authentication and access are managed through the existing Firebase project. No external mail or storage integration is currently configured.</span></p></div></header></section>
+  <section class="admin-module settings-module" id="work-settings" hidden aria-labelledby="settings-heading">
+   <header class="settings-page-head"><span class="settings-title-icon" aria-hidden="true">⚙</span><div><p class="contacts-eyebrow">WORKSPACE PREFERENCES</p><h2 id="settings-heading">Settings</h2><p>Review your firm profile, calendar defaults, matter types, notifications and team access.</p></div></header>
+   <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+    <button type="button" role="tab" id="settings-tab-profile" aria-controls="settings-panel-profile" aria-selected="true" data-settings-tab="profile">Firm Profile</button>
+    <button type="button" role="tab" id="settings-tab-calendar" aria-controls="settings-panel-calendar" aria-selected="false" data-settings-tab="calendar">Calendar &amp; Timezone</button>
+    <button type="button" role="tab" id="settings-tab-matters" aria-controls="settings-panel-matters" aria-selected="false" data-settings-tab="matters">Matter Types</button>
+    <button type="button" role="tab" id="settings-tab-notifications" aria-controls="settings-panel-notifications" aria-selected="false" data-settings-tab="notifications">Notifications</button>
+    <button type="button" role="tab" id="settings-tab-team" aria-controls="settings-panel-team" aria-selected="false" data-settings-tab="team">Team Access</button>
+   </div>
+   <div class="settings-content">
+    <section class="settings-panel" id="settings-panel-profile" role="tabpanel" aria-labelledby="settings-tab-profile" data-settings-panel="profile">
+     <div class="settings-card"><div class="settings-card-heading"><h3>Firm Profile</h3><p>Core details displayed across your staff workspace.</p></div><div class="settings-form-grid"><label>Firm name<input value="Prevail Family Law" readonly></label><label>Office address<input placeholder="No office address configured" readonly></label><label>Website<input placeholder="No public website configured" readonly></label><label>Contact email<input placeholder="No firm email configured" readonly></label></div></div>
+    </section>
+    <section class="settings-panel" id="settings-panel-calendar" role="tabpanel" aria-labelledby="settings-tab-calendar" data-settings-panel="calendar" hidden>
+     <div class="settings-card"><div class="settings-card-heading"><h3>Calendar &amp; Timezone</h3><p>Defaults used when displaying dates and scheduling work.</p></div><div class="settings-form-grid"><label>Firm timezone<input value="Australia/Sydney" readonly></label><label>Time display<input value="Sydney local time" readonly></label><label>Work week<input value="Monday to Friday" readonly></label><label>Week starts on<input value="Monday" readonly></label><label>Default calendar view<input value="Month" readonly></label><label>Appointment requests<input value="Require firm confirmation" readonly></label></div><p class="settings-inline-note">Calendar events and client consultation requests appear in the Calendar workspace.</p></div>
+    </section>
+    <section class="settings-panel" id="settings-panel-matters" role="tabpanel" aria-labelledby="settings-tab-matters" data-settings-panel="matters" hidden>
+     <div class="settings-card"><div class="settings-card-heading"><h3>Matter Types</h3><p>Common family law work categories for organizing enquiries and matters.</p></div><div class="matter-type-list"><span>Parenting arrangements</span><span>Property settlement</span><span>Divorce and separation</span><span>Financial agreements</span><span>Family violence matters</span><span>General family law advice</span></div><p class="settings-inline-note">Matter records are not yet connected to a secure matter database.</p></div>
+    </section>
+    <section class="settings-panel" id="settings-panel-notifications" role="tabpanel" aria-labelledby="settings-tab-notifications" data-settings-panel="notifications" hidden>
+     <div class="settings-card"><div class="settings-card-heading"><h3>Notifications</h3><p>Notification channels currently available in this workspace.</p></div><div class="settings-notification-row"><span><strong>New consultation enquiries</strong><small>Show a workspace notification when a client submits an enquiry.</small></span><em>In workspace</em></div><div class="settings-notification-row"><span><strong>Approval requests</strong><small>Highlight requests that need attorney review.</small></span><em>In workspace</em></div><div class="settings-notification-row"><span><strong>Email notifications</strong><small>Email delivery requires a connected mail service.</small></span><em class="settings-unavailable">Not connected</em></div></div>
+    </section>
+    <section class="settings-panel" id="settings-panel-team" role="tabpanel" aria-labelledby="settings-tab-team" data-settings-panel="team" hidden>
+     <div class="settings-card"><div class="settings-card-heading"><h3>Team Access</h3><p>Staff access is governed by Firebase Authentication and the workspace security rules.</p></div><div class="settings-access-summary"><span class="settings-access-icon" aria-hidden="true">◇</span><div><strong>Role-based workspace access</strong><p>Only authorized staff accounts should be granted access. Team directory management is not connected to this settings screen.</p></div></div><a class="settings-open-link" href="#work-employees">Open Employees</a></div>
+    </section>
+    <div class="settings-save-note"><span aria-hidden="true">✓</span><p><strong>Workspace security</strong><br>These settings are shown for reference. Editing and secure saving will be available when the settings database is connected.</p></div>
+   </div>
+  </section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Client enquiries</h2>
    <div class="inbox-summary-cards" aria-label="Inquiry overview">
@@ -188,7 +234,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=calendar-controls-1'),
+      import('../docs/admin/workflow.js?v=contacts-unified-1'),
       import('../docs/admin/inbox.js?v=ticket-workspace-8')
     ]);
     mountWorkflow(null, null, true);
