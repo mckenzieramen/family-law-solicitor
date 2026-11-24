@@ -202,7 +202,8 @@ if (sampleMode) {
     document.getElementById('staff-sample-banner').hidden = false;
     document.getElementById('staff-entry').hidden = true;
     document.getElementById('staff-checklist').hidden = false;
-  } catch {
+  } catch (error) {
+    console.error('Sample workspace initialization failed', error);
     status.dataset.state = 'error';
     status.setAttribute('role', 'alert');
     status.textContent = 'Sample workspace error. The admin tools could not load. Refresh the page to try again.';
