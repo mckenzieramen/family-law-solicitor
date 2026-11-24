@@ -137,7 +137,7 @@ export function mountInbox(db, sampleMode = false) {
   .enquiry-pager button{padding:7px 12px;border:1px solid #d9cbb8;border-radius:6px;background:#fcfaf7}
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
   `;document.head.append(css);
-  const metricIcons=["<rect x=\"3\" y=\"6\" width=\"26\" height=\"20\" rx=\"3\"/><path d=\"m4 8 12 9L28 8\"/>","<path d=\"M16 3c1.5 8 5 11.5 13 13-8 1.5-11.5 5-13 13C14.5 21 11 17.5 3 16 11 14.5 14.5 11 16 3Z\"/>","<g transform=\"scale(1.3333)\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72l.7 3.1a2 2 0 0 1-.45 2.11L8.1 10.2a16 16 0 0 0 6 6l1.27-1.26a2 2 0 0 1 2.11-.45l2.8.7A2 2 0 0 1 22 16.92Z\"/></g>","<rect x=\"3\" y=\"6\" width=\"26\" height=\"23\" rx=\"3\"/><path d=\"M9 2v8M23 2v8M3 13h26\"/>","<circle cx=\"12.5\" cy=\"8.5\" r=\"5\"/><path d=\"M3 27v-3a9.5 9.5 0 0 1 9.5-9.5c2 0 3.8.6 5.3 1.7\"/><circle cx=\"24\" cy=\"23\" r=\"6.5\"/><path d=\"m21 23 2 2 4-4\"/>","<circle cx=\"16\" cy=\"16\" r=\"13\"/><path d=\"m10 16 4 4 8-9\"/>"];
+  const metricIcons=["<rect x=\"3\" y=\"6\" width=\"26\" height=\"20\" rx=\"3\"/><path d=\"m4 8 12 9L28 8\"/>","<path d=\"M14 3 17 11 25 14 17 17 14 25 11 17 3 14 11 11Z\"/><path d=\"M26 3v8m-4-4h8M25 23v6m-3-3h6\"/>","<g transform=\"scale(1.3333)\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72l.7 3.1a2 2 0 0 1-.45 2.11L8.1 10.2a16 16 0 0 0 6 6l1.27-1.26a2 2 0 0 1 2.11-.45l2.8.7A2 2 0 0 1 22 16.92Z\"/></g>","<rect x=\"3\" y=\"6\" width=\"26\" height=\"23\" rx=\"3\"/><path d=\"M9 3v6m14-6v6M3 13h26m7 8 4 4 8-8\"/>","<circle cx=\"12.5\" cy=\"8.5\" r=\"5\"/><path d=\"M3 27v-3a9.5 9.5 0 0 1 9.5-9.5c2 0 3.8.6 5.3 1.7\"/><circle cx=\"24\" cy=\"23\" r=\"6.5\"/><path d=\"m21 23 2 2 4-4\"/>","<circle cx=\"16\" cy=\"16\" r=\"12.5\"/><path d=\"m10 16 4 4 8-9\"/>"];
   const polish=document.createElement('style');polish.textContent=`
   #staff-inbox{color:#0d1729;background:transparent}
   #staff-inbox .client-workspace-tabs{margin-bottom:14px}
@@ -311,6 +311,17 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .enquiry-table th[data-eq-column="7"]{width:6%!important}
   #staff-inbox .eq-column-reset{border:0;background:transparent;color:inherit;font:12px Georgia,serif;text-decoration:underline;cursor:pointer;margin-left:auto}
   `;document.head.append(columnStyle);columnStyle.textContent += `
+#staff-inbox .enquiry-metrics button{position:relative;min-height:106px!important;grid-template-columns:44px minmax(0,1fr)!important;column-gap:10px!important;row-gap:2px;padding:14px 12px!important;background:linear-gradient(145deg,#fffdf9,#f8f2e9)!important;border:1px solid #dfd3c4!important;box-shadow:0 2px 6px #101d3008;transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}
+#staff-inbox .enquiry-metrics button svg{box-sizing:border-box;width:42px!important;height:42px!important;padding:6px;background:#f1e7d7;border-radius:10px;stroke:#987740!important;stroke-width:1.6!important}
+#staff-inbox .enquiry-metrics button strong{color:#101d30!important;font:700 32px/1 Georgia,serif!important;font-variant-numeric:tabular-nums}
+#staff-inbox .enquiry-metrics button span{color:#101d30!important;font:500 14px/1.25 Georgia,serif;overflow-wrap:normal}
+#staff-inbox .enquiry-metrics button small{color:#75634b!important;font-size:12px!important}
+#staff-inbox .enquiry-metrics button:hover{border-color:#b99b65!important;box-shadow:0 5px 14px #101d3010;transform:translateY(-2px)}
+#staff-inbox .enquiry-metrics button[aria-pressed=true]{border-color:#987740!important;box-shadow:inset 0 -2px #987740}
+#staff-inbox .enquiry-pipeline button svg{width:21px!important;height:21px!important;stroke-width:1.6!important}
+#staff-inbox .enquiry-pipeline button{font-weight:600!important;letter-spacing:.05px;min-height:50px!important}
+@media(prefers-reduced-motion:reduce){#staff-inbox .enquiry-metrics button{transition:none!important;transform:none!important}}
+`;columnStyle.textContent += `
 #staff-inbox .enquiry-metrics button svg{width:32px!important;height:32px!important;stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important;align-self:center!important}
 #staff-inbox .enquiry-pipeline button svg{stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important}
 `;
