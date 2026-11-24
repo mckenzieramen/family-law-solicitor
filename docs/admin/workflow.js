@@ -263,7 +263,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   <p id="work-matter-count" role="status"></p><div class="matter-split"><div id="work-matter-list"></div><section id="work-matter-detail" aria-label="Selected matter"></section></div></section>
  <section class="workflow-panel correspondence-workspace" id="work-email">
   <header class="correspondence-page-head">
-   <div><span class="correspondence-accent" aria-hidden="true"></span><div><h2>Correspondence</h2><p>Review received emails and prepare clear, matter-linked replies.</p></div></div>
+   <div><span class="correspondence-accent" aria-hidden="true"></span><div><p>Review received emails and prepare clear, matter-linked replies.</p></div></div>
    <button class="work-button correspondence-log-button" type="button" id="attorney-email-toggle" aria-expanded="false"><span aria-hidden="true">＋</span> Log correspondence</button>
   </header>
   <form id="attorney-email-form" class="work-form correspondence-log-form" hidden>
