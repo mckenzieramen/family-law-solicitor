@@ -76,6 +76,7 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .kpi-copy strong{color:#0f2138;font:normal 34px/1 Georgia,serif;font-variant-numeric:tabular-nums}
 .dashboard-row{display:grid;gap:14px;min-width:0}
 .dashboard-row-primary{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.dashboard-row-primary:has(>.dashboard-calendar-card:only-child){grid-template-columns:minmax(0,1fr)}
 .dashboard-row-secondary{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr)}
 .dashboard-card{min-width:0;padding:16px 18px;border:1px solid var(--line);border-radius:13px;background:var(--paper);box-shadow:var(--shadow)}
 .dashboard-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
