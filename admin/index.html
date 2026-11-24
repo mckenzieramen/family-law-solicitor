@@ -6,8 +6,8 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
-<link rel="stylesheet" href="../docs/inbox.css?v=chat-2">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=calendar-parent-grid-30">
+<link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-1">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=ticket-workspace-1">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-bookings-2">
 <style>
 .admin-sign-in {
@@ -170,12 +170,12 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
   </nav></section>
   <section id="overview-upcoming" class="overview-agenda" aria-labelledby="overview-upcoming-title"><div class="admin-section-heading"><h2 id="overview-upcoming-title">Upcoming appointments</h2><a href="#work-calendar">Open calendar</a></div><div id="overview-upcoming-items">Loading appointments…</div></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
-   <h2 id="inbox-heading">Website inbox</h2>
+   <h2 id="inbox-heading">Client enquiries</h2>
    <div class="inbox-controls">
-    <label>Search messages<input type="search" id="inbox-search" placeholder="Name, email or message"></label>
-    <label>Message type <select id="inbox-filter">
-     <option value="all">All messages</option>
-     <option value="consultation">Consultation inquiries</option>
+    <label>Search tickets<input type="search" id="inbox-search" placeholder="Client, email or message"></label>
+    <label>Ticket type <select id="inbox-filter">
+     <option value="all">All tickets</option>
+     <option value="consultation">Consultation enquiries</option>
      <option value="support">All support chats</option>
      <option value="unanswered">Support awaiting reply</option>
      <option value="replied">Support replied</option>
@@ -191,8 +191,8 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
    <p id="inbox-status" role="status"></p>
    <button type="button" id="inbox-retry" hidden>Retry connection</button>
    <div class="inbox-split">
-    <div id="inbox-list" aria-label="Messages"></div>
-    <section id="inbox-reader" aria-label="Selected message"></section>
+    <div id="inbox-list" aria-label="Client tickets"></div>
+    <section id="inbox-reader" aria-label="Selected client ticket"></section>
    </div>
   </section>
   <div id="staff-workspace"></div>
@@ -221,7 +221,7 @@ if (sampleMode) {
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
       import('../docs/admin/workflow.js?v=calendar-bookings-2'),
-      import('../docs/admin/inbox.js?v=realistic-samples-23')
+      import('../docs/admin/inbox.js?v=ticket-workspace-1')
     ]);
     mountWorkflow(null, null, true);
     mountInbox(null, true);
