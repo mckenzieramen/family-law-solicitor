@@ -10,6 +10,24 @@ const search = document.getElementById('inbox-search');
 const sort = document.getElementById('inbox-sort');
 const count = document.getElementById('inbox-count');
 const senderName = record => [record.contact?.firstName, record.contact?.lastName].filter(Boolean).join(' ');
+const ticketCode = record => 'INQ-' + String(record.id || '').slice(-6).toUpperCase();
+const formatPreferredTime = value => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/.exec(String(value || ''));
+  if (!match) return '';
+  const [, year, month, day, hour, minute] = match;
+  const date = new Intl.DateTimeFormat('en-AU', {weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})
+    .format(new Date(Date.UTC(Number(year), Number(month)-1, Number(day), 12)));
+  const time = hour ? new Intl.DateTimeFormat('en-AU', {hour:'numeric',minute:'2-digit',timeZone:'UTC'})
+    .format(new Date(Date.UTC(2026,0,1,Number(hour),Number(minute)))) : '';
+  return [date, time && time + ' Sydney time'].filter(Boolean).join(' · ');
+};
+const addTicketField = (grid, label, value) => {
+  if (value === undefined || value === null || String(value).trim() === '') return;
+  const field=document.createElement('div'); field.className='inbox-ticket-field';
+  const caption=document.createElement('span'); caption.textContent=label;
+  const content=document.createElement('strong'); content.textContent=String(value);
+  field.append(caption,content); grid.append(field);
+};
 const compareText = (a, b) => a.localeCompare(b, 'en-AU', {sensitivity:'base'});
 const sortText = (a, b) => a && b ? compareText(a, b) : Number(!a) - Number(!b);
 const nav = document.getElementById('inbox-nav');
@@ -89,49 +107,57 @@ export function mountInbox(db, sampleMode = false) {
         render();
         reader.querySelector('h3')?.focus();
       });
-      const details = document.createElement('article');
-      const summary = document.createElement('div');
-      summary.className = 'inbox-reader-heading';
-      const message = document.createElement('p');
-      const date = record.createdAt?.toDate().toLocaleString('en-AU', {timeZone:'Australia/Sydney'});
-      const contact = record.contact ?? {};
-      const title = document.createElement('strong');
-      const meta = document.createElement('span');
-      const preview = document.createElement('span');
-      const consultation = record.kind === 'consultation';
-      title.textContent = consultation ? senderName(record) || 'Consultation inquiry' :
-        (record.reply ? 'Support chat · Replied' : 'Support chat · Awaiting reply');
-      meta.className = 'inbox-message-meta';
-      meta.textContent = [consultation && contact.email, date && date + ' Sydney'].filter(Boolean).join(' · ');
-      preview.className = 'inbox-message-preview';
-      preview.textContent = String(record.message ?? '').replace(/\s+/g, ' ').trim();
-      row.append(title.cloneNode(true), meta.cloneNode(true), preview);
-      list.append(row);
-      if (record.id !== selectedId) continue;
-      const heading = document.createElement('h3');
-      heading.textContent = title.textContent;
-      heading.tabIndex = -1;
-      summary.append(heading, meta);
-      message.textContent = record.message;
-      details.append(summary);
-      if (consultation) {
-        const fields = document.createElement('p');
-        fields.textContent = [contact.topic, contact.phone, contact.postcode, contact.newClient && 'New client: ' + contact.newClient, contact.preferredTime && 'Preferred time: ' + contact.preferredTime + ' Sydney'].filter(Boolean).join(' · ');
+      const details=document.createElement('article'); details.className='inbox-reader-card';
+      const summary=document.createElement('div'); summary.className='inbox-ticket-heading';
+      const message=document.createElement('p');
+      const received=record.createdAt?.toDate();
+      const date=received?new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Sydney',weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}).format(received):'';
+      const contact=record.contact??{};
+      const title=document.createElement('strong'), meta=document.createElement('span'), preview=document.createElement('span');
+      const consultation=record.kind==='consultation';
+      const stateText=consultation?'New enquiry':record.reply?'Replied':'Needs reply';
+      title.textContent=consultation?senderName(record)||'Consultation inquiry':'Website support request';
+      meta.className='inbox-message-meta'; meta.textContent=[ticketCode(record),date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
+      preview.className='inbox-message-preview'; preview.textContent=String(record.message??'').replace(/\s+/g,' ').trim()||'No message details provided.';
+      const rowTop=document.createElement('span'); rowTop.className='inbox-row-topline';
+      const rowTitle=document.createElement('strong'); rowTitle.className='inbox-row-title'; rowTitle.textContent=title.textContent;
+      const rowState=document.createElement('span'); rowState.className='inbox-row-state'; rowState.textContent=stateText;
+      const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
+      const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
+      rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
+      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); list.append(row);
+      if(record.id!==selectedId) continue;
+      const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
+      const titleRow=document.createElement('div'); titleRow.className='inbox-ticket-title-row';
+      const heading=document.createElement('h3'); heading.textContent=title.textContent; heading.tabIndex=-1;
+      const state=document.createElement('span'); state.className='inbox-ticket-state'+(consultation?' is-new':record.reply?' is-done':' is-waiting');
+      state.textContent=consultation?'Awaiting review':record.reply?'Replied':'Awaiting reply';
+      titleRow.append(heading,state);
+      const readerMeta=document.createElement('span'); readerMeta.className='inbox-message-meta';
+      readerMeta.textContent=[ticketCode(record),contact.email,date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
+      summary.append(kicker,titleRow,readerMeta); details.append(summary);
+      if(consultation){
+        const fields=document.createElement('div'); fields.className='inbox-ticket-fields';
+        const topics={separation:'Separation and divorce',parenting:'Parenting arrangements',property:'Property and finances',consent:'Consent orders'};
+        addTicketField(fields,'Inquiry type',topics[contact.topic]||contact.topic);
+        addTicketField(fields,'Phone',contact.phone); addTicketField(fields,'Postcode',contact.postcode);
+        addTicketField(fields,'New client',contact.newClient);
+        addTicketField(fields,'Preferred date and time',formatPreferredTime(contact.preferredTime));
         details.append(fields);
+        if(contact.preferredTime){const notice=document.createElement('p');notice.className='inbox-ticket-notice';notice.textContent='Requested appointment time · pending confirmation by the firm';details.append(notice);}
       }
-      if (record.kind === 'support') {
-        message.className = 'chat-message';
-        const sender = document.createElement('strong');
-        sender.textContent = 'Visitor';
-        message.prepend(sender);
-      }
-      details.append(message);
+      const messageSection=document.createElement('section'); messageSection.className='inbox-ticket-message';
+      const messageLabel=document.createElement('strong'); messageLabel.className='inbox-ticket-message-label';
+      messageLabel.textContent=consultation?'Client message':'Message';
+      message.textContent=String(record.message??'').trim()||'No message details provided.';
+      if(record.kind==='support'){message.className='chat-message';const sender=document.createElement('strong');sender.textContent='Visitor';message.prepend(sender);}
+      messageSection.append(messageLabel,message); details.append(messageSection);
       if (consultation && /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(contact.email || '')) {
         const email = document.createElement('a');
         email.className = 'inbox-email-action';
         email.href = 'mailto:' + contact.email.split('@').map(encodeURIComponent).join('@') + '?subject=' +
           encodeURIComponent('Re: Your consultation inquiry');
-        email.textContent = 'Open email draft';
+        email.textContent = 'Email client';
         details.append(email);
       }
       if (record.kind === 'support') {
