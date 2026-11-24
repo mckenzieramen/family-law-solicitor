@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
-<link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
+<link rel="stylesheet" href="../docs/inbox.css?v=client-enquiry-tabs-1">
 <link rel="stylesheet" href="../docs/admin/workflow.css?v=contacts-unified-1">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
@@ -235,7 +235,7 @@ if (sampleMode) {
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
       import('../docs/admin/workflow.js?v=contacts-unified-1'),
-      import('../docs/admin/inbox.js?v=ticket-workspace-8')
+      import('../docs/admin/inbox.js?v=client-enquiry-tabs-1')
     ]);
     mountWorkflow(null, null, true);
     mountInbox(null, true);
