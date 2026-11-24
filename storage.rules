@@ -35,14 +35,16 @@ service firebase.storage {
       return signedIn()
         && ((isSolicitor() && request.auth.uid == firmUid)
           || (profileExists()
-            && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid
-            && (isEmployee() || isActiveAdmin())));
+            && ((isEmployee()
+                && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid)
+              || (isActiveAdmin()
+                && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid))));
     }
 
     function managesFirm(firmUid) {
       return (isSolicitor() && request.auth.uid == firmUid)
         || (isActiveAdmin()
-          && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid);
+          && firestore.get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid);
     }
 
     function validUpload() {
