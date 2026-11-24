@@ -243,3 +243,11 @@ button,a{ -webkit-tap-highlight-color:transparent}
 
 #staff-checklist[hidden]+.help-widget{display:none}
 .help-widget-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Show exactly one workflow page for the selected admin tab. */
+.admin-dashboard[data-view^="work-"] #staff-workspace > .workflow-panel{display:none!important}
+.admin-dashboard[data-view="work-queue"] #staff-workspace > #work-queue,
+.admin-dashboard[data-view="work-matters"] #staff-workspace > #work-matters,
+.admin-dashboard[data-view="work-email"] #staff-workspace > #work-email,
+.admin-dashboard[data-view="work-templates"] #staff-workspace > #work-templates{display:block!important}
+.admin-dashboard[data-view="work-calendar"] #staff-workspace > #work-calendar{display:flex!important}
