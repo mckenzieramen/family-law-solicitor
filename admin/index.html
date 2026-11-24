@@ -206,7 +206,7 @@ if (sampleMode) {
     console.error('Sample workspace initialization failed', error);
     status.dataset.state = 'error';
     status.setAttribute('role', 'alert');
-    status.textContent = 'Sample workspace error. The admin tools could not load. Refresh the page to try again.';
+    status.textContent = 'Sample workspace error: ' + (error?.message || String(error));
   }
 } else {
   try {
