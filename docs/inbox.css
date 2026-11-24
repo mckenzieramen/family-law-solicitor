@@ -56,3 +56,18 @@
 @media(max-width:900px){.admin-dashboard #staff-inbox{min-height:calc(100vh - 120px)}.admin-dashboard #staff-inbox .inbox-split{grid-template-columns:minmax(260px,.85fr) minmax(0,1.4fr)}}
 @media(max-width:700px){.admin-dashboard #staff-inbox{min-height:0;padding:18px 14px}.admin-dashboard #staff-inbox .inbox-controls{grid-template-columns:1fr}.admin-dashboard #staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr);min-height:0;gap:14px}.admin-dashboard #inbox-list{max-height:34vh}.admin-dashboard #inbox-reader{min-height:0;padding:18px 15px}.inbox-ticket-fields{grid-template-columns:1fr}.inbox-ticket-title-row{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.admin-dashboard #inbox-list .inbox-row{transition:none}}
+
+/* Client enquiry overview cards and one-click ticket queues */
+.admin-dashboard #staff-inbox .inbox-summary-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.admin-dashboard #staff-inbox .inbox-summary-card{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;min-width:0;min-height:92px;padding:14px 16px;text-align:left;color:#173247;background:#fff;border:1px solid #e4ddd2;border-radius:12px;box-shadow:0 2px 9px rgba(16,42,58,.035);cursor:pointer;transition:background-color .16s,border-color .16s,box-shadow .16s}
+.admin-dashboard #staff-inbox .inbox-summary-card:hover{background:#f7f8f4;border-color:#9eac9d}
+.admin-dashboard #staff-inbox .inbox-summary-card[aria-pressed="true"]{color:#fffdf7;background:#0b4033;border-color:#c7a05d;box-shadow:0 5px 16px rgba(7,62,47,.12)}
+.inbox-summary-card>span{font-size:14px;font-weight:750;line-height:1.3}
+.inbox-summary-card>strong{grid-column:2;grid-row:1/3;color:#996f36;font:600 30px/1 Georgia,serif}
+.inbox-summary-card[aria-pressed="true"]>strong{color:#f3d38d}
+.inbox-summary-card>small{grid-column:1;color:#687985;font-size:12px;line-height:1.35}
+.inbox-summary-card[aria-pressed="true"]>small{color:#e0e8e0}
+.admin-dashboard #staff-inbox .inbox-summary-card:focus-visible{outline:2px solid #a3733e;outline-offset:3px}
+@media(max-width:950px){.admin-dashboard #staff-inbox .inbox-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.admin-dashboard #staff-inbox .inbox-summary-cards{gap:8px}.admin-dashboard #staff-inbox .inbox-summary-card{min-height:82px;padding:11px}.inbox-summary-card>span{font-size:13px}.inbox-summary-card>strong{font-size:25px}.inbox-summary-card>small{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.admin-dashboard #staff-inbox .inbox-summary-card{transition:none}}
