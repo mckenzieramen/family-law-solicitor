@@ -51,3 +51,9 @@
 @media(max-width:760px){.admin-dashboard,.admin-dashboard.reference-collapsed{grid-template-columns:minmax(0,1fr)}.admin-dashboard .dashboard-sidebar{max-height:none;padding:8px 12px}.admin-dashboard .dashboard-identity{min-height:0}.admin-dashboard #reference-collapse{display:none}.admin-dashboard .dashboard-main{padding:16px}.admin-dashboard .dashboard-header h1{font-size:28px}.admin-dashboard .dashboard-sidebar nav a{font-size:13px;padding:7px;gap:8px}.reference-collapsed .dashboard-sidebar nav a>span:nth-child(2){display:block}.admin-dashboard .dashboard-row-primary>.dashboard-card{min-height:0}}
 @media(max-width:480px){.admin-dashboard .admin-kpi-grid{grid-template-columns:1fr}.admin-dashboard .dashboard-card-heading{flex-wrap:wrap}.admin-dashboard .dashboard-approval-row{grid-template-columns:36px minmax(0,1fr) auto}.admin-dashboard .dashboard-approval-icon{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){.admin-dashboard *, .admin-dashboard *::before,.admin-dashboard *::after{scroll-behavior:auto!important;animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
+/* Compact navigation: retain unread state without covering the icon. */
+@media(min-width:761px){
+.admin-dashboard.reference-collapsed .dashboard-sidebar nav a .nav-notification:not([hidden]){position:absolute!important;top:5px!important;right:9px!important;bottom:auto!important;left:auto!important;transform:none!important;width:8px!important;height:8px!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;background:#DC2626!important;color:transparent!important;font-size:0!important;line-height:0!important;box-shadow:0 0 0 2px #0D1B2A!important;overflow:hidden!important;pointer-events:none}
+.admin-dashboard.reference-collapsed .dashboard-sidebar nav a .nav-notification[hidden]{display:none!important}
+}
