@@ -7,102 +7,11 @@
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-3">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-6">
-<style>
-.admin-sign-in {
-  min-height: 100vh;
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  padding: clamp(16px, 5vw, 48px);
-  background: radial-gradient(ellipse at 50% 0%, #eee6d5, transparent 65%), #f8f4ef;
-  color: #173b2e;
-  font: 400 1rem/1.5 system-ui, sans-serif;
-}
-.admin-sign-in[hidden] { display: none; }
-.admin-sign-in-card {
-  width: min(100%, 28rem);
-  border: 1px solid #e5d5ce;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #fffdf9;
-  box-shadow: 0 20px 55px #073e2f1a;
-}
-.admin-sign-in-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 22px clamp(20px, 6vw, 36px);
-  background: linear-gradient(130deg, #073e2f, #103e31);
-  color: #fff8ed;
-  border-bottom: 2px solid #ceaa6b;
-}
-.admin-sign-in-mark {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  border: 1px solid #cba568;
-  border-radius: 12px;
-  color: #f2ce88;
-  font: 1.1rem Georgia, serif;
-}
-.admin-sign-in-brand { font: 1.25rem Georgia, serif; }
-.admin-sign-in-body { padding: clamp(20px, 6vw, 36px); }
-.admin-sign-in h1 { margin: 0 0 20px; color: inherit; font: 400 2rem/1.12 Georgia, serif; }
-.admin-sign-in #staff-login label { margin: 0 0 16px; font-size: .9375rem; font-weight: 600; }
-.admin-sign-in #staff-login input {
-  box-sizing: border-box;
-  min-height: 46px;
-  margin: 6px 0 0;
-  border-color: #e0d6c2;
-  background: #fff;
-  color: #173b2e;
-  font-size: 1rem;
-}
-.admin-sign-in #staff-login button {
-  width: 100%;
-  min-height: 46px;
-  margin-top: 4px;
-  border: 1px solid #073e2f;
-  border-radius: 9px;
-  background: #073e2f;
-  color: #fffaf4;
-  font-weight: 700;
-  transition: background-color .16s ease;
-}
-.admin-sign-in #staff-login button:hover:enabled { background: #205940; }
-.admin-sign-in #staff-login button:disabled { opacity: .65; cursor: wait; }
-.admin-sign-in :is(input, button):focus-visible { outline: 2px solid #9f652c; outline-offset: 3px; }
-.admin-sign-in #auth-status { margin: 14px 0 0; color: #526b5a; font-size: .875rem; overflow-wrap: anywhere; }
-.admin-sign-in #auth-status:empty { display: none; }
-@media (prefers-reduced-motion: reduce) {
-  .admin-sign-in #staff-login button { transition: none; }
-}
-.staff-preview-link { display:inline-block; margin-top:14px; color:#205940; font-weight:650; text-underline-offset:3px; }
-</style>
-
-
-
-
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-4">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-7">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
 <link rel="stylesheet" href="/prevail-brand.css?v=green-final-6">
-<style id="prevail-admin-redesign-2026">
-:root{--plum:#073e2f;--burgundy:#073e2f;--maroon:#073e2f}
-body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
-.admin-sign-in{background:linear-gradient(135deg,#fffaf3,#eee7d7)!important;color:#173b2e!important}
-.admin-sign-in-header{background:#073e2f!important;color:#fffaf3!important}
-.admin-sign-in #staff-login button{background:#073e2f!important;border-color:#073e2f!important}
-.admin-dashboard{--page:#fffaf3;--paper:#fffefa;--ink:#173b2e;--muted:#536a59;--line:#e4d9c5;--accent:#073e2f;--tint:#f1eee3;background:#fffaf3!important;color:#173b2e!important}
-.admin-dashboard .dashboard-sidebar{background:#073e2f!important;background-image:none!important;color:#fffaf3!important}
-.admin-dashboard .dashboard-sidebar :is(a,button){color:#fffaf3}
-.admin-dashboard .dashboard-main{background:#fffaf3!important}
-.admin-dashboard :is(.dashboard-header,.dashboard-metrics,.dashboard-heading){border-color:#e4d9c5}
-.admin-dashboard :is(button,.dashboard-nav a)[aria-current="page"]{border-color:#bb892c}
-</style>
 <script defer src="../docs/admin/followup-interactions.js?v=1"></script>
 </head>
 <body class="solicitor-profile">
@@ -134,16 +43,18 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
   </div>
   <button type="button" id="staff-menu-toggle" aria-expanded="false" aria-controls="staff-navigation">Menu <span aria-hidden="true">☰</span></button>
   <nav id="staff-navigation" aria-label="Staff navigation">
+   <span class="dashboard-nav-label">Practice</span>
    <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
-   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client Messages</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="new messages">0</span></a>
-   <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="tasks requiring attention">0</span></a>
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Calendar</span><span class="nav-notification" id="nav-calendar-badge" hidden aria-label="consultations awaiting approval">0</span></a>
-   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7l2 2h9v12H3z"/></svg></span><span>Matters</span></a>
-   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8"/></svg></span><span>Email drafts</span><span class="nav-notification" id="nav-email-badge" hidden aria-label="incoming attorney emails">0</span></a>
+   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7l2 2h9v12H3z"/></svg></span><span>Matter board</span></a>
+   <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="tasks requiring attention">0</span></a>
+   <span class="dashboard-nav-label">Client service</span>
+   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="new messages">0</span></a>
+   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8"/></svg></span><span>Email &amp; drafts</span><span class="nav-notification" id="nav-email-badge" hidden aria-label="incoming attorney emails">0</span></a>
    <a href="#work-templates"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z M3 12l9 5 9-5 M3 16l9 5 9-5"/></svg></span><span>Templates</span></a>
-
-  </nav>
- </aside>
+   <span class="dashboard-nav-label">Workspace</span>
+   <a href="#workspace-settings"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.09-.03a1.7 1.7 0 0 0-1.78.35l-.07.06h-3.4l-.02-.09a1.7 1.7 0 0 0-1.23-1.31l-.09-.02-1.7-2.94.06-.06A1.7 1.7 0 0 0 10.1 14l-.08-.04v-3.4l.08-.04a1.7 1.7 0 0 0 1.21-1.3l.02-.1h3.4l.07.06a1.7 1.7 0 0 0 1.78.35l.09-.03 1.7 2.94-.06.06A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span>Workspace setup</span></a>
+  </nav> </aside>
  <div class="dashboard-main" id="workspace-content" tabindex="-1">
   <header class="dashboard-header">
    <div class="dashboard-heading"><h1 id="dashboard-title" tabindex="-1">Admin Dashboard</h1><p id="dashboard-role"></p></div>
@@ -205,6 +116,35 @@ body.solicitor-profile{background:#fffaf3!important;color:#173b2e!important}
    </div>
   </section>
   <div id="staff-workspace"></div>
+  <section id="workspace-settings" class="workspace-settings" hidden aria-labelledby="workspace-settings-title">
+   <header class="workspace-settings-heading">
+    <div><p class="workspace-eyebrow">Workspace setup</p><h2 id="workspace-settings-title">Practice workspace status</h2><p>See which parts of the staff workspace are live and which still need a real service connection.</p></div>
+   </header>
+   <div class="workspace-status-grid">
+    <section class="workspace-status-card" aria-labelledby="workspace-live-title">
+     <div class="workspace-status-card-heading"><span class="workspace-status-mark is-live" aria-hidden="true"></span><div><p class="workspace-eyebrow">Available in this workspace</p><h3 id="workspace-live-title">Connected workflows</h3></div></div>
+     <ul class="workspace-feature-list">
+      <li><a href="#staff-inbox">Client enquiries and support inbox</a><span>Firebase inbox</span></li>
+      <li><a href="#work-calendar">Calendar and consultation review queue</a><span>Staff calendar</span></li>
+      <li><a href="#work-queue">Tasks and workflow board</a><span>Staff work items</span></li>
+      <li><a href="#work-matters">Matter reference board</a><span>Linked work items</span></li>
+      <li><a href="#work-email">Email drafts and templates</a><span>Draft workspace</span></li>
+     </ul>
+    </section>
+    <section class="workspace-status-card" aria-labelledby="workspace-setup-title">
+     <div class="workspace-status-card-heading"><span class="workspace-status-mark is-setup" aria-hidden="true"></span><div><p class="workspace-eyebrow">Requires configuration</p><h3 id="workspace-setup-title">Services not yet connected</h3></div></div>
+     <ul class="workspace-requirement-list">
+      <li><strong>Client and contact directory</strong><span>There is no dedicated client record module yet. Enquiries remain in the inbox.</span></li>
+      <li><strong>Secure document storage</strong><span>Connect Firebase Storage and define staff access rules before adding client-file uploads.</span></li>
+      <li><strong>Attorney email sync</strong><span>Email intake is manual; Gmail or Outlook has not been connected.</span></li>
+      <li><strong>AI email summaries</strong><span>The server endpoint needs an <code>OPENAI_API_KEY</code>; email text should only be processed with staff consent.</span></li>
+      <li><strong>Time, expenses, billing and reports</strong><span>These need real data models and workflows before they can be used safely.</span></li>
+      <li><strong>Approval permissions</strong><span>Calendar approval writes require the matching Firestore rules to be published to Firebase.</span></li>
+     </ul>
+    </section>
+   </div>
+   <p class="workspace-settings-note">This status reflects the features in the current code. It does not create records or connect external accounts.</p>
+  </section>
   <aside class="staff-toast" id="staff-toast" hidden>
    <span class="staff-toast-icon" aria-hidden="true"></span>
    <div role="status" aria-live="polite" aria-atomic="true"><strong id="staff-toast-title"></strong><p id="staff-toast-message"></p></div>
@@ -229,8 +169,8 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=practice-workflow-2'),
-      import('../docs/admin/inbox.js?v=ticket-workspace-4')
+      import('../docs/admin/workflow.js?v=practice-workflow-7'),
+      import('../docs/admin/inbox.js?v=ticket-workspace-8')
     ]);
     mountWorkflow(null, null, true);
     mountInbox(null, true);
@@ -246,7 +186,7 @@ if (sampleMode) {
     status.textContent = 'The sample workspace could not load. Refresh the page to try again.';
   }
 } else {
-  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-6');
+  await import('../docs/admin/firebase-admin.js?v=admin-dashboard-7');
 }
 </script>
 <script>
@@ -257,11 +197,13 @@ if (sampleMode) {
  const inbox = document.getElementById('inbox-nav');
  const views = new Map(links.map(link => [link.hash, link]));
  const workspace = document.getElementById('staff-workspace');
+ const settings = document.getElementById('workspace-settings');
  function render() {
    const hash = ['#duties-all','#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#work-templates' : location.hash;
    const selected = views.get(hash);
    const active = selected && !selected.hidden ? selected : links[0];
    dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
+   settings.hidden = active.hash !== '#workspace-settings';
    title.textContent = active === links[0] ? 'Dashboard' : (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
@@ -278,7 +220,7 @@ if (sampleMode) {
    window.scrollTo(0, 0);
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a, .workspace-settings a');
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);

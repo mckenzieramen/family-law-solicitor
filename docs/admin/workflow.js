@@ -749,8 +749,11 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
           : "The request was removed from the calendar and remains in Client Messages.");
     } catch (error) {
       button.disabled = false;
-      status.textContent = "Could not save. Check the published Firestore rules and try again.";
-      notify("Approval was not saved", "The request is still awaiting review.", true);
+      const approvalHelp = error?.code === "permission-denied"
+        ? "Firebase rejected this approval. Publish the consultation update rule and confirm your staff role."
+        : "The request is still awaiting review. Check the connection and try again.";
+      status.textContent = approvalHelp;
+      notify("Approval was not saved", approvalHelp, true);
     }
   });
 
