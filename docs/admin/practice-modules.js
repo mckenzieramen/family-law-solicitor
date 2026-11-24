@@ -82,6 +82,24 @@
     if (section) { section.innerHTML=config.html; const h2=section.querySelector('.pm-heading h2'); if(h2) h2.id=id+'-heading'; section.setAttribute('aria-labelledby',id+'-heading'); }
   }
 
+  function coreRecordForms(){
+    const clients=byId('work-clients');
+    if(clients&&!clients.querySelector('#pm-client-dialog')){
+      const h=clients.querySelector('.module-heading');
+      if(h)h.insertAdjacentHTML('beforeend','<button type="button" class="pm-button pm-primary" data-open-dialog="pm-client-dialog">Add client</button>');
+      clients.insertAdjacentHTML('beforeend',dialog('pm-client-dialog','Add client',field('Client reference','reference','text','required maxlength="40"')+field('First name','firstName','text','required maxlength="70"')+field('Last name','lastName','text','required maxlength="70"')+field('Email','email','email','required maxlength="254"')+field('Phone','phone','tel','maxlength="25"')+field('Preferred contact method','preferredContact','text','maxlength="40"')+field('Linked matter reference','matter','text','maxlength="80"')+select('Intake status','status',['New enquiry','Conflict check pending','Ready for review'])+area('Internal notes','notes',3,'maxlength="1500"'),'Create client record'));
+    }
+    const matters=byId('work-matters');
+    if(matters&&!matters.querySelector('#pm-matter-dialog')){
+      const h=matters.querySelector('.admin-section-heading');
+      if(h)h.insertAdjacentHTML('beforeend','<button type="button" class="pm-button pm-primary" data-open-dialog="pm-matter-dialog">Create matter</button>');
+      matters.insertAdjacentHTML('beforeend',dialog('pm-matter-dialog','Create matter',field('Matter reference','reference','text','required maxlength="80"')+field('Matter name','title','text','required maxlength="160"')+field('Client reference','client','text','required maxlength="80"')+select('Matter type','type',['Parenting arrangements','Property settlement','Separation','Financial agreement','Consent orders','Other family law'])+select('Status','status',['Active','On hold','Closed'])+field('Responsible solicitor','solicitor','text','maxlength="120"')+field('Opened date','opened','date','required')+field('Next important date','nextDate','date')+area('Matter summary','summary',4,'maxlength="3000"'),'Create matter'));
+    }
+  }
+  coreRecordForms();
+  const rootWatch=new MutationObserver(()=>{coreRecordForms();});
+  const workflowRoot=byId('staff-workspace');
+  if(workflowRoot)rootWatch.observe(workflowRoot,{childList:true,subtree:true});
   document.addEventListener('click', event => {
     const open=event.target.closest('[data-open-dialog]');
     if(open){byId(open.dataset.openDialog)?.showModal();return;}
