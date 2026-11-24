@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 32476)
-Total output lines: 1694
-
 import { addDoc, collection, deleteDoc, doc, limit, onSnapshot, orderBy, query, serverTimestamp, updateDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 const root = document.getElementById('staff-workspace');
@@ -447,7 +444,572 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const pendingMetric=document.getElementById("dashboard-stat-pending-approvals");
     if(pendingMetric)pendingMetric.textContent=String(pending.length);
     const approvalBadge=document.getElementById("nav-approval-badge");
-    if(approvalBadge){appro…12476 tokens truncated…onFeedReady = false;
+    if(approvalBadge){approvalBadge.textContent=pending.length>99?"99+":String(pending.length);approvalBadge.hidden=pending.length===0;}
+    if (!consultationRequestsLoaded) {
+      list.innerHTML = "<p class='approval-empty'>Loading consultation requests…</p>";
+      if(pageList) pageList.innerHTML = "<p class='dashboard-empty'>Loading approval requests…</p>";
+      return;
+    }
+    if (!pending.length) {
+      list.innerHTML = "<p class='approval-empty'>No requests are waiting for attorney review.</p>";
+      if(pageList) pageList.innerHTML = "<p class='dashboard-empty'>No requests are waiting for attorney review.</p>";
+      return;
+    }
+    list.innerHTML = pending.map(item => {
+      const dateLabel = item.date
+        ? new Intl.DateTimeFormat("en-AU", {day:"numeric",month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(item.date + "T12:00:00Z"))
+        : "Date not selected";
+      const timeLabel = item.time
+        ? new Intl.DateTimeFormat("en-AU", {hour:"numeric",minute:"2-digit",timeZone:"UTC"}).format(new Date("2026-01-01T" + item.time + ":00Z")) + " Sydney"
+        : "Time not selected";
+      const topic = item.contact?.topic ? String(item.contact.topic).replaceAll("-", " ") : "General enquiry";
+      return "<article class='calendar-approval-card' data-request-id='" + escape(item.requestId) + "'>" +
+        "<div class='calendar-approval-card-head'><strong>" + escape(item.title || "Consultation inquiry") + "</strong><span>Needs review</span></div>" +
+        "<p>" + escape(topic) + " · " + escape(dateLabel) + " · " + escape(timeLabel) + "</p>" +
+        "<small>" + escape(item.contact?.email || "No email provided") + "</small>" +
+        "<div class='calendar-approval-actions'><button type='button' class='work-button' data-approval-action='approved' data-request-id='" + escape(item.requestId) + "'>Approve &amp; schedule</button>" +
+        "<button type='button' class='calendar-approval-decline' data-approval-action='declined' data-request-id='" + escape(item.requestId) + "'>Decline</button></div>" +
+        "<p class='calendar-approval-status' role='status'></p></article>";
+    }).join("");
+    if(pageList) pageList.innerHTML = list.innerHTML;
+  }
+  function renderCalendar() {
+    renderApprovalQueue();
+    const date=today();
+    const selectedMonth=month.value||date.slice(0,7);
+    const parts=selectedMonth.split('-').map(Number);
+    const year=parts[0], monthNumber=parts[1];
+    const grid=find('#work-month-grid');
+    const page=find('#work-calendar');
+    if(!year||!monthNumber){grid.replaceChildren();return;}
+    const monthDate=new Date(Date.UTC(year,monthNumber-1,1));
+    find('#calendar-month-title').textContent=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric',timeZone:'UTC'}).format(monthDate);
+    if(page)page.dataset.calendarMode=calendarMode;
+    grid.dataset.calendarMode=calendarMode;
+    for(const tab of find('#work-calendar').querySelectorAll('[data-calendar-view]'))tab.setAttribute('aria-selected',String(tab.dataset.calendarView===calendarMode));
+    const staffFor=item=>item.assignee||item.staff||item.assignedTo||'';
+    const staffNames=[...new Set([...records,...consultationRequests].map(staffFor).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    if(staffFilter){const prior=staffFilter.value;staffFilter.innerHTML='<option value="">All staff</option>'+staffNames.map(name=>'<option value="'+escape(name)+'">'+escape(name)+'</option>').join('');staffFilter.value=staffNames.includes(prior)?prior:'';}
+    const isVisibleCalendar=item=>item.kind!=='Email draft'&&calendarFor(item)===scope.value&&(!staffFilter?.value||staffFor(item)===staffFilter.value);
+    const monthItems=records.filter(item=>item.date&&item.date.startsWith(selectedMonth)&&isVisibleCalendar(item));
+    const monthRequests=scope.value==='admin'?consultationRequests.filter(item=>item.approvalStatus!=='declined'&&item.date&&item.date.startsWith(selectedMonth)&&(!staffFilter?.value||staffFor(item)===staffFilter.value)):[];
+    const monthEvents=[...monthItems,...monthRequests];
+    const byDay=new Map();
+    for(const item of monthEvents){if(!byDay.has(item.date))byDay.set(item.date,[]);byDay.get(item.date).push(item);}
+    const eventType=item=>item.kind==='Consultation request'?(item.approvalStatus==='approved'?'approved-consultation':'consultation'):isNote(item)?'note':item.kind==='Appointment'?'appointment':'task';
+    const eventMarkup=item=>'<span class="calendar-event" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-color="'+appointmentColor(item)+'" data-appointment-type="'+appointmentType(item)+'"':'')+'>'+calendarIcon(item)+'<span>'+escape([item.time,item.title].filter(Boolean).join(' '))+'</span></span>';
+    const makeDayButton=(d,monthTag='')=>{
+      const key=d.toISOString().slice(0,10), items=byDay.get(key)||[];
+      const current=key===date?' is-today':'';
+      const outside=monthTag&&key.slice(0,7)!==selectedMonth?' is-outside':'';
+      return '<button type="button" class="month-day'+current+outside+'" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+d.getUTCDate()+'</strong>'+items.slice(0,3).map(eventMarkup).join('')+(items.length>3?'<small class="calendar-more">+'+(items.length-3)+' more</small>':'')+'</button>';
+    };
+    if(calendarMode==='month'){
+      const first=new Date(Date.UTC(year,monthNumber-1,1));
+      const offset=(first.getUTCDay()+6)%7;
+      const cursor=new Date(Date.UTC(year,monthNumber-1,1-offset));
+      const cells=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="month-weekday">'+day+'</span>');
+      for(let i=0;i<42;i++){cells.push(makeDayButton(cursor,'month'));cursor.setUTCDate(cursor.getUTCDate()+1);}
+      grid.innerHTML=cells.join('');
+    }else if(calendarMode==='week'){
+      const anchor=new Date((selectedDay||date)+'T12:00:00Z');
+      const offset=(anchor.getUTCDay()+6)%7;
+      anchor.setUTCDate(anchor.getUTCDate()-offset);
+      const cells=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="month-weekday">'+day+'</span>');
+      for(let i=0;i<7;i++){cells.push(makeDayButton(anchor));anchor.setUTCDate(anchor.getUTCDate()+1);}
+      grid.innerHTML=cells.join('');
+      const weekStart=new Date((selectedDay||date)+'T12:00:00Z');weekStart.setUTCDate(weekStart.getUTCDate()-((weekStart.getUTCDay()+6)%7));
+      const weekEnd=new Date(weekStart);weekEnd.setUTCDate(weekEnd.getUTCDate()+6);
+      find('#work-agenda-title').textContent=new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',timeZone:'UTC'}).format(weekStart)+' – '+new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(weekEnd);
+    }else{
+      const rows=monthEvents.filter(item=>item.date).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99:99').localeCompare(b.time||'99:99'));
+      grid.innerHTML='<div class="calendar-agenda-view">'+(rows.length?rows.map(item=>'<button type="button" class="calendar-agenda-row" data-calendar-day="'+escape(item.date)+'"><time>'+escape(new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(item.date+'T12:00:00Z')))+(item.time?' · '+escape(item.time):'')+'</time>'+eventMarkup(item)+'</button>').join(''):'<p class="work-empty">No events in this month.</p>')+'</div>';
+    }
+    const allEvents=[...records.filter(item=>item.date&&item.date>=date&&isVisibleCalendar(item)),...(scope.value==='admin'?consultationRequests.filter(item=>item.date&&item.date>=date&&item.approvalStatus!=='declined'&&(!staffFilter?.value||staffFor(item)===staffFilter.value)):[])].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99:99').localeCompare(b.time||'99:99'));
+    const todayEvents=allEvents.filter(item=>item.date===date);
+    const weekEnd=new Date(date+'T12:00:00Z');weekEnd.setUTCDate(weekEnd.getUTCDate()+7);
+    const weekEndKey=weekEnd.toISOString().slice(0,10);
+    const laterEvents=allEvents.filter(item=>item.date>date&&item.date<=weekEndKey).slice(0,4);
+    const shortDate=d=>new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'));
+    const timeText=t=>t?new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).format(new Date('2026-01-01T'+t+':00Z')):'All day';
+    const kindText=item=>item.kind==='Consultation request'?'Client consultation request':isNote(item)?'Calendar note':item.kind==='Appointment'?appointmentTypeLabel(item):'Task / deadline';
+    const rightEvent=(item)=>'<button type="button" class="calendar-upcoming-row" data-calendar-day="'+escape(item.date)+'" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-type="'+appointmentType(item)+'"':'')+'><span class="calendar-upcoming-time">'+escape(timeText(item.time))+'</span><span class="calendar-upcoming-copy"><strong>'+calendarIcon(item)+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></span></button>';
+    const dateLabel=find('#calendar-today-label');
+    if(dateLabel)dateLabel.textContent=new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
+    find('#calendar-upcoming-list').innerHTML=todayEvents.length?todayEvents.slice(0,4).map(rightEvent).join(''):'<p class="work-empty calendar-empty">No events scheduled for today.</p>';
+    find('#calendar-later-list').innerHTML=laterEvents.length?laterEvents.map(item=>'<div class="calendar-later-row" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-type="'+appointmentType(item)+'"':'')+'><span>'+escape(shortDate(item.date))+'<small>'+escape(timeText(item.time))+'</small></span><div><strong>'+calendarIcon(item)+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></div><button type="button" data-calendar-day="'+escape(item.date)+'" aria-label="Open '+escape(item.title||'event')+'">View</button></div>').join(''):'<p class="work-empty calendar-empty">No later events this week.</p>';
+    find('#work-agenda-title').textContent=selectedDay?new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(selectedDay+'T12:00:00Z')):'Scheduled items this month';
+    const agendaItems=monthEvents.filter(item=>item.kind!=='Consultation request'&&(!selectedDay||item.date===selectedDay)).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b));
+    renderRows('#work-agenda',agendaItems,monthEvents.length?'No scheduled items for this date.':'No appointments, requests or deadlines in this calendar view.');
+    const requestStatus=find('#consultation-calendar-status');
+    if(requestStatus){
+      const waiting=consultationRequests.filter(item=>(item.approvalStatus||'pending')==='pending').length;
+      requestStatus.textContent=consultationRequestsLoaded?(waiting?waiting+' consultation request'+(waiting===1?' needs':'s need')+' attorney review.':''): 'Checking for consultation requests…';
+    }
+  }
+  function render() {
+    const date = today();
+    const tasks = records.filter(item => item.kind === 'Task' && !isNote(item));
+    const overdue = item => !item.done && item.date && item.date < date;
+    const openTasks = tasks.filter(item => !item.done);
+    const pendingApprovals = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending').length;
+    for (const [id,value] of [
+      ['dashboard-stat-pending-approvals',pendingApprovals]
+    ]) { const node=document.getElementById(id); if(node) node.textContent=String(value); }
+    const taskBadge=document.getElementById('nav-task-badge');
+    if(taskBadge){const value=tasks.filter(item=>overdue(item)||(!item.done&&item.date===date)).length;taskBadge.textContent=value>99?'99+':String(value);taskBadge.hidden=value===0;}
+    const calendarBadge=document.getElementById('nav-approval-badge');
+    if(calendarBadge){calendarBadge.textContent=pendingApprovals>99?'99+':String(pendingApprovals);calendarBadge.hidden=pendingApprovals===0;}
+    const filter = find('#legal-task-filter').value;
+    const taskQuery = find('#work-task-search').value.trim().toLowerCase();
+    const priority = find('#work-task-priority').value;
+    const matchingTasks = tasks.filter(item => {
+      const matchesView = filter === 'done' ? item.done : !item.done &&
+        (filter !== 'today' || item.date === date) &&
+        (filter !== 'overdue' || overdue(item)) &&
+        (filter !== 'unscheduled' || !item.date);
+      return matchesView && (!priority || item.priority === priority) &&
+        [item.title, item.matter].join(' ').toLowerCase().includes(taskQuery);
+    }).sort(order);
+    find('#work-task-count').textContent = loaded ? `${matchingTasks.length} of ${tasks.length} tasks` : '';
+    const taskList = find('#work-priority-list');
+    taskList.innerHTML = matchingTasks.length ? `<div class="staff-table-scroll"><table class="staff-task-table">
+      <thead><tr><th scope="col">Task</th><th scope="col">Matter</th><th scope="col">Priority</th><th scope="col">Due date</th><th scope="col">Actions</th></tr></thead>
+      <tbody>${matchingTasks.map(item => `<tr><td><strong>${escape(item.title)}</strong><small>${item.done ? 'Completed' : overdue(item) ? 'Overdue' : 'Open'}</small></td><td>${escape(item.matter || '—')}</td><td><span class="task-priority" data-priority="${escape(item.priority)}">${escape(item.priority)}</span></td><td>${escape(item.date || '—')}</td><td><div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button><button type="button" data-toggle="${escape(item.id)}">${item.done ? 'Reopen' : 'Complete'}</button><button type="button" data-remove="${escape(item.id)}">Delete</button></div></td></tr>`).join('')}</tbody></table></div>` :
+      `<p class="work-empty">${escape(loaded ? 'No tasks match this view.' : (loadError || 'Loading tasks…'))}</p>`;
+    for (const [id, total] of [
+      ['legal-today', records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date).length],
+      ['legal-overdue', tasks.filter(overdue).length]
+    ]) {
+      const metric = document.getElementById(id);
+      if (metric) metric.textContent = total;
+    }
+    renderFollowUps(tasks, date);
+    const attention = document.getElementById('overview-task-attention');
+    if (attention) {
+      const due = tasks.filter(item => overdue(item) && !item.followUpStatus).sort(order).slice(0, 3);
+      attention.innerHTML = due.map(item => `<a href="#work-queue" data-task-filter="overdue"><strong>${escape(item.title)}</strong><span>Overdue</span></a>`).join('') || '<p>No overdue tasks.</p>';
+    }
+    if (agenda) {
+      const appointments = records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date)
+        .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+      agenda.innerHTML = appointments.map(item =>
+        `<div class="overview-agenda-row" data-appointment-color="${appointmentColor(item)}"><time>${escape(item.time || 'Any time')}</time><strong>${escape(item.title)}</strong><small>${escape(item.matter || (calendarFor(item) === 'client' ? 'Client Calendar' : 'Admin Calendar'))}</small></div>`
+      ).join('') || '<p>No appointments today in Sydney.</p>';
+    }
+    if (upcoming && loaded) {
+      const next = records.filter(item => item.kind === 'Appointment' && !item.done && item.date > date && Number.isFinite(Date.parse(item.date + 'T00:00:00Z')))
+        .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '99:99').localeCompare(b.time || '99:99'))
+        .slice(0, 5);
+      const formatDate = new Intl.DateTimeFormat('en-AU', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'});
+      upcoming.innerHTML = next.map(item => `<div class="overview-agenda-row" data-appointment-color="${appointmentColor(item)}"><time datetime="${escape(item.date)}">${escape(formatDate.format(new Date(item.date + 'T00:00:00Z')))} · ${escape(item.time || 'Any time')}</time><strong>${escape(item.title)}</strong><small>${escape(item.matter || (calendarFor(item) === 'client' ? 'Client Calendar' : 'Admin Calendar'))}</small></div>`).join('') || '<p>No future appointments scheduled.</p>';
+    }
+    renderCalendar();
+    renderMatters();
+    renderDrafts();
+    renderDashboard();
+  }
+
+  function contactDateLabel(value) {
+    if (!value) return '—';
+    const dateValue = value?.toDate ? value.toDate() : value instanceof Date ? value : null;
+    const raw = dateValue ? dateValue.toISOString().slice(0, 10) : String(value).slice(0, 10);
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? new Date(raw + 'T12:00:00Z') : new Date(value);
+    return Number.isNaN(parsed.getTime()) ? '—' : new Intl.DateTimeFormat('en-AU', {day:'2-digit',month:'short',year:'numeric',timeZone:'Australia/Sydney'}).format(parsed);
+  }
+
+  function renderContacts() {
+    const list = document.getElementById('contact-directory-list');
+    const detail = document.getElementById('contact-detail-panel');
+    if (!list || !detail) return;
+    const grouped = new Map();
+    allEnquiryContacts.forEach(item => {
+      const contact = item.contact || {};
+      const email = String(contact.email || '').trim().toLowerCase();
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ').trim();
+      const key = email || (name ? name.toLowerCase() + ':' + item.requestId : String(item.requestId));
+      if (!grouped.has(key)) grouped.set(key, {key, contact, item, requests:[]});
+      const entry = grouped.get(key);
+      entry.requests.push(item);
+      if (item.createdAt && (!entry.item.createdAt || item.createdAt.seconds > entry.item.createdAt.seconds)) {
+        entry.item = item;
+        entry.contact = contact;
+      }
+    });
+    const allEntries = [...grouped.values()];
+    const matterValues = [...new Set(allEntries.map(entry => entry.contact.matter || entry.contact.matterReference || entry.item.matter).filter(Boolean))];
+    const matterFilter = document.getElementById('contact-filter-matter');
+    if (matterFilter) {
+      const current = contactMatterFilter;
+      matterFilter.innerHTML = '<option value="all">All matters</option>' + matterValues.map(value => '<option value="' + escape(value) + '">' + escape(value) + '</option>').join('');
+      matterFilter.value = matterValues.includes(current) ? current : 'all';
+      if (!matterValues.includes(current)) contactMatterFilter = 'all';
+      matterFilter.onchange = () => { contactMatterFilter = matterFilter.value; renderDashboard(); };
+    }
+    const searchField = document.getElementById('contact-search');
+    const typeField = document.getElementById('contact-filter-type');
+    const statusField = document.getElementById('contact-filter-status');
+    const clearButton = document.getElementById('contact-clear-filters');
+    if (searchField) {
+      if (searchField.value !== contactSearchQuery) searchField.value = contactSearchQuery;
+      searchField.oninput = () => { contactSearchQuery = searchField.value; renderDashboard(); };
+    }
+    if (typeField) {
+      typeField.value = contactTypeFilter;
+      typeField.onchange = () => { contactTypeFilter = typeField.value; renderDashboard(); };
+    }
+    if (statusField) {
+      statusField.value = contactStatusFilter;
+      statusField.onchange = () => { contactStatusFilter = statusField.value; renderDashboard(); };
+    }
+    if (clearButton) clearButton.onclick = () => {
+      contactSearchQuery = '';
+      contactTypeFilter = 'all';
+      contactMatterFilter = 'all';
+      contactStatusFilter = 'all';
+      renderDashboard();
+    };
+    const statusFor = item => {
+      const status = String(item.approvalStatus || 'pending').toLowerCase();
+      return status === 'approved' || status === 'scheduled' ? 'approved' : status === 'declined' ? 'declined' : 'pending';
+    };
+    const typeFor = contact => String(contact.newClient || '').toLowerCase() === 'yes' ? 'new' : 'enquiry';
+    const labelForStatus = status => status === 'approved' ? 'Active' : status === 'declined' ? 'Declined' : 'Awaiting approval';
+    const filtered = allEntries.filter(entry => {
+      const contact = entry.contact || {};
+      const item = entry.item || {};
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+      const matter = contact.matter || contact.matterReference || item.matter || '';
+      const status = statusFor(item);
+      const type = typeFor(contact);
+      const haystack = [name, contact.email, contact.phone, contact.topic, item.notes, matter].join(' ').toLowerCase();
+      return (!contactSearchQuery || haystack.includes(contactSearchQuery.trim().toLowerCase()))
+        && (contactTypeFilter === 'all' || type === contactTypeFilter)
+        && (contactMatterFilter === 'all' || matter === contactMatterFilter)
+        && (contactStatusFilter === 'all' || status === contactStatusFilter);
+    });
+    const resultCount = document.getElementById('contact-result-count');
+    if (resultCount) resultCount.textContent = 'Showing ' + filtered.length + ' of ' + allEntries.length + ' contacts';
+    const active = filtered.find(entry => entry.key === selectedContactKey) || filtered[0];
+    if (active) selectedContactKey = active.key;
+    list.innerHTML = filtered.length ? filtered.map(entry => {
+      const contact = entry.contact || {};
+      const item = entry.item || {};
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+      const initials = name.split(/\s+/).map(part => part[0] || '').slice(0, 2).join('').toUpperCase();
+      const type = typeFor(contact);
+      const status = statusFor(item);
+      const matter = contact.matter || contact.matterReference || item.matter || '—';
+      return '<tr class="contact-table-row' + (entry.key === selectedContactKey ? ' is-selected' : '') + '" data-contact-key="' + escape(entry.key) + '" tabindex="0" role="button" aria-selected="' + (entry.key === selectedContactKey) + '">'
+        + '<td><span class="contact-table-person"><span class="contact-avatar">' + escape(initials || 'C') + '</span><strong>' + escape(name) + '</strong></span></td>'
+        + '<td><span class="contact-type-pill">' + (type === 'new' ? 'New client' : 'Enquiry') + '</span></td>'
+        + '<td class="contact-table-email">' + escape(contact.email || '—') + '<small>' + escape(contact.phone || '—') + '</small></td>'
+        + '<td>' + escape(matter) + '</td>'
+        + '<td>' + escape(contactDateLabel(item.createdAt)) + '</td>'
+        + '<td><span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span></td>'
+        + '</tr>';
+    }).join('') : '<tr><td colspan="6" class="contact-empty-state">' + (consultationRequestsLoaded ? 'No contacts match these filters.' : 'Loading enquiry contacts…') + '</td></tr>';
+    list.querySelectorAll('[data-contact-key]').forEach(button => {
+      button.onclick = () => {
+        selectedContactKey = button.dataset.contactKey;
+        activeContactTab = 'details';
+        renderDashboard();
+      };
+      button.onkeydown = event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); button.click(); }
+      };
+    });
+    if (!active) {
+      detail.innerHTML = '<div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>No contact selected</h3><p>Try another search or clear the filters.</p></div>';
+      return;
+    }
+    const contact = active.contact || {};
+    const item = active.item || {};
+    const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+    const initials = name.split(/\s+/).map(part => part[0] || '').slice(0, 2).join('').toUpperCase();
+    const matter = contact.matter || contact.matterReference || item.matter || '';
+    const status = statusFor(item);
+    let tabContent = '';
+    if (activeContactTab === 'matters') {
+      tabContent = '<section class="contact-detail-section"><h4>Linked Matters (' + (matter ? '1' : '0') + ')</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Linked to this contact</span></article>' : '<p class="contact-detail-muted">No matter has been linked to this contact yet.</p>') + '</section>';
+    } else if (activeContactTab === 'notes') {
+      tabContent = '<section class="contact-detail-section"><h4>Enquiry notes</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '<small>From the original website enquiry</small></div></section>';
+    } else if (activeContactTab === 'communications') {
+      tabContent = '<section class="contact-detail-section"><h4>Communications</h4><article class="contact-communication-card"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>Received ' + escape(contactDateLabel(item.createdAt)) + '</small></div><span class="contact-type-pill">Received</span></article><a class="contact-record-action" href="#staff-inbox">Open Client Messages</a></section>';
+    } else {
+      const topic = String(contact.topic || 'General enquiry').replaceAll('-', ' ');
+      tabContent = '<section class="contact-detail-section"><h4>Contact Details</h4><dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + escape(contact.email || 'Not provided') + '</dd></div><div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div><div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div><div><dt>New client</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div><div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div><div><dt>Received</dt><dd>' + escape(contactDateLabel(item.createdAt)) + '</dd></div></dl></section>'
+        + '<section class="contact-detail-section"><h4>Linked Matter</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Related matter</span></article>' : '<p class="contact-detail-muted">No matter linked yet.</p>') + '</section>'
+        + '<section class="contact-detail-section"><h4>Enquiry Message</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '</div></section>';
+    }
+    detail.innerHTML = '<header class="contact-detail-head"><span class="contact-avatar contact-avatar-large">' + escape(initials || 'C') + '</span><div><h3>' + escape(name) + '</h3><span class="contact-type-pill">' + (typeFor(contact) === 'new' ? 'New client' : 'Prospective client') + '</span></div><span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span></header>'
+      + '<div class="contact-detail-tabs" role="tablist" aria-label="Contact details"><button type="button" role="tab" aria-selected="' + (activeContactTab === 'details') + '" data-contact-tab="details">Details</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'matters') + '" data-contact-tab="matters">Matters</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'notes') + '" data-contact-tab="notes">Notes</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'communications') + '" data-contact-tab="communications">Communications</button></div>'
+      + '<div class="contact-detail-body">' + tabContent + '</div><footer class="contact-detail-footer"><a class="contact-record-action" href="#staff-inbox">Review enquiry</a></footer>';
+    detail.querySelectorAll('[data-contact-tab]').forEach(button => {
+      button.onclick = () => { activeContactTab = button.dataset.contactTab; renderDashboard(); };
+    });
+  }
+
+  function renderDashboard() {
+    const overview = document.getElementById('dashboard-overview');
+    if (!overview) return;
+    const error = document.getElementById('dashboard-error');
+    if (error) { error.hidden = !loadError; error.textContent = loadError ? 'Workspace data could not be loaded. ' + loadError : ''; }
+    const date = today();
+    const start = new Date(date + 'T00:00:00Z');
+    const horizon = new Date(start); horizon.setUTCDate(horizon.getUTCDate() + 7);
+    const endDate = horizon.toISOString().slice(0,10);
+    const pending = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending');
+    const openWork = records.filter(item => !item.done && !isNote(item));
+    const matters = [...new Set(openWork.map(item => String(item.matter || '').trim()).filter(Boolean))];
+    const upcoming = records.filter(item => item.kind === 'Appointment' && !item.done && item.date >= date && item.date <= endDate).length +
+      pending.filter(item => item.date >= date && item.date <= endDate).length;
+    const receivedToday = consultationRequests.filter(item => {
+      const stamp = item.createdAt && item.createdAt.toDate ? item.createdAt.toDate() : (item.createdAt instanceof Date ? item.createdAt : null);
+      if (!stamp) return item.date === date;
+      return new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(stamp) === date;
+    }).length;
+    const setText = (id,value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
+    setText('dashboard-stat-matters', matters.length);
+    setText('dashboard-stat-new-enquiries', receivedToday);
+    setText('dashboard-stat-upcoming-events', upcoming);
+    setText('dashboard-stat-pending-approvals', pending.length);
+    const badge = document.getElementById('nav-approval-badge');
+    if (badge) { badge.textContent=pending.length>99?'99+':String(pending.length); badge.hidden=pending.length===0; }
+
+    const approvals = document.getElementById('dashboard-approval-list');
+    if (approvals) {
+      approvals.innerHTML = pending.length ? pending.slice(0,4).map(item => {
+        const stamp = item.createdAt && item.createdAt.toDate ? item.createdAt.toDate() : (item.createdAt instanceof Date ? item.createdAt : null);
+        const submitted = stamp ? new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZone:'Australia/Sydney'}).format(stamp) : 'Recently submitted';
+        const time = item.time ? new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',timeZone:'UTC'}).format(new Date('2026-01-01T'+item.time+':00Z')) : 'Time not selected';
+        const dateLabel = item.date ? new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T12:00:00Z')) : 'Date not selected';
+        return '<article class="dashboard-approval-row"><span class="dashboard-approval-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg></span><div><strong>'+escape(item.title || 'Consultation enquiry')+'</strong><p>Consultation request · Submitted '+escape(submitted)+' · '+escape(dateLabel)+' at '+escape(time)+'</p></div><a href="#work-calendar">Review</a></article>';
+      }).join('') : '<p class="dashboard-empty">No requests are waiting for attorney review.</p>';
+    }
+
+    const recentBody = document.getElementById('dashboard-matters-body');
+    if (recentBody) {
+      const grouped = new Map();
+      for (const item of records.filter(row => !isNote(row) && String(row.matter || '').trim())) {
+        const ref = String(item.matter).trim();
+        const group = grouped.get(ref) || {ref, rows:[]};
+        group.rows.push(item); grouped.set(ref,group);
+      }
+      const rows=[...grouped.values()].sort((a,b) => {
+        const latest = g => Math.max(...g.rows.map(row => row.updatedAt?.toMillis?.() || row.updatedAt?.getTime?.() || 0));
+        return latest(b)-latest(a);
+      }).slice(0,5);
+      recentBody.innerHTML = rows.length ? rows.map(group => {
+        const active = group.rows.some(item => !item.done);
+        const next = group.rows.filter(item => !item.done && item.date && item.date >= date).sort((a,b)=>a.date.localeCompare(b.date))[0];
+        const types=[...new Set(group.rows.map(item => item.kind === 'Task' ? 'Task' : item.kind === 'Appointment' ? 'Appointment' : 'Draft'))].join(', ');
+        return '<tr><td><strong>'+escape(group.ref)+'</strong></td><td>'+escape(types || 'Work')+'</td><td><span class="matter-state '+(active?'':'is-quiet')+'">'+(active?'Active':'Complete')+'</span></td><td>'+escape(next?.date || '—')+'</td><td>'+group.rows.length+'</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="dashboard-empty-cell">'+(loaded?'No matter-linked work items yet.':'Loading matter activity…')+'</td></tr>';
+    }
+
+    const taskList = document.getElementById('dashboard-due-task-list');
+    if (taskList) {
+      const dueTasks=records.filter(item => item.kind==='Task' && !item.done && !isNote(item) && item.date && item.date<=endDate).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')).slice(0,6);
+      const tomorrow = new Date(start.getTime()+86400000).toISOString().slice(0,10);
+      const dayLabel = d => d < date ? 'Overdue' : d === date ? 'Due today' : d === tomorrow ? 'Due tomorrow' : new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'));
+      taskList.innerHTML=dueTasks.length?dueTasks.map(item=>'<li class="dashboard-due-task"><a href="#work-queue" data-task-filter="open">'+escape(item.title)+'</a><small class="'+(item.date<date?'is-overdue':'')+'">'+escape(dayLabel(item.date))+'</small></li>').join(''):'<li class="dashboard-empty">'+(loaded?'No open tasks due in the next 7 days.':'Loading tasks…')+'</li>';
+    }
+
+    renderContacts();
+
+    const monthLabel = document.getElementById('dashboard-month-label');
+    const monthTitle = document.getElementById('dashboard-calendar-title');
+    const grid = document.getElementById('dashboard-mini-calendar');
+    const monthInput = /^\d{4}-\d{2}$/.test(dashboardMonth) ? dashboardMonth : date.slice(0,7);
+    const parts=monthInput.split('-').map(Number), year=parts[0], month=parts[1];
+    const first=new Date(Date.UTC(year,month-1,1)), offset=(first.getUTCDay()+6)%7;
+    const daysInMonth=new Date(Date.UTC(year,month,0)).getUTCDate();
+    const monthName=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric',timeZone:'UTC'}).format(first);
+    if(monthLabel) monthLabel.textContent=monthName;
+    if(monthTitle) monthTitle.textContent=monthName;
+    if(grid) {
+      const weekdays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="mini-calendar-weekday" role="columnheader">'+day+'</span>').join('');
+      const pad=Array.from({length:offset},()=>'<span class="mini-calendar-spacer" aria-hidden="true"></span>').join('');
+      const dayCells=Array.from({length:daysInMonth},(_,i)=>{
+        const n=i+1, key=monthInput+'-'+String(n).padStart(2,'0');
+        const hasAppointment=records.some(row=>row.kind==='Appointment'&&!row.done&&row.date===key);
+        const hasApproval=consultationRequests.some(row=>(row.approvalStatus||'pending')==='pending'&&row.date===key);
+        const hasEvent=hasAppointment||hasApproval;
+        const dots=hasEvent?'<span class="mini-day-dots" aria-hidden="true">'+(hasAppointment?'<i></i>':'')+(hasApproval?'<i class="is-approval"></i>':'')+'</span>':'';
+        const label=new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(key+'T12:00:00Z'));
+        return '<a class="mini-calendar-day" '+(key===date?'aria-current="date"':'')+' href="#work-calendar" data-dashboard-date="'+key+'" role="gridcell" aria-label="'+escape(label)+(hasEvent?', event scheduled':'')+'">'+n+dots+'</a>';
+      }).join('');
+      const total=offset+daysInMonth, trailing=(7-(total%7))%7;
+      grid.innerHTML=weekdays+pad+dayCells+Array.from({length:trailing},()=>'<span class="mini-calendar-spacer" aria-hidden="true"></span>').join('');
+    }
+    const prev=document.getElementById('dashboard-month-prev'), next=document.getElementById('dashboard-month-next');
+    if(prev) prev.onclick=()=>{const d=new Date(monthInput+'-01T00:00:00Z');d.setUTCMonth(d.getUTCMonth()-1);dashboardMonth=d.toISOString().slice(0,7);renderDashboard();};
+    if(next) next.onclick=()=>{const d=new Date(monthInput+'-01T00:00:00Z');d.setUTCMonth(d.getUTCMonth()+1);dashboardMonth=d.toISOString().slice(0,7);renderDashboard();};
+    const status=document.getElementById('dashboard-live-status');
+    if(status) status.innerHTML='<span class="live-indicator"></span>'+(loaded&&consultationRequestsLoaded?'Live updates':'Loading live data');
+  }
+
+  function renderFollowUps(tasks, date) {
+    const followUps = tasks.filter(item => !item.done && Object.hasOwn(followUpStates, item.followUpStatus))
+      .sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999') || order(a,b));
+    const overview = document.getElementById('overview-follow-ups');
+    const label = item => escape([item.matter, item.date].filter(Boolean).join(' · '));
+    if (overview) {
+      overview.innerHTML = followUps.filter(item => item.date && item.date <= date).slice(0,5).map(item =>
+        `<button class="inbox-row" type="button" data-overview-follow-up="${escape(item.id)}"><strong>${escape(item.title)}</strong><small>${label(item)} · ${followUpStates[item.followUpStatus]}</small></button>`
+      ).join('') || '<p>No follow-ups due today.</p>';
+    }
+    find('#case-follow-ups').innerHTML = Object.entries(followUpStates).map(([state, heading]) => {
+      const group = followUps.filter(item => item.followUpStatus === state);
+      return `<details class="follow-up-group"${group.length ? ' open' : ''}><summary>${heading} (${group.length})</summary>${group.map(item =>
+        `<div class="follow-up-row"><strong>${escape(item.title)}</strong><small>${label(item)}</small><div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button><button type="button" data-toggle="${escape(item.id)}">Complete</button>${state === 'client' ? `<button type="button" data-remind="${escape(item.id)}">Draft reminder</button>` : ''}</div></div>`
+      ).join('') || '<p>No open follow-ups.</p>'}</details>`;
+    }).join('');
+  }
+  function renderDrafts() {
+    const allItems = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
+    const received = records.filter(isAttorneyEmail);
+    const emailItems = [...received,...allItems].sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+    const emailBadge=document.getElementById('nav-email-badge');
+    if(emailBadge){emailBadge.textContent=received.length>99?'99+':String(received.length);emailBadge.hidden=received.length===0;}
+    const query = find('#correspondence-search').value.trim().toLowerCase();
+    const sort = find('#correspondence-sort').value;
+    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email')
+      .filter(item => [item.title,item.recipient,item.matter,item.notes].join(' ').toLowerCase().includes(query))
+      .sort((a,b) => {
+        const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
+        return sort==='oldest'?delta:-delta;
+      });
+    if(filtered.some(item=>item.id===selectedCorrespondenceId)){}else selectedCorrespondenceId=filtered[0]?.id||'';
+    const count=find('#correspondence-count');
+    if(count) count.textContent='Correspondence ('+filtered.length+')';
+    find('#work-draft-count').textContent=loaded ? (filtered.length+' of '+emailItems.length+' messages') : '';
+    const list=find('#correspondence-items');
+    const icon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>';
+    list.innerHTML=filtered.length ? filtered.map(item=>{
+      const incoming=isAttorneyEmail(item);
+      const title=item.title.replace(/^\[ATTY EMAIL\] /,'');
+      const selected=item.id===selectedCorrespondenceId;
+      const sender=(incoming?'From: ':'To: ')+(item.recipient||'No recipient');
+      return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+icon+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
+    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(correspondenceFilter==='all'||correspondenceFilter==='email'?'No correspondence yet':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
+    const active=filtered.find(item=>item.id===selectedCorrespondenceId) || null;
+    const reader=find('#correspondence-reader-content');
+    if(!active){
+      reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
+      return;
+    }
+    const incoming=isAttorneyEmail(active);
+    const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
+    const stamp=active.date?escape(active.date):'Saved draft';
+    const body=active.notes||'No message body has been saved.';
+    reader.innerHTML='<article class="correspondence-message"><div class="correspondence-message-top"><span class="correspondence-type-badge">'+icon+' '+(incoming?'Email received':'Email draft')+'</span><div class="correspondence-message-actions"><button type="button" data-edit="'+escape(active.id)+'">Edit</button><button type="button" data-remove="'+escape(active.id)+'" aria-label="Delete correspondence">Delete</button>'+(incoming?'<button type="button" data-generate-email-task="'+escape(active.id)+'">Generate task</button>':'')+'</div></div><h3>'+escape(title)+'</h3><dl class="correspondence-meta"><div><dt>From</dt><dd>'+escape(incoming?active.recipient||'Unknown sender':'Prevail Family Law staff')+'</dd></div><div><dt>To</dt><dd>'+escape(incoming?'Prevail Family Law staff':active.recipient||'No recipient added')+'</dd></div><div><dt>Date</dt><dd>'+stamp+'</dd></div><div><dt>Matter</dt><dd>'+escape(active.matter||'No matter linked')+'</dd></div></dl><div class="correspondence-message-body"><pre>'+escape(body)+'</pre></div>'+(incoming?'<div class="correspondence-internal-note"><strong>Private internal note</strong><p>Keep internal notes in the matter record. The received message is shown above.</p></div>':'')+'<div class="correspondence-compose-tabs" role="group" aria-label="Reply actions"><button type="button" class="is-active" data-correspondence-compose="reply">↶ Reply</button><button type="button" data-correspondence-compose="reply-all">⇇ Reply all</button><button type="button" data-correspondence-compose="forward">↪ Forward</button></div></article>';
+  }
+  function renderMatters() {
+    const query = find('#work-matter-query').value.trim().toLowerCase();
+    const kind = find('#work-matter-kind').value;
+    const sort = find('#work-matter-sort').value;
+    const groups = new Map();
+    for (const item of records) {
+      const key = item.matter?.trim().toLowerCase();
+      if (!key || (kind && item.kind !== kind) || isNote(item)) continue;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    }
+    const matters = find('#work-matter-list');
+    const detail = find('#work-matter-detail');
+    const lastActivity = entries => Math.max(...entries.map(item => item.updatedAt?.toMillis?.() ?? 0));
+    const keys = [...groups.keys()].filter(key =>
+      key.includes(query) || groups.get(key).some(item => item.title.toLowerCase().includes(query))
+    ).sort((a, b) => (sort === 'activity' ? lastActivity(groups.get(b)) - lastActivity(groups.get(a)) : 0) || a.localeCompare(b, 'en-AU', {numeric:true}));
+    find('#work-matter-count').textContent = loaded ? `${keys.length} ${keys.length === 1 ? 'matter' : 'matters'}` : '';
+    if (!keys.includes(selectedMatter)) selectedMatter = keys[0];
+    matters.innerHTML = keys.map(key => `<button class="inbox-row" type="button" data-matter="${escape(key)}" aria-pressed="${key === selectedMatter}">${escape(groups.get(key)[0].matter)}</button>`).join('');
+    const entries = groups.get(selectedMatter) ?? [];
+    const next = entries.filter(item => item.kind === 'Appointment' && !item.done && item.date >= today())
+      .sort((a,b) => a.date.localeCompare(b.date) || (a.time || '99:99').localeCompare(b.time || '99:99')).slice(0,1);
+    const drafts = entries.filter(item => item.kind === 'Email draft')
+      .sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0)).slice(0,5);
+    const tasks = entries.filter(item => item.kind === 'Task' && !item.done).sort(order);
+    const sections = kind ? [[kind, entries.sort(order)]] :
+      [['Next appointment', next], ['Open tasks', tasks], ['Recent drafts', drafts]];
+    detail.innerHTML = entries.length ? `<h3>${escape(entries[0].matter)}</h3>` +
+      sections.map(([label, items]) => `<h4>${label}</h4>${items.map(row).join('') || '<p class="work-empty">None in this matter.</p>'}`).join('') : 'Select a matter to view its activity.';
+    if (!keys.length || !loaded) {
+      const notice = document.createElement('p');
+      notice.className = 'work-empty';
+      notice.textContent = !loaded ? (loadError || 'Loading matter activity…')
+        : query || kind ? 'No matters match these filters.'
+        : 'Add a matter reference to a task, appointment or email draft to see it here.';
+      matters.prepend(notice);
+    }
+  }
+  renderCalendar();
+  const scheduleEditor = editors.Appointment;
+  const scheduleTypeSelect = field(scheduleEditor, 'eventType');
+  const scheduleTypeWrap = find('#schedule-event-type');
+  const scheduleTypeIcon = find('#schedule-event-type-icon');
+  const syncScheduleEventType = () => {
+    const value = appointmentTypes[scheduleTypeSelect.value] ? scheduleTypeSelect.value : 'client-meeting';
+    scheduleTypeWrap.dataset.appointmentType = value;
+    scheduleTypeIcon.innerHTML = appointmentIcon({eventType:value});
+  };
+  scheduleTypeSelect.addEventListener('change', syncScheduleEventType);
+  const followUpOverview = document.getElementById('overview-follow-ups');
+  if (followUpOverview) followUpOverview.onclick = event => {
+    const button = event.target.closest('[data-overview-follow-up]');
+    if (!button || current !== session || !loaded) return;
+    const action = [...find('#case-follow-ups').querySelectorAll('[data-edit]')]
+      .find(entry => entry.dataset.edit === button.dataset.overviewFollowUp);
+    if (!action) return;
+    navigate('work-matters');
+    action.click();
+  };
+  function listenForWorkItems() {
+    stop?.();
+    loaded = false;
+    loadError = null;
+    renderMatters();
+    if (upcoming) upcoming.textContent = 'Loading appointments…';
+    retryCalendar.hidden = true;
+    status.textContent = 'Connecting to the workspace…';
+    for (const editor of Object.values(editors)) submit(editor).disabled = true;
+    if (scheduleEditor.dialog.open) message(scheduleEditor, 'Connecting to the calendar…');
+    stop = onSnapshot(items, snapshot => {
+      if (current !== session) return;
+      records = snapshot.docs.map(record => ({...record.data(), id:record.id}));
+      if (!loaded) {
+        status.textContent = '';
+        for (const editor of [scheduleEditor, editors.Task]) if (!editor.saving) message(editor, '');
+      }
+      loaded = true;
+      for (const editor of Object.values(editors)) submit(editor).disabled = Boolean(editor.saving);
+      render();
+    }, error => {
+      if (current !== session) return;
+      loaded = false;
+      const accessDenied = ['permission-denied', 'unauthenticated'].includes(error.code);
+      loadError = accessDenied
+        ? 'Calendar and work records are unavailable. Ask your Firebase administrator to verify your staff role and the published workspace rules.'
+        : 'The workspace could not connect. Retry the connection without closing your schedule.';
+      for (const editor of Object.values(editors)) submit(editor).disabled = true;
+      renderDrafts();
+      if (upcoming) upcoming.textContent = 'Upcoming appointments could not load.';
+      if (followUpOverview) followUpOverview.textContent = 'Follow-ups could not load.';
+      find('#case-follow-ups').textContent = 'Follow-ups could not load.';
+      if (agenda) agenda.textContent = 'Agenda unavailable. Check workspace access.';
+      const attention = document.getElementById('overview-task-attention');
+      if (attention) attention.textContent = 'Could not load task updates.';
+      status.textContent = loadError;
+      renderMatters();
+      message(scheduleEditor, loadError);
+      message(editors.Task, loadError);
+      retryCalendar.hidden = accessDenied;
+    });
+  }
+  retryCalendar.addEventListener('click', listenForWorkItems);
+  let consultationFeedReady = false;
   let consultationRequestIds = new Set();
   function listenForConsultationRequests() {
     stopConsultations?.();
