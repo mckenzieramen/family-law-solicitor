@@ -11,3 +11,48 @@
 .staff-inbox button{background:#073e2f;color:#fff9ee;cursor:pointer}
 
 .staff-inbox .chat-message{max-width:min(100%,680px);padding:12px 15px;border-radius:12px;background:#f2efe6}.staff-inbox .chat-message-staff{margin-left:auto;background:#e8eddf}.staff-inbox .chat-message strong{display:block;margin-bottom:4px;font-size:13px}.staff-inbox form{margin-top:16px}.staff-inbox textarea{min-height:84px}
+
+/* Admin client inbox: full-height ticket workspace */
+.admin-dashboard #staff-inbox{box-sizing:border-box;display:flex;flex-direction:column;gap:14px;width:100%;min-height:calc(100vh - 148px);padding:clamp(20px,2.2vw,32px);background:#fffdf8;border:1px solid #e6dac8;border-radius:16px}
+.admin-dashboard #staff-inbox>h2{margin:0;color:#102a3a;font:500 clamp(25px,2.1vw,32px)/1.15 Georgia,serif}
+.admin-dashboard #staff-inbox .inbox-controls{grid-template-columns:minmax(220px,1.35fr) repeat(2,minmax(170px,.9fr));gap:12px;margin:0}
+.admin-dashboard #staff-inbox .inbox-controls label{color:#34495a;font-size:14px;font-weight:700}
+.admin-dashboard #staff-inbox .inbox-controls :is(input,select){min-height:46px;border-color:#d9d1c4;border-radius:9px;background:#fff;color:#102a3a}
+.admin-dashboard #inbox-count{margin:0;color:#5c6c78;font-size:14px}
+.admin-dashboard #inbox-status:empty{display:none}
+.admin-dashboard #staff-inbox .inbox-split{display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.7fr);flex:1;min-height:420px;gap:18px;margin:0;align-items:stretch}
+.admin-dashboard #inbox-list{display:flex;flex-direction:column;gap:10px;max-height:none;min-height:0;padding:0 6px 0 0;overflow:auto;background:transparent;border:0}
+.admin-dashboard #inbox-list .inbox-row{display:grid;gap:7px;width:100%;min-width:0;padding:15px 16px;color:#102a3a;text-align:left;background:#fff;border:1px solid #e4ddd2;border-radius:12px;box-shadow:0 2px 9px rgba(16,42,58,.04);transition:background-color .16s,border-color .16s,box-shadow .16s}
+.admin-dashboard #inbox-list .inbox-row:hover{background:#f6f7f2;border-color:#9eac9d}
+.admin-dashboard #inbox-list .inbox-row[aria-pressed="true"]{color:#fffdf7;background:#0b4033;border-color:#c7a05d;box-shadow:0 5px 18px rgba(7,62,47,.16),inset 4px 0 #d8b46a}
+.inbox-row-topline,.inbox-ticket-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.inbox-row-title{min-width:0;overflow:hidden;color:inherit;font-size:16px;font-weight:750;text-overflow:ellipsis;white-space:nowrap}
+.inbox-row-state{flex:none;padding:4px 8px;color:#375343;background:#e9f0e7;border:1px solid #d5e2d2;border-radius:999px;font-size:12px;font-weight:700}
+.inbox-row[aria-pressed="true"] .inbox-row-state{color:#fff8e9;background:#ffffff1c;border-color:#ffffff40}
+.inbox-row-code,.inbox-ticket-kicker{color:#9b733a;font-size:12px;font-weight:750;letter-spacing:.07em;text-transform:uppercase}
+.inbox-row[aria-pressed="true"] .inbox-row-code,.inbox-row[aria-pressed="true"] .inbox-message-meta{color:#e0e8e0}
+.admin-dashboard #inbox-list .inbox-message-meta{margin:0;color:#667783;font-size:13px;line-height:1.45}
+.admin-dashboard #inbox-list .inbox-message-preview{margin:0;color:#34495a;font-size:14px;line-height:1.45}
+.admin-dashboard #inbox-list .inbox-row[aria-pressed="true"] .inbox-message-preview{color:#fffdf7}
+.admin-dashboard #inbox-reader{box-sizing:border-box;min-width:0;min-height:100%;padding:clamp(20px,2.6vw,34px);background:#fff;border-color:#e4ddd2;border-radius:14px}
+.inbox-reader-card{display:grid;gap:20px;min-width:0}
+.inbox-ticket-heading{display:grid;gap:8px;padding-bottom:18px;border-bottom:1px solid #e7dfd2}
+.inbox-ticket-title-row h3{min-width:0;overflow-wrap:anywhere;font:500 clamp(25px,2.3vw,34px)/1.15 Georgia,serif}
+.inbox-ticket-state{flex:none;padding:7px 11px;color:#75521f;background:#fff2d8;border:1px solid #ebd2a5;border-radius:999px;font-size:13px;font-weight:750}
+.inbox-ticket-state.is-done{color:#28563d;background:#eaf3eb;border-color:#cfe1d0}
+.inbox-ticket-state.is-waiting{color:#694f25;background:#fff4df;border-color:#ecd9b5}
+.admin-dashboard #inbox-reader .inbox-message-meta{margin:0;color:#667783;font-size:14px;line-height:1.5}
+.inbox-ticket-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.inbox-ticket-field{display:grid;gap:5px;min-width:0;padding:12px 14px;background:#f8f7f2;border:1px solid #ece7dc;border-radius:10px}
+.inbox-ticket-field span{color:#65737b;font-size:12px;font-weight:750;letter-spacing:.055em;text-transform:uppercase}
+.inbox-ticket-field strong{color:#173247;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.inbox-ticket-notice{margin:0;padding:12px 14px;color:#4e422b;background:#fff7e8;border:1px solid #eedbb8;border-left:4px solid #bd9452;border-radius:8px;font-size:14px;font-weight:650}
+.inbox-ticket-message{display:grid;gap:10px;min-width:0;padding:16px 18px;background:#fbfaf7;border:1px solid #e9e3d8;border-radius:12px}
+.inbox-ticket-message-label{color:#173247;font-size:15px}
+.admin-dashboard #inbox-reader .inbox-ticket-message>p{margin:0;color:#243c4a;font-size:16px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.inbox-ticket-message .chat-message{background:#f1f3ed}
+.admin-dashboard #inbox-reader .inbox-email-action{justify-self:start;min-height:42px;display:inline-flex;align-items:center;margin:0;padding:8px 15px;color:#fffdf7;background:#0b4033;border:1px solid #0b4033;border-radius:9px}
+.admin-dashboard #inbox-reader .inbox-email-action:hover{background:#145543}
+@media(max-width:900px){.admin-dashboard #staff-inbox{min-height:calc(100vh - 120px)}.admin-dashboard #staff-inbox .inbox-split{grid-template-columns:minmax(260px,.85fr) minmax(0,1.4fr)}}
+@media(max-width:700px){.admin-dashboard #staff-inbox{min-height:0;padding:18px 14px}.admin-dashboard #staff-inbox .inbox-controls{grid-template-columns:1fr}.admin-dashboard #staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr);min-height:0;gap:14px}.admin-dashboard #inbox-list{max-height:34vh}.admin-dashboard #inbox-reader{min-height:0;padding:18px 15px}.inbox-ticket-fields{grid-template-columns:1fr}.inbox-ticket-title-row{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.admin-dashboard #inbox-list .inbox-row{transition:none}}
