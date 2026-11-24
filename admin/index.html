@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
-<link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-7">
-<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-5">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-7">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=practice-workflow-8">
+<link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-7">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=clean1">
-<link rel="stylesheet" href="/prevail-brand.css?v=green-final-6">
 <script defer src="../docs/admin/followup-interactions.js?v=1"></script>
 </head>
 <body class="solicitor-profile">
@@ -39,46 +37,89 @@
  <aside class="dashboard-sidebar">
   <div class="dashboard-identity">
    <img class="dashboard-brand-logo" src="/prevail-official-logo.png" alt="Prevail Family Law">
-   <p>Staff workspace</p>
+   <p>Family law practice</p>
   </div>
   <button type="button" id="staff-menu-toggle" aria-expanded="false" aria-controls="staff-navigation">Menu <span aria-hidden="true">☰</span></button>
   <nav id="staff-navigation" aria-label="Staff navigation">
-   <span class="dashboard-nav-label">Practice</span>
-   <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
-   <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Calendar</span><span class="nav-notification" id="nav-calendar-badge" hidden aria-label="consultations awaiting approval">0</span></a>
-   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h7l2 2h9v12H3z"/></svg></span><span>Matter board</span></a>
-   <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Tasks</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="tasks requiring attention">0</span></a>
-   <span class="dashboard-nav-label">Client service</span>
-   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Client enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="new messages">0</span></a>
-   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8"/></svg></span><span>Email &amp; drafts</span><span class="nav-notification" id="nav-email-badge" hidden aria-label="incoming attorney emails">0</span></a>
-   <a href="#work-templates"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z M3 12l9 5 9-5 M3 16l9 5 9-5"/></svg></span><span>Templates</span></a>
-  </nav> </aside>
+   <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
+   <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span>Calendar</span></a>
+   <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><span>Matters</span></a>
+   <a href="#work-clients"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Clients</span></a>
+   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span>Consultation Enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="items requiring attention">0</span></a>
+   <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 12 3 3 7-7"/></svg></span><span>Tasks & Workflows</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="items requiring attention">0</span></a>
+   <a href="#work-documents"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg></span><span>Documents</span></a>
+   <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg></span><span>Communications</span></a>
+   <a href="#work-time"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>Time & Expenses</span></a>
+   <a href="#work-billing"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><span>Billing</span></a>
+   <a href="#work-reports"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span>Reports</span></a>
+   <a href="#work-approvals"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6zM9 12l2 2 4-4"/></svg></span><span>Approvals</span><span class="nav-notification" id="nav-approval-badge" hidden aria-label="items requiring attention">0</span></a>
+   <a href="#work-employees"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span>Employees</span></a>
+   <a href="#work-settings"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 2.9-.1-.1a1.7 1.7 0 0 0-1.8.4l-.1.1h-3.4l-.1-.1a1.7 1.7 0 0 0-1.2-1.3l-.1-.1-1.7-2.9.1-.1A1.7 1.7 0 0 0 10.1 14l-.1-.1v-3.4l.1-.1a1.7 1.7 0 0 0 1.2-1.3l.1-.1h3.4l.1.1a1.7 1.7 0 0 0 1.8.4l.1-.1 1.7 2.9-.1.1a1.7 1.7 0 0 0 .1 1.9z"/></svg></span><span>Settings</span></a>
+   <a href="#work-help"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.7c-1.2 1-1.9 1.4-1.9 3M12 17h.01"/></svg></span><span>Help & Support</span></a>
+  </nav></aside>
  <div class="dashboard-main" id="workspace-content" tabindex="-1">
+
   <header class="dashboard-header">
-   <div class="dashboard-heading"><h1 id="dashboard-title" tabindex="-1">Admin Dashboard</h1><p id="dashboard-role"></p></div>
+   <div class="dashboard-heading">
+    <h1 id="dashboard-title" tabindex="-1"><span id="dashboard-greeting">Good morning, <span id="dashboard-greeting-name">Melissa</span></span><span id="dashboard-section-title" hidden></span></h1>
+    <p id="dashboard-greeting-subtitle">Here is your firm overview for <time id="dashboard-greeting-date"></time></p>
+   </div>
    <div class="staff-header-tools">
+    <span class="live-status" id="dashboard-live-status"><span class="live-indicator"></span>Connecting…</span>
+    <div class="staff-sydney-clock"><span>Sydney</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
+    <span class="dashboard-avatar" aria-label="Staff profile">M</span>
+    <div id="dashboard-session"></div><span id="dashboard-role" hidden></span>
     <a id="staff-sample-link" href="?sample=1">View sample data</a>
-    <div class="staff-sydney-clock"><span>Sydney time</span><time id="staff-sydney-time"></time><span id="staff-sydney-date"></span></div>
-    <div id="dashboard-session"></div>
    </div>
   </header>
-  <div id="staff-sample-banner" class="sample-workspace-strip" hidden><span>Sample data</span><p>Explore with fictional records. Changes reset when you reload.</p></div>
-  <section class="admin-kpi-grid" aria-label="Admin workload summary">
-   <a href="#work-queue"><span>Open tasks</span><strong id="dashboard-stat-open-tasks">—</strong><small>Across active matters</small></a>
-   <a href="#work-queue" data-task-filter="overdue"><span>Overdue</span><strong id="dashboard-stat-overdue">—</strong><small>Needs follow-up</small></a>
-   <a href="#work-calendar"><span>Awaiting approval</span><strong id="dashboard-stat-pending-enquiries">—</strong><small>Consultation requests</small></a>
-   <a href="#work-matters"><span>Active matters</span><strong id="dashboard-stat-matters">—</strong><small>With current work</small></a>
+  <div id="staff-sample-banner" class="sample-workspace-strip" hidden><span>Sample data</span><p>Fictional records; changes reset when you reload.</p></div>
+  <section class="dashboard-overview" id="dashboard-overview" aria-label="Firm overview">
+   <div class="admin-kpi-grid">
+    <a href="#work-matters" class="admin-kpi-card"><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><span class="kpi-copy"><span>Open Matters</span><strong id="dashboard-stat-matters">—</strong></span></a>
+    <a href="#staff-inbox" class="admin-kpi-card"><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="kpi-copy"><span>New Enquiries</span><strong id="dashboard-stat-new-enquiries">—</strong></span></a>
+    <a href="#work-calendar" class="admin-kpi-card"><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span class="kpi-copy"><span>Upcoming Events</span><strong id="dashboard-stat-upcoming-events">—</strong></span></a>
+    <a href="#work-approvals" class="admin-kpi-card"><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6zM9 12l2 2 4-4"/></svg></span><span class="kpi-copy"><span>Pending Approvals</span><strong id="dashboard-stat-pending-approvals">—</strong></span></a>
+   </div>
+   <div class="dashboard-row dashboard-row-primary">
+    <section class="dashboard-card dashboard-calendar-card" aria-labelledby="dashboard-calendar-heading">
+     <header class="dashboard-card-heading">
+      <h2 id="dashboard-calendar-heading"><span id="dashboard-calendar-title">November 2026</span></h2>
+      <div class="dashboard-month-controls"><button type="button" id="dashboard-month-prev" aria-label="Previous month">Previous</button><span id="dashboard-month-label">November 2026</span><button type="button" id="dashboard-month-next" aria-label="Next month">Next</button></div>
+     </header>
+     <div class="dashboard-mini-calendar" id="dashboard-mini-calendar" role="grid" aria-label="Calendar overview"></div>
+    </section>
+    <section class="dashboard-card dashboard-approvals-card" aria-labelledby="dashboard-approvals-heading">
+     <header class="dashboard-card-heading"><h2 id="dashboard-approvals-heading">Approval Queue</h2><a href="#work-approvals">View All Approvals</a></header>
+     <div class="dashboard-approval-list" id="dashboard-approval-list" aria-live="polite"><p class="dashboard-empty">Loading approval requests…</p></div>
+    </section>
+   </div>
+   <div class="dashboard-row dashboard-row-secondary">
+    <section class="dashboard-card dashboard-matters-card" aria-labelledby="dashboard-matters-heading">
+     <header class="dashboard-card-heading"><h2 id="dashboard-matters-heading">Recent Matters</h2><a href="#work-matters">View All Matters</a></header>
+     <div class="dashboard-table-wrap"><table class="dashboard-matters-table"><thead><tr><th>Matter</th><th>Type</th><th>Status</th><th>Next Date</th><th>Work Items</th></tr></thead><tbody id="dashboard-matters-body"><tr><td colspan="5" class="dashboard-empty-cell">Loading matter activity…</td></tr></tbody></table></div>
+    </section>
+    <section class="dashboard-card dashboard-tasks-card" aria-labelledby="dashboard-tasks-heading">
+     <header class="dashboard-card-heading"><h2 id="dashboard-tasks-heading">Tasks Due Soon</h2><a href="#work-queue">View All Tasks</a></header>
+     <ul class="dashboard-due-task-list" id="dashboard-due-task-list" aria-live="polite"><li class="dashboard-empty">Loading tasks…</li></ul>
+    </section>
+   </div>
+   <p id="dashboard-error" class="dashboard-error" role="alert" hidden></p>
   </section>
-  <div id="overview-panels">
-   <section class="overview-agenda" aria-labelledby="overview-attention-title"><div class="admin-section-heading"><h2 id="overview-attention-title">Needs attention</h2></div><div id="overview-task-attention">Loading tasks…</div><div id="overview-inbox-attention"></div><h3>Follow-ups due</h3><div id="overview-follow-ups">Loading follow-ups…</div></section>
-   <section id="overview-agenda" class="overview-agenda" aria-labelledby="overview-agenda-title"><div class="admin-section-heading"><h2 id="overview-agenda-title">Today’s agenda</h2><span>Sydney time</span></div><div id="overview-agenda-items">Loading Sydney appointments…</div><a href="#work-calendar" data-calendar-today>Open today’s calendar</a></section>
-  </div>
-  <section class="legal-work-summary" aria-label="Workload at a glance"><nav class="legal-counts" aria-label="Workload shortcuts">
-   <a href="#work-calendar" data-calendar-today><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v15H3z M7 3v6 M17 3v6 M3 11h18"/></svg></span><span>Appointments today<strong id="legal-today">—</strong></span></a>
-   <a href="#work-queue" data-task-filter="overdue"><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z M7 12l3 3 7-7"/></svg></span><span>Overdue tasks<strong id="legal-overdue">—</strong></span></a>
-   <a href="#staff-inbox" data-inbox-filter="unanswered" id="overview-inbox-link" hidden><span class="overview-count-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><span>Support awaiting reply<strong id="overview-inbox-count">—</strong></span></a>
-  </nav></section>
-  <section id="overview-upcoming" class="overview-agenda" aria-labelledby="overview-upcoming-title"><div class="admin-section-heading"><h2 id="overview-upcoming-title">Upcoming appointments</h2><a href="#work-calendar">Open calendar</a></div><div id="overview-upcoming-items">Loading appointments…</div></section>
+  <section class="admin-module" id="work-clients" hidden aria-labelledby="clients-heading">
+   <header class="module-heading"><p class="module-eyebrow">Client records</p><h2 id="clients-heading">Clients</h2><p>Contacts below come from website enquiries. A separate client and matter record system is not connected yet.</p></header>
+   <div class="dashboard-card module-card"><div class="module-table-wrap"><table class="dashboard-matters-table"><thead><tr><th>Client</th><th>Email</th><th>Phone</th><th>Enquiry type</th><th>Received</th></tr></thead><tbody id="dashboard-client-directory"><tr><td colspan="5" class="dashboard-empty-cell">Loading enquiry contacts…</td></tr></tbody></table></div></div>
+  </section>
+  <section class="admin-module" id="work-approvals" hidden aria-labelledby="approvals-heading">
+   <header class="module-heading"><p class="module-eyebrow">Attorney review</p><h2 id="approvals-heading">Approvals</h2><p>Review consultation requests received through the website. Appointment requests stay pending until the firm confirms them.</p></header>
+   <div class="dashboard-card module-card"><div class="dashboard-approval-list" id="approval-page-list" aria-live="polite"><p class="dashboard-empty">Loading approval requests…</p></div></div>
+  </section>
+  <section class="admin-module" id="work-documents" hidden aria-labelledby="documents-heading"><header class="module-heading"><p class="module-eyebrow">Client files</p><h2 id="documents-heading">Documents</h2><p>Secure document uploads are unavailable until Firebase Storage and staff access rules are configured. No client files are stored here.</p></header><div class="dashboard-card module-card"><p class="module-notice"><strong>Not connected</strong><span>Connect secure storage before uploading client documents.</span></p></div></section>
+  <section class="admin-module" id="work-time" hidden aria-labelledby="time-heading"><header class="module-heading"><p class="module-eyebrow">Practice operations</p><h2 id="time-heading">Time &amp; Expenses</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Not connected</strong><span>Time entries and expenses do not have a live database or approval workflow yet.</span></p></div></header></section>
+  <section class="admin-module" id="work-billing" hidden aria-labelledby="billing-heading"><header class="module-heading"><p class="module-eyebrow">Accounts</p><h2 id="billing-heading">Billing</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Not connected</strong><span>No invoice ledger or payment provider is connected. This page does not create invoices or accept payments.</span></p></div></header></section>
+  <section class="admin-module" id="work-reports" hidden aria-labelledby="reports-heading"><header class="module-heading"><p class="module-eyebrow">Practice insights</p><h2 id="reports-heading">Reports</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Limited reporting</strong><span>Operational counts use current work items only; financial and full matter reports are unavailable.</span></p></div></header></section>
+  <section class="admin-module" id="work-employees" hidden aria-labelledby="employees-heading"><header class="module-heading"><p class="module-eyebrow">Staff access</p><h2 id="employees-heading">Employees</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Directory not connected</strong><span>Staff access is role-based in Firebase, but no employee directory is available in this workspace.</span></p></div></header></section>
+  <section class="admin-module" id="work-settings" hidden aria-labelledby="settings-heading"><header class="module-heading"><p class="module-eyebrow">Configuration</p><h2 id="settings-heading">Settings</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Workspace settings</strong><span>Authentication and access are managed through the existing Firebase project. No external mail or storage integration is currently configured.</span></p></div></header></section>
+  <section class="admin-module" id="work-help" hidden aria-labelledby="help-heading"><header class="module-heading"><p class="module-eyebrow">Staff help</p><h2 id="help-heading">Help &amp; Support</h2><div class="dashboard-card module-card"><p class="module-notice"><strong>Need help with an enquiry?</strong><span>Open Consultation Enquiries to review website messages and support conversations.</span></p><a class="module-link" href="#staff-inbox">Open Consultation Enquiries</a></div></header></section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Client enquiries</h2>
    <div class="inbox-summary-cards" aria-label="Inquiry overview">
@@ -138,7 +179,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=practice-workflow-7'),
+      import('../docs/admin/workflow.js?v=practice-workflow-8'),
       import('../docs/admin/inbox.js?v=ticket-workspace-8')
     ]);
     mountWorkflow(null, null, true);
@@ -158,7 +199,7 @@ if (sampleMode) {
   }
 } else {
   try {
-    await import('../docs/admin/firebase-admin.js?v=admin-dashboard-8');
+    await import('../docs/admin/firebase-admin.js?v=admin-dashboard-9');
   } catch (error) {
     status.dataset.state = 'error';
     status.setAttribute('role', 'alert');
@@ -176,10 +217,19 @@ if (sampleMode) {
  const workspace = document.getElementById('staff-workspace');
  function render() {
    const hash = ['#duties-all','#duties-legal','#duties-family','#duties-admin'].includes(location.hash) ? '#work-templates' : location.hash;
-   const selected = views.get(hash);
+   const selected = views.get(hash) || (hash === '#work-templates' ? views.get('#work-email') : null);
    const active = selected && !selected.hidden ? selected : links[0];
-   dashboard.dataset.view = active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
-   title.textContent = active === links[0] ? 'Dashboard' : (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
+   const route = hash === '#work-templates' ? 'work-templates' : active.hash === '#dashboard-title' ? 'overview' : active === inbox ? 'inbox' : active.hash.slice(1);
+   dashboard.dataset.view = route;
+   const greeting = document.getElementById('dashboard-greeting');
+   const sectionTitle = document.getElementById('dashboard-section-title');
+   const subtitle = document.getElementById('dashboard-greeting-subtitle');
+   const isDashboard = active === links[0];
+   greeting.hidden = !isDashboard;
+   sectionTitle.hidden = isDashboard;
+   if (subtitle) subtitle.hidden = !isDashboard;
+   if (!isDashboard) sectionTitle.textContent = (active.querySelector('.admin-nav-symbol + span')?.textContent || '').trim();
+   for (const module of dashboard.querySelectorAll('.admin-module')) module.hidden = module.id !== route;
    for (const link of links) {
      if (link === active) link.setAttribute('aria-current', 'page');
      else link.removeAttribute('aria-current');
@@ -192,10 +242,10 @@ if (sampleMode) {
  function go(hash) {
    if (location.hash !== hash) history.pushState(null, '', hash);
    render();
-   window.scrollTo(0, 0);
+   document.getElementById('workspace-content').scrollTop = 0;
  }
  dashboard.addEventListener('click', event => {
-   const link = event.target.closest('.dashboard-sidebar nav a, .staff-quick-actions a, .legal-counts a, #overview-panels a, #overview-upcoming a');
+   const link = event.target.closest('.dashboard-sidebar nav a, .dashboard-overview a, .admin-module a');
    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
    event.preventDefault();
    go(link.hash);
@@ -209,6 +259,18 @@ if (sampleMode) {
      filter.dispatchEvent(new Event('change'));
    }
    if (link.hasAttribute('data-calendar-today')) document.getElementById('work-calendar-today')?.click();
+   if (link.dataset.dashboardDate) {
+     const dateInput = document.getElementById('work-month');
+     if (dateInput) {
+       dateInput.value = link.dataset.dashboardDate.slice(0,7);
+       dateInput.dispatchEvent(new Event('change', {bubbles:true}));
+       setTimeout(() => document.querySelector('#work-month-grid [data-calendar-day="' + link.dataset.dashboardDate + '"]')?.click(), 0);
+     }
+   }
+   if (link.dataset.clientSearch) {
+     const search = document.getElementById('inbox-search');
+     if (search) { search.value = link.dataset.clientSearch; search.dispatchEvent(new Event('input', {bubbles:true})); }
+   }
    const editorButtons = {task:'#new-work-task', schedule:'[data-create-schedule]', draft:'[data-new-draft="blank"]'};
    if (link.dataset.openEditor) workspace.querySelector(editorButtons[link.dataset.openEditor])?.click();
    if (link.dataset.inboxFilter) {
@@ -238,11 +300,19 @@ if (sampleMode) {
  const timeZone = 'Australia/Sydney';
  const timeFormat = new Intl.DateTimeFormat('en-AU', {timeZone, hour:'2-digit', minute:'2-digit', second:'2-digit', timeZoneName:'short'});
  const dateFormat = new Intl.DateTimeFormat('en-AU', {timeZone, weekday:'short', day:'numeric', month:'short', year:'numeric'});
+ const greetingDate = new Intl.DateTimeFormat('en-AU', {timeZone, weekday:'long', day:'numeric', month:'long', year:'numeric'});
+ const greeting = document.getElementById('dashboard-greeting-date');
+ const greetingTitle = document.getElementById('dashboard-greeting');
  function tick() {
    const now = new Date();
    clock.dateTime = now.toISOString();
    clock.textContent = timeFormat.format(now);
    calendarDate.textContent = dateFormat.format(now);
+   if (greeting) greeting.textContent = greetingDate.format(now);
+   if (greetingTitle) {
+     const hour = Number(new Intl.DateTimeFormat('en-AU', {timeZone, hour:'2-digit', hourCycle:'h23'}).format(now));
+     greetingTitle.firstChild.textContent = hour < 12 ? 'Good morning, ' : hour < 18 ? 'Good afternoon, ' : 'Good evening, ';
+   }
  }
  tick();
  setInterval(tick, 1000);

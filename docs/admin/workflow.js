@@ -144,6 +144,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   let records = [];
   let consultationRequests = [];
   let loaded = false;
+  let dashboardMonth = today().slice(0, 7);
   let consultationRequestsLoaded = sampleMode;
   let loadError = null;
   const matterField = '<label>Matter reference<input name="matter" maxlength="80"></label>';
@@ -379,18 +380,23 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   function renderApprovalQueue() {
     const list = find("#calendar-approval-list");
     const count = find("#calendar-approval-count");
+    const pageList = document.getElementById("approval-page-list");
     const pending = consultationRequests.filter(item => (item.approvalStatus || "pending") === "pending");
     count.textContent = String(pending.length);
     const navBadge=document.getElementById("nav-calendar-badge");
     if(navBadge){navBadge.textContent=pending.length>99?"99+":String(pending.length);navBadge.hidden=pending.length===0;}
-    const pendingMetric=document.getElementById("dashboard-stat-pending-enquiries");
+    const pendingMetric=document.getElementById("dashboard-stat-pending-approvals");
     if(pendingMetric)pendingMetric.textContent=String(pending.length);
+    const approvalBadge=document.getElementById("nav-approval-badge");
+    if(approvalBadge){approvalBadge.textContent=pending.length>99?"99+":String(pending.length);approvalBadge.hidden=pending.length===0;}
     if (!consultationRequestsLoaded) {
       list.innerHTML = "<p class='approval-empty'>Loading consultation requests…</p>";
+      if(pageList) pageList.innerHTML = "<p class='dashboard-empty'>Loading approval requests…</p>";
       return;
     }
     if (!pending.length) {
       list.innerHTML = "<p class='approval-empty'>No requests are waiting for attorney review.</p>";
+      if(pageList) pageList.innerHTML = "<p class='dashboard-empty'>No requests are waiting for attorney review.</p>";
       return;
     }
     list.innerHTML = pending.map(item => {
@@ -409,6 +415,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         "<button type='button' class='calendar-approval-decline' data-approval-action='declined' data-request-id='" + escape(item.requestId) + "'>Decline</button></div>" +
         "<p class='calendar-approval-status' role='status'></p></article>";
     }).join("");
+    if(pageList) pageList.innerHTML = list.innerHTML;
   }
   function renderCalendar() {
     renderApprovalQueue();
@@ -474,14 +481,11 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const openTasks = tasks.filter(item => !item.done);
     const pendingApprovals = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending').length;
     for (const [id,value] of [
-      ['dashboard-stat-open-tasks',openTasks.length],
-      ['dashboard-stat-overdue',tasks.filter(overdue).length],
-      ['dashboard-stat-pending-enquiries',pendingApprovals],
-      ['dashboard-stat-matters',new Set(openTasks.map(item=>item.matter).filter(Boolean)).size]
+      ['dashboard-stat-pending-approvals',pendingApprovals]
     ]) { const node=document.getElementById(id); if(node) node.textContent=String(value); }
     const taskBadge=document.getElementById('nav-task-badge');
     if(taskBadge){const value=tasks.filter(item=>overdue(item)||(!item.done&&item.date===date)).length;taskBadge.textContent=value>99?'99+':String(value);taskBadge.hidden=value===0;}
-    const calendarBadge=document.getElementById('nav-calendar-badge');
+    const calendarBadge=document.getElementById('nav-approval-badge');
     if(calendarBadge){calendarBadge.textContent=pendingApprovals>99?'99+':String(pendingApprovals);calendarBadge.hidden=pendingApprovals===0;}
     const filter = find('#legal-task-filter').value;
     const taskQuery = find('#work-task-search').value.trim().toLowerCase();
@@ -530,7 +534,119 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     renderCalendar();
     renderMatters();
     renderDrafts();
+    renderDashboard();
   }
+
+  function renderDashboard() {
+    const overview = document.getElementById('dashboard-overview');
+    if (!overview) return;
+    const error = document.getElementById('dashboard-error');
+    if (error) { error.hidden = !loadError; error.textContent = loadError ? 'Workspace data could not be loaded. ' + loadError : ''; }
+    const date = today();
+    const start = new Date(date + 'T00:00:00Z');
+    const horizon = new Date(start); horizon.setUTCDate(horizon.getUTCDate() + 7);
+    const endDate = horizon.toISOString().slice(0,10);
+    const pending = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending');
+    const openWork = records.filter(item => !item.done && !isNote(item));
+    const matters = [...new Set(openWork.map(item => String(item.matter || '').trim()).filter(Boolean))];
+    const upcoming = records.filter(item => item.kind === 'Appointment' && !item.done && item.date >= date && item.date <= endDate).length +
+      pending.filter(item => item.date >= date && item.date <= endDate).length;
+    const receivedToday = consultationRequests.filter(item => {
+      const stamp = item.createdAt && item.createdAt.toDate ? item.createdAt.toDate() : (item.createdAt instanceof Date ? item.createdAt : null);
+      if (!stamp) return item.date === date;
+      return new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(stamp) === date;
+    }).length;
+    const setText = (id,value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
+    setText('dashboard-stat-matters', matters.length);
+    setText('dashboard-stat-new-enquiries', receivedToday);
+    setText('dashboard-stat-upcoming-events', upcoming);
+    setText('dashboard-stat-pending-approvals', pending.length);
+    const badge = document.getElementById('nav-approval-badge');
+    if (badge) { badge.textContent=pending.length>99?'99+':String(pending.length); badge.hidden=pending.length===0; }
+
+    const approvals = document.getElementById('dashboard-approval-list');
+    if (approvals) {
+      approvals.innerHTML = pending.length ? pending.slice(0,4).map(item => {
+        const stamp = item.createdAt && item.createdAt.toDate ? item.createdAt.toDate() : (item.createdAt instanceof Date ? item.createdAt : null);
+        const submitted = stamp ? new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZone:'Australia/Sydney'}).format(stamp) : 'Recently submitted';
+        const time = item.time ? new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',timeZone:'UTC'}).format(new Date('2026-01-01T'+item.time+':00Z')) : 'Time not selected';
+        const dateLabel = item.date ? new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T12:00:00Z')) : 'Date not selected';
+        return '<article class="dashboard-approval-row"><span class="dashboard-approval-icon" aria-hidden="true">□</span><div><strong>'+escape(item.title || 'Consultation enquiry')+'</strong><p>Consultation request · Submitted '+escape(submitted)+' · '+escape(dateLabel)+' at '+escape(time)+'</p></div><a href="#work-calendar">Review</a></article>';
+      }).join('') : '<p class="dashboard-empty">No requests are waiting for attorney review.</p>';
+    }
+
+    const recentBody = document.getElementById('dashboard-matters-body');
+    if (recentBody) {
+      const grouped = new Map();
+      for (const item of records.filter(row => !isNote(row) && String(row.matter || '').trim())) {
+        const ref = String(item.matter).trim();
+        const group = grouped.get(ref) || {ref, rows:[]};
+        group.rows.push(item); grouped.set(ref,group);
+      }
+      const rows=[...grouped.values()].sort((a,b) => {
+        const latest = g => Math.max(...g.rows.map(row => row.updatedAt?.toMillis?.() || row.updatedAt?.getTime?.() || 0));
+        return latest(b)-latest(a);
+      }).slice(0,5);
+      recentBody.innerHTML = rows.length ? rows.map(group => {
+        const active = group.rows.some(item => !item.done);
+        const next = group.rows.filter(item => !item.done && item.date && item.date >= date).sort((a,b)=>a.date.localeCompare(b.date))[0];
+        const types=[...new Set(group.rows.map(item => item.kind === 'Task' ? 'Task' : item.kind === 'Appointment' ? 'Appointment' : 'Draft'))].join(', ');
+        return '<tr><td><strong>'+escape(group.ref)+'</strong></td><td>'+escape(types || 'Work')+'</td><td><span class="matter-state '+(active?'':'is-quiet')+'">'+(active?'Active':'Complete')+'</span></td><td>'+escape(next?.date || '—')+'</td><td>'+group.rows.length+'</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="dashboard-empty-cell">'+(loaded?'No matter-linked work items yet.':'Loading matter activity…')+'</td></tr>';
+    }
+
+    const taskList = document.getElementById('dashboard-due-task-list');
+    if (taskList) {
+      const dueTasks=records.filter(item => item.kind==='Task' && !item.done && !isNote(item) && item.date && item.date<=endDate).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')).slice(0,6);
+      const tomorrow = new Date(start.getTime()+86400000).toISOString().slice(0,10);
+      const dayLabel = d => d < date ? 'Overdue' : d === date ? 'Due today' : d === tomorrow ? 'Due tomorrow' : new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'));
+      taskList.innerHTML=dueTasks.length?dueTasks.map(item=>'<li class="dashboard-due-task"><a href="#work-queue" data-task-filter="open">'+escape(item.title)+'</a><small class="'+(item.date<date?'is-overdue':'')+'">'+escape(dayLabel(item.date))+'</small></li>').join(''):'<li class="dashboard-empty">'+(loaded?'No open tasks due in the next 7 days.':'Loading tasks…')+'</li>';
+    }
+
+    const directory=document.getElementById('dashboard-client-directory');
+    if(directory){
+      const clients=new Map();
+      consultationRequests.forEach(item=>{
+        const contact=item.contact||{};
+        const key=String(contact.email||item.requestId).toLowerCase();
+        if(!clients.has(key)) clients.set(key,{contact,item});
+      });
+      const entries=[...clients.values()];
+      directory.innerHTML=entries.length?entries.map(({contact,item})=>'<tr><td>'+escape([contact.firstName,contact.lastName].filter(Boolean).join(' ')||item.title||'Enquiry contact')+'</td><td>'+escape(contact.email||'—')+'</td><td>'+escape(contact.phone||'—')+'</td><td>'+escape(String(contact.topic||'General enquiry').replaceAll('-',' '))+'</td><td>'+escape(item.date||'—')+'</td></tr>').join(''):'<tr><td colspan="5" class="dashboard-empty-cell">No website enquiry contacts are loaded.</td></tr>';
+    }
+
+    const monthLabel = document.getElementById('dashboard-month-label');
+    const monthTitle = document.getElementById('dashboard-calendar-title');
+    const grid = document.getElementById('dashboard-mini-calendar');
+    const monthInput = /^\d{4}-\d{2}$/.test(dashboardMonth) ? dashboardMonth : date.slice(0,7);
+    const parts=monthInput.split('-').map(Number), year=parts[0], month=parts[1];
+    const first=new Date(Date.UTC(year,month-1,1)), offset=(first.getUTCDay()+6)%7;
+    const daysInMonth=new Date(Date.UTC(year,month,0)).getUTCDate();
+    const monthName=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric',timeZone:'UTC'}).format(first);
+    if(monthLabel) monthLabel.textContent=monthName;
+    if(monthTitle) monthTitle.textContent=monthName;
+    if(grid) {
+      const weekdays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=>'<span class="mini-calendar-weekday" role="columnheader">'+day+'</span>').join('');
+      const pad=Array.from({length:offset},()=>'<span class="mini-calendar-spacer" aria-hidden="true"></span>').join('');
+      const dayCells=Array.from({length:daysInMonth},(_,i)=>{
+        const n=i+1, key=monthInput+'-'+String(n).padStart(2,'0');
+        const hasAppointment=records.some(row=>row.kind==='Appointment'&&!row.done&&row.date===key);
+        const hasApproval=consultationRequests.some(row=>(row.approvalStatus||'pending')==='pending'&&row.date===key);
+        const hasEvent=hasAppointment||hasApproval;
+        const dots=hasEvent?'<span class="mini-day-dots" aria-hidden="true">'+(hasAppointment?'<i></i>':'')+(hasApproval?'<i class="is-approval"></i>':'')+'</span>':'';
+        const label=new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(key+'T12:00:00Z'));
+        return '<a class="mini-calendar-day" '+(key===date?'aria-current="date"':'')+' href="#work-calendar" data-dashboard-date="'+key+'" role="gridcell" aria-label="'+escape(label)+(hasEvent?', event scheduled':'')+'">'+n+dots+'</a>';
+      }).join('');
+      const total=offset+daysInMonth, trailing=(7-(total%7))%7;
+      grid.innerHTML=weekdays+pad+dayCells+Array.from({length:trailing},()=>'<span class="mini-calendar-spacer" aria-hidden="true"></span>').join('');
+    }
+    const prev=document.getElementById('dashboard-month-prev'), next=document.getElementById('dashboard-month-next');
+    if(prev) prev.onclick=()=>{const d=new Date(monthInput+'-01T00:00:00Z');d.setUTCMonth(d.getUTCMonth()-1);dashboardMonth=d.toISOString().slice(0,7);renderDashboard();};
+    if(next) next.onclick=()=>{const d=new Date(monthInput+'-01T00:00:00Z');d.setUTCMonth(d.getUTCMonth()+1);dashboardMonth=d.toISOString().slice(0,7);renderDashboard();};
+    const status=document.getElementById('dashboard-live-status');
+    if(status) status.innerHTML='<span class="live-indicator"></span>'+(loaded&&consultationRequestsLoaded?'Live updates':'Loading live data');
+  }
+
   function renderFollowUps(tasks, date) {
     const followUps = tasks.filter(item => !item.done && Object.hasOwn(followUpStates, item.followUpStatus))
       .sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999') || order(a,b));
@@ -664,7 +780,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     if (sampleMode) {
       consultationRequests = [{
         id:'sample-consultation-1', requestId:'sample-consultation-1', kind:'Consultation request',
-        title:'Jordan Lee', date:today(), time:'10:00', calendar:'admin', priority:'High', approvalStatus:'pending',
+        title:'Jordan Lee', date:today(), time:'10:00', calendar:'admin', priority:'High', approvalStatus:'pending', createdAt:new Date(),
         notes:'Sample request to discuss parenting arrangements.', contact:{
           firstName:'Jordan', lastName:'Lee', email:'jordan.lee@example.com', phone:'0400 123 456',
           topic:'parenting', newClient:'Yes'
@@ -672,6 +788,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       }];
       consultationRequestsLoaded = true;
       renderCalendar();
+      renderDashboard();
       return;
     }
     consultationRequestsLoaded = false;
@@ -702,11 +819,12 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
           return {
             id:'consultation-' + document.id, requestId:document.id, kind:'Consultation request',
             title:name, notes:String(record.message || ''), contact, date:match?.[1] || '', time:match?.[2] || '',
-            calendar:'admin', priority:'High', done:false, approvalStatus:record.approvalStatus || 'pending'
+            calendar:'admin', priority:'High', done:false, approvalStatus:record.approvalStatus || 'pending', createdAt:record.createdAt
           };
         }).filter(Boolean);
         consultationRequestsLoaded = true;
         renderCalendar();
+        renderDashboard();
       },
       () => {
         if (current !== session) return;
@@ -719,7 +837,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   }
   listenForConsultationRequests();
 
-  find("#calendar-approval-list").addEventListener("click", async event => {
+  document.getElementById("staff-checklist").addEventListener("click", async event => {
     const button = event.target.closest("[data-approval-action]");
     if (!button || button.disabled) return;
     const requestId = button.dataset.requestId;

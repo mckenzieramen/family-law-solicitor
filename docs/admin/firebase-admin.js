@@ -191,6 +191,10 @@ onIdTokenChanged(auth, async user => {
     panel.hidden = false;
     if (dashboardSession) {
       document.getElementById('dashboard-role').textContent = {admin: 'Administrator', employee: 'Employee', solicitor: 'Solicitor'}[role];
+      const greetingName = document.getElementById('dashboard-greeting-name');
+      if (greetingName) greetingName.textContent = (user.displayName || 'Melissa').trim().split(/\s+/)[0] || 'Melissa';
+      const avatar = document.querySelector('.dashboard-avatar');
+      if (avatar) avatar.textContent = (user.displayName || 'Melissa').trim().charAt(0).toUpperCase() || 'M';
       updateDashboardTotals();
       dashboardSession.append(logout);
       entryCard.hidden = true;
