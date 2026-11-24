@@ -264,6 +264,27 @@
       }
       if(!rows.length){if(moduleId==='work-time')continue;body.innerHTML=emptyRows(module.querySelectorAll('.pm-table thead th').length,'No records match the current filters.');continue;}
       body.innerHTML=rows.map(record=>'<tr>'+cells(record).map(cell=>'<td>'+safeText(cell)+'</td>').join('')+'</tr>').join('');
+      if(type==='contact'){
+        const detail=module.querySelector('.pm-detail-card');
+        const trs=[...body.querySelectorAll('tr')];
+        let selected=rows.findIndex(r=>r.id&&r.id===module.dataset.selectedContact);
+        if(selected<0)selected=0;
+        function preview(index,tab='Details'){
+          const r=rows[index];if(!r||!detail)return;
+          const p=r.payload||{};module.dataset.selectedContact=r.id||'';
+          trs.forEach((tr,i)=>{tr.setAttribute('aria-selected',String(i===index));tr.style.background=i===index?'#F5EDDF':'';});
+          const name=[p.firstName,p.lastName].filter(Boolean).join(' ')||p.name||'Contact';
+          detail.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><h3>'+safeText(name)+'</h3><button type="button" class="pm-link" data-contact-close aria-label="Close contact preview">Close ×</button></div><span class="matter-status-pill">'+safeText(p.type||'Contact')+'</span><div class="pm-tabs" role="tablist">'+['Details','Matters','Notes','Communications'].map(t=>'<button type="button" role="tab" aria-selected="'+(t===tab)+'" data-contact-tab="'+t+'">'+t+'</button>').join('')+'</div><div data-contact-content role="tabpanel"></div>';
+          const content=detail.querySelector('[data-contact-content]');
+          const fields=tab==='Details'?[['Organisation',p.firm],['Email',p.email],['Phone',p.phone],['Address',p.address],['Status',p.status||'Active'],['Last contact',sydneyDate(r.createdAt)]]:tab==='Matters'?[['Linked matter',p.matter]]:tab==='Notes'?[['Internal notes',p.notes]]:[['Email',p.email],['Phone',p.phone],['History','No communication history is linked in this contact record.']];
+          content.innerHTML='<dl class="pm-dl">'+fields.map(([k,v])=>'<div><dt>'+safeText(k)+'</dt><dd style="overflow-wrap:anywhere;white-space:pre-wrap">'+safeText(v||'Not recorded')+'</dd></div>').join('')+'</dl>'+(practiceContext?.sampleMode?'<small>Sample contact — demo only.</small>':'');
+          detail.querySelectorAll('[data-contact-tab]').forEach(b=>b.onclick=()=>preview(index,b.dataset.contactTab));
+          detail.querySelector('[data-contact-close]').onclick=()=>{detail.innerHTML='<h3>Contact details</h3><p>Select a contact to preview its profile.</p>';trs.forEach(tr=>{tr.style.background='';tr.setAttribute('aria-selected','false')});};
+        }
+        trs.forEach((tr,i)=>{tr.tabIndex=0;tr.style.cursor='pointer';tr.title='Open contact preview';tr.onclick=()=>preview(i);tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();preview(i);}};});
+        preview(selected);
+      }
+
     }
     if(practiceContext?.sampleMode){
       const times=recordRows('timeEntry'), expenses=recordRows('expense'), invoices=recordRows('invoice'), transactions=recordRows('trustTransaction');
@@ -311,8 +332,6 @@
       }
       const documentModule=byId('work-documents');
       if(documentModule){const detail=documentModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Document details</h3><strong>Consent Orders Draft.pdf</strong><p>Court documents · PF-100348 — Wilson v Wilson</p><dl class="pm-dl"><div><dt>Client</dt><dd>Emma Wilson</dd></div><div><dt>Uploaded by</dt><dd>E. Parker</dd></div><div><dt>File type</dt><dd>PDF · 1.2 MB</dd></div><div><dt>Pages</dt><dd>8</dd></div></dl><div class="pm-actions"><button disabled>Download</button><button disabled>Share</button><button disabled>Rename</button><button disabled>Move</button><button disabled>Delete</button></div><small>Sample preview only; no file is stored.</small>';}
-      const contactModule=byId('work-contacts');
-      if(contactModule){const detail=contactModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Jordan Reeves</h3><span class="matter-status-pill">Mediator</span><div class="pm-tabs" role="tablist"><button type="button" aria-selected="true">Details</button><button type="button" aria-selected="false">Matters</button><button type="button" aria-selected="false">Notes</button><button type="button" aria-selected="false">Communications</button></div><p><strong>Resolution Chambers</strong><br>j.reeves@example.com<br>(02) 5550 1305<br>Linked matter: PF-100348 — Wilson v Wilson</p><p>Sample contact profile for workspace preview.</p>';}
       const employeeModule=byId('work-employees');
       if(employeeModule){const detail=employeeModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Team member details</h3><strong>Emily Carter</strong><p>Solicitor · Senior Family Law Solicitor</p><p>emily.carter@example.com<br>+61 2 7946 1284</p><h4>Role-based access summary</h4><ul><li>Manage assigned matters</li><li>Create and edit client records</li><li>Record time for assigned matters</li></ul><p><strong>Current workload</strong><br>28 assigned matters · 7 active tasks · 42.5 hrs this month</p><small>Illustrative sample profile; no account access was created.</small>';}
     }
