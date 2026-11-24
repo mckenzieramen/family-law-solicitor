@@ -54,18 +54,26 @@ service cloud.firestore {
           && get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid);
     }
 
+    function managesEmployeeAccount(uid, firmUid) {
+      return signedIn() && uid != request.auth.uid
+        && ((isSolicitor() && request.auth.uid == firmUid)
+          || (isActiveAdmin()
+            && get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid));
+    }
+
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
-      allow create: if signedIn()
-        && request.auth.uid != uid
-        && request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
+      allow create: if request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
         && request.resource.data.keys().hasAll(['role', 'lawyerUid'])
         && request.resource.data.role == 'employee'
-        && ((isSolicitor() && request.resource.data.lawyerUid == request.auth.uid)
-          || (isActiveAdmin()
-            && request.resource.data.lawyerUid
-              == get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid)));
-      allow update, delete: if false;
+        && managesEmployeeAccount(uid, request.resource.data.lawyerUid);
+      allow update: if request.resource.data.keys().hasAll(['role', 'lawyerUid'])
+        && request.resource.data.role == 'employee'
+        && managesEmployeeAccount(uid, request.resource.data.lawyerUid)
+        && resource.data.get('role', '') in ['', 'employee']
+        && resource.data.get('lawyerUid', '') in ['', request.resource.data.lawyerUid]
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'lawyerUid']);
+      allow delete: if false;
     }
 
     function ownsChecklist(uid) {
