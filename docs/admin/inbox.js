@@ -86,7 +86,7 @@ export function mountInbox(db, sampleMode = false) {
   for (const button of clientWorkspaceBack) button.onclick = () => setWorkspaceView(button.dataset.clientWorkspaceView);
   setWorkspaceView('enquiries');
   status.textContent = 'Loading messages…';
-  let entries = [];
+  let entries = []; let staffDirectory=[];
   let alive = true;
   let ready = false;
   let selectedId;
@@ -225,6 +225,9 @@ export function mountInbox(db, sampleMode = false) {
   @media(max-width:850px){#staff-inbox .inbox-split:has(>.enquiry-left){grid-template-columns:minmax(0,1fr)!important}#staff-inbox .inbox-split>#inbox-reader{grid-column:1!important;grid-row:2!important}}
   `;document.head.append(layoutFix);
   layoutFix.textContent += `
+  #staff-inbox .enquiry-pipeline button{min-height:50px!important;padding:10px 18px!important;gap:8px!important;margin-left:0!important;flex:1 0 0!important;min-width:125px!important}
+  #staff-inbox .eq-form select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #c8c2b9;border-radius:6px;background:#fcfaf7;color:#101827;padding:9px;font:14px Georgia,serif}
+
   #staff-inbox .enquiry-pipeline{display:flex!important;min-height:46px!important;isolation:isolate;overflow-x:auto!important;gap:0!important}
   #staff-inbox .enquiry-pipeline button{flex:1 0 130px!important;display:flex!important;align-items:center;justify-content:center;gap:8px;min-height:46px!important;padding:9px 22px!important;filter:none!important;transition:background-color .18s ease,color .18s ease}
   #staff-inbox .enquiry-pipeline button svg{width:19px!important;height:19px!important;flex:none;stroke:currentColor!important}
@@ -312,7 +315,7 @@ export function mountInbox(db, sampleMode = false) {
     if (sort.value === 'email') visible.sort((a, b) => sortText(a.contact?.email, b.contact?.email));
     count.textContent = 'Showing ' + visible.length + ' of ' + entries.length + ' loaded messages' +
       (entries.length === 100 ? ' · latest 100' : '');
-    const consultations=entries.filter(r=>r.kind==='consultation'&&inRange(r));stageSelect.value=stageFilter;assignSelect.replaceChildren(new Option('Assigned To: All',''),new Option('Unassigned','Unassigned'));for(const name of new Set(entries.map(r=>r.assignedTo).filter(Boolean)))assignSelect.add(new Option(name,name));assignSelect.value=assignedFilter;
+    const consultations=entries.filter(r=>r.kind==='consultation'&&inRange(r));stageSelect.value=stageFilter;assignSelect.replaceChildren(new Option('Assigned To: All',''),new Option('Unassigned','Unassigned'));for(const name of new Set([...staffDirectory.map(m=>m.name),...entries.map(r=>r.assignedTo)].filter(Boolean)))assignSelect.add(new Option(name,name));assignSelect.value=assignedFilter;
     for(const [container,labels] of [[metrics,['Total Enquiries',...stages]],[pipeline,stages]]){
       container.replaceChildren();
       for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;const sub=document.createElement('small');sub.textContent=label==='Total Enquiries'?(dateRange==='all'?'All time':'Last '+dateRange+' days'):label==='Converted'?'(to Client)':label==='Closed'?'(Not Proceeding)':'';if(sub.textContent)caption.append(document.createElement('br'),sub);b.append(svg,strong,caption);}else {const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[stages.indexOf(label)+1];const caption=document.createElement('span');caption.textContent=label+' ('+n+')';b.append(svg,caption);}b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;selectedId=undefined;render();};container.append(b);}
@@ -373,9 +376,9 @@ export function mountInbox(db, sampleMode = false) {
         const fields=el('div','','inbox-ticket-fields');addTicketField(fields,'Subject',contact.topic||'Not specified');addTicketField(fields,'Received',date);addTicketField(fields,'Preferred Contact',contact.preferredContact||(contact.email?'Email':'Phone'));details.append(fields);
         const msg=el('section','','eq-section');msg.append(el('strong','Inquiry Summary'),el('p',record.message||'No message provided.'));details.append(msg);
         const form=el('form','','eq-form');const note=el('textarea');note.placeholder='Add a note (visible to your firm only)…';note.value=record.internalNote||'';const nl=el('label','Internal Note');nl.append(note);form.append(nl);
-        const grid=el('div','','eq-form-grid');const assign=el('input');assign.value=record.assignedTo||'';assign.placeholder='Unassigned';const al=el('label','Assign to');al.append(assign);const follow=el('input');follow.type='date';follow.value=record.followUpDate||'';const fl=el('label','Follow-up Date');fl.append(follow);grid.append(al,fl);form.append(grid);
+        const grid=el('div','','eq-form-grid');const assign=el('select');assign.add(new Option('Unassigned',''));for(const member of staffDirectory)assign.add(new Option(member.name+' · '+member.email,member.id));if(record.assignedToUid&&!staffDirectory.some(m=>m.id===record.assignedToUid))assign.add(new Option((record.assignedTo||'Former staff')+' (unavailable)',record.assignedToUid));assign.value=record.assignedToUid||'';const al=el('label','Assign to');al.append(assign);const follow=el('input');follow.type='date';follow.value=record.followUpDate||'';const fl=el('label','Follow-up Date');fl.append(follow);grid.append(al,fl);form.append(grid);
         const save=el('button','Save details','eq-save');save.type='submit';const feedback=el('p');feedback.setAttribute('role','status');form.append(save,feedback);
-        form.onsubmit=async e=>{e.preventDefault();save.disabled=true;const patch={internalNote:note.value,assignedTo:assign.value,followUpDate:follow.value};try{if(sampleMode){Object.assign(record,patch);render();}else await updateDoc(doc(db,'clientInbox',record.id),patch);status.textContent='Details saved.';}catch{feedback.textContent='Unable to save. Check staff permissions.';}finally{save.disabled=false;}};
+        form.onsubmit=async e=>{e.preventDefault();save.disabled=true;const patch={internalNote:note.value,assignedTo:staffDirectory.find(m=>m.id===assign.value)?.name||(assign.value?record.assignedTo||'':''),assignedToUid:assign.value,followUpDate:follow.value};try{if(sampleMode){Object.assign(record,patch);render();}else await updateDoc(doc(db,'clientInbox',record.id),patch);status.textContent='Details saved.';}catch{feedback.textContent='Unable to save. Check staff permissions.';}finally{save.disabled=false;}};
         details.append(form);reader.append(details);continue;
       }
       const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
@@ -490,6 +493,9 @@ export function mountInbox(db, sampleMode = false) {
   }
   filter.onchange=()=>{stageFilter='all';page=0;render();};sort.onchange=search.oninput=()=>{page=0;render();};
   let unsubscribe;
+  function refreshStaff(event){if(event.detail.sampleMode!==sampleMode)return;staffDirectory=event.detail.staff||[];if(ready)render();}
+  window.addEventListener('enquiry-staff-directory',refreshStaff);
+  window.dispatchEvent(new Event('enquiry-staff-request'));
   function connect() {
     unsubscribe?.();
     ready = false;
@@ -529,5 +535,5 @@ export function mountInbox(db, sampleMode = false) {
     showOverviewInbox(entries.filter(item => item.kind === 'support' && !item.reply).length);
     render();
   } else connect();
-  stop = () => { alive = false; unsubscribe?.(); };
+  stop = () => { alive = false; unsubscribe?.(); window.removeEventListener('enquiry-staff-directory',refreshStaff); };
 }
