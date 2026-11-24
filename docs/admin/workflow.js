@@ -707,6 +707,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
         return sort==='oldest'?delta:-delta;
       });
+    if(filtered.some(item=>item.id===selectedCorrespondenceId)){}else selectedCorrespondenceId=filtered[0]?.id||'';
     const count=find('#correspondence-count');
     if(count) count.textContent='Correspondence ('+filtered.length+')';
     find('#work-draft-count').textContent=loaded ? (filtered.length+' of '+emailItems.length+' messages') : '';
@@ -719,9 +720,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const sender=(incoming?'From: ':'To: ')+(item.recipient||'No recipient');
       return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+icon+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
     }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(correspondenceFilter==='all'||correspondenceFilter==='email'?'No correspondence yet':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
-    const available = filtered.some(item=>item.id===selectedCorrespondenceId) ? filtered : filtered.slice(0,1);
-    if(available.length) selectedCorrespondenceId=available[0].id;
-    const active=available[0] || null;
+    const active=filtered.find(item=>item.id===selectedCorrespondenceId) || null;
     const reader=find('#correspondence-reader-content');
     if(!active){
       reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
