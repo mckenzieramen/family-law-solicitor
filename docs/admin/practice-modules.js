@@ -3,8 +3,8 @@
   const safeText = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const emptyRows = (cols, text) => '<tr><td colspan="'+cols+'" class="pm-empty">'+text+'</td></tr>';
   const table = (heads, empty) => '<div class="pm-table-wrap"><table class="pm-table"><thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+emptyRows(heads.length,empty)+'</tbody></table></div>';
-  const notice = '<div class="pm-connection-note"><span class="pm-lock" aria-hidden="true">✓</span><span><strong>Your changes will be saved to this firm’s secure Firebase workspace when you submit the form.</span></div>';
-  const header = (eyebrow,title,description,action='') => '<header class="pm-heading"><div><p class="module-eyebrow">'+eyebrow+'</p><h2>'+title+'</h2><p>'+description+'</p></div>'+action+'</header>';
+  const notice = '<div class="pm-connection-note"><span class="pm-lock" aria-hidden="true">✓</span><span><strong>Secure firm workspace</strong><br>A confirmation appears after Firebase successfully saves this record.</span></div>';
+  const header = (eyebrow,title,description,action='') => '<header class="pm-heading"><div><p class="module-eyebrow">'+eyebrow+'</p><p>'+description+'</p></div>'+action+'</header>';
   const toolbar = fields => '<div class="pm-toolbar">'+fields+'</div>';
   const button = (label,dialog,primary=true) => '<button type="button" class="pm-button '+(primary?'pm-primary':'')+'" data-open-dialog="'+dialog+'">'+label+'</button>';
   const dialog = (id,title,fields,submitText) => '<dialog class="pm-dialog" id="'+id+'"><form class="pm-form" data-preview-form><header><div><p class="module-eyebrow">New record</p><h3>'+title+'</h3></div><button type="button" class="pm-close" data-close-dialog aria-label="Close">×</button></header>'+notice+'<div class="pm-form-grid">'+fields+'</div><footer><p role="status" class="pm-status"></p><button type="button" class="pm-button" data-close-dialog>Cancel</button><button class="pm-button pm-primary" type="submit">'+submitText+'</button></footer></form></dialog>';
@@ -48,10 +48,10 @@
        dialog('pm-contact','Add contact',field('First name','firstName','text','required maxlength="70"')+field('Last name','lastName','text','required maxlength="70"')+select('Contact type','type',['Client','Other party','Barrister','Mediator','Court','Referrer','Other'])+field('Organisation / firm','firm','text','maxlength="160"')+field('Email','email','email','maxlength="254"')+field('Phone','phone','tel','maxlength="25"')+field('Address','address','text','maxlength="250"')+field('Linked matter reference','matter','text','maxlength="80"')+select('Status','status',['Active','Inactive'])+area('Internal notes','notes',4,'maxlength="2000"'),'Save contact')
     },
     'work-employees': {
-      html: header('Staff access','Employees','Firm team directory, access roles and work allocation.',button('Add team member','pm-employee'))+
+      html: '<div class="pm-employee-actions">'+button('Add team member','pm-employee')+'</div>'+
        '<div class="pm-panel">'+toolbar(field('Search team members','search','search','placeholder="Name or work email"')+select('Role','role',['All roles','Solicitor','Practice manager','Admin','Employee'])+select('Status','status',['All statuses','Active','On leave','Inactive']))+
        '<div class="pm-content-grid"><div>'+table(['Name','Work email','Role','Job title','Status','Assigned matters'],'No team members have been saved yet.')+'</div><aside class="pm-detail-card"><h3>Team member details</h3><p>Select a staff profile to see contact information, assigned work, access and workload.</p><h4>Role-based access</h4><ul><li>Access is controlled by Firebase roles.</li><li>Do not grant access from this preview form.</li></ul></aside></div></div>'+
-       dialog('pm-employee','Add team member',field('Full name','name','text','required maxlength="120"')+field('Work email','email','email','required maxlength="254"')+field('Existing Firebase account UID','uid','text','required maxlength="128" placeholder="UID from Firebase Authentication"')+select('Workspace role','role',['Employee'])+field('Job title','jobTitle','text','maxlength="120"')+field('Work phone','phone','tel','maxlength="25"')+select('Status','status',['Active','On leave','Inactive'])+area('Role notes / access scope','notes',3,'maxlength="1000"'),'Add team member')
+       dialog('pm-employee','Add team member',field('Full name','name','text','required maxlength="120"')+field('Work email','email','email','required maxlength="254"')+field('Firebase Auth UID','uid','text','required maxlength="128" placeholder="Paste UID from Firebase Authentication → Users"')+'<small class="pm-field-hint pm-span-2">Create the employee’s sign-in account in Firebase Authentication first. This form links that existing account; it does not create a login.</small>'+select('Workspace role','role',['Employee'])+field('Job title','jobTitle','text','maxlength="120"')+field('Work phone','phone','tel','maxlength="25"')+select('Status','status',['Active','On leave','Inactive'])+area('Role notes / access scope','notes',3,'maxlength="1000"'),'Add team member')
     },
     'work-reports': {
       html: header('Practice insights','Reports','Review operational activity by date, matter, staff member and status.')+
@@ -79,7 +79,7 @@
       const before=nav.querySelector('a[href="#work-settings"]'); nav.insertBefore(link,before);
       document.querySelector('#workspace-content').append(section);
     }
-    if (section) { section.innerHTML=config.html; const h2=section.querySelector('.pm-heading h2'); if(h2) h2.id=id+'-heading'; section.setAttribute('aria-labelledby',id+'-heading'); }
+    if (section) { section.innerHTML=config.html; const h2=section.querySelector('.pm-heading h2'); if(h2) { h2.id=id+'-heading'; section.setAttribute('aria-labelledby',h2.id); } else section.setAttribute('aria-labelledby','dashboard-title'); }
   }
 
   function coreRecordForms(){
@@ -249,7 +249,7 @@
       const record={firmUid:context.firmUid,recordType:type,payload, ...now};
       if(type==='employee'){
         const batch=fs.writeBatch(context.db);
-        batch.set(fs.doc(context.db,'users',String(payload.uid)),{role:'employee',lawyerUid:context.firmUid});
+        batch.set(fs.doc(context.db,'users',String(payload.uid)),{role:'employee',lawyerUid:context.firmUid},{merge:true});
         batch.set(recordRef,record);
         await batch.commit();
       }else await fs.setDoc(recordRef,record);
@@ -260,7 +260,7 @@
     }catch(error){
       if(uploadedPath){try{const storage=await import(storageModuleUrl);await storage.deleteObject(storage.ref(context.storage,uploadedPath));}catch{}}
       const message=error?.code==='permission-denied'
-        ? 'Firebase denied this save. Deploy the latest Firestore and Storage rules, and check the account role.'
+        ? (type==='employee' ? 'Firestore denied this team member. Publish the updated Firestore rules and verify your active firm role and the employee’s existing Firebase UID.' : 'Firebase denied this save. Publish the latest Firestore and Storage rules, and check your firm role.')
         : type==='employee'
           ? 'Could not grant employee access. Check that the UID is an existing Firebase account without a conflicting role.'
           : 'Could not save this record. Check the connection and try again.';
