@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
+import { addDoc, collection, deleteDoc, doc, limit, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 const root = document.getElementById('staff-workspace');
 const templates = {
@@ -46,6 +46,7 @@ const followUpStates = {
 };
 const priorities = ['Urgent', 'High', 'Normal', 'Low'];
 let stop;
+let stopConsultations;
 let session = 0;
 const toast = document.getElementById('staff-toast');
 let toastTimer;
@@ -73,6 +74,8 @@ export function clearWorkflow() {
   session++;
   stop?.();
   stop = undefined;
+  stopConsultations?.();
+  stopConsultations = undefined;
   if (root) { root.onclick = null; root.replaceChildren(); }
 }
 
@@ -104,7 +107,9 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   const items = sampleMode ? null : collection(db, 'staffWorkspaces', uid, 'items');
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney', year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let records = [];
+  let consultationRequests = [];
   let loaded = false;
+  let consultationRequestsLoaded = sampleMode;
   let loadError = null;
   const matterField = '<label>Matter reference<input name="matter" maxlength="80"></label>';
   const calendarOptions = '<option value="admin">Admin Calendar</option><option value="client">Client Calendar</option>';
@@ -171,6 +176,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
   <div class="month-controls"><label>Calendar<select id="work-calendar-scope">${calendarOptions}</select></label><div class="calendar-month-nav"><button type="button" data-month-step="-1" aria-label="Previous month">‹</button><label>Month <input id="work-month" type="month"></label><button type="button" data-month-step="1" aria-label="Next month">›</button></div><button type="button" id="work-calendar-today">Today</button><button type="button" id="work-show-month">Show whole month</button></div>
+  <p class="consultation-calendar-status" id="consultation-calendar-status" role="status">Checking for pending consultation requests…</p>
   <div class="calendar-split"><div><div id="work-month-grid"></div>
   <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
   <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
@@ -272,6 +278,22 @@ export function mountWorkflow(db, uid, sampleMode = false) {
   }
   const order = (a,b) => priorities.indexOf(a.priority) - priorities.indexOf(b.priority) || (a.date || '9999').localeCompare(b.date || '9999');
   function row(item) {
+    if (item.kind === 'Consultation request') {
+      const contact = item.contact || {};
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
+      return `<details class="work-row consultation-request-row">
+        <summary><strong>${escape(name)}</strong> <span class="status">Pending confirmation</span>
+        <small>Consultation request · ${escape(item.date)} · ${escape(item.time || 'Time not set')} Sydney</small></summary>
+        <dl class="consultation-request-details">
+          <div><dt>Email</dt><dd>${contact.email ? '<a href="mailto:'+escape(contact.email)+'">'+escape(contact.email)+'</a>' : 'Not provided'}</dd></div>
+          <div><dt>Phone</dt><dd>${escape(contact.phone || 'Not provided')}</dd></div>
+          <div><dt>Topic</dt><dd>${escape(contact.topic || 'Not provided')}</dd></div>
+          <div><dt>New client</dt><dd>${escape(contact.newClient || 'Not provided')}</dd></div>
+        </dl>
+        <p class="work-notes"><strong>Brief summary</strong><br>${escape(item.notes || 'No summary provided.')}</p>
+        <a class="consultation-request-link" href="#staff-inbox">Open Client Messages</a>
+      </details>`;
+    }
     const badge = isNote(item) ? 'Day note' : item.kind === 'Email draft' ? 'Draft' :
       item.done ? 'Completed' : item.date && item.date < today() ?
       (item.kind === 'Appointment' ? 'Past appointment' : 'Overdue') : item.kind === 'Appointment' ? 'Scheduled' : item.priority;
@@ -300,8 +322,10 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     find('#calendar-month-title').textContent = new Intl.DateTimeFormat('en-AU', {
       month:'long', year:'numeric', timeZone:'UTC'
     }).format(monthDate);
-    const matching = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
+    const scheduledItems = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
       calendarFor(item) === scope.value);
+    const requestedItems = scope.value === 'admin' ? consultationRequests.filter(item => item.date?.startsWith(month.value)) : [];
+    const matching = [...scheduledItems, ...requestedItems];
     const byDay = new Map();
     for (const item of matching) {
       if (!byDay.has(item.date)) byDay.set(item.date, []);
@@ -315,13 +339,22 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     for (let day = 1; day <= days; day++) {
       const key = month.value + '-' + String(day).padStart(2, '0');
       const items = byDay.get(key) || [];
-      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
+      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(item.kind === 'Consultation request' ? 'consultation' : isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
     }
     const trailing = (7 - (first + days) % 7) % 7;
     for (let i = 0; i < trailing; i++) cells.push(spacer);
     grid.innerHTML = cells.join('');
     find('#work-agenda-title').textContent = selectedDay ? new Intl.DateTimeFormat('en-AU', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'}).format(new Date(selectedDay+'T00:00:00Z')) : 'Scheduled items this month';
-    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.');
+    const emptyMessage = scope.value === 'admin' && !consultationRequestsLoaded
+      ? 'Checking for consultation requests…'
+      : scope.value === 'admin' && consultationRequests.length && !requestedItems.length
+        ? 'No appointments or consultation requests in this calendar view.'
+        : loaded ? 'No appointments or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
+    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), emptyMessage);
+    const requestStatus = find('#consultation-calendar-status');
+    if (requestStatus) requestStatus.textContent = consultationRequestsLoaded
+      ? (consultationRequests.length ? consultationRequests.length + ' pending consultation request' + (consultationRequests.length === 1 ? '' : 's') + ' shown in the Admin Calendar.' : 'No pending consultation requests.')
+      : 'Checking for pending consultation requests…';
   }
   function render() {
     const date = today();
@@ -494,6 +527,53 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     });
   }
   retryCalendar.addEventListener('click', listenForWorkItems);
+  function listenForConsultationRequests() {
+    stopConsultations?.();
+    if (sampleMode) {
+      consultationRequests = [{
+        id:'sample-consultation-1', requestId:'sample-consultation-1', kind:'Consultation request',
+        title:'Jordan Lee', date:today(), time:'10:00', calendar:'admin', priority:'High',
+        notes:'Sample request to discuss parenting arrangements.', contact:{
+          firstName:'Jordan', lastName:'Lee', email:'jordan.lee@example.com', phone:'0400 123 456',
+          topic:'parenting', newClient:'Yes'
+        }
+      }];
+      consultationRequestsLoaded = true;
+      renderCalendar();
+      return;
+    }
+    consultationRequestsLoaded = false;
+    renderCalendar();
+    stopConsultations = onSnapshot(
+      query(collection(db, 'clientInbox'), orderBy('createdAt', 'desc'), limit(100)),
+      snapshot => {
+        if (current !== session) return;
+        consultationRequests = snapshot.docs.map(document => {
+          const record = document.data();
+          if (record.kind !== 'consultation') return null;
+          const contact = record.contact || {};
+          const match = /^(\\d{4}-\\d{2}-\\d{2})(?:T(\\d{2}:\\d{2}))?/.exec(String(contact.preferredTime || ''));
+          if (!match) return null;
+          const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
+          return {
+            id:'consultation-' + document.id, requestId:document.id, kind:'Consultation request',
+            title:name, notes:String(record.message || ''), contact, date:match[1], time:match[2] || '',
+            calendar:'admin', priority:'High', done:false
+          };
+        }).filter(Boolean);
+        consultationRequestsLoaded = true;
+        renderCalendar();
+      },
+      () => {
+        if (current !== session) return;
+        consultationRequestsLoaded = true;
+        const requestStatus = find('#consultation-calendar-status');
+        if (requestStatus) requestStatus.textContent = 'Consultation requests could not load. Check Client Messages for the inbox connection status.';
+        renderCalendar();
+      }
+    );
+  }
+  listenForConsultationRequests();
   if (sampleMode) {
     const date = today();
     const offset = days => {
