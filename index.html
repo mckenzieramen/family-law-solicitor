@@ -96,14 +96,6 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
   <span class="premium-top-sydney-time" aria-label="Sydney local time"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <span id="premium-top-clock">Sydney local time</span></span>
  </div>
 </div>
-<style id="prevail-white-header-before-render">
-header.site-header{background:#fff!important;background-color:#fff!important;background-image:none!important;color:#073e2f!important;border-bottom:1px solid #e9e5dd!important}
-header.site-header .header-nav{background:transparent!important}
-header.site-header .header-nav a:not(.nav-cta){color:#073e2f!important}
-header.site-header .header-nav .nav-cta{background:#073e2f!important;color:white!important}
-header.site-header a.brand{background:transparent!important}
-header.site-header a.brand::before,header.site-header a.brand::after{content:none!important;display:none!important}
-</style>
 <header class="site-header" style="background:#ffffff!important;background-color:#ffffff!important;background-image:none!important;color:#073e2f!important;border-bottom:1px solid #e9e5dd!important">
  <a class="brand" href="/" aria-label="Prevail Family Law home"><img class="prevail-real-logo" src="/prevail-official-logo.png" alt="Prevail Family Law" width="491" height="125"></a>
  <button class="menu-toggle" type="button" aria-controls="public-navigation" aria-expanded="false" hidden>Menu <svg class="ui-icon ui-icon-menu" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -421,7 +413,7 @@ app.addEventListener('change', event => {
 app.addEventListener('input',event=>{if(event.target instanceof HTMLTextAreaElement)event.target.setCustomValidity('')});
 home();
 </script>
-<script src="assistant.js"></script>
+<script src="assistant.js" defer></script>
 <script>
 const staffMode=new URLSearchParams(location.search).get('staff');
 if(staffMode==='demo'){entry.hidden=false;showStaff();}
@@ -455,15 +447,6 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 
 
 
-<style id="prevail-header-cream-2026">
-html body .site-header{background:#fffaf3!important;background-image:none!important;border-bottom:1px solid #e6dac3!important;box-shadow:0 5px 20px #073e2f0c!important}
-html body .site-header .header-nav{background:transparent!important;background-image:none!important}
-html body .site-header .header-nav a:not(.nav-cta){color:#073e2f!important}
-html body .site-header .header-nav a.nav-cta{background:#073e2f!important;color:#fffaf3!important}
-html body .site-header a.brand{background:transparent!important}
-html body .site-header a.brand::before,html body .site-header a.brand::after{display:none!important;content:none!important}
-html body .site-header a.brand img.prevail-real-logo{display:block!important;max-width:100%!important;height:auto!important}
-</style>
 <style id="prevail-white-header-final">
 /* White header directly in the homepage so it cannot depend on an external CSS load. */
 html body header.site-header,
@@ -547,23 +530,6 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
  html body .client-home .reference-consultation-cta .action:hover{transform:none}
 }
 </style>
-<style id="availability-dialog-styles">
-.availability-dialog{box-sizing:border-box;border:0;border-radius:20px;padding:0;width:min(850px,calc(100vw - 28px));max-height:min(90vh,900px);background:#fffaf3;color:#173b2e;box-shadow:0 22px 90px #071e1a60;overflow:auto}
-.availability-dialog::backdrop{background:rgba(9,28,24,.68);backdrop-filter:blur(5px)}
-.availability-dialog-inner{padding:clamp(18px,4vw,32px)}
-.availability-dialog-header{display:flex;justify-content:space-between;align-items:start;gap:15px;margin-bottom:18px}
-.availability-dialog h2{font:500 clamp(26px,4vw,36px)/1.2 Georgia,serif;color:#103d31;margin:0 0 7px}
-.availability-dialog p{color:#53675b;line-height:1.5;margin:0}
-.availability-dialog-close{background:#f2e9dc;border:1px solid #d7cabb;border-radius:50%;width:42px;height:42px;flex:none;font-size:24px;color:#103d31}
-.availability-dialog .premium-booking{display:block!important;margin:0!important;width:100%!important;max-width:none!important}.availability-dialog .premium-booking-grid{width:100%!important}
-.availability-dialog .premium-booking-footer{display:none!important}
-.availability-dialog-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid #ded6c9}
-.availability-dialog-actions small{max-width:420px;line-height:1.5;color:#58685d}
-.availability-dialog-continue{min-height:48px;border:0;border-radius:9px;background:#103d31;color:#fffaf3;padding:12px 22px;font-weight:700}
-.availability-dialog-continue:hover{background:#205940}
-.availability-dialog-status{color:#8c3c30!important;margin-top:12px!important}
-@media(max-width:600px){.availability-dialog-actions{align-items:stretch;flex-direction:column}.availability-dialog-continue{width:100%}}
-</style>
 <script id="availability-dialog-controller">
 /* Keep the homepage booking form mounted; show an independent copy in a modal frame. */
 (() => {
@@ -593,52 +559,7 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
 })();
 </script>
 
-<style id="availability-calendar-complete-redesign">
-/* Standalone modal styling: never depend on homepage/booking CSS selector ancestry. */
-dialog.availability-dialog{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;width:min(920px,calc(100vw - 32px))!important;max-height:90dvh!important;padding:0!important;border:1px solid #d9cbb5!important;border-radius:22px!important;background:#fffcf7!important;color:#163d32!important;overflow-y:auto!important}
-.availability-dialog .availability-dialog-inner{padding:clamp(20px,3.5vw,36px)!important}
-.availability-dialog .availability-dialog-header{margin-bottom:22px!important}
-.availability-dialog .availability-dialog-header h2{font:500 clamp(26px,4vw,38px)/1.2 Georgia,serif!important;color:#103d31!important;margin:0 0 8px!important}
-.availability-dialog .availability-dialog-header p{font-size:14px!important;color:#62736a!important}
-.availability-dialog .availability-dialog-close{display:grid!important;place-items:center!important;background:#f6f0e6!important;color:#173d32!important;font-size:24px!important}
-.availability-dialog .premium-booking{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;color:#173d32!important}
-.availability-dialog .premium-booking-head{display:none!important}
-.availability-dialog .premium-booking-grid{display:grid!important;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;gap:24px!important;align-items:start!important}
-.availability-dialog .premium-calendar{padding:20px!important;border:1px solid #e2d9c9!important;border-radius:16px!important;background:#fff!important;box-shadow:0 5px 18px #103d310a!important;min-width:0!important}
-.availability-dialog .premium-calendar-header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-bottom:15px!important}
-.availability-dialog .premium-calendar-header strong{font:600 19px/1.3 Georgia,serif!important;color:#173d32!important;text-align:center!important}
-.availability-dialog .premium-calendar-header button{display:grid!important;place-items:center!important;flex:none!important;width:40px!important;height:40px!important;border-radius:10px!important;border:1px solid #e0d5c5!important;background:#f7f3ec!important;color:#173d32!important;font-size:24px!important;cursor:pointer!important}
-.availability-dialog .premium-calendar-header button:disabled{opacity:.35!important;cursor:not-allowed!important}
-.availability-dialog .premium-calendar-weekdays,.availability-dialog .premium-calendar-days{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:5px!important;align-items:center!important}
-.availability-dialog .premium-calendar-weekdays{margin-bottom:7px!important}
-.availability-dialog .premium-calendar-weekdays span{display:block!important;text-align:center!important;padding:7px 0!important;color:#7a887e!important;font:600 11px/1.3 system-ui,sans-serif!important}
-.availability-dialog .premium-calendar-days .premium-blank{display:block!important;visibility:hidden!important}
-.availability-dialog .premium-calendar-days button{display:grid!important;place-items:center!important;width:100%!important;min-width:0!important;min-height:42px!important;padding:0!important;margin:0!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:#173d32!important;font:500 13px/1 system-ui,sans-serif!important;cursor:pointer!important}
-.availability-dialog .premium-calendar-days button:hover:not(:disabled){background:#eaf1eb!important;border-color:#c3d7c8!important}
-.availability-dialog .premium-calendar-days button[aria-pressed="true"]{background:#164c3b!important;color:#fff!important;border-color:#164c3b!important;box-shadow:0 3px 8px #103d3133!important}
-.availability-dialog .premium-calendar-days button:disabled{color:#bfc6c0!important;cursor:not-allowed!important}
-.availability-dialog .premium-times{padding:18px 0!important;min-width:0!important}
-.availability-dialog .premium-times>strong{display:block!important;font:500 24px/1.25 Georgia,serif!important;color:#173d32!important;margin-bottom:8px!important}
-.availability-dialog .premium-times>p{font:400 13px/1.6 system-ui,sans-serif!important;color:#68776c!important;margin:0 0 18px!important}
-.availability-dialog .premium-time-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
-.availability-dialog .premium-time-grid button{min-height:46px!important;width:100%!important;padding:10px!important;border:1px solid #d9dfd7!important;border-radius:10px!important;background:#fff!important;color:#173d32!important;font:600 13px/1.3 system-ui,sans-serif!important;cursor:pointer!important}
-.availability-dialog .premium-time-grid button:hover{background:#edf4ee!important;border-color:#8da996!important}
-.availability-dialog .premium-time-grid button[aria-pressed="true"]{background:#164c3b!important;border-color:#164c3b!important;color:white!important}
-.availability-dialog .premium-booking-status{font:500 13px/1.6 system-ui,sans-serif!important;color:#315d49!important;margin:18px 0 0!important}
-.availability-dialog .availability-dialog-actions{margin-top:24px!important;padding-top:20px!important}
-.availability-dialog .availability-dialog-continue{min-height:48px!important;padding:12px 24px!important;border-radius:10px!important;font:700 14px/1.2 system-ui,sans-serif!important}
-.availability-dialog :is(button):focus-visible{outline:3px solid #d7b574!important;outline-offset:3px!important}
-@media(max-width:680px){.availability-dialog .premium-booking-grid{grid-template-columns:1fr!important;gap:10px!important}.availability-dialog .premium-times{padding:12px 0!important}.availability-dialog .premium-calendar{padding:14px!important}.availability-dialog .premium-calendar-days button{min-height:39px!important}.availability-dialog .premium-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-</style>
-<style id="booking-workflow-summary-style">
-.client-home .booking-selection-summary:not([hidden]){display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 20px;margin:14px 0 22px;background:#eef4ee;border:1px solid #c8dacb;border-radius:14px}
-.client-home .booking-selection-summary div{display:flex;flex-direction:column;gap:5px}
-.client-home .booking-selection-summary small{font-size:12px;color:#536f5c;font-weight:600}
-.client-home .booking-selection-summary strong{font:600 18px/1.4 Georgia,serif;color:#103d31}
-.client-home .booking-selection-summary span{font-size:12px;color:#617268}
-.client-home .booking-selection-summary button{min-height:42px;padding:10px 15px;border:1px solid #a5bdae;border-radius:9px;background:#fff;color:#103d31;font-weight:700}
-.client-home .booking-selection-summary button:hover{background:#e1eee4}
-</style><style id="booking-slot-color-status">
+<style id="booking-slot-color-status">
 .availability-dialog .premium-time-grid button[data-state="requestable"]{background:#eff6ff!important;border-color:#93c5fd!important;color:#1d4ed8!important}
 .availability-dialog .premium-time-grid button[data-state="requestable"]:hover{background:#dbeafe!important;border-color:#2563eb!important}
 .availability-dialog .premium-time-grid button[data-state="requestable"][aria-pressed="true"]{background:#2563eb!important;border-color:#2563eb!important;color:#fff!important}
@@ -665,9 +586,9 @@ html.booking-popup-view #app .client-home section#contact .contact-panel{display
 html.booking-popup-view #app .client-home section#contact .consultation-intro{display:none!important}
 html.booking-popup-view #app .client-home section#contact .consultation-form{display:block!important;grid-column:1!important;padding:clamp(14px,3vw,28px)!important;min-height:0!important}
 @media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}.consultation-frame-top{height:52px;padding:0 14px;font-size:19px}.consultation-frame-dialog iframe{height:calc(100% - 52px)}}
-</style>
 
-<style id="consultation-first-screen-space-fix">
+/* Compact first view; open the calendar immediately. */
+
 /* Keep the booking modal focused on choosing a date and time. */
 html.booking-popup-view #app .client-home section#contact{padding:0!important}
 html.booking-popup-view #app .client-home #consultation-form{
@@ -683,5 +604,7 @@ html.booking-popup-view #app .client-home #consultation-form .premium-booking{
 html.booking-popup-view #app .client-home #consultation-form .premium-booking-head{
  margin:0 0 6px!important;
 }
+
 </style>
+
 </html>
