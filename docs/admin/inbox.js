@@ -9,6 +9,7 @@ const filter = document.getElementById('inbox-filter');
 const search = document.getElementById('inbox-search');
 const sort = document.getElementById('inbox-sort');
 const count = document.getElementById('inbox-count');
+const quickCards = [...(panel?.querySelectorAll('[data-inbox-quick-filter]') ?? [])];
 const senderName = record => [record.contact?.firstName, record.contact?.lastName].filter(Boolean).join(' ');
 const ticketCode = record => 'INQ-' + String(record.id || '').slice(-6).toUpperCase();
 const formatPreferredTime = value => {
@@ -53,6 +54,8 @@ export function clearInbox() {
   stop = undefined;
   if (!panel) return;
   filter.onchange = sort.onchange = search.oninput = null;
+  for (const card of quickCards) { card.onclick = null; card.setAttribute('aria-pressed', 'false'); }
+  for (const id of ['inbox-stat-new-today','inbox-stat-appointments','inbox-stat-needs-reply','inbox-stat-replied']) document.getElementById(id).textContent = '0';
   count.textContent = '';
   search.value = '';
   panel.hidden = nav.hidden = true;
@@ -74,13 +77,44 @@ export function mountInbox(db, sampleMode = false) {
   let ready = false;
   let selectedId;
   const drafts = new Map();
+  for (const card of quickCards) card.onclick = () => { filter.value = card.dataset.inboxQuickFilter; render(); };
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
     const type = filter.value;
-    const visible = entries.filter(({kind, contact, message, reply}) => {
+    const todayKey = new Intl.DateTimeFormat('en-CA', {
+      timeZone:'Australia/Sydney', year:'numeric', month:'2-digit', day:'2-digit'
+    }).format(new Date());
+    const receivedToday = record => {
+      const date = record.createdAt?.toDate?.();
+      return Boolean(date && new Intl.DateTimeFormat('en-CA', {
+        timeZone:'Australia/Sydney', year:'numeric', month:'2-digit', day:'2-digit'
+      }).format(date) === todayKey);
+    };
+    const summaryCounts = {
+      newToday: entries.filter(record => record.kind === 'consultation' && receivedToday(record)).length,
+      appointment: entries.filter(record => record.kind === 'consultation' && Boolean(record.contact?.preferredTime)).length,
+      unanswered: entries.filter(record => record.kind === 'support' && !record.reply).length,
+      replied: entries.filter(record => record.kind === 'support' && Boolean(record.reply)).length
+    };
+    const countTargets = {
+      newToday:'inbox-stat-new-today', appointment:'inbox-stat-appointments',
+      unanswered:'inbox-stat-needs-reply', replied:'inbox-stat-replied'
+    };
+    for (const card of quickCards) {
+      const key = card.dataset.inboxQuickFilter;
+      const active = type === key;
+      card.setAttribute('aria-pressed', String(active));
+      card.classList.toggle('is-active', active);
+      const target = document.getElementById(countTargets[key]);
+      if (target) target.textContent = String(summaryCounts[key] ?? 0);
+    }
+    const visible = entries.filter(record => {
+      const {kind, contact, message, reply} = record;
       if (type === 'unanswered' && (kind !== 'support' || reply)) return false;
       if (type === 'replied' && (kind !== 'support' || !reply)) return false;
+      if (type === 'newToday' && (kind !== 'consultation' || !receivedToday(record))) return false;
+      if (type === 'appointment' && (kind !== 'consultation' || !contact?.preferredTime)) return false;
       if (['consultation', 'support'].includes(type) && type !== kind) return false;
       return !term || [contact?.firstName, contact?.lastName, contact?.email, contact?.topic, message]
         .filter(Boolean).join(' ').toLowerCase().includes(term);
