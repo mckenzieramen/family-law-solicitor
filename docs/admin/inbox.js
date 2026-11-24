@@ -202,6 +202,29 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .eq-save{background:#101d30;color:white;border:0;border-radius:7px;padding:12px 18px;cursor:pointer}
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:1fr}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
   `;document.head.append(exact);
+  const layoutFix=document.createElement('style');layoutFix.textContent=`
+  #staff-inbox .inbox-split:has(>.enquiry-left){display:grid!important;grid-template-columns:minmax(0,68fr) minmax(0,32fr)!important;gap:18px!important;align-items:stretch!important;width:100%!important}
+  #staff-inbox .inbox-split>.enquiry-left{grid-column:1!important;grid-row:1!important;width:100%!important;min-width:0!important;max-width:none!important}
+  #staff-inbox .inbox-split>#inbox-reader{grid-column:2!important;grid-row:1!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;padding:16px!important}
+  #staff-inbox .enquiry-left .inbox-controls{display:grid!important;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.15fr) minmax(0,1.35fr) auto!important;gap:7px!important}
+  #staff-inbox .enquiry-left .inbox-controls>[hidden]{display:none!important}
+  #staff-inbox .inbox-controls label,#staff-inbox .inbox-controls select,#staff-inbox .inbox-controls input{min-width:0!important;width:100%!important;box-sizing:border-box!important}
+  #staff-inbox .inbox-controls button,#staff-inbox .enquiry-pager button{color:#101827!important}
+  #staff-inbox .enquiry-pager button[aria-current=page]{color:white!important}
+  #staff-inbox .enquiry-table{table-layout:fixed!important;width:100%!important;min-width:0!important;font-size:13px!important}
+  #staff-inbox .enquiry-table th,#staff-inbox .enquiry-table td{white-space:normal!important;overflow-wrap:anywhere!important;padding:10px 7px!important}
+  #staff-inbox .enquiry-table th:nth-child(1){width:12%}#staff-inbox .enquiry-table th:nth-child(2){width:12%}#staff-inbox .enquiry-table th:nth-child(3){width:19%}#staff-inbox .enquiry-table th:nth-child(4){width:19%}#staff-inbox .enquiry-table th:nth-child(5){width:12%}#staff-inbox .enquiry-table th:nth-child(6){width:12%}#staff-inbox .enquiry-table th:nth-child(7){width:10%}#staff-inbox .enquiry-table th:nth-child(8){width:4%}
+  #staff-inbox #inbox-reader .inbox-ticket-fields{display:flex!important;flex-direction:column!important;gap:7px!important;margin:0!important;padding:12px 0!important}
+  #staff-inbox #inbox-reader .inbox-ticket-field{display:grid!important;grid-template-columns:36% minmax(0,1fr)!important;gap:8px!important;border:0!important;background:none!important;padding:0!important;font:14px Georgia,serif!important}
+  #staff-inbox #inbox-reader .inbox-ticket-field span{text-transform:none!important;font:600 14px Georgia,serif!important;letter-spacing:0!important}
+  #staff-inbox #inbox-reader .inbox-ticket-field strong{font:14px Georgia,serif!important;overflow-wrap:anywhere}
+  #staff-inbox .eq-profile{margin:16px 0!important;gap:12px!important}
+  #staff-inbox .eq-profile>div:last-child{min-width:0!important;overflow-wrap:anywhere}
+  #staff-inbox .eq-top .enquiry-status{background:#efdbad!important;padding:5px 12px!important;border-radius:20px!important}
+  @media(max-width:1050px){#staff-inbox .enquiry-left .inbox-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+  @media(max-width:850px){#staff-inbox .inbox-split:has(>.enquiry-left){grid-template-columns:minmax(0,1fr)!important}#staff-inbox .inbox-split>#inbox-reader{grid-column:1!important;grid-row:2!important}}
+  `;document.head.append(layoutFix);
+
   exact.textContent += `
   #staff-inbox .enquiry-metrics button{grid-template-columns:36px minmax(0,1fr);min-height:98px;padding:12px;column-gap:12px}
   #staff-inbox .enquiry-metrics small{font:13px Georgia,serif}
