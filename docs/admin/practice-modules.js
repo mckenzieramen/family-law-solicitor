@@ -100,6 +100,21 @@
   const rootWatch=new MutationObserver(()=>{coreRecordForms();});
   const workflowRoot=byId('staff-workspace');
   if(workflowRoot)rootWatch.observe(workflowRoot,{childList:true,subtree:true});
+  document.addEventListener('input',event=>{
+    if(event.target.matches('#matter-search')){matterPage=1;renderMatterDirectory();}
+  });
+  document.addEventListener('change',event=>{
+    if(event.target.matches('#matter-type-filter,#matter-status-filter,#matter-solicitor-filter')){matterPage=1;renderMatterDirectory();}
+  });
+  document.addEventListener('click',event=>{
+    if(event.target.closest('#matter-clear-filters')){
+      const section=byId('work-matters');
+      section?.querySelectorAll('#matter-search,#matter-type-filter,#matter-status-filter,#matter-solicitor-filter').forEach(field=>field.value='');
+      matterPage=1;renderMatterDirectory();return;
+    }
+    if(event.target.closest('#matter-page-prev')){matterPage=Math.max(1,matterPage-1);renderMatterDirectory();return;}
+    if(event.target.closest('#matter-page-next')){matterPage++;renderMatterDirectory();return;}
+  });
   document.addEventListener('click', event => {
     const open=event.target.closest('[data-open-dialog]');
     if(open){byId(open.dataset.openDialog)?.showModal();return;}
@@ -127,6 +142,7 @@
   let practiceStop = null;
   let practiceSettingsStop = null;
   let practiceRecords = [];
+  let matterPage = 1;
   const firebaseModuleUrl = 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
   const storageModuleUrl = 'https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js';
   const recordTypeByForm = {
@@ -166,6 +182,54 @@
     return practiceRecords.filter(r=>r.recordType===type)
       .sort((a,b)=>(b.updatedAt?.toMillis?.()||0)-(a.updatedAt?.toMillis?.()||0));
   }
+  function renderMatterDirectory(){
+    const section=byId('work-matters'); if(!section)return;
+    const all=recordRows('matter');
+    const monthKey=new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit'}).format(new Date());
+    const dateKey=value=>{
+      if(!value)return '';
+      const date=value?.toDate?.() || (value instanceof Date?value:new Date(value));
+      return Number.isNaN(date.valueOf())?'':new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
+    };
+    const activeRows=all.filter(r=>!['closed','finalised','finalized'].includes(String(r.payload.status||'').toLowerCase()));
+    const newThisMonth=all.filter(r=>(String(r.payload.opened||'').slice(0,7)||dateKey(r.createdAt).slice(0,7))===monthKey).length;
+    const finalised=all.filter(r=>['closed','finalised','finalized'].includes(String(r.payload.status||'').toLowerCase())&&dateKey(r.updatedAt).slice(0,7)===monthKey).length;
+    const clients=new Set(activeRows.map(r=>String(r.payload.client||'').trim().toLowerCase()).filter(Boolean));
+    const set=(id,value)=>{const node=byId(id);if(node)node.textContent=String(value);};
+    set('matter-stat-open',activeRows.length);
+    set('matter-stat-new',newThisMonth);
+    set('matter-stat-clients',clients.size);
+    set('matter-stat-finalised',finalised);
+    const staffFilter=byId('matter-solicitor-filter');
+    if(staffFilter){
+      const selected=staffFilter.value;
+      const staff=[...new Set(all.map(r=>String(r.payload.solicitor||'').trim()).filter(Boolean))].sort();
+      staffFilter.innerHTML='<option value="">All staff</option>'+staff.map(name=>'<option value="'+safeText(name)+'">'+safeText(name)+'</option>').join('');
+      staffFilter.value=staff.includes(selected)?selected:'';
+    }
+    const query=(byId('matter-search')?.value||'').trim().toLowerCase();
+    const type=byId('matter-type-filter')?.value||'';
+    const status=byId('matter-status-filter')?.value||'';
+    const solicitor=staffFilter?.value||'';
+    const filtered=all.filter(r=>{
+      const p=r.payload||{};
+      return (!query||[p.reference,p.title,p.client,p.type,p.solicitor].join(' ').toLowerCase().includes(query))
+        &&(!type||p.type===type)&&(!status||p.status===status)&&(!solicitor||p.solicitor===solicitor);
+    }).sort((a,b)=>String(a.payload.reference||'').localeCompare(String(b.payload.reference||''),undefined,{numeric:true}));
+    const pages=Math.max(1,Math.ceil(filtered.length/5)); matterPage=Math.min(Math.max(1,matterPage),pages);
+    const start=(matterPage-1)*5; const shown=filtered.slice(start,start+5);
+    const body=section.querySelector('#pm-matter-table tbody');
+    if(body)body.innerHTML=shown.length?shown.map(r=>{
+      const p=r.payload||{};
+      const state=String(p.status||'Active');
+      return '<tr><td><strong class="matter-reference">'+safeText(p.reference||'—')+'</strong></td><td>'+safeText(p.title||'—')+'</td><td>'+safeText(p.client||'—')+'</td><td>'+safeText(p.type||'—')+'</td><td><span class="matter-status-pill" data-status="'+safeText(state.toLowerCase().replaceAll(' ','-'))+'">'+safeText(state)+'</span></td><td>'+safeText(p.nextDate||'—')+'</td><td>'+safeText(p.solicitor||'—')+'</td></tr>';
+    }).join(''):emptyRows(7,'No matters match these filters yet.');
+    set('matter-page-count',filtered.length?('Showing '+(start+1)+'–'+(start+shown.length)+' of '+filtered.length+' matters'):'Showing 0 matters');
+    set('matter-page-current',matterPage);
+    const prev=byId('matter-page-prev'),next=byId('matter-page-next');
+    if(prev)prev.disabled=matterPage<=1;
+    if(next)next.disabled=matterPage>=pages;
+  }
   function renderRecords() {
     const tableTargets = [
       ['work-documents','document', r=>[r.payload.title||r.payload.fileName||'Document',r.payload.category||'—',r.payload.matter||'—',r.payload.uploadedBy||practiceContext?.user?.displayName||'Staff',sydneyDate(r.createdAt),'Saved']],
@@ -183,11 +247,24 @@
       if(!rows.length)continue;
       body.innerHTML=rows.map(record=>'<tr>'+cells(record).map(cell=>'<td>'+safeText(cell)+'</td>').join('')+'</tr>').join('');
     }
+    renderMatterDirectory();
   }
   async function connectPractice(context) {
     practiceStop?.(); practiceStop=null; practiceSettingsStop?.(); practiceSettingsStop=null; practiceRecords=[]; practiceContext=context;
     if(!context||context.sampleMode||!context.db||!context.user||!context.firmUid){
-      document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Sign in to the live workspace to save records.',true));
+      if(context?.sampleMode){
+        const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+        const offset=days=>{const d=new Date(today+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);};
+        const demos=[
+          {reference:'PF-100348',title:'Wilson v Wilson',client:'Emma Wilson',type:'Property settlement',status:'Active',solicitor:'J. Nguyen',opened:offset(-16),nextDate:offset(12)},
+          {reference:'PF-100347',title:'Chen v Li',client:'Daniel Chen',type:'Parenting arrangements',status:'Active',solicitor:'M. Clarke',opened:offset(-7),nextDate:offset(8)},
+          {reference:'PF-100346',title:'Roberts v Roberts',client:'Samantha Roberts',type:'Separation',status:'Active',solicitor:'S. Patel',opened:offset(-30),nextDate:offset(20)},
+          {reference:'PF-100345',title:'Hughes v Hughes',client:'Mark Hughes',type:'Property settlement',status:'In Progress',solicitor:'L. Wilson',opened:offset(-5),nextDate:offset(6)},
+          {reference:'PF-100344',title:'Patel v Patel',client:'Asha Patel',type:'Parenting arrangements',status:'On Hold',solicitor:'J. Nguyen',opened:offset(-45),nextDate:''}
+        ];
+        practiceRecords=demos.map((payload,index)=>({id:'sample-matter-'+index,firmUid:'sample',recordType:'matter',payload,createdAt:new Date(payload.opened+'T12:00:00Z'),updatedAt:new Date(payload.opened+'T12:00:00Z')}));
+        renderRecords();
+      }else document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Sign in to the live workspace to save records.',true));
       return;
     }
     try {
