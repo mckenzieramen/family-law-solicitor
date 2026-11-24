@@ -560,3 +560,12 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
   max-height:min(100%,calc(100dvh - 390px))!important;
  }
 }
+
+.admin-dashboard[data-view="work-calendar"] #work-calendar #work-month-grid{
+  height:calc(100dvh - 430px)!important;
+}
+@media(max-width:760px){
+ .admin-dashboard[data-view="work-calendar"] #work-calendar #work-month-grid{
+  height:calc(100dvh - 390px)!important;
+ }
+}
