@@ -123,6 +123,16 @@ const calendarFor = item => item.calendar || (item.kind === 'Appointment' && ite
 
 const appointmentColors = {Normal:'Plum', High:'Blue', Low:'Green', Urgent:'Amber'};
 const appointmentColor = item => appointmentColors[item.priority] || appointmentColors.Normal;
+const appointmentTypes = {
+  'client-meeting': {label:'Client Meeting', icon:'<circle cx="9" cy="8" r="3"></circle><path d="M3 19v-1a6 6 0 0 1 12 0v1"></path><circle cx="17" cy="9" r="2.5"></circle><path d="M16 15a5 5 0 0 1 5 5"></path>'},
+  'court-hearing': {label:'Court Hearing', icon:'<path d="M3 10h18M5 10v9m4-9v9m6-9v9m4-9v9M3 21h18M12 3 2 8v2h20V8L12 3Z"></path>'},
+  'filing-deadline': {label:'Filing Deadline', icon:'<path d="M6 2h9l5 5v15H6z"></path><path d="M14 2v6h6M9 13h8m-8 4h8"></path>'},
+  'internal-meeting': {label:'Internal Meeting', icon:'<circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 19v-1a6 6 0 0 1 12 0v1m1-4a5 5 0 0 1 5 5"></path>'},
+  'other': {label:'Other', icon:'<rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 9h18"></path>'}
+};
+const appointmentType = item => appointmentTypes[item.eventType] ? item.eventType : 'client-meeting';
+const appointmentTypeLabel = item => appointmentTypes[appointmentType(item)].label;
+const appointmentIcon = item => '<svg class="calendar-event-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+appointmentTypes[appointmentType(item)].icon+'</svg>';
 
 function editorMarkup(id, title, fields, notesLabel, action, hidden = false) {
   return `<form id="${id}" class="work-form"${hidden ? ' hidden' : ''}>
@@ -217,19 +227,21 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   </div>
   <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-form-title">
   ${editorMarkup('schedule-form', 'Add schedule', `
-   <label>Appointment title<input name="title" maxlength="160" required></label>${matterField}
+   <label>Event type<select name="eventType" required>${Object.entries(appointmentTypes).map(([value,detail]) =>
+    `<option value="${value}">${detail.label}</option>`).join('')}</select></label>
+   <label>Title<input name="title" maxlength="160" required placeholder="e.g. Initial parenting consultation"></label>${matterField}
    <label>Calendar<select name="calendar">${calendarOptions}</select></label>
    <label>Date (Sydney)<input name="date" type="date" required></label>
-   <label>Time (Sydney)<input name="time" type="time"></label>
-   <label>Calendar colour<select name="priority">${Object.entries(appointmentColors).map(([value,label]) =>
-     `<option value="${value}">${label}</option>`).join('')}</select></label>`,
-   'Appointment notes', 'Save schedule', true)}
+   <label>Start time<input name="time" type="time"></label>
+   <label>End time<input name="endTime" type="time"></label>
+   <label>Assigned to<input name="assignedTo" maxlength="100" placeholder="Staff member"></label>`,
+   'Schedule details', 'Save Schedule', true)}
   <button type="button" id="retry-calendar-access" hidden>Retry calendar connection</button>
   </dialog>
   <p class="consultation-calendar-status" id="consultation-calendar-status" role="status"></p>
   <div class="calendar-main-layout">
    <main class="calendar-month-card"><div id="work-month-grid" data-calendar-mode="month"></div>
-    <div class="calendar-legend" aria-label="Event colours"><span data-event-type="appointment">Appointment</span><span data-event-type="consultation">Consultation request</span><span data-event-type="task">Task / deadline</span><span data-event-type="note">Calendar note</span></div>
+    <div class="calendar-legend" aria-label="Event types"><span data-appointment-type="client-meeting"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><path d="M3 19v-1a6 6 0 0 1 12 0v1"></path><circle cx="17" cy="9" r="2.5"></circle><path d="M16 15a5 5 0 0 1 5 5"></path></svg>Client Meeting</span><span data-appointment-type="court-hearing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18M5 10v9m4-9v9m6-9v9m4-9v9M3 21h18M12 3 2 8v2h20V8L12 3Z"></path></svg>Court Hearing</span><span data-appointment-type="filing-deadline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"></path><path d="M14 2v6h6M9 13h8m-8 4h8"></path></svg>Filing Deadline</span><span data-appointment-type="internal-meeting"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 19v-1a6 6 0 0 1 12 0v1m1-4a5 5 0 0 1 5 5"></path></svg>Internal Meeting</span><span data-appointment-type="other"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 9h18"></path></svg>Other</span><span data-event-type="consultation">Consultation request</span><span data-event-type="task">Task / deadline</span><span data-event-type="note">Calendar note</span></div>
     <div class="calendar-note-actions"><button type="button" class="work-button" id="add-day-note">Add day note</button></div>
     <form id="day-note-form" class="work-form" hidden><h3>Add day note</h3><label>Date (Sydney)<input name="date" type="date" required></label><label>Note<textarea name="note" rows="3" maxlength="8000" required></textarea></label><button class="work-button" type="submit" disabled>Save note</button> <button type="button" id="cancel-day-note">Cancel</button><p role="status"></p></form>
    </main>
@@ -325,7 +337,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    </section>
   </div>
  </section>`;
-  root.insertAdjacentHTML('beforeend', '<dialog id="calendar-day-dialog" class="schedule-dialog calendar-day-dialog" aria-labelledby="calendar-day-title"><header class="calendar-day-dialog-head"><div><p>Calendar details</p><h2 id="calendar-day-title"></h2><span id="calendar-day-subtitle"></span></div><button type="button" data-close-calendar-day aria-label="Close day details">×</button></header><div id="calendar-day-items" class="calendar-day-items"></div><footer><button type="button" class="work-button" id="calendar-day-add-schedule">Add schedule on this date</button><button type="button" data-close-calendar-day>Close</button></footer></dialog>');
+  root.insertAdjacentHTML('beforeend', '<dialog id="calendar-day-dialog" class="schedule-dialog calendar-day-dialog" aria-labelledby="calendar-day-title"><header class="calendar-day-dialog-head"><div><p>Calendar details</p><h2 id="calendar-day-title"></h2><span id="calendar-day-subtitle"></span></div><button type="button" data-close-calendar-day aria-label="Close day details">×</button></header><div id="calendar-day-items" class="calendar-day-items"></div><footer><button type="button" class="work-button calendar-day-add" id="calendar-day-add-schedule"><span aria-hidden="true">＋</span> Add schedule on this date</button><button type="button" class="calendar-day-close" data-close-calendar-day>Close</button></footer></dialog>');
   const find = selector => root.querySelector(selector);
   const status = find('#work-status');
   const retryCalendar = find('#retry-calendar-access');
@@ -476,7 +488,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const byDay=new Map();
     for(const item of monthEvents){if(!byDay.has(item.date))byDay.set(item.date,[]);byDay.get(item.date).push(item);}
     const eventType=item=>item.kind==='Consultation request'?(item.approvalStatus==='approved'?'approved-consultation':'consultation'):isNote(item)?'note':item.kind==='Appointment'?'appointment':'task';
-    const eventMarkup=item=>'<span class="calendar-event" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-color="'+appointmentColor(item)+'"':'')+'>'+escape([item.time,item.title].filter(Boolean).join(' '))+'</span>';
+    const eventMarkup=item=>'<span class="calendar-event" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-color="'+appointmentColor(item)+'" data-appointment-type="'+appointmentType(item)+'"':'')+'>'+(item.kind==='Appointment'?appointmentIcon(item):'')+'<span>'+escape([item.time,item.title].filter(Boolean).join(' '))+'</span></span>';
     const makeDayButton=(d,monthTag='')=>{
       const key=d.toISOString().slice(0,10), items=byDay.get(key)||[];
       const current=key===date?' is-today':'';
@@ -511,12 +523,12 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const laterEvents=allEvents.filter(item=>item.date>date&&item.date<=weekEndKey).slice(0,4);
     const shortDate=d=>new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'));
     const timeText=t=>t?new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).format(new Date('2026-01-01T'+t+':00Z')):'All day';
-    const kindText=item=>item.kind==='Consultation request'?'Client consultation request':isNote(item)?'Calendar note':item.kind==='Appointment'?'Appointment':'Task / deadline';
-    const rightEvent=(item)=>'<button type="button" class="calendar-upcoming-row" data-calendar-day="'+escape(item.date)+'" data-event-type="'+eventType(item)+'"><span class="calendar-upcoming-time">'+escape(timeText(item.time))+'</span><span class="calendar-upcoming-copy"><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></span></button>';
+    const kindText=item=>item.kind==='Consultation request'?'Client consultation request':isNote(item)?'Calendar note':item.kind==='Appointment'?appointmentTypeLabel(item):'Task / deadline';
+    const rightEvent=(item)=>'<button type="button" class="calendar-upcoming-row" data-calendar-day="'+escape(item.date)+'" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-type="'+appointmentType(item)+'"':'')+'><span class="calendar-upcoming-time">'+escape(timeText(item.time))+'</span><span class="calendar-upcoming-copy"><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></span></button>';
     const dateLabel=find('#calendar-today-label');
     if(dateLabel)dateLabel.textContent=new Intl.DateTimeFormat('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
     find('#calendar-upcoming-list').innerHTML=todayEvents.length?todayEvents.slice(0,4).map(rightEvent).join(''):'<p class="work-empty calendar-empty">No events scheduled for today.</p>';
-    find('#calendar-later-list').innerHTML=laterEvents.length?laterEvents.map(item=>'<div class="calendar-later-row" data-event-type="'+eventType(item)+'"><span>'+escape(shortDate(item.date))+'<small>'+escape(timeText(item.time))+'</small></span><div><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></div><button type="button" data-calendar-day="'+escape(item.date)+'" aria-label="Open '+escape(item.title||'event')+'">View</button></div>').join(''):'<p class="work-empty calendar-empty">No later events this week.</p>';
+    find('#calendar-later-list').innerHTML=laterEvents.length?laterEvents.map(item=>'<div class="calendar-later-row" data-event-type="'+eventType(item)+'"'+(item.kind==='Appointment'?' data-appointment-type="'+appointmentType(item)+'"':'')+'><span>'+escape(shortDate(item.date))+'<small>'+escape(timeText(item.time))+'</small></span><div><strong>'+escape(item.title||kindText(item))+'</strong><small>'+escape(kindText(item))+(item.matter?' · '+escape(item.matter):'')+'</small></div><button type="button" data-calendar-day="'+escape(item.date)+'" aria-label="Open '+escape(item.title||'event')+'">View</button></div>').join(''):'<p class="work-empty calendar-empty">No later events this week.</p>';
     find('#work-agenda-title').textContent=selectedDay?new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(selectedDay+'T12:00:00Z')):'Scheduled items this month';
     const agendaItems=monthEvents.filter(item=>item.kind!=='Consultation request'&&(!selectedDay||item.date===selectedDay)).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b));
     renderRows('#work-agenda',agendaItems,monthEvents.length?'No scheduled items for this date.':'No appointments, requests or deadlines in this calendar view.');
@@ -1075,6 +1087,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const isConsultation = item.kind === 'Consultation request';
       const card = document.createElement('article');
       card.className = 'calendar-day-item' + (isConsultation ? ' is-consultation' : '');
+      if (item.kind === 'Appointment') card.dataset.appointmentType = appointmentType(item);
       const top = document.createElement('div');
       top.className = 'calendar-day-item-top';
       const heading = document.createElement('h3');
@@ -1083,14 +1096,14 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       status.className = 'calendar-day-item-status';
       status.textContent = isConsultation
         ? item.approvalStatus === 'approved' ? 'Approved & scheduled' : 'Awaiting attorney review'
-        : item.done ? 'Completed' : item.kind === 'Task' ? 'Task' : 'Scheduled';
+        : item.done ? 'Completed' : item.kind === 'Task' ? 'Task' : item.kind === 'Appointment' ? appointmentTypeLabel(item) : 'Scheduled';
       top.append(heading, status);
       const meta = document.createElement('p');
       const time = item.time ? new Intl.DateTimeFormat('en-AU', {
         hour:'numeric', minute:'2-digit', timeZone:'UTC'
-      }).format(new Date('2026-01-01T' + item.time + ':00Z')) + ' Sydney time' : 'Time not set';
+      }).format(new Date('2026-01-01T' + item.time + ':00Z')) + (item.endTime ? ' – ' + new Intl.DateTimeFormat('en-AU', {hour:'numeric',minute:'2-digit',timeZone:'UTC'}).format(new Date('2026-01-01T' + item.endTime + ':00Z')) : '') + ' Sydney time' : 'Time not set';
       meta.className = 'calendar-day-item-meta';
-      meta.textContent = [item.kind, time, item.matter].filter(Boolean).join(' · ');
+      meta.textContent = [item.kind === 'Appointment' ? appointmentTypeLabel(item) : item.kind, time, item.matter, item.assignedTo && 'Assigned to ' + item.assignedTo].filter(Boolean).join(' · ');
       card.append(top, meta);
       if (isConsultation && item.contact) {
         const contact = document.createElement('p');
@@ -1304,7 +1317,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         done:previous?.done ?? false, updatedAt:serverTimestamp()
       };
       if (kind === 'Task' && !note && (get('followUpStatus') || previous?.followUpStatus)) data.followUpStatus = get('followUpStatus');
-      if (editor === scheduleEditor) Object.assign(data, {calendar:get('calendar'), time:get('time')});
+      if (editor === scheduleEditor) Object.assign(data, {calendar:get('calendar'), time:get('time'), endTime:get('endTime'), assignedTo:get('assignedTo'), eventType:get('eventType') || 'client-meeting'});
       if (note) data.calendar = editor.calendar;
       editor.saving = true;
       submit(editor).disabled = true;
