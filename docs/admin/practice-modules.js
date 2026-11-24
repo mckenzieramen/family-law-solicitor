@@ -186,6 +186,15 @@
   }
   function renderMatterDirectory(){
     const section=byId('work-matters'); if(!section)return;
+    if(!section.querySelector('.matter-premium-nav')){
+      const table=section.querySelector('#pm-matter-table');
+      if(table){
+        const style=document.createElement('style');style.textContent='#work-matters .matter-premium-nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;padding:10px;background:#f7f3ed;border:1px solid #ded3c4;border-radius:12px}#work-matters .matter-premium-nav button{padding:10px 14px;border:1px solid #ded3c4;border-radius:8px;background:#fffdf9;color:#101f30;cursor:pointer}#work-matters .matter-premium-nav button[aria-pressed=true]{background:#101f30;color:white}#work-matters .matter-premium-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,28%);gap:16px;align-items:start}#work-matters .matter-premium-grid.closed{grid-template-columns:minmax(0,1fr)}#work-matters .matter-premium-detail{padding:18px;border:1px solid #ded3c4;border-radius:12px;background:#fffdf9;color:#101f30}#work-matters .matter-premium-detail button{display:block;width:100%;text-align:left;padding:10px;border:1px solid #ded3c4;background:transparent;border-radius:6px;margin:5px 0;cursor:pointer;color:inherit}#work-matters .matter-reference{cursor:pointer;color:#96712e}#work-matters .matter-premium-grid>div{min-width:0;overflow:auto}@media(max-width:900px){#work-matters .matter-premium-grid{grid-template-columns:1fr}}';section.append(style);
+        const nav=document.createElement('nav');nav.className='matter-premium-nav';nav.setAttribute('aria-label','Matter status');const filter=byId('matter-status-filter');
+        const choices=['All Matters','New','Active','In Progress','On Hold','Finalised'];choices.forEach(label=>{const b=document.createElement('button');b.type='button';b.dataset.matterState=label;b.textContent=label;b.onclick=()=>{if(filter){const value=label==='All Matters'?'':label; if(value&&!Array.from(filter.options).some(o=>o.value===value))filter.add(new Option(value,value));filter.value=value;matterPage=1;renderMatterDirectory();}};nav.append(b);});
+        const wrap=table.parentElement;wrap.before(nav);const grid=document.createElement('div');grid.className='matter-premium-grid closed';wrap.before(grid);grid.append(wrap);const detail=document.createElement('aside');detail.className='matter-premium-detail';detail.hidden=true;grid.append(detail);
+      }
+    }
     const all=recordRows('matter');
     const monthKey=new Intl.DateTimeFormat('en-CA',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit'}).format(new Date());
     const dateKey=value=>{
@@ -226,6 +235,9 @@
       const state=String(p.status||'Active');
       return '<tr><td><strong class="matter-reference">'+safeText(p.reference||'—')+'</strong></td><td>'+safeText(p.title||'—')+'</td><td>'+safeText(p.client||'—')+'</td><td>'+safeText(p.type||'—')+'</td><td><span class="matter-status-pill" data-status="'+safeText(state.toLowerCase().replaceAll(' ','-'))+'">'+safeText(state)+'</span></td><td>'+safeText(p.nextDate?new Intl.DateTimeFormat('en-AU',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(p.nextDate+'T12:00:00Z')):'—')+'</td><td>'+safeText(p.solicitor||'—')+'</td></tr>';
     }).join(''):emptyRows(7,'No matters match these filters yet.');
+    section.querySelectorAll('[data-matter-state]').forEach(b=>{const label=b.dataset.matterState;const count=label==='All Matters'?all.length:all.filter(r=>String(r.payload.status||'').toLowerCase()===label.toLowerCase()).length;b.textContent=label+' ('+count+')';b.setAttribute('aria-pressed',String(label==='All Matters'?!status:label===status));});
+    const detail=section.querySelector('.matter-premium-detail'),grid=section.querySelector('.matter-premium-grid');
+    if(body&&detail&&grid){Array.from(body.querySelectorAll('tr')).forEach((tr,index)=>{const r=shown[index];if(!r)return;const ref=tr.querySelector('.matter-reference');if(!ref)return;ref.setAttribute('role','button');ref.tabIndex=0;const open=()=>{const p=r.payload;detail.hidden=false;grid.classList.remove('closed');detail.innerHTML='<button type="button" data-close-matter>Close ×</button><h3>Matter Details</h3><small>'+safeText(p.reference||'')+'</small><h2>'+safeText(p.title||'')+'</h2><p>'+safeText(p.type||'')+' · '+safeText(p.status||'')+'</p><dl>'+[['Client',p.client],['Responsible',p.solicitor],['Next date',p.nextDate],['Priority',p.priority],['Summary',p.summary]].map(([a,b])=>'<dt>'+a+'</dt><dd>'+safeText(b||'Not recorded')+'</dd>').join('')+'</dl>';detail.querySelector('[data-close-matter]').onclick=()=>{detail.hidden=true;grid.classList.add('closed');};};ref.onclick=open;ref.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};});}
     set('matter-page-count',filtered.length?('Showing '+(start+1)+'–'+(start+shown.length)+' of '+filtered.length+' matters'):'Showing 0 matters');
     set('matter-page-current',matterPage);
     const prev=byId('matter-page-prev'),next=byId('matter-page-next');
