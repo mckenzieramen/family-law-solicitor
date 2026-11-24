@@ -357,7 +357,38 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     container.innerHTML = entries.map(row).join('') || '<p class="work-empty">'+empty+'</p>';
     for (const button of container.querySelectorAll('[data-edit]')) if (open.has(button.dataset.edit)) button.closest('details').open = true;
   };
+  function renderApprovalQueue() {
+    const list = find("#calendar-approval-list");
+    const count = find("#calendar-approval-count");
+    const pending = consultationRequests.filter(item => (item.approvalStatus || "pending") === "pending");
+    count.textContent = String(pending.length);
+    if (!consultationRequestsLoaded) {
+      list.innerHTML = "<p class='approval-empty'>Loading consultation requests…</p>";
+      return;
+    }
+    if (!pending.length) {
+      list.innerHTML = "<p class='approval-empty'>No requests are waiting for attorney review.</p>";
+      return;
+    }
+    list.innerHTML = pending.map(item => {
+      const dateLabel = item.date
+        ? new Intl.DateTimeFormat("en-AU", {day:"numeric",month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(item.date + "T12:00:00Z"))
+        : "Date not selected";
+      const timeLabel = item.time
+        ? new Intl.DateTimeFormat("en-AU", {hour:"numeric",minute:"2-digit",timeZone:"UTC"}).format(new Date("2026-01-01T" + item.time + ":00Z")) + " Sydney"
+        : "Time not selected";
+      const topic = item.contact?.topic ? String(item.contact.topic).replaceAll("-", " ") : "General enquiry";
+      return "<article class='calendar-approval-card' data-request-id='" + escape(item.requestId) + "'>" +
+        "<div class='calendar-approval-card-head'><strong>" + escape(item.title || "Consultation inquiry") + "</strong><span>Needs review</span></div>" +
+        "<p>" + escape(topic) + " · " + escape(dateLabel) + " · " + escape(timeLabel) + "</p>" +
+        "<small>" + escape(item.contact?.email || "No email provided") + "</small>" +
+        "<div class='calendar-approval-actions'><button type='button' class='work-button' data-approval-action='approved' data-request-id='" + escape(item.requestId) + "'>Approve &amp; schedule</button>" +
+        "<button type='button' class='calendar-approval-decline' data-approval-action='declined' data-request-id='" + escape(item.requestId) + "'>Decline</button></div>" +
+        "<p class='calendar-approval-status' role='status'></p></article>";
+    }).join("");
+  }
   function renderCalendar() {
+    renderApprovalQueue();
     const date = today();
     const [year, monthNumber] = month.value.split('-').map(Number);
     const grid = find('#work-month-grid');
@@ -372,7 +403,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     }).format(monthDate);
     const scheduledItems = records.filter(item => item.date?.startsWith(month.value) && item.kind !== 'Email draft' &&
       calendarFor(item) === scope.value);
-    const requestedItems = scope.value === 'admin' ? consultationRequests.filter(item => item.date?.startsWith(month.value)) : [];
+    const requestedItems = scope.value === 'admin' ? consultationRequests.filter(item => item.approvalStatus !== 'declined' && item.date?.startsWith(month.value)) : [];
     const matching = [...scheduledItems, ...requestedItems];
     const byDay = new Map();
     for (const item of matching) {
@@ -387,7 +418,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     for (let day = 1; day <= days; day++) {
       const key = month.value + '-' + String(day).padStart(2, '0');
       const items = byDay.get(key) || [];
-      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(item.kind === 'Consultation request' ? 'consultation' : isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
+      cells.push('<button type="button" class="month-day" data-calendar-day="'+key+'" aria-label="'+key+', '+items.length+' scheduled items" aria-pressed="'+(key===selectedDay)+'"'+(key===date?' aria-current="date"':'')+'><strong>'+day+'</strong>'+items.slice(0,2).map(item=>'<span class="calendar-event" data-event-type="'+(item.kind === 'Consultation request' ? (item.approvalStatus === 'approved' ? 'approved-consultation' : 'consultation') : isNote(item) ? 'note' : item.kind === 'Appointment' ? 'appointment' : 'task')+'"'+(item.kind === 'Appointment' ? ' data-appointment-color="'+appointmentColor(item)+'"' : '')+'>'+escape([item.time, item.title].filter(Boolean).join(' '))+'</span>').join('')+(items.length>2?'<small>+'+(items.length-2)+' more</small>':'')+'</button>');
     }
     const trailing = (7 - (first + days) % 7) % 7;
     for (let i = 0; i < trailing; i++) cells.push(spacer);
@@ -406,9 +437,12 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     renderRows('#work-agenda', agendaItems, agendaEmpty);
     const requestStatus = find('#consultation-calendar-status');
     const displayedRequests = requestedItems.filter(item => !selectedDay || item.date === selectedDay).length;
-    if (requestStatus) requestStatus.textContent = consultationRequestsLoaded
-      ? (displayedRequests ? displayedRequests + ' pending consultation request' + (displayedRequests === 1 ? '' : 's') + ' shown in this calendar view.' : 'No pending consultation requests in this calendar view.')
-      : 'Checking for pending consultation requests…';
+    if (requestStatus) {
+      const waiting = consultationRequests.filter(item => (item.approvalStatus || 'pending') === 'pending').length;
+      requestStatus.textContent = consultationRequestsLoaded
+        ? (waiting ? waiting + ' consultation request' + (waiting === 1 ? ' needs' : 's need') + ' attorney review.' : 'No consultation requests are waiting for attorney review.')
+        : 'Checking for consultation requests…';
+    }
   }
   function render() {
     const date = today();
@@ -642,6 +676,95 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     );
   }
   listenForConsultationRequests();
+
+  find("#calendar-approval-list").addEventListener("click", async event => {
+    const button = event.target.closest("[data-approval-action]");
+    if (!button || button.disabled) return;
+    const requestId = button.dataset.requestId;
+    const nextStatus = button.dataset.approvalAction;
+    const request = consultationRequests.find(item => item.requestId === requestId);
+    if (!request) return;
+    if (nextStatus === "declined" && !window.confirm("Decline this consultation request?")) return;
+    button.disabled = true;
+    const card = button.closest(".calendar-approval-card");
+    const status = card.querySelector(".calendar-approval-status");
+    status.textContent = "Saving decision…";
+    try {
+      if (sampleMode) {
+        consultationRequests = consultationRequests.map(item => item.requestId === requestId
+          ? {...item, approvalStatus:nextStatus} : item);
+      } else {
+        await updateDoc(doc(db, "clientInbox", requestId), {
+          approvalStatus:nextStatus,
+          approvalUpdatedAt:serverTimestamp(),
+          approvalUpdatedBy:uid
+        });
+      }
+      renderCalendar();
+      notify(nextStatus === "approved" ? "Consultation approved" : "Consultation declined",
+        nextStatus === "approved"
+          ? "The request is now marked as approved and appears on the calendar."
+          : "The request was removed from the calendar and remains in Client Messages.");
+    } catch (error) {
+      button.disabled = false;
+      status.textContent = "Could not save. Check the published Firestore rules and try again.";
+      notify("Approval was not saved", "The request is still awaiting review.", true);
+    }
+  });
+
+  find("#matter-workflow-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = new FormData(form);
+    const matter = String(values.get("matter") || "").trim();
+    const workflow = String(values.get("workflow") || "general");
+    const steps = matterWorkflowSteps[workflow] || matterWorkflowSteps.general;
+    const status = find("#matter-workflow-status");
+    const submit = form.querySelector("button[type='submit']");
+    if (!matter) {
+      status.textContent = "Enter a matter reference first.";
+      return;
+    }
+    if (!loaded) {
+      status.textContent = "Wait for the matter workspace to finish loading.";
+      return;
+    }
+    submit.disabled = true;
+    status.textContent = "Adding linked matter tasks…";
+    try {
+      if (sampleMode) {
+        const created = steps.map(title => ({
+          id:crypto.randomUUID(), kind:"Task", title,
+          notes:"Workflow: " + matterWorkflowNames[workflow] + ". Confirm any legal dates with the supervising solicitor.",
+          matter, date:"", priority:"Normal", done:false, recipient:"",
+          updatedAt:{toMillis:() => Date.now()}
+        }));
+        records = [...created, ...records];
+        render();
+      } else {
+        const batch = writeBatch(db);
+        for (const title of steps) {
+          batch.set(doc(items), {
+            kind:"Task", title,
+            notes:"Workflow: " + matterWorkflowNames[workflow] + ". Confirm any legal dates with the supervising solicitor.",
+            matter, date:"", priority:"Normal", done:false, recipient:"",
+            updatedAt:serverTimestamp()
+          });
+        }
+        await batch.commit();
+      }
+      selectedMatter = matter.toLowerCase();
+      status.textContent = steps.length + " tasks were added to " + matter + ". Assign dates after solicitor review.";
+      form.elements.matter.value = "";
+      notify("Matter workflow started", steps.length + " linked tasks added to " + matter + ".");
+    } catch (error) {
+      status.textContent = "The workflow could not be saved. Check your staff access and try again.";
+      notify("Matter workflow not saved", "No tasks were confirmed as created.", true);
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
   if (sampleMode) {
     const date = today();
     const offset = days => {
@@ -697,7 +820,7 @@ export function mountWorkflow(db, uid, sampleMode = false) {
     }).format(day);
     const items = [
       ...records.filter(item => item.date === dayKey && item.kind !== 'Email draft' && calendarFor(item) === scope.value),
-      ...(scope.value === 'admin' ? consultationRequests.filter(item => item.date === dayKey) : [])
+      ...(scope.value === 'admin' ? consultationRequests.filter(item => item.date === dayKey && item.approvalStatus !== 'declined') : [])
     ].sort((a,b)=>(a.time||'').localeCompare(b.time||'')||order(a,b));
     subtitle.textContent = items.length
       ? items.length + (items.length === 1 ? ' scheduled item' : ' scheduled items') + ' · ' + (scope.value === 'admin' ? 'Admin calendar' : 'Client calendar')
@@ -719,7 +842,8 @@ export function mountWorkflow(db, uid, sampleMode = false) {
       heading.textContent = item.title || (isConsultation ? 'Consultation enquiry' : 'Scheduled item');
       const status = document.createElement('span');
       status.className = 'calendar-day-item-status';
-      status.textContent = isConsultation ? 'Pending confirmation'
+      status.textContent = isConsultation
+        ? item.approvalStatus === 'approved' ? 'Approved & scheduled' : 'Awaiting attorney review'
         : item.done ? 'Completed' : item.kind === 'Task' ? 'Task' : 'Scheduled';
       top.append(heading, status);
       const meta = document.createElement('p');
