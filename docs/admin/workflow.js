@@ -259,7 +259,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   <section class="matter-directory-card" aria-label="Matter directory">
    <div class="matter-directory-toolbar">
     <label class="matter-search"><span>Search matters</span><input id="matter-search" type="search" placeholder="Matter reference, name or client"></label>
-    <label><span>Type</span><select id="matter-type-filter"><option value="">All types</option><option>Parenting arrangements</option><option>Property settlement</option><option>Separation</option><option>Financial agreement</option><option>Consent orders</option><option>Other family law</option></select></label>
+    <label><span>Type</span><select id="matter-type-filter"><option value="">All types</option><option>Parenting arrangements</option><option>Property settlement</option><option>Separation</option><option>Divorce</option><option>Financial agreement</option><option>Consent orders</option><option>Other family law</option></select></label>
     <label><span>Status</span><select id="matter-status-filter"><option value="">All statuses</option><option>Active</option><option>In Progress</option><option>On Hold</option><option>Closed</option></select></label>
     <label><span>Responsible</span><select id="matter-solicitor-filter"><option value="">All staff</option></select></label>
     <button type="button" class="matter-clear-filters" id="matter-clear-filters">Clear filters</button>
