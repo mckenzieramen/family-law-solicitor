@@ -346,3 +346,10 @@
 .calendar-day-dialog>footer button{min-height:42px;padding:9px 14px;border:1px solid #d8cdb9;border-radius:9px;background:#fff;color:#173c4d;font:inherit;font-weight:700;cursor:pointer}
 .calendar-day-dialog>footer #calendar-day-add-schedule{border-color:#0b4033;background:#0b4033;color:#fffdf7}
 @media(max-width:600px){.calendar-day-dialog-head{padding:18px}.calendar-day-items{padding:14px 18px}.calendar-day-item-top{align-items:flex-start;flex-direction:column}.calendar-day-dialog>footer{justify-content:stretch;padding:14px 18px 18px}.calendar-day-dialog>footer button{flex:1}}
+/* Remove the duplicate selected-day agenda beneath the calendar grid. */
+#work-calendar .calendar-split{
+  grid-template-columns:minmax(0,1fr);
+}
+#work-calendar .calendar-agenda{
+  display:none;
+}
