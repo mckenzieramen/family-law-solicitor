@@ -770,3 +770,25 @@ dialog.calendar-day-dialog::backdrop{background:rgba(15,28,46,.55);backdrop-filt
 .calendar-upcoming-row[data-appointment-type="internal-meeting"],.calendar-later-row[data-appointment-type="internal-meeting"]{--cal-line:#d3c0ea}
 .calendar-upcoming-row[data-appointment-type="other"],.calendar-later-row[data-appointment-type="other"]{--cal-line:#e8c693}
 @media(max-width:560px){#schedule-dialog .work-form{padding:19px}#schedule-dialog .work-fields{grid-template-columns:minmax(0,1fr)}}
+
+/* Website consultation requests are visually separate from manually scheduled client meetings. */
+.calendar-event[data-event-type="consultation"]{border-color:#e8b89c;background:#fff0e8;color:#874c35}
+.calendar-event[data-event-type="approved-consultation"]{border-color:#b8d8bc;background:#e4f2e6;color:#28563a}
+.calendar-event[data-event-type="consultation"] .calendar-consultation-icon,.calendar-event[data-event-type="approved-consultation"] .calendar-consultation-icon{stroke:currentColor}
+.calendar-legend [data-event-type="consultation"]{display:inline-flex;align-items:center;gap:5px;color:#874c35}
+.calendar-legend [data-event-type="consultation"] svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.calendar-day-item-icon{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:1px solid #e8b89c;border-radius:9px;background:#fff0e8;color:#874c35}
+.calendar-day-item-icon .calendar-event-icon{width:17px;height:17px}
+.calendar-day-item-top{align-items:center}
+.calendar-day-item-top h3{flex:1}
+.calendar-day-item[data-appointment-type="client-meeting"] .calendar-day-item-icon{border-color:#b9d6aa;background:#e5f2dd;color:#28543a}
+.calendar-day-item[data-appointment-type="court-hearing"] .calendar-day-item-icon{border-color:#b5cce7;background:#e4effb;color:#2c5179}
+.calendar-day-item[data-appointment-type="filing-deadline"] .calendar-day-item-icon{border-color:#f2c3b1;background:#ffebe4;color:#8b4938}
+.calendar-day-item[data-appointment-type="internal-meeting"] .calendar-day-item-icon{border-color:#d3c0ea;background:#f0e7fb;color:#523b78}
+.calendar-day-item[data-appointment-type="other"] .calendar-day-item-icon{border-color:#e8c693;background:#fbefdc;color:#78551c}
+.calendar-upcoming-copy strong,.calendar-later-row>div strong{display:flex;align-items:center;gap:5px}
+.calendar-upcoming-copy .calendar-event-icon,.calendar-later-row .calendar-event-icon{flex:0 0 15px;width:15px;height:15px;color:#874c35}
+.calendar-upcoming-row[data-event-type="consultation"]{border-left:3px solid #e8b89c;padding-left:8px}
+.calendar-upcoming-row[data-event-type="approved-consultation"]{border-left:3px solid #b8d8bc;padding-left:8px}
+.calendar-later-row[data-event-type="consultation"]{border-left:3px solid #e8b89c;padding-left:8px}
+.calendar-later-row[data-event-type="approved-consultation"]{border-left:3px solid #b8d8bc;padding-left:8px}
