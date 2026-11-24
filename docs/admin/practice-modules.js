@@ -75,7 +75,7 @@
       section.setAttribute('aria-labelledby',id+'-heading');
       const nav=document.querySelector('#staff-navigation');
       const link=document.createElement('a'); link.href='#'+id;
-      link.innerHTML='<span class="admin-nav-symbol" aria-hidden="true">◈</span><span>'+(id==='work-trust'?'Trust':'Contacts')+'</span>';
+      link.innerHTML=id==='work-trust'?'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18L12 3 3 9zM5 9v9M9 9v9M15 9v9M19 9v9M3 21h18M2 18h20"/></svg></span><span>Trust</span>':'<span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5.7 16a3.4 3.4 0 0 1 6.6 0M14 10h4M14 14h4"/></svg></span><span>Contacts</span>';
       const before=nav.querySelector('a[href="#work-settings"]'); nav.insertBefore(link,before);
       document.querySelector('#workspace-content').append(section);
     }
