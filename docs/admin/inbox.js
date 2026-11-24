@@ -224,6 +224,19 @@ export function mountInbox(db, sampleMode = false) {
   @media(max-width:1050px){#staff-inbox .enquiry-left .inbox-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
   @media(max-width:850px){#staff-inbox .inbox-split:has(>.enquiry-left){grid-template-columns:minmax(0,1fr)!important}#staff-inbox .inbox-split>#inbox-reader{grid-column:1!important;grid-row:2!important}}
   `;document.head.append(layoutFix);
+  layoutFix.textContent += `
+  #staff-inbox .enquiry-pipeline{display:flex!important;min-height:46px!important;isolation:isolate;overflow-x:auto!important;gap:0!important}
+  #staff-inbox .enquiry-pipeline button{flex:1 0 130px!important;display:flex!important;align-items:center;justify-content:center;gap:8px;min-height:46px!important;padding:9px 22px!important;filter:none!important;transition:background-color .18s ease,color .18s ease}
+  #staff-inbox .enquiry-pipeline button svg{width:19px!important;height:19px!important;flex:none;stroke:currentColor!important}
+  #staff-inbox .enquiry-pipeline button:not([aria-pressed=true]) svg{color:#987740}
+  #staff-inbox .enquiry-pipeline button[aria-pressed=true]{background:linear-gradient(110deg,#b59459,#80602d)!important;color:#fff!important}
+  #staff-inbox .enquiry-pipeline button:focus-visible{outline:2px solid #101d30;outline-offset:-5px}
+  #staff-inbox .enquiry-metrics button svg{display:block!important;width:34px!important;height:34px!important;stroke:#987740!important;fill:none!important}
+  #staff-inbox .eq-contact svg,#staff-inbox .eq-profile svg{display:inline-block!important;width:16px!important;height:16px!important;stroke:#987740!important;fill:none!important;flex-shrink:0}
+  #staff-inbox .enquiry-pager button:disabled{opacity:.45;cursor:not-allowed}
+  #staff-inbox .enquiry-table tbody tr:focus-visible{outline:2px solid #987740;outline-offset:-2px}
+  `;
+
 
   exact.textContent += `
   #staff-inbox .enquiry-metrics button{grid-template-columns:36px minmax(0,1fr);min-height:98px;padding:12px;column-gap:12px}
@@ -302,7 +315,7 @@ export function mountInbox(db, sampleMode = false) {
     const consultations=entries.filter(r=>r.kind==='consultation'&&inRange(r));stageSelect.value=stageFilter;assignSelect.replaceChildren(new Option('Assigned To: All',''),new Option('Unassigned','Unassigned'));for(const name of new Set(entries.map(r=>r.assignedTo).filter(Boolean)))assignSelect.add(new Option(name,name));assignSelect.value=assignedFilter;
     for(const [container,labels] of [[metrics,['Total Enquiries',...stages]],[pipeline,stages]]){
       container.replaceChildren();
-      for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;const sub=document.createElement('small');sub.textContent=label==='Total Enquiries'?(dateRange==='all'?'All time':'Last '+dateRange+' days'):label==='Converted'?'(to Client)':label==='Closed'?'(Not Proceeding)':'';if(sub.textContent)caption.append(document.createElement('br'),sub);b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
+      for(const label of labels){const key=label==='Total Enquiries'?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;const sub=document.createElement('small');sub.textContent=label==='Total Enquiries'?(dateRange==='all'?'All time':'Last '+dateRange+' days'):label==='Converted'?'(to Client)':label==='Closed'?'(Not Proceeding)':'';if(sub.textContent)caption.append(document.createElement('br'),sub);b.append(svg,strong,caption);}else {const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[stages.indexOf(label)+1];const caption=document.createElement('span');caption.textContent=label+' ('+n+')';b.append(svg,caption);}b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;selectedId=undefined;render();};container.append(b);}
     }
     page=Math.min(page,Math.max(0,Math.ceil(visible.length/8)-1));
     const pageRows=visible.slice(page*8,page*8+8);
