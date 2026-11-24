@@ -351,7 +351,12 @@ export function mountWorkflow(db, uid, sampleMode = false) {
       : scope.value === 'admin' && consultationRequests.length && !requestedItems.length
         ? 'No appointments or consultation requests in this calendar view.'
         : loaded ? 'No appointments, consultation requests or deadlines in this calendar view.' : 'Scheduled items will appear here when the workspace connects.';
-    renderRows('#work-agenda', matching.filter(item=>!selectedDay||item.date===selectedDay).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b)), emptyMessage);
+    const agendaItems = matching.filter(item => item.kind !== 'Consultation request' && (!selectedDay || item.date === selectedDay))
+      .sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')||order(a,b));
+    const agendaEmpty = selectedDay && requestedItems.some(item => item.date === selectedDay)
+      ? 'Consultation request shown in blue on the calendar. Select the date to review it.'
+      : emptyMessage;
+    renderRows('#work-agenda', agendaItems, agendaEmpty);
     const requestStatus = find('#consultation-calendar-status');
     const displayedRequests = requestedItems.filter(item => !selectedDay || item.date === selectedDay).length;
     if (requestStatus) requestStatus.textContent = consultationRequestsLoaded
