@@ -41,26 +41,30 @@ service cloud.firestore {
       return signedIn()
         && ((isSolicitor() && request.auth.uid == firmUid)
           || (exists(profilePath(request.auth.uid))
-            && get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid
-            && (get(profilePath(request.auth.uid)).data.get('role', '') == 'employee'
+            && ((get(profilePath(request.auth.uid)).data.get('role', '') == 'employee'
+                && get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid)
               || (get(profilePath(request.auth.uid)).data.get('role', '') == 'admin'
-                && get(profilePath(request.auth.uid)).data.get('Active', false) == true))));
+                && get(profilePath(request.auth.uid)).data.get('Active', false) == true
+                && get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid))));
     }
 
     function managesFirm(firmUid) {
       return (isSolicitor() && request.auth.uid == firmUid)
         || (isActiveAdmin()
-          && get(profilePath(request.auth.uid)).data.get('lawyerUid', '') == firmUid);
+          && get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid) == firmUid);
     }
 
     match /users/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
-      allow create: if isSolicitor()
+      allow create: if signedIn()
         && request.auth.uid != uid
         && request.resource.data.keys().hasOnly(['role', 'lawyerUid'])
         && request.resource.data.keys().hasAll(['role', 'lawyerUid'])
         && request.resource.data.role == 'employee'
-        && request.resource.data.lawyerUid == request.auth.uid;
+        && ((isSolicitor() && request.resource.data.lawyerUid == request.auth.uid)
+          || (isActiveAdmin()
+            && request.resource.data.lawyerUid
+              == get(profilePath(request.auth.uid)).data.get('lawyerUid', request.auth.uid)));
       allow update, delete: if false;
     }
 
