@@ -191,3 +191,14 @@ body:has(.admin-dashboard[data-view="inbox"]){
 .admin-dashboard .inbox-row-state.is-done{color:#28563d;background:#eaf3eb;border-color:#cfe1d0}
 .admin-dashboard .inbox-row-state.is-declined{color:#70424b;background:#f6e9ec;border-color:#e9cbd2}
 .admin-dashboard .inbox-ticket-state.is-declined{color:#70424b;background:#f6e9ec;border-color:#e9cbd2}
+
+
+/* Contact-profile tabs inside the client enquiry reader. */
+.inbox-contact-tabs{display:flex;align-items:center;gap:3px;margin:0 0 14px;padding:0 2px;border-bottom:1px solid #e3d9ca;overflow-x:auto}
+.inbox-contact-tabs button{flex:0 0 auto;min-height:39px;padding:8px 12px;border:0;border-bottom:3px solid transparent;border-radius:7px 7px 0 0;background:transparent;color:#516075;font:700 12px system-ui,sans-serif;white-space:nowrap;cursor:pointer}
+.inbox-contact-tabs button:hover{background:#f8f2e6;color:#23364b}
+.inbox-contact-tabs button[aria-selected="true"]{border-bottom-color:#aa8038;background:#fbf5e9;color:#162a40}
+.inbox-contact-tabs button:focus-visible{outline:3px solid rgba(190,151,77,.35);outline-offset:1px}
+.inbox-contact-tab-panel{min-height:130px;margin:0 0 12px;padding:14px;border:1px solid #e6ddcf;border-radius:10px;background:#fffdfa}
+.inbox-contact-tab-panel p{margin:10px 0 0;color:#34485e;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.inbox-contact-tab-panel .inbox-ticket-message-label{color:#17304a;font-size:13px}
