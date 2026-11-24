@@ -1,9 +1,10 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
+import { getStorage } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js';
 import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 import { mountInbox, clearInbox } from './inbox.js?v=ticket-workspace-8';
-import { mountWorkflow, clearWorkflow } from './workflow.js?v=practice-workflow-7';
+import { mountWorkflow, clearWorkflow } from './workflow.js?v=practice-workflow-8';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBSRANSn7e2npR9SZ_tRdtxwe8QH-VAVUA',
@@ -15,6 +16,7 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const dutyGroups = [
  {id:'legal', title:'Legal Administration', duties:[
   'Prepare, format and proofread legal correspondence and documents.',
@@ -154,6 +156,7 @@ onIdTokenChanged(auth, async user => {
   checklist = undefined;
   clearWorkflow();
   clearInbox();
+  window.dispatchEvent(new CustomEvent('practice-firebase-clear'));
   if (entryCard) {
     entryCard.hidden = false;
     signOutHome.append(logout);
@@ -208,6 +211,8 @@ onIdTokenChanged(auth, async user => {
       document.getElementById('staff-sample-banner').hidden = !sampleMode;
       mountWorkflow(db, user.uid, sampleMode, user);
       if (admin || role === 'solicitor') mountInbox(db, sampleMode);
+      const firmUid = role === 'solicitor' ? user.uid : (profile?.lawyerUid || user.uid);
+      window.dispatchEvent(new CustomEvent('practice-firebase-ready', {detail:{db,storage,user,firmUid,role,sampleMode}}));
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
   } catch (error) {
