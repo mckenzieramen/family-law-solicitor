@@ -121,6 +121,39 @@ export function mountInbox(db, sampleMode = false) {
   .enquiry-pager button{padding:7px 12px;border:1px solid #d9cbb8;border-radius:6px;background:#fcfaf7}
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
   `;document.head.append(css);
+  const metricIcons=['<rect x="3" y="5" width="26" height="20" rx="2"/><path d="m3 6 13 11L29 6"/>','<path d="M16 2 20 12 30 16 20 20 16 30 12 20 2 16 12 12Z"/>','<path d="M7 3 3 7c0 11 11 22 22 22l4-4-7-6-4 4C12 20 9 17 8 12l4-4Z"/>','<rect x="3" y="6" width="26" height="23" rx="3"/><path d="M9 2v8M23 2v8M3 13h26"/>','<path d="m2 13 7-9 7 4 7-4 7 9-6 8-5 5-5-2-7-6Z M9 9l6 5 5-3 7 7M7 18l5-5M12 23l5-5"/>','<circle cx="16" cy="16" r="13"/><path d="m9 16 5 5 9-10"/>'];
+  const polish=document.createElement('style');polish.textContent=`
+  #staff-inbox{color:#0d1729;background:transparent}
+  #staff-inbox .client-workspace-tabs{margin-bottom:14px}
+  #staff-inbox .enquiry-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:0 0 10px}
+  #staff-inbox .enquiry-metrics button{display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;column-gap:12px;align-content:center;text-align:left;min-height:100px;padding:14px 16px;background:#fcfaf7;border:1px solid #ded3c4;border-radius:10px;font:16px Georgia,serif}
+  #staff-inbox .enquiry-metrics svg{grid-row:1/3;width:34px;height:34px;align-self:start;color:#987740}
+  #staff-inbox .enquiry-metrics strong{font:700 34px/1 Georgia,serif;margin-bottom:5px}
+  #staff-inbox .enquiry-pipeline{display:flex;flex-wrap:nowrap;gap:0;border:1px solid #ded3c4;border-radius:8px;overflow:hidden;margin-bottom:10px}
+  #staff-inbox .enquiry-pipeline button{position:relative;border:0;border-right:1px solid #d9cbb8;border-radius:0;padding:13px 9px;font:600 15px Georgia,serif;background:#f4ede3}
+  #staff-inbox .enquiry-pipeline button[aria-pressed=true]{background:#987740;color:#fff}
+  #staff-inbox .inbox-controls{display:flex;gap:10px;align-items:end;margin-bottom:12px}
+  #staff-inbox .inbox-controls label:first-child{flex:2}
+  #staff-inbox .inbox-controls input,#staff-inbox .inbox-controls select{min-height:38px;border:1px solid #d9cbb8;border-radius:6px;background:#fcfaf7}
+  #staff-inbox .inbox-split{gap:18px;grid-template-columns:minmax(0,2.15fr) minmax(300px,1fr)}
+  #staff-inbox .enquiry-table{font:14px/1.4 Georgia,serif}
+  #staff-inbox .enquiry-table th{font-weight:700;padding:15px 10px;background:#f7f2eb}
+  #staff-inbox .enquiry-table td{padding:13px 10px}
+  #staff-inbox .enquiry-table tr[aria-selected=true]{background:#f4e6d1}
+  #staff-inbox .enquiry-table .enquiry-status{display:inline-block;padding:5px 10px;border-radius:20px;background:#efdbad;font-size:12px;text-align:center}
+  #staff-inbox .enquiry-status[data-stage="Contacted"]{background:#d5e6f7}
+  #staff-inbox .enquiry-status[data-stage="Consultation Booked"]{background:#e2def1}
+  #staff-inbox .enquiry-status[data-stage="Converted"]{background:#d5e8cf}
+  #staff-inbox .enquiry-status[data-stage="Closed"]{background:#e1dfdc}
+  #staff-inbox #inbox-reader{border:1px solid #ded3c4;border-radius:10px;background:#fcfaf7;padding:16px;min-height:540px}
+  #staff-inbox .inbox-ticket-heading h3{font:700 23px Georgia,serif}
+  #staff-inbox .inbox-ticket-kicker{font:700 21px Georgia,serif;text-transform:none;letter-spacing:0;color:#0d1729}
+  #staff-inbox .inbox-ticket-fields,#staff-inbox .inbox-ticket-message{border-top:1px solid #ded3c4;padding-top:12px}
+  #staff-inbox .enquiry-pager{padding:12px 4px;font-size:13px}
+  @media(max-width:1200px){#staff-inbox .enquiry-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox .enquiry-pipeline{overflow-x:auto}#staff-inbox .enquiry-pipeline button{min-width:120px}#staff-inbox .inbox-controls{flex-wrap:wrap}}
+  @media(max-width:520px){#staff-inbox .enquiry-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  `;document.head.append(polish);
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -176,7 +209,7 @@ export function mountInbox(db, sampleMode = false) {
     const consultations=entries.filter(r=>r.kind==='consultation');
     for(const [container,labels] of [[metrics,['All enquiries',...stages]],[pipeline,['All',...stages]]]){
       container.replaceChildren();
-      for(const label of labels){const key=label.startsWith('All')?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;b.append(strong,label);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
+      for(const label of labels){const key=label.startsWith('All')?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.6');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.innerHTML=metricIcons[labels.indexOf(label)];const caption=document.createElement('span');caption.textContent=label;b.append(svg,strong,caption);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
     }
     page=Math.min(page,Math.max(0,Math.ceil(visible.length/8)-1));
     const pageRows=visible.slice(page*8,page*8+8);
@@ -222,7 +255,7 @@ export function mountInbox(db, sampleMode = false) {
       const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
       const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
-      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
+      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';const statusCell=tr.cells[5];if(statusCell){const pill=document.createElement('span');pill.className='enquiry-status';pill.dataset.stage=statusCell.textContent;pill.textContent=statusCell.textContent;statusCell.replaceChildren(pill);}tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
       if(record.id!==selectedId) continue;
       const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
       const titleRow=document.createElement('div'); titleRow.className='inbox-ticket-title-row';
