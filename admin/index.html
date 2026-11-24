@@ -6,7 +6,7 @@
 <title>Solicitor Admin | Prevail Family Law</title>
 <link rel="canonical" href="https://family-law-solicitor.pages.dev/admin/">
 <link rel="stylesheet" href="../docs/inbox.css?v=client-enquiry-tabs-1">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=contacts-unified-1">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=clients-enquiries-2">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=admin-dashboard-10">
 <link rel="stylesheet" href="../docs/admin/practice-modules.css?v=matters-1">
 <link rel="icon" type="image/png" href="/favicon.png?v=clean1">
@@ -44,8 +44,8 @@
    <a href="#dashboard-title"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-7h6v7"/></svg></span><span>Dashboard</span></a>
    <a href="#work-calendar"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span>Calendar</span></a>
    <a href="#work-matters"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><span>Matters</span></a>
-   <a href="#work-clients"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M5.5 17a3.5 3.5 0 0 1 7 0M15 9h3M15 13h3M15 17h3"/></svg></span><span>Clients &amp; Contacts</span></a>
-   <a id="inbox-nav" href="#staff-inbox" hidden><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span>Consultation Enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="items requiring attention">0</span></a>
+   
+   <a id="inbox-nav" href="#staff-inbox"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M5.5 17a3.5 3.5 0 0 1 7 0M15 9h3M15 13h3M15 17h3"/></svg></span><span>Client enquiries</span><span class="nav-notification" id="nav-inbox-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-queue"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 12 3 3 7-7"/></svg></span><span>Tasks & Workflows</span><span class="nav-notification" id="nav-task-badge" hidden aria-label="items requiring attention">0</span></a>
    <a href="#work-documents"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7"/></svg></span><span>Documents</span></a>
    <a href="#work-email"><span class="admin-nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg></span><span>Correspondence</span></a>
@@ -104,26 +104,7 @@
    </div>
    <p id="dashboard-error" class="dashboard-error" role="alert" hidden></p>
   </section>
-  <section class="admin-module contacts-module" id="work-clients" hidden aria-labelledby="clients-heading">
-   <header class="contacts-page-head">
-    <div><p class="contacts-eyebrow">CLIENT DIRECTORY</p><h2 id="clients-heading">Clients &amp; Contacts</h2><p>One searchable directory for people who have contacted the firm.</p></div>
-    <a class="contact-primary-action" href="#staff-inbox">Review enquiries</a>
-   </header>
-   <div class="contacts-toolbar">
-    <label class="contact-search"><span class="sr-only">Search contacts</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="contact-search" type="search" placeholder="Search by name, email, phone or matter…"></label>
-    <div class="contact-filter-row">
-     <label>Contact type<select id="contact-filter-type"><option value="all">All contact types</option><option value="new">New clients</option><option value="enquiry">Enquiries</option></select></label>
-     <label>Linked matter<select id="contact-filter-matter"><option value="all">All matters</option></select></label>
-     <label>Status<select id="contact-filter-status"><option value="all">All statuses</option><option value="pending">Awaiting approval</option><option value="approved">Active</option><option value="declined">Declined</option></select></label>
-     <button type="button" id="contact-clear-filters" class="contact-clear-filter">Clear filters</button>
-    </div>
-   </div>
-   <p class="contact-result-count" id="contact-result-count" aria-live="polite">Loading contacts…</p>
-   <div class="contacts-layout">
-    <section class="contact-list-pane" aria-label="Contact list">
-     <div class="contact-list-column-head"><span></span><span>Contact record</span><span>Status</span></div>
-     <div class="contact-directory-list" id="contact-directory-list"><p class="contact-empty-state">Loading enquiry contacts…</p></div>
-    </section>
+  
     <aside class="contact-detail-panel" id="contact-detail-panel" aria-label="Selected contact details"><div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>Select a contact</h3><p>Contact details and related enquiry information will appear here.</p></div></aside>
    </div>
   </section>
@@ -166,6 +147,11 @@
   </section>
   <section id="staff-inbox" class="staff-inbox" hidden aria-labelledby="inbox-heading">
    <h2 id="inbox-heading">Client enquiries</h2>
+   <div class="client-workspace-tabs" role="tablist" aria-label="Client workspace views">
+    <button type="button" role="tab" aria-selected="true" data-client-workspace-tab="enquiries">Enquiries</button>
+    <button type="button" role="tab" aria-selected="false" data-client-workspace-tab="directory">Clients &amp; Contacts</button>
+   </div>
+   <div id="client-enquiries-panel" data-client-workspace-panel="enquiries">
    <div class="inbox-summary-cards" aria-label="Inquiry overview">
     <button type="button" class="inbox-summary-card" data-inbox-quick-filter="newToday" aria-pressed="false"><span>New today</span><strong id="inbox-stat-new-today">0</strong><small>Consultation enquiries</small></button>
     <button type="button" class="inbox-summary-card" data-inbox-quick-filter="appointment" aria-pressed="false"><span>Appointment requests</span><strong id="inbox-stat-appointments">0</strong><small>Awaiting firm confirmation</small></button>
@@ -197,6 +183,26 @@
     <div id="inbox-list" aria-label="Client tickets"></div>
     <section id="inbox-reader" aria-label="Selected client ticket"></section>
    </div>
+   </div>
+   <section class="client-directory-view" id="client-directory-panel" data-client-workspace-panel="directory" hidden aria-label="Clients and contacts directory">
+    <header class="contacts-page-head"><div><p class="contacts-eyebrow">CLIENT DIRECTORY</p><h3>Clients &amp; Contacts</h3><p>Website enquiry contacts in one searchable list.</p></div><button type="button" class="contact-primary-action" data-client-workspace-view="enquiries">Back to enquiries</button></header>
+    <div class="contacts-toolbar">
+     <label class="contact-search"><span class="sr-only">Search contacts</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="contact-search" type="search" placeholder="Search by name, email, phone or matter…"></label>
+     <div class="contact-filter-row">
+      <label>Contact type<select id="contact-filter-type"><option value="all">All contact types</option><option value="new">New clients</option><option value="enquiry">Enquiries</option></select></label>
+      <label>Linked matter<select id="contact-filter-matter"><option value="all">All matters</option></select></label>
+      <label>Status<select id="contact-filter-status"><option value="all">All statuses</option><option value="pending">Awaiting approval</option><option value="approved">Active</option><option value="declined">Declined</option></select></label>
+      <button type="button" id="contact-clear-filters" class="contact-clear-filter">Clear filters</button>
+     </div>
+    </div>
+    <p class="contact-result-count" id="contact-result-count" aria-live="polite">Loading contacts…</p>
+    <div class="contacts-layout">
+     <section class="contact-list-pane" aria-label="Contact directory">
+      <div class="contact-table-wrap"><table class="contact-directory-table"><thead><tr><th>Name</th><th>Type</th><th>Email / phone</th><th>Linked matter</th><th>Last contact</th><th>Status</th></tr></thead><tbody id="contact-directory-list"><tr><td colspan="6" class="contact-empty-state">Loading enquiry contacts…</td></tr></tbody></table></div>
+     </section>
+     <aside class="contact-detail-panel" id="contact-detail-panel" aria-label="Selected contact details"><div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>Select a contact</h3><p>Contact details and related enquiry information will appear here.</p></div></aside>
+    </div>
+   </section>
   </section>
   <div id="staff-workspace"></div>
   <aside class="staff-toast" id="staff-toast" hidden>
@@ -234,8 +240,8 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=contacts-unified-1'),
-      import('../docs/admin/inbox.js?v=client-enquiry-tabs-1')
+      import('../docs/admin/workflow.js?v=clients-enquiries-2'),
+      import('../docs/admin/inbox.js?v=client-enquiry-tabs-2')
     ]);
     mountWorkflow(null, null, true);
     mountInbox(null, true);
