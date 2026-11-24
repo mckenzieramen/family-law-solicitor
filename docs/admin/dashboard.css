@@ -219,3 +219,6 @@ button,a{ -webkit-tap-highlight-color:transparent}
 .dashboard-due-task a:hover{color:#8c6125;text-decoration:underline}
 .dashboard-due-task small{grid-column:2;grid-row:1;color:#4e5867;font-size:11px;white-space:nowrap}
 .dashboard-due-task small.is-overdue{color:#ad3034;font-weight:750}
+
+.dashboard-approvals-card{align-self:start}
+.dashboard-approval-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
