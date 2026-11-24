@@ -1,0 +1,53 @@
+/* Prevail Family Law – reference design. Scoped to the signed-in Admin Portal. */
+.admin-dashboard{--page:#F8F5F0;--paper:#FCFAF7;--ink:#0D1729;--muted:#354153;--line:#DAD8D3;--accent:#0D1B2A;--gold:#987740;--tint:#F5EDDF;--shadow:0 1px 3px #0d1b2a07;grid-template-columns:244px minmax(0,1fr);font-family:Inter,Arial,sans-serif;background:var(--page)}
+.admin-dashboard .dashboard-sidebar{background:#0D1B2A;padding:16px 8px;gap:8px}
+.admin-dashboard .dashboard-identity{min-height:142px;box-sizing:border-box;align-content:center;border:0}
+.admin-dashboard .dashboard-sidebar nav{gap:1px}
+.admin-dashboard .dashboard-sidebar nav a{min-height:46px;box-sizing:border-box;padding:8px 18px;gap:20px;font-size:15px;font-weight:500}
+.admin-dashboard .dashboard-sidebar nav a[aria-current=page]{background:#987740;box-shadow:none;border-color:transparent}
+.admin-dashboard .admin-nav-symbol svg{width:22px;height:22px}
+.admin-dashboard .admin-nav-symbol{color:#F8F5F0}
+.admin-dashboard .dashboard-main{padding:18px 24px 30px}
+.admin-dashboard .dashboard-header{min-height:78px;border:0;margin-bottom:14px}
+.admin-dashboard .dashboard-header h1{font-family:Georgia,"Times New Roman",serif;font-size:38px;font-weight:700;color:var(--ink)}
+.admin-dashboard .dashboard-heading p{font-size:16px}
+.admin-dashboard .dashboard-avatar{width:44px;height:44px;background:#987740}
+.admin-dashboard .dashboard-overview{gap:24px}
+.admin-dashboard .admin-kpi-grid{gap:16px}
+.admin-dashboard .admin-kpi-card{box-sizing:border-box;min-height:110px;padding:18px;gap:14px;background:var(--paper)}
+.admin-dashboard .kpi-icon{width:60px;height:58px;background:#F5EDDF;color:#987740}
+.admin-dashboard .kpi-icon svg{width:32px;height:32px}
+.admin-dashboard .kpi-copy{padding-left:14px}
+.admin-dashboard .kpi-copy>span{font-family:Georgia,"Times New Roman",serif;font-size:18px}
+.admin-dashboard .kpi-copy strong{font-family:Georgia,"Times New Roman",serif;font-size:40px;font-weight:700}
+.admin-dashboard .dashboard-row-primary{grid-template-columns:minmax(0,1.09fr) minmax(0,1fr);gap:20px}
+.admin-dashboard .dashboard-row-secondary{grid-template-columns:minmax(0,1.52fr) minmax(0,1fr);gap:18px}
+.admin-dashboard .dashboard-card{border:1px solid #DAD8D3;border-radius:12px;background:var(--paper);padding:18px;box-sizing:border-box;box-shadow:0 1px 3px #0d1b2a07}
+.admin-dashboard .dashboard-row-primary>.dashboard-card{min-height:354px;align-self:stretch}
+.admin-dashboard .dashboard-row-secondary>.dashboard-card{min-height:290px}
+.admin-dashboard .dashboard-card-heading h2{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:700;color:var(--ink)}
+.admin-dashboard .dashboard-card-heading a{color:#987740;font-size:13px}
+.admin-dashboard .mini-calendar-day,.admin-dashboard .mini-calendar-spacer{min-height:41px;background:var(--paper);font-size:14px}
+.admin-dashboard .mini-calendar-day[aria-current=date]{outline-color:#DC2626}
+.admin-dashboard .dashboard-approval-row{grid-template-columns:50px minmax(0,1fr) auto;min-height:82px;box-sizing:border-box}
+.admin-dashboard .dashboard-approval-icon{width:50px;height:48px;background:#F5EDDF;color:#987740}
+.admin-dashboard .dashboard-approval-row strong{font-size:16px;white-space:normal}
+.admin-dashboard .dashboard-approval-row p{font-size:13px}
+.admin-dashboard .dashboard-approval-row a{background:#987740;min-width:76px;min-height:36px}
+.admin-dashboard .dashboard-matters-table th{background:#F1EDE5}
+.admin-dashboard .dashboard-matters-table td,.admin-dashboard .dashboard-matters-table th{font-size:14px}
+.admin-dashboard .dashboard-due-task a,.admin-dashboard .dashboard-due-task small{font-size:13px}
+.admin-dashboard .module-card{min-height:480px}
+.admin-dashboard #reference-collapse{margin-top:auto;background:transparent;color:#F8F5F0;border:1px solid #ffffff30;border-radius:8px;padding:9px;cursor:pointer;min-height:38px}
+.admin-dashboard.reference-collapsed{grid-template-columns:76px minmax(0,1fr)}
+.reference-collapsed .dashboard-sidebar nav a{justify-content:center;padding:10px;gap:0}
+.reference-collapsed .dashboard-sidebar nav a>span:nth-child(2){display:none}
+.reference-collapsed .dashboard-identity{min-height:65px;padding:0}
+.reference-collapsed .nav-notification{position:absolute;right:5px}
+.reference-collapsed .dashboard-sidebar nav a{position:relative}
+.admin-dashboard :focus-visible{outline:2px solid #987740;outline-offset:3px}
+@media(max-width:1250px){.admin-dashboard .admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard .dashboard-card-heading h2{font-size:23px}}
+@media(max-width:1023px){.admin-dashboard .dashboard-row-primary,.admin-dashboard .dashboard-row-secondary{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.admin-dashboard,.admin-dashboard.reference-collapsed{grid-template-columns:minmax(0,1fr)}.admin-dashboard .dashboard-sidebar{max-height:none;padding:8px 12px}.admin-dashboard .dashboard-identity{min-height:0}.admin-dashboard #reference-collapse{display:none}.admin-dashboard .dashboard-main{padding:16px}.admin-dashboard .dashboard-header h1{font-size:28px}.admin-dashboard .dashboard-sidebar nav a{font-size:13px;padding:7px;gap:8px}.reference-collapsed .dashboard-sidebar nav a>span:nth-child(2){display:block}.admin-dashboard .dashboard-row-primary>.dashboard-card{min-height:0}}
+@media(max-width:480px){.admin-dashboard .admin-kpi-grid{grid-template-columns:1fr}.admin-dashboard .dashboard-card-heading{flex-wrap:wrap}.admin-dashboard .dashboard-approval-row{grid-template-columns:36px minmax(0,1fr) auto}.admin-dashboard .dashboard-approval-icon{width:36px;height:36px}}
+@media(prefers-reduced-motion:reduce){.admin-dashboard *, .admin-dashboard *::before,.admin-dashboard *::after{scroll-behavior:auto!important;animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
