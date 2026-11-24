@@ -93,6 +93,34 @@ export function mountInbox(db, sampleMode = false) {
   let activeReaderTab = 'details';
   const drafts = new Map();
   for (const card of quickCards) card.onclick = () => { filter.value = card.dataset.inboxQuickFilter; render(); };
+  let stageFilter='all', page=0;
+  const stages=['New','Contacted','Consultation Booked','Converted','Closed'];
+  const stageOf=r=>r.approvalStatus==='declined'?'Closed':r.approvalStatus==='approved'?'Consultation Booked':stages.includes(r.enquiryStatus)?r.enquiryStatus:'New';
+  const pipeline=document.createElement('div');pipeline.className='enquiry-pipeline';
+  const metrics=document.createElement('div');metrics.className='enquiry-metrics';
+  const pager=document.createElement('div');pager.className='enquiry-pager';
+  list.before(pipeline);list.before(metrics);list.after(pager);
+  const css=document.createElement('style');css.textContent=`
+  #staff-inbox .inbox-summary-cards{display:none}
+  #staff-inbox .inbox-split{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(280px,1fr);gap:14px;align-items:start}
+  #staff-inbox .enquiry-metrics,#staff-inbox .enquiry-pipeline{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+  #staff-inbox .enquiry-metrics{grid-row:1}
+  #staff-inbox .enquiry-pipeline{grid-row:2}
+  .enquiry-metrics button,.enquiry-pipeline button{flex:1;border:1px solid #d9cbb8;background:#fcfaf7;color:#0d1729;border-radius:8px;padding:12px;cursor:pointer}
+  .enquiry-metrics strong{display:block;font:700 30px Georgia,serif}
+  .enquiry-pipeline button[aria-pressed=true]{background:#987740;color:white}
+  #staff-inbox #inbox-list{display:block;overflow:auto;min-height:440px;border:1px solid #d9cbb8;border-radius:10px}
+  #staff-inbox .enquiry-table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}
+  .enquiry-table th,.enquiry-table td{padding:12px 9px;border-bottom:1px solid #e5ded3;vertical-align:middle}
+  .enquiry-table th{background:#f1ede5;white-space:nowrap}
+  .enquiry-table tr[aria-selected=true]{background:#f5e7cb}
+  .enquiry-table tbody tr{cursor:pointer}
+  .enquiry-table tbody tr:hover{background:#f5eddf}
+  #staff-inbox #inbox-reader{grid-column:2;grid-row:3 / span 2;min-height:440px}
+  .enquiry-pager{grid-column:1;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .enquiry-pager button{padding:7px 12px;border:1px solid #d9cbb8;border-radius:6px;background:#fcfaf7}
+  @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
+  `;document.head.append(css);
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
@@ -130,6 +158,7 @@ export function mountInbox(db, sampleMode = false) {
       if (target) target.textContent = String(summaryCounts[key] ?? 0);
     }
     const visible = entries.filter(record => {
+      if(stageFilter!=='all'&&(record.kind!=='consultation'||stageOf(record)!==stageFilter))return false;
       const {kind, contact, message, reply} = record;
       if (type === 'unanswered' && (kind !== 'support' || reply)) return false;
       if (type === 'replied' && (kind !== 'support' || !reply)) return false;
@@ -144,14 +173,24 @@ export function mountInbox(db, sampleMode = false) {
     if (sort.value === 'email') visible.sort((a, b) => sortText(a.contact?.email, b.contact?.email));
     count.textContent = 'Showing ' + visible.length + ' of ' + entries.length + ' loaded messages' +
       (entries.length === 100 ? ' · latest 100' : '');
-    const selected = visible.find(record => record.id === selectedId) ?? visible[0];
+    const consultations=entries.filter(r=>r.kind==='consultation');
+    for(const [container,labels] of [[metrics,['All enquiries',...stages]],[pipeline,['All',...stages]]]){
+      container.replaceChildren();
+      for(const label of labels){const key=label.startsWith('All')?'all':label;const n=key==='all'?consultations.length:consultations.filter(r=>stageOf(r)===key).length;const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',String(stageFilter===key));if(container===metrics){const strong=document.createElement('strong');strong.textContent=n;b.append(strong,label);}else b.textContent=label+' ('+n+')';b.onclick=()=>{stageFilter=key;filter.value='consultation';page=0;render();};container.append(b);}
+    }
+    page=Math.min(page,Math.max(0,Math.ceil(visible.length/8)-1));
+    const pageRows=visible.slice(page*8,page*8+8);
+    pager.replaceChildren();const info=document.createElement('span');info.textContent='Showing '+(visible.length?page*8+1:0)+'–'+Math.min(visible.length,page*8+8)+' of '+visible.length;pager.append(info);
+    for(const [label,delta] of [['Previous',-1],['Next',1]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.disabled=delta<0?page===0:(page+1)*8>=visible.length;b.onclick=()=>{page+=delta;render();};pager.append(b);}
+    const selected = pageRows.find(record => record.id === selectedId) ?? pageRows[0];
     selectedId = selected?.id;
     list.replaceChildren();
     reader.replaceChildren();
     if (!selected) reader.textContent = 'No message to display.';
 
     status.textContent = visible.length ? '' : term ? 'No messages match your search.' : 'No messages in this view.';
-    for (const record of visible) {
+    const table=document.createElement('table');table.className='enquiry-table';const head=table.createTHead().insertRow();for(const label of ['Received','Name','Subject','Preferred contact','Assigned to','Status','Follow-up']){const th=document.createElement('th');th.textContent=label;head.append(th);}const tbody=table.createTBody();list.append(table);
+    for (const record of pageRows) {
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'inbox-row';
@@ -183,7 +222,7 @@ export function mountInbox(db, sampleMode = false) {
       const rowCode=document.createElement('span'); rowCode.className='inbox-row-code'; rowCode.textContent=ticketCode(record);
       const rowMeta=document.createElement('span'); rowMeta.className='inbox-message-meta';
       rowMeta.textContent=[consultation&&contact.email,date&&date+' · Sydney'].filter(Boolean).join(' · ');
-      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); list.append(row);
+      rowTop.append(rowTitle,rowState); row.append(rowTop,rowCode,rowMeta,preview); const tr=tbody.insertRow();tr.tabIndex=0;tr.setAttribute('aria-selected',String(record.id===selectedId));for(const val of [date,title.textContent,contact.topic||record.message?.slice(0,70)||'—',contact.email||contact.phone||'—',record.assignedTo||'Unassigned',consultation?stageOf(record):stateText,record.followUpDate||'—'])tr.insertCell().textContent=val||'—';tr.onclick=()=>row.click();tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click();}};
       if(record.id!==selectedId) continue;
       const kicker=document.createElement('span'); kicker.className='inbox-ticket-kicker'; kicker.textContent=consultation?'Consultation enquiry':'Website support ticket';
       const titleRow=document.createElement('div'); titleRow.className='inbox-ticket-title-row';
@@ -195,7 +234,7 @@ export function mountInbox(db, sampleMode = false) {
       titleRow.append(heading,state);
       const readerMeta=document.createElement('span'); readerMeta.className='inbox-message-meta';
       readerMeta.textContent=[ticketCode(record),contact.email,date&&'Received '+date+' Sydney'].filter(Boolean).join(' · ');
-      summary.append(kicker,titleRow,readerMeta); details.append(summary);
+      summary.append(kicker,titleRow,readerMeta); if(consultation){kicker.textContent='Enquiry Details';state.textContent=stageOf(record);} details.append(summary);
       if(consultation){
         const tabs=document.createElement('div'); tabs.className='inbox-contact-tabs'; tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Client enquiry details');
         const tabNames=[['details','Details'],['matters','Matters'],['notes','Notes'],['communications','Communications']];
@@ -295,7 +334,7 @@ export function mountInbox(db, sampleMode = false) {
       reader.append(details);
     }
   }
-  filter.onchange = sort.onchange = search.oninput = render;
+  filter.onchange=()=>{stageFilter='all';page=0;render();};sort.onchange=search.oninput=()=>{page=0;render();};
   let unsubscribe;
   function connect() {
     unsubscribe?.();
