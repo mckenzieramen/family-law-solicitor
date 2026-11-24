@@ -137,7 +137,7 @@ export function mountInbox(db, sampleMode = false) {
   .enquiry-pager button{padding:7px 12px;border:1px solid #d9cbb8;border-radius:6px;background:#fcfaf7}
   @media(max-width:900px){#staff-inbox .inbox-split{grid-template-columns:minmax(0,1fr)}#staff-inbox #inbox-reader{grid-column:1;grid-row:auto}}
   `;document.head.append(css);
-  const metricIcons=['<rect x="3" y="5" width="26" height="20" rx="2"/><path d="m3 6 13 11L29 6"/>','<path d="M16 2 20 12 30 16 20 20 16 30 12 20 2 16 12 12Z"/>','<path d="M7 3 3 7c0 11 11 22 22 22l4-4-7-6-4 4C12 20 9 17 8 12l4-4Z"/>','<rect x="3" y="6" width="26" height="23" rx="3"/><path d="M9 2v8M23 2v8M3 13h26"/>','<path d="m2 13 7-9 7 4 7-4 7 9-6 8-5 5-5-2-7-6Z M9 9l6 5 5-3 7 7M7 18l5-5M12 23l5-5"/>','<circle cx="16" cy="16" r="13"/><path d="m9 16 5 5 9-10"/>'];
+  const metricIcons=["<rect x=\"3\" y=\"6\" width=\"26\" height=\"20\" rx=\"3\"/><path d=\"m4 8 12 9L28 8\"/>","<path d=\"M16 3c1.5 8 5 11.5 13 13-8 1.5-11.5 5-13 13C14.5 21 11 17.5 3 16 11 14.5 14.5 11 16 3Z\"/>","<g transform=\"scale(1.3333)\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72l.7 3.1a2 2 0 0 1-.45 2.11L8.1 10.2a16 16 0 0 0 6 6l1.27-1.26a2 2 0 0 1 2.11-.45l2.8.7A2 2 0 0 1 22 16.92Z\"/></g>","<rect x=\"3\" y=\"6\" width=\"26\" height=\"23\" rx=\"3\"/><path d=\"M9 2v8M23 2v8M3 13h26\"/>","<g transform=\"scale(1.3333)\"><path d=\"m11 17 2 2a1 1 0 1 0 3-3\"/><path d=\"m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.23L21 4\"/><path d=\"m21 3 1 11h-2M3 3l-1 11h2\"/><path d=\"m3 4 8-1M4 14l6.5 6.5a1 1 0 1 0 3-3\"/></g>","<circle cx=\"16\" cy=\"16\" r=\"13\"/><path d=\"m10 16 4 4 8-9\"/>"];
   const polish=document.createElement('style');polish.textContent=`
   #staff-inbox{color:#0d1729;background:transparent}
   #staff-inbox .client-workspace-tabs{margin-bottom:14px}
@@ -310,7 +310,10 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .enquiry-table th[data-eq-column="6"]{width:10%!important}
   #staff-inbox .enquiry-table th[data-eq-column="7"]{width:6%!important}
   #staff-inbox .eq-column-reset{border:0;background:transparent;color:inherit;font:12px Georgia,serif;text-decoration:underline;cursor:pointer;margin-left:auto}
-  `;document.head.append(columnStyle);
+  `;document.head.append(columnStyle);columnStyle.textContent += `
+#staff-inbox .enquiry-metrics button svg{width:32px!important;height:32px!important;stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important;align-self:center!important}
+#staff-inbox .enquiry-pipeline button svg{stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+`;
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
