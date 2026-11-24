@@ -538,15 +538,15 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
  modal.setAttribute('aria-labelledby', 'consultation-dialog-title');
  modal.innerHTML = '<div class="consultation-frame-top"><strong id="consultation-dialog-title">Book a Consultation</strong><button type="button" aria-label="Close booking dialog" class="consultation-frame-close">×</button></div><div class="consultation-frame-body"></div>';
  const body = modal.querySelector('.consultation-frame-body');
- let formSection = null;
+ let pageContent = null;
  let anchor = null;
  let opener = null;
  document.body.appendChild(modal);
 
  const restoreForm = () => {
-  if (anchor && formSection) anchor.replaceWith(formSection);
+  if (anchor && pageContent) anchor.replaceWith(pageContent);
   anchor = null;
-  formSection = null;
+  pageContent = null;
   if (opener && opener.isConnected) opener.focus();
  };
  modal.querySelector('.consultation-frame-close').addEventListener('click', () => modal.close());
@@ -558,14 +558,14 @@ html body .client-home .reference-consultation-cta .action:focus-visible{
  document.addEventListener('click', event => {
   const link = event.target.closest(selectors);
   if (!link) return;
-  const section = document.querySelector('#app .client-home section#contact');
-  if (!section || modal.contains(section)) return;
+  const page = document.querySelector('#app .client-home');
+  if (!page || modal.contains(page)) return;
   event.preventDefault();
   opener = link;
-  formSection = section;
-  anchor = document.createComment('consultation-form-location');
-  section.before(anchor);
-  body.replaceChildren(section);
+  pageContent = page;
+  anchor = document.createComment('consultation-page-location');
+  page.before(anchor);
+  body.replaceChildren(page);
   modal.showModal();
   body.scrollTop = 0;
  }, true);
@@ -590,7 +590,9 @@ dialog.consultation-frame-dialog::backdrop{background:#071a2ab8;backdrop-filter:
 .consultation-frame-top{display:flex;justify-content:space-between;align-items:center;padding:0 22px;border-bottom:1px solid #e9dcc8;color:#102a3a;font:500 23px Georgia,serif}
 .consultation-frame-close{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #d9cbb5;background:#fff;color:#102a3a;font-size:25px;cursor:pointer}
 .consultation-frame-body{min-height:0;overflow:auto;overscroll-behavior:contain}
-.consultation-frame-dialog #contact{display:block!important;width:100%;margin:0!important;padding:0!important}
+.consultation-frame-dialog .client-home{display:block!important;width:100%;min-height:0!important;margin:0!important;padding:0!important}
+.consultation-frame-dialog .client-home>:not(#contact){display:none!important}
+.consultation-frame-dialog .client-home>section#contact{display:block!important;width:100%;margin:0!important;padding:0!important}
 .consultation-frame-dialog #contact .contact-panel{display:block!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
 .consultation-frame-dialog #contact .consultation-intro{display:none!important}
 .consultation-frame-dialog #consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
