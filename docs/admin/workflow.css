@@ -351,5 +351,5 @@
   grid-template-columns:minmax(0,1fr);
 }
 #work-calendar .calendar-agenda{
-  display:none;
+  display:none !important;
 }
