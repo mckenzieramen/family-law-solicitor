@@ -303,3 +303,15 @@
 @media(max-width:420px){
  #work-calendar #work-month-grid .month-day{min-height:56px!important;padding:4px 2px!important}
 }
+
+/* Incoming web consultation requests are distinct from confirmed appointments. */
+.calendar-event[data-event-type=consultation] { border-color:#b77e28; background:#fff0cd; color:#684617; }
+.consultation-calendar-status { margin:10px 0 14px; color:var(--muted); font-size:.9rem; }
+.consultation-request-row { border-color:#d8b36a; background:#fffaf0; }
+.consultation-request-row .status { background:#fff0cd; color:#684617; }
+.consultation-request-details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:14px 0; }
+.consultation-request-details div { min-width:0; }
+.consultation-request-details dt { color:var(--muted); font-size:.82rem; }
+.consultation-request-details dd { margin:2px 0 0; overflow-wrap:anywhere; }
+.consultation-request-link { display:inline-block; margin-top:6px; color:var(--accent); font-weight:700; text-underline-offset:3px; }
+@media (max-width:600px) { .consultation-request-details { grid-template-columns:minmax(0,1fr); } }
