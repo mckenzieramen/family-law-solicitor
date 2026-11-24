@@ -698,3 +698,5 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
 .correspondence-page-head>div>div{min-width:0}
 .correspondence-page-head p{margin:0}
 .correspondence-message-actions button[data-generate-email-task]{border-color:#bd9147!important;background:#f5ead2!important;color:#624619!important;font-weight:700}
+
+.correspondence-sort .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
