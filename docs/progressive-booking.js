@@ -39,6 +39,7 @@
   function show(n){
    const changed=n!==step;
    step=n;form.classList.toggle('booking-step-2',n===2);fields.hidden=n!==1;calendar.hidden=n!==2;review.hidden=n!==3;
+   if(changed){const scroller=form.closest('.consultation-frame-body');if(scroller)scroller.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
    updateNextState();
    back.hidden=n===2;next.hidden=n===3;footer.hidden=n!==3;
    next.textContent='Next';
