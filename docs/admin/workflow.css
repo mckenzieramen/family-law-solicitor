@@ -315,3 +315,34 @@
 .consultation-request-details dd { margin:2px 0 0; overflow-wrap:anywhere; }
 .consultation-request-link { display:inline-block; margin-top:6px; color:var(--accent); font-weight:700; text-underline-offset:3px; }
 @media (max-width:600px) { .consultation-request-details { grid-template-columns:minmax(0,1fr); } }
+
+/* Consultation requests use a distinct blue status color, separate from scheduled work. */
+.admin-dashboard #work-calendar .calendar-event[data-event-type="consultation"]{border-color:#6688aa;background:#e7f0f8;color:#244a6b}
+.admin-dashboard #work-calendar .consultation-request-row{border-color:#89a6c3;border-inline-start:4px solid #527da1;background:#f1f6fb}
+.admin-dashboard #work-calendar .consultation-request-row[open]{background:#f1f6fb}
+.admin-dashboard #work-calendar .consultation-request-row>summary{list-style:none;cursor:pointer}
+.admin-dashboard #work-calendar .consultation-request-row>summary::-webkit-details-marker{display:none}
+.admin-dashboard #work-calendar .consultation-request-row .status{background:#e2edf6;color:#244a6b;border:1px solid #c9dbea}
+.admin-dashboard #work-calendar .consultation-request-row .consultation-request-link{color:#28577a}
+.calendar-day-dialog{width:min(720px,calc(100vw - 28px));max-height:min(84vh,760px);padding:0;border:1px solid #d8cdb9;border-radius:18px;background:#fffdf8;color:#102a3a;box-shadow:0 24px 80px #0b26334a;overflow:auto}
+.calendar-day-dialog::backdrop{background:rgba(10,28,38,.54);backdrop-filter:blur(2px)}
+.calendar-day-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:22px 26px;border-bottom:1px solid #e9e1d5;background:#fbf8f1}
+.calendar-day-dialog-head p{margin:0 0 5px;color:#8b6b3f;font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.calendar-day-dialog-head h2{margin:0;color:#102a3a;font:500 clamp(25px,3vw,34px)/1.15 Georgia,serif}
+.calendar-day-dialog-head span{display:block;margin-top:7px;color:#60717c;font-size:14px}
+.calendar-day-dialog-head button{flex:none;width:40px;height:40px;border:1px solid #d8cdb9;border-radius:50%;background:#fff;color:#173c4d;font-size:23px;cursor:pointer}
+.calendar-day-items{display:grid;gap:12px;padding:20px 26px}
+.calendar-day-item{display:grid;gap:9px;padding:16px 18px;border:1px solid #e4ddd2;border-radius:12px;background:#fff}
+.calendar-day-item.is-consultation{border-color:#89a6c3;border-left:4px solid #527da1;background:#f1f6fb}
+.calendar-day-item-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.calendar-day-item-top h3{margin:0;color:#173247;font:600 19px/1.3 Georgia,serif;overflow-wrap:anywhere}
+.calendar-day-item-status{flex:none;padding:5px 9px;border-radius:999px;background:#eaf0e6;color:#385641;font-size:12px;font-weight:750}
+.calendar-day-item.is-consultation .calendar-day-item-status{background:#e2edf6;color:#244a6b}
+.calendar-day-item-meta,.calendar-day-item-contact,.calendar-day-item-notes{margin:0;color:#536875;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.calendar-day-item-notes{padding-top:9px;border-top:1px solid #d9e3eb;color:#304a5b;white-space:pre-wrap}
+.calendar-day-inbox-link{justify-self:start;color:#28577a;font-size:14px;font-weight:750;text-underline-offset:3px}
+.calendar-day-empty{margin:0;padding:22px;border:1px dashed #d9d0c3;border-radius:12px;color:#60717c;text-align:center}
+.calendar-day-dialog>footer{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;padding:16px 26px 22px;border-top:1px solid #e9e1d5}
+.calendar-day-dialog>footer button{min-height:42px;padding:9px 14px;border:1px solid #d8cdb9;border-radius:9px;background:#fff;color:#173c4d;font:inherit;font-weight:700;cursor:pointer}
+.calendar-day-dialog>footer #calendar-day-add-schedule{border-color:#0b4033;background:#0b4033;color:#fffdf7}
+@media(max-width:600px){.calendar-day-dialog-head{padding:18px}.calendar-day-items{padding:14px 18px}.calendar-day-item-top{align-items:flex-start;flex-direction:column}.calendar-day-dialog>footer{justify-content:stretch;padding:14px 18px 18px}.calendar-day-dialog>footer button{flex:1}}
