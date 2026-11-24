@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../docs/homepage.css?v=editorial-8">
 <link rel="stylesheet" href="../docs/inbox.css?v=ticket-workspace-1">
 <link rel="stylesheet" href="../docs/admin/dashboard.css?v=ticket-workspace-1">
-<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-bookings-2">
+<link rel="stylesheet" href="../docs/admin/workflow.css?v=calendar-dialog-alerts-1">
 <style>
 .admin-sign-in {
   min-height: 100vh;
@@ -220,7 +220,7 @@ if (sampleMode) {
   status.textContent = 'Opening the sample workspace…';
   try {
     const [{mountWorkflow}, {mountInbox}] = await Promise.all([
-      import('../docs/admin/workflow.js?v=calendar-bookings-2'),
+      import('../docs/admin/workflow.js?v=calendar-dialog-alerts-1'),
       import('../docs/admin/inbox.js?v=ticket-workspace-1')
     ]);
     mountWorkflow(null, null, true);
