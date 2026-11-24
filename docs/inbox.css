@@ -187,3 +187,7 @@ body:has(.admin-dashboard[data-view="inbox"]){
 .admin-dashboard[data-view="inbox"] #staff-inbox .inbox-split{
   margin-top:0;
 }
+.admin-dashboard .inbox-row-state.is-waiting{color:#76521f;background:#fff2d8;border-color:#ebd2a5}
+.admin-dashboard .inbox-row-state.is-done{color:#28563d;background:#eaf3eb;border-color:#cfe1d0}
+.admin-dashboard .inbox-row-state.is-declined{color:#70424b;background:#f6e9ec;border-color:#e9cbd2}
+.admin-dashboard .inbox-ticket-state.is-declined{color:#70424b;background:#f6e9ec;border-color:#e9cbd2}
