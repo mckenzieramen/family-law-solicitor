@@ -102,10 +102,24 @@ service cloud.firestore {
       allow get: if inboxStaff() || (request.auth != null && resource.data.kind == 'support'
         && resource.data.ownerUid == request.auth.uid);
       allow list: if inboxStaff() && request.query.limit <= 100;
-      allow update: if inboxStaff() && resource.data.kind == 'support'
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply'])
-        && request.resource.data.reply is string
-        && request.resource.data.reply.size() > 0 && request.resource.data.reply.size() <= 1000;
+      allow update: if inboxStaff() && (
+        (resource.data.kind == 'support'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply'])
+          && request.resource.data.reply is string
+          && request.resource.data.reply.size() > 0
+          && request.resource.data.reply.size() <= 1000)
+        || (resource.data.kind == 'consultation'
+          && resource.data.get('approvalStatus', 'pending') == 'pending'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'approvalStatus', 'approvalUpdatedAt', 'approvalUpdatedBy'
+          ])
+          && request.resource.data.diff(resource.data).affectedKeys().hasAll([
+            'approvalStatus', 'approvalUpdatedAt', 'approvalUpdatedBy'
+          ])
+          && request.resource.data.approvalStatus in ['approved', 'declined']
+          && request.resource.data.approvalUpdatedAt == request.time
+          && request.resource.data.approvalUpdatedBy == request.auth.uid)
+      );
     }
 
     match /solicitorChecklists/{uid} {
