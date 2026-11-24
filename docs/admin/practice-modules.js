@@ -332,8 +332,25 @@
       }
       const documentModule=byId('work-documents');
       if(documentModule){const detail=documentModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Document details</h3><strong>Consent Orders Draft.pdf</strong><p>Court documents · PF-100348 — Wilson v Wilson</p><dl class="pm-dl"><div><dt>Client</dt><dd>Emma Wilson</dd></div><div><dt>Uploaded by</dt><dd>E. Parker</dd></div><div><dt>File type</dt><dd>PDF · 1.2 MB</dd></div><div><dt>Pages</dt><dd>8</dd></div></dl><div class="pm-actions"><button disabled>Download</button><button disabled>Share</button><button disabled>Rename</button><button disabled>Move</button><button disabled>Delete</button></div><small>Sample preview only; no file is stored.</small>';}
-      const employeeModule=byId('work-employees');
-      if(employeeModule){const detail=employeeModule.querySelector('.pm-detail-card');if(detail)detail.innerHTML='<h3>Team member details</h3><strong>Emily Carter</strong><p>Solicitor · Senior Family Law Solicitor</p><p>emily.carter@example.com<br>+61 2 7946 1284</p><h4>Role-based access summary</h4><ul><li>Manage assigned matters</li><li>Create and edit client records</li><li>Record time for assigned matters</li></ul><p><strong>Current workload</strong><br>28 assigned matters · 7 active tasks · 42.5 hrs this month</p><small>Illustrative sample profile; no account access was created.</small>';}
+    }
+    const em=byId('work-employees');
+    if(em){
+      const detail=em.querySelector('.pm-detail-card'),body=em.querySelector('.pm-table tbody');
+      if(detail&&body){
+        const records=recordRows('employee'),rows=[...body.querySelectorAll('tr')].filter(tr=>tr.cells.length===6);
+        function open(tr,tab='Details'){
+          const v=[...tr.cells].map(c=>c.textContent.trim()),p=records.find(r=>r.payload.email===v[1]&&r.payload.name===v[0])?.payload||{};
+          rows.forEach(row=>{row.style.background=row===tr?'#F5EDDF':'';row.setAttribute('aria-selected',String(row===tr));});
+          detail.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3>'+safeText(v[0])+'</h3><button type="button" class="pm-link" data-employee-close>Close ×</button></div><span class="matter-status-pill">'+safeText(v[4])+'</span><div class="pm-tabs" role="tablist">'+['Details','Workload','Access','Notes'].map(t=>'<button type="button" role="tab" aria-selected="'+(t===tab)+'" data-employee-tab="'+t+'">'+t+'</button>').join('')+'</div><div role="tabpanel" data-employee-content></div>';
+          const fields=tab==='Details'?[['Work email',v[1]],['Phone',p.phone],['Role',v[2]],['Job title',v[3]],['Status',v[4]]]:tab==='Workload'?[['Assigned matters',v[5]],['Active tasks',p.activeTasks],['Hours this month',p.hoursThisMonth]]:tab==='Access'?[['Recorded role',v[2]],['Permissions','Actual access is enforced by Firebase rules; this profile does not grant permissions.']]:[['Internal notes',p.notes]];
+          detail.querySelector('[data-employee-content]').innerHTML='<dl class="pm-dl">'+fields.map(([k,val])=>'<div><dt>'+safeText(k)+'</dt><dd style="overflow-wrap:anywhere;white-space:pre-wrap">'+safeText(val==null||val===''?'Not recorded':val)+'</dd></div>').join('')+'</dl>'+(practiceContext?.sampleMode?'<small>Illustrative sample profile — demo only.</small>':'');
+          detail.querySelectorAll('[data-employee-tab]').forEach(b=>b.onclick=()=>open(tr,b.dataset.employeeTab));
+          detail.querySelector('[data-employee-close]').onclick=()=>{detail.innerHTML='<h3>Team member details</h3><p>Select a team member to preview their profile.</p>';rows.forEach(row=>{row.style.background='';row.setAttribute('aria-selected','false');});};
+        }
+        detail.innerHTML='<h3>Team member details</h3><p>Select a team member to preview their profile.</p>';
+        rows.forEach(tr=>{tr.tabIndex=0;tr.style.cursor='pointer';tr.title='View team member profile';tr.onclick=()=>open(tr);tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(tr);}};});
+        if(rows.length)open(rows[0]);
+      }
     }
     const tm=byId('work-time');
     if(tm){
