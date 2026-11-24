@@ -287,7 +287,15 @@ export function mountInbox(db, sampleMode = false) {
   #staff-inbox .eq-inline-select[data-stage="Consultation Booked"]{background:#e2def1}
   #staff-inbox .eq-inline-select[data-stage="Converted"]{background:#d5e8cf}
   #staff-inbox .eq-inline-select[data-stage="Closed"]{background:#e1dfdc}
-  `;document.head.append(inlineStyle);
+  `;document.head.append(inlineStyle);inlineStyle.textContent += `
+#staff-inbox select.eq-inline-select.enquiry-status{color:#59420e!important;-webkit-text-fill-color:#59420e!important;opacity:1!important;font-weight:600!important;color-scheme:light!important}
+#staff-inbox select.eq-inline-select[data-stage="Contacted"]{color:#183f63!important;-webkit-text-fill-color:#183f63!important;background:#d5e6f7!important}
+#staff-inbox select.eq-inline-select[data-stage="Consultation Booked"]{color:#49336e!important;-webkit-text-fill-color:#49336e!important;background:#e2def1!important}
+#staff-inbox select.eq-inline-select[data-stage="Converted"]{color:#24532b!important;-webkit-text-fill-color:#24532b!important;background:#d5e8cf!important}
+#staff-inbox select.eq-inline-select[data-stage="Closed"]{color:#414141!important;-webkit-text-fill-color:#414141!important;background:#e1dfdc!important}
+#staff-inbox select.eq-inline-select option{color:#101827!important;-webkit-text-fill-color:#101827!important;background:#fcfaf7!important}
+#staff-inbox select.eq-inline-select option:disabled{color:#777!important;-webkit-text-fill-color:#777!important}
+`;
   function render() {
     if (!ready) return;
     const term = search.value.trim().toLowerCase();
