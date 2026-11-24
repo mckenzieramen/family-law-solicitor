@@ -271,7 +271,7 @@ export function mountInbox(db, sampleMode = false) {
   retry.onclick = connect;
   if (sampleMode) {
     entries = [
-      {kind:'consultation', contact:{firstName:'Mia', lastName:'Bennett', email:'mia@example.com', topic:'Parenting arrangements'}, message:'Hello, I’d like to arrange an initial consultation about school-holiday arrangements. Do you have any availability next week?'},
+      {kind:'consultation', contact:{firstName:'Mia', lastName:'Bennett', email:'mia@example.com', phone:'0400 123 456', postcode:'2060', topic:'parenting', newClient:'Yes', preferredTime:'2026-11-25T13:00'}, message:'Hello, I’d like to arrange an initial consultation about school-holiday arrangements. Do you have any availability next week?'},
       {kind:'support', contact:{}, message:'Could you confirm whether I should upload my statements before the appointment?'},
       {kind:'support', contact:{}, message:'Can I move my consultation to an afternoon slot?', reply:'Please share two afternoon times that work for you and we’ll check availability.'}
     ].map((item, index) => ({id:'sample-message-' + index, reply:'', ...item, createdAt:{toDate:() => new Date(Date.now() - (index + 1) * 3600000)}}));
