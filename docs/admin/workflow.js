@@ -155,6 +155,13 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney', year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let records = [];
   let consultationRequests = [];
+  let allEnquiryContacts = [];
+  let selectedContactKey = '';
+  let contactSearchQuery = '';
+  let contactTypeFilter = 'all';
+  let contactMatterFilter = 'all';
+  let contactStatusFilter = 'all';
+  let activeContactTab = 'details';
   let loaded = false;
   let dashboardMonth = today().slice(0, 7);
   let consultationRequestsLoaded = sampleMode;
@@ -603,6 +610,143 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     renderDashboard();
   }
 
+  function contactDateLabel(value) {
+    if (!value) return '—';
+    const dateValue = String(value).slice(0, 10);
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(dateValue) ? new Date(dateValue + 'T12:00:00Z') : new Date(value);
+    return Number.isNaN(parsed.getTime()) ? '—' : new Intl.DateTimeFormat('en-AU', {day:'2-digit',month:'short',year:'numeric',timeZone:'Australia/Sydney'}).format(parsed);
+  }
+
+  function renderContacts() {
+    const list = document.getElementById('contact-directory-list');
+    const detail = document.getElementById('contact-detail-panel');
+    if (!list || !detail) return;
+    const grouped = new Map();
+    allEnquiryContacts.forEach(item => {
+      const contact = item.contact || {};
+      const email = String(contact.email || '').trim().toLowerCase();
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ').trim();
+      const key = email || (name ? name.toLowerCase() + ':' + item.requestId : String(item.requestId));
+      if (!grouped.has(key)) grouped.set(key, {key, contact, item, requests:[]});
+      const entry = grouped.get(key);
+      entry.requests.push(item);
+      if (item.createdAt && (!entry.item.createdAt || item.createdAt.seconds > entry.item.createdAt.seconds)) {
+        entry.item = item;
+        entry.contact = contact;
+      }
+    });
+    const allEntries = [...grouped.values()];
+    const matterValues = [...new Set(allEntries.map(entry => entry.contact.matter || entry.contact.matterReference || entry.item.matter).filter(Boolean))];
+    const matterFilter = document.getElementById('contact-filter-matter');
+    if (matterFilter) {
+      const current = contactMatterFilter;
+      matterFilter.innerHTML = '<option value="all">All matters</option>' + matterValues.map(value => '<option value="' + escape(value) + '">' + escape(value) + '</option>').join('');
+      matterFilter.value = matterValues.includes(current) ? current : 'all';
+      if (!matterValues.includes(current)) contactMatterFilter = 'all';
+      matterFilter.onchange = () => { contactMatterFilter = matterFilter.value; renderDashboard(); };
+    }
+    const searchField = document.getElementById('contact-search');
+    const typeField = document.getElementById('contact-filter-type');
+    const statusField = document.getElementById('contact-filter-status');
+    const clearButton = document.getElementById('contact-clear-filters');
+    if (searchField) {
+      if (searchField.value !== contactSearchQuery) searchField.value = contactSearchQuery;
+      searchField.oninput = () => { contactSearchQuery = searchField.value; renderDashboard(); };
+    }
+    if (typeField) {
+      typeField.value = contactTypeFilter;
+      typeField.onchange = () => { contactTypeFilter = typeField.value; renderDashboard(); };
+    }
+    if (statusField) {
+      statusField.value = contactStatusFilter;
+      statusField.onchange = () => { contactStatusFilter = statusField.value; renderDashboard(); };
+    }
+    if (clearButton) clearButton.onclick = () => {
+      contactSearchQuery = '';
+      contactTypeFilter = 'all';
+      contactMatterFilter = 'all';
+      contactStatusFilter = 'all';
+      renderDashboard();
+    };
+    const statusFor = item => {
+      const status = String(item.approvalStatus || 'pending').toLowerCase();
+      return status === 'approved' || status === 'scheduled' ? 'approved' : status === 'declined' ? 'declined' : 'pending';
+    };
+    const typeFor = contact => String(contact.newClient || '').toLowerCase() === 'yes' ? 'new' : 'enquiry';
+    const labelForStatus = status => status === 'approved' ? 'Active' : status === 'declined' ? 'Declined' : 'Awaiting approval';
+    const filtered = allEntries.filter(entry => {
+      const contact = entry.contact || {};
+      const item = entry.item || {};
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+      const matter = contact.matter || contact.matterReference || item.matter || '';
+      const status = statusFor(item);
+      const type = typeFor(contact);
+      const haystack = [name, contact.email, contact.phone, contact.topic, item.notes, matter].join(' ').toLowerCase();
+      return (!contactSearchQuery || haystack.includes(contactSearchQuery.trim().toLowerCase()))
+        && (contactTypeFilter === 'all' || type === contactTypeFilter)
+        && (contactMatterFilter === 'all' || matter === contactMatterFilter)
+        && (contactStatusFilter === 'all' || status === contactStatusFilter);
+    });
+    const resultCount = document.getElementById('contact-result-count');
+    if (resultCount) resultCount.textContent = 'Showing ' + filtered.length + ' of ' + allEntries.length + ' contacts';
+    const active = filtered.find(entry => entry.key === selectedContactKey) || filtered[0];
+    if (active) selectedContactKey = active.key;
+    list.innerHTML = filtered.length ? filtered.map(entry => {
+      const contact = entry.contact || {};
+      const item = entry.item || {};
+      const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+      const initials = name.split(/\s+/).map(part => part[0] || '').slice(0, 2).join('').toUpperCase();
+      const type = typeFor(contact);
+      const status = statusFor(item);
+      const matter = contact.matter || contact.matterReference || item.matter || '—';
+      return '<button type="button" class="contact-list-row' + (entry.key === selectedContactKey ? ' is-selected' : '') + '" data-contact-key="' + escape(entry.key) + '" aria-pressed="' + (entry.key === selectedContactKey) + '">'
+        + '<span class="contact-avatar">' + escape(initials || 'C') + '</span>'
+        + '<span class="contact-list-name"><strong>' + escape(name) + '</strong><small>' + escape(contact.email || 'No email provided') + '</small></span>'
+        + '<span class="contact-type-pill">' + (type === 'new' ? 'New client' : 'Enquiry') + '</span>'
+        + '<span class="contact-list-secondary">' + escape(contact.phone || 'No phone provided') + (entry.requests.length > 1 ? ' · ' + entry.requests.length + ' enquiries' : '') + '</span>'
+        + '<span class="contact-list-matter">' + escape(matter) + '</span>'
+        + '<span class="contact-list-last">' + escape(contactDateLabel(item.date)) + '</span>'
+        + '<span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span>'
+        + '</button>';
+    }).join('') : '<p class="contact-empty-state">' + (consultationRequestsLoaded ? 'No contacts match these filters.' : 'Loading enquiry contacts…') + '</p>';
+    list.querySelectorAll('[data-contact-key]').forEach(button => {
+      button.onclick = () => {
+        selectedContactKey = button.dataset.contactKey;
+        activeContactTab = 'details';
+        renderDashboard();
+      };
+    });
+    if (!active) {
+      detail.innerHTML = '<div class="contact-detail-empty"><span class="contact-detail-empty-icon" aria-hidden="true">♧</span><h3>No contact selected</h3><p>Try another search or clear the filters.</p></div>';
+      return;
+    }
+    const contact = active.contact || {};
+    const item = active.item || {};
+    const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || item.title || 'Enquiry contact';
+    const initials = name.split(/\s+/).map(part => part[0] || '').slice(0, 2).join('').toUpperCase();
+    const matter = contact.matter || contact.matterReference || item.matter || '';
+    const status = statusFor(item);
+    let tabContent = '';
+    if (activeContactTab === 'matters') {
+      tabContent = '<section class="contact-detail-section"><h4>Linked Matters (' + (matter ? '1' : '0') + ')</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Linked to this contact</span></article>' : '<p class="contact-detail-muted">No matter has been linked to this contact yet.</p>') + '</section>';
+    } else if (activeContactTab === 'notes') {
+      tabContent = '<section class="contact-detail-section"><h4>Enquiry notes</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '<small>From the original website enquiry</small></div></section>';
+    } else if (activeContactTab === 'communications') {
+      tabContent = '<section class="contact-detail-section"><h4>Communications</h4><article class="contact-communication-card"><span class="contact-communication-icon" aria-hidden="true">✉</span><div><strong>Website consultation enquiry</strong><small>Received ' + escape(contactDateLabel(item.date)) + '</small></div><span class="contact-type-pill">Received</span></article><a class="contact-record-action" href="#staff-inbox">Open Client Messages</a></section>';
+    } else {
+      const topic = String(contact.topic || 'General enquiry').replaceAll('-', ' ');
+      tabContent = '<section class="contact-detail-section"><h4>Contact Details</h4><dl class="contact-detail-grid"><div><dt>Email</dt><dd>' + escape(contact.email || 'Not provided') + '</dd></div><div><dt>Phone</dt><dd>' + escape(contact.phone || 'Not provided') + '</dd></div><div><dt>Enquiry type</dt><dd>' + escape(topic) + '</dd></div><div><dt>New client</dt><dd>' + escape(contact.newClient || 'Not specified') + '</dd></div><div><dt>Preferred appointment</dt><dd>' + escape(item.date ? contactDateLabel(item.date) + (item.time ? ' · ' + item.time + ' Sydney' : '') : 'Not provided') + '</dd></div><div><dt>Received</dt><dd>' + escape(contactDateLabel(item.date)) + '</dd></div></dl></section>'
+        + '<section class="contact-detail-section"><h4>Linked Matter</h4>' + (matter ? '<article class="contact-matter-card"><strong>' + escape(matter) + '</strong><span>Related matter</span></article>' : '<p class="contact-detail-muted">No matter linked yet.</p>') + '</section>'
+        + '<section class="contact-detail-section"><h4>Enquiry Message</h4><div class="contact-note-card">' + escape(item.notes || 'No message was included with this enquiry.') + '</div></section>';
+    }
+    detail.innerHTML = '<header class="contact-detail-head"><span class="contact-avatar contact-avatar-large">' + escape(initials || 'C') + '</span><div><h3>' + escape(name) + '</h3><span class="contact-type-pill">' + (typeFor(contact) === 'new' ? 'New client' : 'Prospective client') + '</span></div><span class="contact-status-pill is-' + status + '">' + escape(labelForStatus(status)) + '</span></header>'
+      + '<div class="contact-detail-tabs" role="tablist" aria-label="Contact details"><button type="button" role="tab" aria-selected="' + (activeContactTab === 'details') + '" data-contact-tab="details">Details</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'matters') + '" data-contact-tab="matters">Matters</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'notes') + '" data-contact-tab="notes">Notes</button><button type="button" role="tab" aria-selected="' + (activeContactTab === 'communications') + '" data-contact-tab="communications">Communications</button></div>'
+      + '<div class="contact-detail-body">' + tabContent + '</div><footer class="contact-detail-footer"><a class="contact-record-action" href="#staff-inbox">Review enquiry</a></footer>';
+    detail.querySelectorAll('[data-contact-tab]').forEach(button => {
+      button.onclick = () => { activeContactTab = button.dataset.contactTab; renderDashboard(); };
+    });
+  }
+
   function renderDashboard() {
     const overview = document.getElementById('dashboard-overview');
     if (!overview) return;
@@ -669,17 +813,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       taskList.innerHTML=dueTasks.length?dueTasks.map(item=>'<li class="dashboard-due-task"><a href="#work-queue" data-task-filter="open">'+escape(item.title)+'</a><small class="'+(item.date<date?'is-overdue':'')+'">'+escape(dayLabel(item.date))+'</small></li>').join(''):'<li class="dashboard-empty">'+(loaded?'No open tasks due in the next 7 days.':'Loading tasks…')+'</li>';
     }
 
-    const directory=document.getElementById('dashboard-client-directory');
-    if(directory){
-      const clients=new Map();
-      consultationRequests.forEach(item=>{
-        const contact=item.contact||{};
-        const key=String(contact.email||item.requestId).toLowerCase();
-        if(!clients.has(key)) clients.set(key,{contact,item});
-      });
-      const entries=[...clients.values()];
-      directory.innerHTML=entries.length?entries.map(({contact,item})=>'<tr><td>'+escape([contact.firstName,contact.lastName].filter(Boolean).join(' ')||item.title||'Enquiry contact')+'</td><td>'+escape(contact.email||'—')+'</td><td>'+escape(contact.phone||'—')+'</td><td>'+escape(String(contact.topic||'General enquiry').replaceAll('-',' '))+'</td><td>'+escape(item.date||'—')+'</td></tr>').join(''):'<tr><td colspan="5" class="dashboard-empty-cell">No website enquiry contacts are loaded.</td></tr>';
-    }
+    renderContacts();
 
     const monthLabel = document.getElementById('dashboard-month-label');
     const monthTitle = document.getElementById('dashboard-calendar-title');
@@ -885,6 +1019,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
           topic:'parenting', newClient:'Yes'
         }
       }];
+      allEnquiryContacts = consultationRequests.slice();
       consultationRequestsLoaded = true;
       renderCalendar();
       renderDashboard();
@@ -908,12 +1043,11 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         }
         consultationRequestIds = new Set(newConsultationDocs.map(document => document.id));
         consultationFeedReady = !snapshot.metadata.fromCache;
-        consultationRequests = snapshot.docs.map(document => {
+        allEnquiryContacts = snapshot.docs.map(document => {
           const record = document.data();
           if (record.kind !== 'consultation') return null;
           const contact = record.contact || {};
           const match = /^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}))?/.exec(String(contact.preferredTime || ''));
-          if (!match) return null;
           const name = [contact.firstName, contact.lastName].filter(Boolean).join(' ') || 'Consultation inquiry';
           return {
             id:'consultation-' + document.id, requestId:document.id, kind:'Consultation request',
@@ -921,6 +1055,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
             calendar:'admin', priority:'High', done:false, approvalStatus:record.approvalStatus || 'pending', createdAt:record.createdAt
           };
         }).filter(Boolean);
+        consultationRequests = allEnquiryContacts.filter(item => item.date);
         consultationRequestsLoaded = true;
         renderCalendar();
         renderDashboard();
@@ -934,6 +1069,23 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       }
     );
   }
+  document.querySelectorAll('[data-settings-tab]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const name = tab.dataset.settingsTab;
+      document.querySelectorAll('[data-settings-tab]').forEach(button => button.setAttribute('aria-selected', String(button === tab)));
+      document.querySelectorAll('[data-settings-panel]').forEach(panel => { panel.hidden = panel.dataset.settingsPanel !== name; });
+    });
+    tab.addEventListener('keydown', event => {
+      const tabs = [...document.querySelectorAll('[data-settings-tab]')];
+      const index = tabs.indexOf(tab);
+      let next = null;
+      if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
+      if (event.key === 'ArrowLeft') next = tabs[(index - 1 + tabs.length) % tabs.length];
+      if (event.key === 'Home') next = tabs[0];
+      if (event.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { event.preventDefault(); next.focus(); next.click(); }
+    });
+  });
   listenForConsultationRequests();
 
   document.getElementById("staff-checklist").addEventListener("click", async event => {
