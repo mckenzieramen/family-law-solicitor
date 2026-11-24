@@ -181,7 +181,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    'Task notes', 'Save task', true)}
  </dialog>
  <dialog id="email-task-dialog" class="schedule-dialog email-task-dialog" aria-labelledby="email-task-title">
-  <form id="email-task-form" class="work-form"><h3 id="email-task-title">Review suggested task</h3><p id="email-task-summary" role="status"></p>
+  <form id="email-task-form" class="work-form"><h3 id="email-task-title">Review task from email</h3><p id="email-task-summary" role="status">Review the email first. AI processing is optional; you can enter a task manually.</p><label class="ai-consent"><input id="email-ai-consent" type="checkbox"> I confirm this email may be sent to OpenAI to generate a summary and task suggestion.</label><button type="button" id="email-ai-generate">Generate AI suggestion</button>
    <label>Task title<input name="title" maxlength="160" required></label>
    <div class="work-fields"><label>Matter reference<input name="matter" maxlength="80"></label><label>Deadline (Sydney)<input name="date" type="date"></label><label>Priority<select name="priority"><option>Urgent</option><option>High</option><option selected>Normal</option><option>Low</option></select></label></div>
    <label>Task notes<textarea name="notes" rows="4" maxlength="8000"></textarea></label><p class="email-task-source"></p>
@@ -1001,6 +1001,24 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   });
   const taskDialog=find('#email-task-dialog');const taskForm=find('#email-task-form');let sourceEmail=null;
   find('[data-close-email-task]').addEventListener('click',()=>taskDialog.close());
+  find('#email-ai-generate').addEventListener('click',async()=>{
+    const summary=find('#email-task-summary');const consent=find('#email-ai-consent');const generate=find('#email-ai-generate');
+    if(!consent.checked){summary.textContent='Check the confirmation box before sending email content to OpenAI.';return;}
+    if(sampleMode){summary.textContent='Sample mode does not send email content to AI. Enter the task details manually.';return;}
+    if(!sourceEmail||!authUser){summary.textContent='A signed-in staff session is required.';return;}
+    generate.disabled=true;summary.textContent='Generating a suggestion…';
+    try{
+      const token=await authUser.getIdToken();
+      const response=await fetch('/api/summarize-attorney-email',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({from:sourceEmail.recipient,subject:sourceEmail.title.replace(/^\[ATTY EMAIL\] /,''),received:sourceEmail.date,body:sourceEmail.notes})});
+      const result=await response.json();if(!response.ok)throw new Error(result.error||'AI task generation is unavailable.');
+      summary.textContent=result.summary||'Summary ready for review.';
+      taskForm.elements.title.value=result.task?.title||'Review attorney email';
+      taskForm.elements.notes.value=result.task?.notes||result.summary||'';
+      taskForm.elements.date.value=result.task?.deadline||'';
+      taskForm.elements.priority.value=['Urgent','High','Normal','Low'].includes(result.task?.priority)?result.task.priority:'Normal';
+    }catch(error){summary.textContent=error.message||'Could not create an AI suggestion. You can still complete the task manually.';}
+    finally{generate.disabled=false;}
+  });
   taskForm.addEventListener('submit',async event=>{
     event.preventDefault();if(!loaded||!sourceEmail)return;
     const values=new FormData(taskForm);const save=taskForm.querySelector('[type="submit"]');const output=taskForm.querySelector('[role="status"]');
@@ -1163,23 +1181,15 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       sourceEmail=records.find(item=>item.id===generateEmailTask.dataset.generateEmailTask);
       if(!sourceEmail||!loaded)return;
       const subject=sourceEmail.title.replace(/^\[ATTY EMAIL\] /,'');
-      const summary=find('#email-task-summary');summary.textContent='Creating a task suggestion…';
-      taskForm.elements.title.value='';taskForm.elements.matter.value=sourceEmail.matter||'';taskForm.elements.date.value='';taskForm.elements.priority.value='Normal';taskForm.elements.notes.value='';
+      find('#email-task-summary').textContent='Review the full email first. AI processing is optional and requires your confirmation.';
+      find('#email-ai-consent').checked=false;
+      taskForm.elements.title.value='Review attorney email: '+subject;
+      taskForm.elements.matter.value=sourceEmail.matter||'';
+      taskForm.elements.date.value='';
+      taskForm.elements.priority.value='Normal';
+      taskForm.elements.notes.value='Review the attorney email and confirm the next steps.';
       find('.email-task-source').textContent='Source: '+(sourceEmail.recipient||'Attorney')+' · '+subject;
-      taskDialog.showModal();const submit=taskForm.querySelector('[type="submit"]');submit.disabled=true;
-      try{
-        if(sampleMode){summary.textContent='Sample mode does not send email content to AI. Enter the task details below to continue.';taskForm.elements.title.value='Review attorney email: '+subject;taskForm.elements.notes.value='Review the attorney email and confirm the next steps.';return;}
-        if(!authUser)throw new Error('Signed-in account is unavailable.');
-        const token=await authUser.getIdToken();
-        const response=await fetch('/api/summarize-attorney-email',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({from:sourceEmail.recipient,subject,received:sourceEmail.date,body:sourceEmail.notes})});
-        const result=await response.json();if(!response.ok)throw new Error(result.error||'AI task generation is unavailable.');
-        summary.textContent=result.summary||'Summary ready for review.';
-        taskForm.elements.title.value=result.task?.title||'Review attorney email: '+subject;
-        taskForm.elements.notes.value=result.task?.notes||result.summary||'Review the email and confirm the next steps.';
-        taskForm.elements.date.value=result.task?.deadline||'';
-        taskForm.elements.priority.value=['Urgent','High','Normal','Low'].includes(result.task?.priority)?result.task.priority:'Normal';
-      }catch(error){summary.textContent=error.message||'AI task generation is unavailable. You can still complete the task details manually.';taskForm.elements.title.value='Review attorney email: '+subject;taskForm.elements.notes.value='Review the attorney email and confirm the next steps.\n\nEmail summary: ';}
-      finally{submit.disabled=false;}
+      taskDialog.showModal();
       return;
     }
     const matter = event.target.closest('[data-matter]');

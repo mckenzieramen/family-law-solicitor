@@ -592,3 +592,6 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
 .task-priority[data-priority="High"]{background:#e5f3e9;border-color:#9ac4a5;color:#27623a}
 .task-priority[data-priority="Normal"]{background:#eef0f2;border-color:#d3d8dd;color:#53616d}
 .task-priority[data-priority="Low"]{background:#e8eff8;border-color:#b6c9df;color:#3e5e7f}
+
+.email-task-dialog .ai-consent{display:flex;align-items:flex-start;gap:9px;margin:7px 0 12px;font-size:13px;line-height:1.4}
+.email-task-dialog .ai-consent input{display:inline-block;flex:0 0 auto;width:auto;min-height:0;margin:3px 0 0}
