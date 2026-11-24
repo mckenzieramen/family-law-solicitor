@@ -246,6 +246,7 @@ body:has(.admin-dashboard:not([hidden])){margin:0}
   min-height:0;
   overflow:auto;
 }
+#staff-workspace > .workflow-panel[hidden]{display:none!important}
 .admin-dashboard[data-view="overview"] .dashboard-main{overflow:auto}
 .admin-dashboard[data-view="work-calendar"] .dashboard-main,
 .admin-dashboard[data-view="work-calendar"] #staff-workspace{overflow:hidden}
