@@ -721,7 +721,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(correspondenceFilter==='all'||correspondenceFilter==='email'?'No correspondence yet':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
     const available = filtered.some(item=>item.id===selectedCorrespondenceId) ? filtered : filtered.slice(0,1);
     if(available.length) selectedCorrespondenceId=available[0].id;
-    const active=emailItems.find(item=>item.id===selectedCorrespondenceId);
+    const active=available[0] || null;
     const reader=find('#correspondence-reader-content');
     if(!active){
       reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
@@ -1176,13 +1176,14 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const row=event.target.closest('[data-correspondence-id]');if(!row)return;
     selectedCorrespondenceId=row.dataset.correspondenceId;
     find('#correspondence-layout').classList.remove('is-reader-closed');
+    find('#correspondence-layout').classList.add('has-selected');
     renderDrafts();
   });
   const correspondenceLayout=find('#correspondence-layout');
   find('#correspondence-list-close').addEventListener('click',()=>{correspondenceLayout.classList.add('is-list-collapsed');find('#correspondence-list-open').hidden=false;});
   find('#correspondence-list-open').addEventListener('click',()=>{correspondenceLayout.classList.remove('is-list-collapsed');find('#correspondence-list-open').hidden=true;});
-  find('#correspondence-reader-close').addEventListener('click',()=>correspondenceLayout.classList.add('is-reader-closed'));
-  find('#correspondence-reader-list').addEventListener('click',()=>correspondenceLayout.classList.remove('is-list-collapsed'));
+  find('#correspondence-reader-close').addEventListener('click',()=>{correspondenceLayout.classList.remove('has-selected');correspondenceLayout.classList.add('is-reader-closed');});
+  find('#correspondence-reader-list').addEventListener('click',()=>{correspondenceLayout.classList.remove('is-list-collapsed');find('#correspondence-list-open').hidden=true;});
   find('#correspondence-reader-content').addEventListener('click',event=>{
     const compose=event.target.closest('[data-correspondence-compose]');
     if(compose){
