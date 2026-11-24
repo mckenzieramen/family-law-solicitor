@@ -71,3 +71,8 @@
 .pm-check-list label{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #ece4d8;border-radius:8px;color:#34465a}
 @media(max-width:1000px){.pm-toolbar,.pm-searchbar{grid-template-columns:repeat(2,minmax(0,1fr))}.pm-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.pm-content-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.pm-heading{align-items:start;flex-direction:column}.pm-heading>.pm-button,.pm-heading button{width:100%}.pm-toolbar,.pm-searchbar,.pm-kpis,.pm-form-grid,.pm-check-list,.pm-trust-banner{grid-template-columns:1fr}.pm-span-2{grid-column:auto}.pm-line-row{grid-template-columns:1fr}.pm-form{padding:16px}.pm-form>footer{align-items:stretch}.pm-form>footer .pm-button{flex:1}.pm-setting-tabs button{padding:10px 12px}}
+
+.pm-status[data-state=error]{color:#a12c27;font-weight:650}
+.pm-status[data-state=success]{color:#27613e;font-weight:650}
+.pm-connection-note{display:flex;align-items:flex-start;gap:10px}
+.pm-connection-note .pm-lock{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;background:#e3f0e3;color:#27613e;font-weight:800}
