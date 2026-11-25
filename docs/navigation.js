@@ -28,6 +28,8 @@ function highlightSection() {
 }
 
 function scheduleHighlight() {
+  const scrolled = window.scrollY > 28;
+  if (header.classList.contains('is-scrolled') !== scrolled) header.classList.toggle('is-scrolled', scrolled);
   if (scheduled) return;
   scheduled = true;
   requestAnimationFrame(highlightSection);
