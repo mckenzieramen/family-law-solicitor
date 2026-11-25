@@ -701,6 +701,14 @@ html body header.site-header .header-nav a.nav-cta:hover{transform:translateY(-2
 @keyframes navConsultGlow{50%{filter:brightness(1.08)}}
 @media(prefers-reduced-motion:reduce){html body:has(.client-home) > header.site-header .header-nav a.nav-cta,html body header.site-header .header-nav a.nav-cta::before{animation:none!important;transition:none!important}html body header.site-header .header-nav a.nav-cta:hover{transform:none}}
 </style>
+<style id="public-smooth-scroll">
+html:has(.client-home){scroll-behavior:smooth;scroll-padding-top:110px}
+html:has(.client-home) body{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html:has(.client-home),html:has(.client-home) body{scroll-behavior:auto!important}}
+</style>
+<script id="public-scroll-controller">
+(()=>{let frame=0,target=0;const reduced=matchMedia('(prefers-reduced-motion: reduce)');const cancel=()=>{cancelAnimationFrame(frame);frame=0;};window.addEventListener('wheel',e=>{if(reduced.matches||!document.querySelector('.client-home')||e.ctrlKey||e.shiftKey||e.deltaMode!==1&&Math.abs(e.deltaY)<50||Math.abs(e.deltaX)>Math.abs(e.deltaY)||document.querySelector('dialog[open]')||e.target.closest('input,textarea,select,iframe,[contenteditable]'))return;for(let el=e.target;el instanceof Element&&el!==document.body;el=el.parentElement){if(/auto|scroll/.test(getComputedStyle(el).overflowY)&&el.scrollHeight>el.clientHeight+2)return;}if(!e.cancelable)return;e.preventDefault();const root=document.scrollingElement;if(!frame)target=root.scrollTop;target=Math.max(0,Math.min(root.scrollHeight-root.clientHeight,target+e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1)));if(frame)return;const tick=()=>{const d=target-root.scrollTop;if(Math.abs(d)<1){window.scrollTo({top:target,behavior:'instant'});frame=0;return;}window.scrollTo({top:root.scrollTop+d*.24,behavior:'instant'});frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);},{passive:false});for(const type of ['touchstart','pointerdown','keydown','resize','hashchange'])window.addEventListener(type,cancel,{passive:true});})();
+</script>
 <script id="availability-dialog-controller">
 (() => {
  const selectors = '.client-home a[href="#contact"], .site-header .header-nav a.nav-cta';
