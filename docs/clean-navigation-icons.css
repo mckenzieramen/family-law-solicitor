@@ -6,7 +6,7 @@ html body:has(.client-home)>header.site-header,html body:has(.client-home)>heade
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important
 }
 html body:has(.client-home)>header.site-header.is-scrolled {
-  background:rgba(255,255,255,.78)!important;background-image:none!important;
+  background:rgba(255,255,255,.48)!important;background-image:none!important;
   -webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important
 }
 html body>header.site-header nav#public-navigation {
@@ -77,12 +77,12 @@ html body>header.site-header a.brand,html body:has(.client-home)>header.site-hea
 html body>header.site-header a.brand img,html body:has(.client-home)>header.site-header a.brand img.prevail-real-logo{display:block!important;width:100%!important;height:auto!important;max-height:72px!important;object-fit:contain!important}
 @media(max-width:760px){html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:min(46vw,185px)!important}}
 
-html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:rgba(255,255,255,.60)!important;background-color:rgba(255,255,255,.60)!important;background-image:none!important;box-shadow:none!important}
-html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(255,255,255,.78)!important}
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:rgba(255,255,255,.28)!important;background-color:rgba(255,255,255,.28)!important;background-image:none!important;box-shadow:none!important}
+html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(255,255,255,.48)!important}
 
 /* Keep both header rows together; the measured contact height prevents gaps. */
-html body:has(.client-home)> .premium-top-contact{position:fixed!important;inset:0 0 auto!important;z-index:1001!important;background:rgba(255,255,255,.60)!important;transition:background-color 420ms cubic-bezier(.22,1,.36,1),backdrop-filter 420ms cubic-bezier(.22,1,.36,1),-webkit-backdrop-filter 420ms cubic-bezier(.22,1,.36,1),box-shadow 420ms ease!important}
-html body:has(.client-home):has(>header.site-header.is-scrolled)> .premium-top-contact{background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
+html body:has(.client-home)> .premium-top-contact{position:fixed!important;inset:0 0 auto!important;z-index:1001!important;background:rgba(255,255,255,.28)!important;transition:background-color 420ms cubic-bezier(.22,1,.36,1),backdrop-filter 420ms cubic-bezier(.22,1,.36,1),-webkit-backdrop-filter 420ms cubic-bezier(.22,1,.36,1),box-shadow 420ms ease!important}
+html body:has(.client-home):has(>header.site-header.is-scrolled)> .premium-top-contact{background:rgba(255,255,255,.48)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
 html body:has(.client-home)>header.site-header.site-header{transition:background-color 420ms cubic-bezier(.22,1,.36,1),backdrop-filter 420ms cubic-bezier(.22,1,.36,1),-webkit-backdrop-filter 420ms cubic-bezier(.22,1,.36,1),box-shadow 420ms ease!important}
 html body:has(.client-home)>header.site-header.site-header.is-scrolled{-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
 
