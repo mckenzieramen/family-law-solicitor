@@ -100,7 +100,7 @@ service cloud.firestore {
       return d.keys().hasOnly([
           'kind', 'title', 'notes', 'matter', 'date', 'priority', 'done',
           'recipient', 'updatedAt', 'calendar', 'time', 'followUpStatus',
-          'assignedTo', 'linkedType', 'taskCategory', 'checklist', 'taskStatus', 'endTime', 'eventType', 'requireAttachment', 'requireApproval'
+          'assignedTo', 'linkedType', 'taskCategory', 'checklist', 'taskStatus', 'endTime', 'eventType', 'requireAttachment', 'requireApproval', 'attachmentInstructions'
         ])
         && d.keys().hasAll([
           'kind', 'title', 'notes', 'matter', 'date', 'priority',
@@ -124,6 +124,7 @@ service cloud.firestore {
         && d.get('linkedType', '') in ['', 'Matter', 'Client enquiry', 'Client & Contact', 'General task']
         && d.get('taskCategory', '') in ['', 'Document preparation', 'Client follow-up', 'Legal research', 'Court preparation', 'Administrative', 'Other']
         && d.get('checklist', {}) is map && d.get('checklist', {}).size() <= 100
+        && d.get('attachmentInstructions', '') is string && d.get('attachmentInstructions', '').size() <= 2000
         && d.get('requireAttachment', false) is bool
         && d.get('requireApproval', false) is bool
         && (!d.get('requireAttachment', false) || d.get('requireApproval', false))
