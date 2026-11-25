@@ -185,7 +185,9 @@
       .sort((a,b)=>(b.updatedAt?.toMillis?.()||0)-(a.updatedAt?.toMillis?.()||0));
   }
   function renderMatterDirectory(){
-    const section=byId('work-matters'); if(!section)return;
+    const section=byId('work-matters'); if(!section)return; 
+    if(!section.dataset.compactMatterTop){const stat=byId('matter-stat-open');const table=section.querySelector('#pm-matter-table');if(stat&&table){section.dataset.compactMatterTop='1';const card=stat.closest('article')||stat.closest('.matter-stat-card')||stat.parentElement.parentElement;const cards=card.parentElement;const heading=section.querySelector('header,.pm-heading,.module-heading');const create=Array.from(section.querySelectorAll('button')).find(b=>/new matter|create matter/i.test(b.textContent));const search=byId('matter-search');if(create&&search){const toolbar=search.closest('.pm-toolbar,.matter-filters,.pm-searchbar')||search.parentElement.parentElement;toolbar.append(create);}if(heading&&!heading.contains(table))heading.style.display='none';if(cards&&!cards.contains(table)&&cards.contains(byId('matter-stat-finalised')))cards.style.display='none';}}
+
     if(!section.querySelector('.matter-premium-nav')){
       const table=section.querySelector('#pm-matter-table');
       if(table){
