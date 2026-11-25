@@ -423,7 +423,32 @@ html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftRe
 .consultation-frame-body{position:relative}.booking-intro-motion{position:absolute;inset:0;z-index:10;display:grid;place-content:center;justify-items:center;gap:18px;background:#fffaf4;overflow:hidden;color:#102a3a;transition:opacity .35s ease}.booking-intro-motion svg{width:62px;height:62px;color:#a47b36}.booking-intro-motion strong{font:600 19px system-ui,sans-serif}.booking-intro-motion.is-leaving{opacity:0;pointer-events:none}.booking-intro-motion i{position:absolute;left:50%;top:45%;width:6px;height:10px;border-radius:2px;pointer-events:none}
 </style>
 
-<style>.premium-knowledge .premium-knowledge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.premium-knowledge .premium-article{display:flex;flex-direction:column;overflow:hidden;border-radius:12px}.premium-knowledge .premium-article-art{width:100%;height:170px;object-fit:cover;display:block}.premium-knowledge .premium-article-body{display:flex;flex:1;flex-direction:column;padding:20px}.premium-knowledge .premium-article-body h3{font-size:clamp(18px,2vw,23px);line-height:1.25}.premium-knowledge .premium-article-body a{margin-top:auto;padding-top:16px}.premium-knowledge .premium-article{transition:transform .25s,box-shadow .25s}.premium-knowledge .premium-article:hover{transform:translateY(-4px);box-shadow:0 12px 26px #10243818}@media(max-width:1000px){.premium-knowledge .premium-knowledge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.premium-knowledge .premium-knowledge-grid{grid-template-columns:1fr}}</style></head>
+<style>.premium-knowledge .premium-knowledge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.premium-knowledge .premium-article{display:flex;flex-direction:column;overflow:hidden;border-radius:12px}.premium-knowledge .premium-article-art{width:100%;height:170px;object-fit:cover;display:block}.premium-knowledge .premium-article-body{display:flex;flex:1;flex-direction:column;padding:20px}.premium-knowledge .premium-article-body h3{font-size:clamp(18px,2vw,23px);line-height:1.25}.premium-knowledge .premium-article-body a{margin-top:auto;padding-top:16px}.premium-knowledge .premium-article{transition:transform .25s,box-shadow .25s}.premium-knowledge .premium-article:hover{transform:translateY(-4px);box-shadow:0 12px 26px #10243818}@media(max-width:1000px){.premium-knowledge .premium-knowledge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.premium-knowledge .premium-knowledge-grid{grid-template-columns:1fr}}</style><style id="booking-premium-refinement">
+.client-home .consultation-wide{display:grid!important;grid-template-columns:minmax(210px,.72fr) minmax(0,2fr)!important;max-width:1180px!important;margin-inline:auto!important;align-items:stretch!important;border-radius:16px!important;overflow:hidden}
+.client-home .consultation-wide .consultation-form{padding:clamp(22px,3vw,42px)!important;background:#fff!important;border:0!important;min-width:0}
+.client-home .consultation-form>h3{font:500 clamp(27px,3vw,36px)/1.2 Georgia,serif!important;color:#102a3a!important;margin:0 0 22px!important}
+.client-home #consultation-demo{background:#f6f7f7!important;border-left:2px solid #b89558!important;color:#526675!important;max-width:none!important;width:100%!important;padding:12px 16px!important;font-size:13px!important;box-sizing:border-box}
+.client-home .premium-booking-steps{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;margin:0 0 20px!important;gap:10px!important}
+.client-home .premium-booking-steps>span{background:transparent!important;color:#526675!important;border-radius:0!important;box-shadow:none!important;border:0!important;border-bottom:2px solid #e6e2db!important;padding:12px 4px!important;transform:none!important}
+.client-home .premium-booking-steps>span.active,.client-home .premium-booking-steps>span.completed{border-bottom-color:#b89558!important;color:#102a3a!important}
+.client-home .premium-booking{background:#fff!important;border:1px solid #e1ded7!important;box-shadow:none!important;border-radius:12px!important;padding:clamp(16px,2.5vw,26px)!important;margin:18px 0!important}
+.client-home .premium-booking-head-icon{background:#102a3a!important;color:#e5c48b!important;border:0!important;border-radius:9px!important}
+.client-home .premium-booking-head strong,.client-home .premium-times>strong,.client-home .premium-calendar-header{color:#102a3a!important}
+.client-home .premium-booking-head small,.client-home .premium-times>p,.client-home .premium-booking-status,.client-home .premium-booking-footer small{color:#526675!important;font-size:12px!important;line-height:1.6!important}
+.client-home .premium-booking-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)!important;gap:20px!important;align-items:start}
+.client-home .premium-calendar{background:#faf9f6!important;border:1px solid #e7e2d8!important;padding:12px!important}
+.client-home .premium-calendar-header button{background:white!important;border:1px solid #ded8cc!important;color:#102a3a!important}
+.client-home .premium-calendar-weekdays span{color:#526675!important;font-size:11px!important}
+.client-home .premium-calendar-days button{min-height:38px!important;font-size:13px!important}
+.client-home .premium-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.client-home .premium-time-grid button{min-height:40px!important;background:white!important;color:#102a3a!important;border:1px solid #d9dfe1!important;border-radius:7px!important}
+.client-home .premium-time-grid button:disabled{background:#f5f5f3!important;color:#92999d!important}
+.client-home .premium-time-grid button[aria-pressed=true],.client-home .premium-calendar-days button[aria-pressed=true]{background:#102a3a!important;color:white!important;border-color:#102a3a!important;box-shadow:none!important}
+.client-home .premium-booking-footer{border-color:#e5e1d8!important;margin-top:16px!important;padding-top:12px!important}
+.client-home .premium-booking-navigation .premium-next:not(:disabled){background:#102a3a!important;color:white!important;border-color:#102a3a!important}
+@media(max-width:1000px){.client-home .consultation-wide{grid-template-columns:1fr!important}.client-home .consultation-wide>div:first-child{padding:28px!important}}
+@media(max-width:620px){.client-home .premium-booking-grid{grid-template-columns:1fr!important}.client-home .premium-calendar-days button{min-height:36px!important}}
+</style></head>
 <body>
 <div class="premium-top-contact" aria-label="Firm contact and Sydney time">
  <div class="premium-top-contact-inner">
