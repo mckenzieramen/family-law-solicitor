@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102a3a">
+<meta name="description" content="Get in touch with Prevail Family Law and request a free 30-minute consultation.">
+<title>Contact Us | Prevail Family Law</title>
+<link rel="icon" type="image/png" href="/favicon.png?v=clean2">
+<style>
+:root{--navy:#102a3a;--navy-deep:#0b2131;--gold:#d5ae67;--gold-light:#f0d391;--cream:#faf7f0;--ink:#173145;--muted:#5d6c77;--line:#e6dfd3;--white:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:105px}
+#melissa-title{scroll-margin-top:210px}
+body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}button,input,select,textarea{font:inherit}button{cursor:pointer}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold-light);outline-offset:3px}
+.contact-strip{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:8px clamp(18px,5vw,72px);color:#e8edf0;background:#091c2a;font-size:12px}
+.contact-strip div{display:flex;align-items:center;gap:20px}.contact-strip a{text-decoration:none}.contact-strip a:hover{text-decoration:underline}
+.contact-strip svg{width:14px;height:14px;fill:none;stroke:var(--gold-light);stroke-width:1.7;vertical-align:middle;margin-right:6px}
+.site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:94px;padding:11px clamp(18px,5vw,72px);background:rgba(9,27,42,.94);color:#fff;border-bottom:1px solid rgba(214,224,230,.15);box-shadow:0 7px 22px rgba(4,15,24,.16);-webkit-backdrop-filter:blur(15px) saturate(125%);backdrop-filter:blur(15px) saturate(125%)}
+.brand{display:block;flex:none;padding:6px 9px;border-radius:8px;background:#fffaf1;box-shadow:0 3px 12px #0002}.brand img{display:block;width:clamp(190px,25vw,320px);height:auto;max-height:74px;object-fit:contain}
+.header-nav{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}.header-nav a{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:7px 12px;border:0;border-radius:0;background:transparent;color:#fff9f0;text-decoration:none;font:550 15px/1.2 system-ui,sans-serif;white-space:nowrap;position:relative}
+.header-nav a:not(.nav-cta):hover,.header-nav a[aria-current=page]{background:transparent;color:#f4ce83}
+.header-nav a[aria-current=page]{box-shadow:none}.header-nav a[aria-current=page]::after{content:"";position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#efc979}
+.nav-icon{display:block;width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.header-nav .nav-cta{min-height:44px;padding:9px 16px;border-color:#f6dfaa;background:linear-gradient(135deg,#f3d797,#eac16e);color:#162c3a;font-weight:650;box-shadow:0 4px 13px #0002}
+.header-nav .nav-cta:hover{background:#f8df9e;color:#102a3a;transform:translateY(-1px)}
+.nav-cta .nav-icon{stroke:#162c3a}
+.menu-toggle{display:none;align-items:center;gap:8px;padding:10px 13px;border:1px solid rgba(194,209,218,.55);border-radius:999px;background:rgba(255,255,255,.05);color:#fff}
+main{overflow:hidden}
+.container{width:min(1160px,calc(100% - 40px));margin-inline:auto}
+.about-hero{padding:clamp(42px,7vw,82px) 0 62px;background:linear-gradient(180deg,#e9eef0 0,#f7f4ee 100%)}
+.about-hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.8fr);align-items:start;gap:clamp(28px,5vw,70px)}
+.eyebrow{margin:0 0 12px;color:#987642;font-size:12px;font-weight:750;letter-spacing:.17em;text-transform:uppercase}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.025em}
+h1{max-width:12ch;margin:0 0 20px;color:var(--navy);font-size:clamp(42px,6vw,72px);font-weight:500;line-height:1.02}
+.about-copy h2{margin:0 0 13px;color:var(--navy);font-size:clamp(24px,2.6vw,32px);font-weight:500}
+.about-copy p{max-width:66ch;margin:0 0 16px;color:#304b5e;font:400 16px/1.75 Georgia,"Times New Roman",serif}
+.intro-note{display:flex;gap:12px;align-items:flex-start;margin-top:24px;padding:15px 17px;border-left:3px solid var(--gold);background:#fffaf2;color:#364c5b;border-radius:0 9px 9px 0}
+.intro-note svg{width:20px;height:20px;flex:none;fill:none;stroke:#987642;stroke-width:1.7}
+.consult-card{padding:clamp(22px,3vw,32px);border:1px solid #e5d9c8;border-radius:15px;background:#fffdf9;box-shadow:0 16px 42px rgba(16,42,58,.12)}
+.consult-card-head{margin-bottom:19px}.consult-card h2{margin:0 0 5px;color:var(--navy);font-size:clamp(24px,2.7vw,31px);font-weight:500;line-height:1.15}
+.consult-card-head p{margin:0;color:var(--muted);font-size:13px}
+.consultation-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.consultation-fields label{display:block;min-width:0;color:#3d5060;font-size:12px;font-weight:650}
+.consultation-fields label.full{grid-column:1/-1}
+.consultation-fields input,.consultation-fields select,.consultation-fields textarea{display:block;width:100%;min-height:45px;margin-top:5px;padding:10px 12px;border:1px solid #d6dce0;border-radius:7px;background:#fff;color:var(--ink);font-size:14px}
+.consultation-fields textarea{min-height:96px;resize:vertical}
+.consent-row{display:flex!important;align-items:flex-start;gap:9px;margin-top:15px;color:#485b68!important;font-size:12px!important;line-height:1.5}
+.consent-row input{width:17px;height:17px;min-height:17px;flex:none;margin:1px 0 0;accent-color:#173e34}
+.consultation-submit{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:16px;padding:12px 18px;border:1px solid #e4c68e;border-radius:8px;background:linear-gradient(135deg,#e6c18a,#c8a475);color:#102a3a;font-weight:750;box-shadow:0 5px 15px rgba(16,42,58,.1);transition:transform .2s,box-shadow .2s,filter .2s}
+.consultation-submit:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(16,42,58,.16);filter:saturate(1.08)}
+.form-result{min-height:1.3em;margin:10px 0 0;color:#24543d;font-size:13px}
+.about-story{padding:70px 0 78px;background:#fff}
+.brand-panel{display:grid;place-items:center;min-height:205px;margin-bottom:36px;padding:28px;background:linear-gradient(145deg,#f4f0e8,#fbf9f4);border:1px solid #eee8dc;border-radius:15px}
+.brand-panel img{display:block;width:min(620px,90%);height:auto;max-height:140px;object-fit:contain}
+.story-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,7vw,92px);align-items:start}
+.story-lead{margin:0;color:#465c69;font:400 16px/1.75 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal}
+.story-copy p{margin:0;color:#465c69;font:400 16px/1.75 system-ui,-apple-system,"Segoe UI",sans-serif}
+.values-band{padding:clamp(44px,7vw,72px) 0;background:var(--navy);color:#f7f5ef}
+.values-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(34px,7vw,90px)}
+.values-band h2{margin:0 0 14px;color:#fff;font-size:clamp(25px,3vw,34px);font-weight:600}
+.values-band p{max-width:65ch;margin:0 0 14px;color:#e8edf0;font:400 16px/1.75 Georgia,"Times New Roman",serif}
+.values-band ul{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.values-band li{display:flex;align-items:flex-start;gap:11px;color:#f0f1ef}
+.values-band li svg{width:18px;height:18px;margin-top:4px;flex:none;fill:none;stroke:var(--gold-light);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.solicitor-section{padding:72px 0;background:#fff}
+.solicitor-grid{display:grid;grid-template-columns:minmax(260px,.68fr) 1.32fr;gap:clamp(30px,6vw,70px);align-items:center}
+.solicitor-photo{position:relative;overflow:hidden;margin:0;aspect-ratio:4/5;border-radius:14px;background:#e9e5dc;box-shadow:0 12px 34px rgba(16,42,58,.13)}
+.solicitor-photo img{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top}
+.solicitor-copy h2{margin:0 0 5px;color:var(--navy);font-size:clamp(30px,4vw,44px);font-weight:500}
+.solicitor-copy .role{margin:0 0 19px;color:#987642;font-size:13px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
+.solicitor-copy p:not(.role){margin:0 0 14px;color:#344f61;font:400 16px/1.8 Georgia,"Times New Roman",serif}
+.profile-link{display:inline-flex;align-items:center;gap:8px;margin-top:5px;color:#173e34;font-weight:700;text-underline-offset:4px}
+.profile-link svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7}
+.ready-section{padding:clamp(52px,8vw,88px) 0;background:#f1eff4;text-align:center}
+.ready-section h2{margin:0 0 12px;color:var(--navy);font-size:clamp(29px,4vw,40px);font-weight:500}
+.ready-section p{max-width:740px;margin:0 auto 22px;color:#41586a;font:400 18px/1.7 Georgia,"Times New Roman",serif}
+.ready-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 24px;border:1px solid #d8b57d;border-radius:8px;background:#c9a77c;color:#fff;text-decoration:none;font-weight:750;box-shadow:0 5px 15px rgba(16,42,58,.12);transition:transform .2s,box-shadow .2s}
+.ready-cta:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(16,42,58,.2)}
+.site-footer{padding:48px 0;background:#252628;color:#f3f0ea}
+.footer-grid{display:grid;grid-template-columns:1.1fr .8fr 1.3fr 1fr;gap:30px}
+.footer-brand{display:inline-flex;max-width:230px;padding:9px;border-radius:7px;background:#f8f5ef}.footer-brand img{display:block;width:100%;height:auto}
+.site-footer h2{margin:0 0 14px;color:#fff;font-size:20px;letter-spacing:0}
+.site-footer p,.site-footer li{margin:0 0 9px;color:#e5dfd6;font-size:14px}
+.site-footer ul{margin:0;padding:0;list-style:none}
+.site-footer a:not(.footer-brand){color:#e0bc82;text-underline-offset:3px}
+.footer-links{display:grid;gap:8px}
+dialog#consultation-success-dialog{width:min(440px,calc(100% - 30px));padding:28px;border:1px solid #dfd0b9;border-radius:15px;background:#fffdf9;color:var(--navy);text-align:center;box-shadow:0 20px 60px #071a2a44}
+dialog#consultation-success-dialog::backdrop{background:#071a2ab0;backdrop-filter:blur(4px)}
+dialog#consultation-success-dialog h2{margin:8px 0;font:500 28px Georgia,serif}
+dialog#consultation-success-dialog p{color:#53626e}
+.dialog-check{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 10px;border-radius:50%;background:#e7f0e7;color:#285b3b;font-size:25px}
+.dialog-close{min-height:42px;padding:8px 20px;border:0;border-radius:7px;background:var(--navy);color:#fff}
+@media(max-width:980px){.site-header{gap:14px;padding-inline:22px}.brand img{width:220px}.header-nav{gap:6px}.header-nav a{padding-inline:10px}.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ .contact-strip{align-items:flex-start;padding-inline:18px}.contact-strip div:first-child{flex-wrap:wrap;gap:6px 16px}
+ .site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;min-height:76px;padding:10px 18px}
+ .brand img{width:min(220px,52vw);max-height:62px}
+ .menu-toggle{display:inline-flex}
+ .header-nav{display:none;grid-column:1/-1;justify-content:flex-start;width:100%;padding:10px 0 4px}
+ .header-nav.is-open{display:flex}
+ .header-nav a{min-height:40px;padding:7px 11px;font-size:13px}
+ .about-hero{padding-top:38px}.about-hero-grid,.story-grid,.values-grid,.solicitor-grid{grid-template-columns:1fr}
+ .about-hero-grid{gap:26px}.consult-card{max-width:600px}
+ .story-grid{gap:18px}.brand-panel{min-height:145px}.brand-panel img{max-height:90px}
+ .solicitor-photo{max-width:420px;aspect-ratio:4/4.6}
+}
+@media(max-width:480px){
+ .container{width:min(100% - 28px,1160px)}
+ .contact-strip{font-size:11px}.contact-strip div:last-child{display:none}
+ .consultation-fields{grid-template-columns:1fr}.consultation-fields label.full{grid-column:auto}
+ .about-copy p,.story-lead,.story-copy p,.solicitor-copy p:not(.role){font-size:15px}
+ .site-footer{padding:38px 0}.footer-grid{grid-template-columns:1fr 1fr;gap:24px 16px}
+ .footer-grid>section:first-child{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+</style>
+<link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-5">
+
+<style>.elig-hero{padding:clamp(65px,10vw,130px) 0;background:linear-gradient(90deg,rgba(10,30,44,.88),rgba(10,30,44,.45)),url('https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover;color:white}.elig-hero h1{font:600 clamp(36px,5vw,60px)/1.15 Georgia,serif;margin:12px 0}.elig-hero p{max-width:650px}.elig-hero .eyebrow{color:#f0d391}.elig-article{max-width:880px;padding:50px 0}.elig-article section{margin:32px 0}.elig-article h2,.elig-faq h2{font:600 clamp(22px,3vw,30px)/1.3 Georgia,serif;color:#102a3a}.elig-article p{font:400 16px/1.85 system-ui,sans-serif}.elig-intro{border-left:3px solid #d5ae67;padding-left:20px}.elig-faq{background:#f1eee8;padding:48px 0}.elig-faq h2,.elig-faq>.container>p{text-align:center}.elig-faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}.elig-faq details{background:#fff;border:1px solid #dcd2c2;border-radius:8px;margin-bottom:12px;padding:14px 18px}.elig-faq summary{cursor:pointer;list-style:none;font-weight:600;display:flex;justify-content:space-between;gap:12px}.elig-faq summary::-webkit-details-marker{display:none}.elig-faq summary:after{content:'+';color:#997238}.elig-faq details[open] summary:after{content:'−'}.elig-faq details p{margin:12px 0 0;font-size:15px;line-height:1.7}@media(max-width:650px){.elig-faq-grid{grid-template-columns:1fr}}</style><style id="eligibility-hero-contrast">html body .elig-hero h1{color:#fff!important;text-shadow:0 2px 12px rgba(0,0,0,.35);max-width:760px}html body .elig-hero p:not(.eyebrow){color:#fff!important}html body .elig-hero .eyebrow{color:#f4d391!important}html body .elig-hero .ready-cta{color:#102a3a!important;background:#f0ce88!important;text-shadow:none}html body .elig-hero{background-image:linear-gradient(90deg,rgba(10,30,44,.88),rgba(10,30,44,.35)),url('https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1920')!important}</style><style id="divorce-photo-framing">html body .elig-hero{background-position:center 42%!important;background-color:#102a3a}</style><style>.contact-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(20px,4vw,48px);align-items:start}.contact-details{background:#fffdf9;border:1px solid #e1d4bd;border-radius:14px;padding:24px;box-shadow:0 10px 28px #1024380b;overflow-wrap:anywhere}.contact-details>div+div{border-top:1px solid #e6dfd3;padding-top:14px;margin-top:14px}.contact-details h3{font:600 17px Georgia,serif;margin:0 0 6px;color:#79551d}.contact-details p{margin:0}.contact-social{display:grid;gap:8px}.contact-social a{font-size:14px;text-decoration:none}.contact-social a:hover{text-decoration:underline;color:#79551d}.contact-urgent{border-left:3px solid #b89558;padding:18px 24px;background:#fff8eb;border-radius:8px}.elig-article .ready-cta{display:inline-block;background:#102a3a;color:white;padding:12px 22px;border-radius:7px;text-decoration:none}@media(max-width:700px){.contact-layout{grid-template-columns:1fr}}</style></head>
+<body>
+<div class="contact-strip" aria-label="Firm contact details">
+ <div>
+  <a href="tel:+61485079942"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3H4a1 1 0 0 0-1 1 17 17 0 0 0 17 17 1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2Z"/></svg>0485 079 942</a>
+  <a href="mailto:info@prevailfamilylaw.com.au"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>info@prevailfamilylaw.com.au</a>
+ </div>
+ <div>Family law · Sydney, NSW</div>
+</div>
+<header class="site-header">
+ <a class="brand" href="/" aria-label="Prevail Family Law home"><img src="/docs/Prevail-Family-Law-Horizontal-Logo-2.webp?v=header-logo-2" alt="Prevail Family Law"></a>
+ <button class="menu-toggle" type="button" aria-controls="public-navigation" aria-expanded="false"><span>Menu</span><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+ <nav class="header-nav" id="public-navigation" aria-label="Main navigation">
+  <a href="/"> <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="/about/"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>About</a>
+  <a href="#services" data-expertise aria-current="page" aria-expanded="false" aria-controls="expertise-mega"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M7 6 3 13h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/></svg>Expertise</a>
+  <a href="/#premium-journey-title"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-11 0v2h4v-2"/></svg>Services</a>
+  <a href="/#contact"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Contact</a>
+  <a class="nav-cta" href="/?booking=1"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4m9-4v4M3.5 10h17m-12 4h2m3 0h2m-7 3h2"/></svg>Book a Consultation</a>
+ </nav>
+</header>
+<main><section class="elig-hero"><div class="container"><p class="eyebrow">Prevail Family Law</p><h1>Contact Us</h1><p>Clear advice. Confident next steps.</p><a class="ready-cta" href="/?booking=1">Request a Consultation</a></div></section><article class="elig-article container"><section><h2>Get in touch</h2><div class="contact-layout"><div><p>Whether you have just separated, are working through parenting or property arrangements, or have been served with court documents, the first step is a conversation. Prevail Family Law offers a free 30-minute consultation so you can talk through your situation, understand your options and decide what to do next.</p><p>You will deal directly with the principal solicitor from your first call, not a junior lawyer or an intake team.</p></div><aside class="contact-details"><div><h3>Email</h3><a href="mailto:info@prevailfamilylaw.com.au">info@prevailfamilylaw.com.au</a></div><div><h3>Postal address</h3><p>PO Box 1424, Chatswood NSW 2057</p></div><div><h3>Our offices</h3><p>Prevail Family Law is a virtual law firm, with offices in Chatswood and Norwest (available by appointment).</p></div><div><h3>Office hours</h3><p>8:30am – 5:30pm</p></div><div class="contact-social"><a href="https://au.linkedin.com/in/melissa-gok-a499a8188" target="_blank" rel="noopener noreferrer">LinkedIn · Melissa Gok</a><a href="https://www.instagram.com/prevailfamilylaw/" target="_blank" rel="noopener noreferrer">Instagram · @prevailfamilylaw</a><a href="https://www.tiktok.com/@prevailfamilylaw" target="_blank" rel="noopener noreferrer">TikTok · @prevailfamilylaw</a></div></aside></div></section><section><h2>Where we work</h2><p>Prevail Family Law works with separated parents and grandparents across Sydney and NSW, including the Northern Beaches, the Eastern Suburbs, the Hills District and the North Shore. We may also be able to help with family law matters elsewhere in Australia, excluding Western Australia.</p></section><section><h2>Book a free 30-minute consultation</h2><p>Your free consultation can be held by phone, by video or in person. It is a chance to:</p><ul><li>explain what has happened and what you are hoping to achieve</li><li>get an initial view on your options and the likely next steps</li><li>understand any time limits that may apply to you</li><li>find out how Prevail Family Law can help, and what it is likely to cost.</li></ul><p>If you decide to go ahead, you will receive a written costs agreement before any work begins, so you know where you stand from the start. Fixed fee options are available for some services.</p><a class="ready-cta" href="/?booking=1">Request a Consultation</a></section><section><h2>Getting the most from your consultation</h2><p>You don’t need to prepare anything, but it helps to have the following on hand if you can:</p><ul><li>the date you married or started living together, and the date you separated</li><li>the names and dates of birth of any children</li><li>a rough list of assets, debts and superannuation, for property matters</li><li>any court documents, orders, parenting plans or agreements you already have</li><li>any letters from your former partner or their lawyer.</li></ul></section><section class="contact-urgent"><h2>If you need help urgently</h2><p>If you or your children are in immediate danger, call the police on <a href="tel:000">000</a>.</p><p>For confidential support about domestic, family or sexual violence, you can contact 1800RESPECT on <a href="tel:1800737732">1800 737 732</a>, 24 hours a day.</p><p>If you have a court date coming up soon, or are worried a child may be taken overseas, say so when you get in touch so your enquiry can be prioritised.</p></section><section><h2>Your privacy</h2><p>Everything you tell Prevail Family Law is treated confidentially. Contacting Prevail Family Law, or attending a free consultation, does not by itself create a lawyer–client relationship. Please don’t send confidential documents until you have spoken with us.</p></section><p style="font-size:13px;color:#526675">The information on this page is general information about Australian family law. It is not legal advice and may not apply to your circumstances. Please contact Prevail Family Law for advice about your situation.</p></article></main>
+<footer class="site-footer">
+ <div class="container footer-grid">
+  <section><a class="footer-brand" href="/" aria-label="Prevail Family Law home"><img src="/docs/Prevail-Family-Law-Horizontal-Logo-2.webp?v=header-logo-2" alt=""></a><p style="margin-top:16px">Practical, focused family law advice for your children, your finances and your future.</p><p><a href="tel:+61485079942">0485 079 942</a><br><a href="mailto:info@prevailfamilylaw.com.au">info@prevailfamilylaw.com.au</a></p></section>
+  <section><h2>Navigate</h2><div class="footer-links"><a href="/">Home</a><a href="/about/">About</a><a href="/#services">Expertise</a><a href="/#premium-journey-title">Services</a><a href="/#contact">Contact</a></div></section>
+  <section><h2>Family Law Services</h2><ul><li><a href="https://goldenrod-oyster-814782.hostingersite.com/divorce-and-separation/">Divorce and Separation</a></li><li><a href="https://goldenrod-oyster-814782.hostingersite.com/property-division/">Property Division</a></li><li><a href="https://goldenrod-oyster-814782.hostingersite.com/children-and-parenting/">Children and Parenting</a></li><li><a href="https://goldenrod-oyster-814782.hostingersite.com/family-court-representation/">Family Court Representation</a></li><li><a href="https://goldenrod-oyster-814782.hostingersite.com/same-sex-and-de-facto-relationships/">Same-Sex and De Facto Relationships</a></li><li><a href="https://goldenrod-oyster-814782.hostingersite.com/mediation/">Mediation</a></li></ul></section>
+  <section><h2>Contact</h2><p>Sydney, NSW, Australia</p><a href="/?booking=1">Book a free consultation</a></section>
+ </div>
+</footer>
+<dialog id="consultation-success-dialog" aria-labelledby="success-title">
+ <div class="dialog-check" aria-hidden="true">✓</div><h2 id="success-title">Enquiry Sent Successfully</h2>
+ <p>Thank you for contacting Prevail Family Law. Your consultation enquiry has been sent to the team for review.</p>
+ <p>Your preferred date and time are subject to confirmation by the firm.</p>
+ <p>Reference: <span data-reference></span></p><button class="dialog-close" type="button" onclick="this.closest('dialog').close()">Done</button>
+</dialog>
+<div id="app"></div>
+<script>
+(()=>{const toggle=document.querySelector('.menu-toggle'),nav=document.querySelector('#public-navigation');if(!toggle||!nav)return;toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));nav.classList.toggle('is-open',open);});nav.addEventListener('click',event=>{if(event.target.closest('a')&&innerWidth<=760){toggle.setAttribute('aria-expanded','false');nav.classList.remove('is-open')}})})();
+(()=>{const form=document.querySelector('#consultation-form');if(!form)return;const fullName=form.elements.fullName,firstName=form.elements.firstName,lastName=form.elements.lastName,date=form.elements.preferredDate,time=form.elements.preferredTimeInput,preferred=form.elements.preferredTime,summary=form.elements.matterSummary,message=form.elements.message,consent=form.elements.contactConsent;const sync=()=>{const parts=fullName.value.trim().split(/\s+/).filter(Boolean);firstName.value=parts[0]||'';lastName.value=parts.slice(1).join(' ')||parts[0]||'';const dateParts=date.value.trim().split('/');const isoDate=dateParts.length===3?dateParts[2]+'-'+dateParts[1]+'-'+dateParts[0]:'';preferred.value=isoDate?(isoDate+(time.value?'T'+time.value:'')):'';message.value=(summary.value.trim()+'\n\nContact consent: '+(consent.checked?'Yes':'No')+'.').trim()};form.addEventListener('input',sync);form.addEventListener('change',sync);sync()})();
+</script>
+
+
+<script src="/docs/expertise-menu.js?v=parenting-orders-5" defer></script>
+</body>
+</html>
