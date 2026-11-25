@@ -818,6 +818,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 
  const restoreForm = () => {
   if (anchor && pageContent) anchor.replaceWith(pageContent);
+  body.replaceChildren();
   anchor = null;
   pageContent = null;
   if (opener && opener.isConnected) opener.focus();
@@ -831,14 +832,17 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
  document.addEventListener('click', event => {
   const link = event.target.closest(selectors);
   if (!link) return;
-  const page = document.querySelector('#app .client-home');
+  const page = document.querySelector('#app .client-home > section#contact');
   if (!page || modal.contains(page)) return;
   event.preventDefault();
   opener = link;
   pageContent = page;
   anchor = document.createComment('consultation-page-location');
   page.before(anchor);
-  body.replaceChildren(page);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'client-home';
+  wrapper.appendChild(page);
+  body.replaceChildren(wrapper);
   modal.showModal();
   body.scrollTop = 0;
  }, true);
