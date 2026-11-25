@@ -16,7 +16,7 @@ const root = document.getElementById('app');
 const supportKey = 'family-law-support-id';
 let unsubscribe;
 const pending = new WeakMap();
-const topicNames = ['separation', 'parenting', 'property', 'consent'];
+const topicNames = ['separation', 'parenting', 'property', 'financial', 'consent', 'maintenance', 'violence', 'mediation', 'other'];
 
 async function clientIdentity() {
   await auth.authStateReady();

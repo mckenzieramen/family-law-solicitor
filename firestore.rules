@@ -176,7 +176,7 @@ service cloud.firestore {
         && c.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
         && c.phone is string && c.phone.size() <= 25
         && c.postcode is string && c.postcode.matches('([0-9]{4})?')
-        && c.topic in ['separation', 'parenting', 'property', 'consent']
+        && c.topic in ['separation', 'parenting', 'property', 'financial', 'consent', 'maintenance', 'violence', 'mediation', 'other']
         && c.newClient in ['Yes', 'No']
         && c.preferredTime is string && c.preferredTime.size() <= 24;
     }
