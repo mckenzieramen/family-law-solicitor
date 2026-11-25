@@ -20,10 +20,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .contact-strip svg{width:14px;height:14px;fill:none;stroke:var(--gold-light);stroke-width:1.7;vertical-align:middle;margin-right:6px}
 .site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:94px;padding:11px clamp(18px,5vw,72px);background:rgba(9,27,42,.94);color:#fff;border-bottom:1px solid rgba(214,224,230,.15);box-shadow:0 7px 22px rgba(4,15,24,.16);-webkit-backdrop-filter:blur(15px) saturate(125%);backdrop-filter:blur(15px) saturate(125%)}
 .brand{display:block;flex:none;padding:6px 9px;border-radius:8px;background:#fffaf1;box-shadow:0 3px 12px #0002}.brand img{display:block;width:clamp(190px,25vw,320px);height:auto;max-height:74px;object-fit:contain}
-.header-nav{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}.header-nav a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 14px;border:1px solid rgba(194,209,218,.4);border-radius:999px;background:rgba(255,255,255,.045);color:#f7f5ef;text-decoration:none;font:500 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.01em;white-space:nowrap;transition:background-color .18s,border-color .18s,color .18s,transform .18s}
-.header-nav a:hover,.header-nav a[aria-current=page]{background:rgba(255,255,255,.11);border-color:rgba(232,199,127,.72);color:#fff}
-.header-nav a[aria-current=page]{box-shadow:inset 0 -2px var(--gold)}
-.nav-icon{display:block;width:16px;height:16px;flex:none;fill:none;stroke:var(--gold-light);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.header-nav{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}.header-nav a{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:7px 12px;border:0;border-radius:0;background:transparent;color:#fff9f0;text-decoration:none;font:550 15px/1.2 system-ui,sans-serif;white-space:nowrap;position:relative}
+.header-nav a:not(.nav-cta):hover,.header-nav a[aria-current=page]{background:transparent;color:#f4ce83}
+.header-nav a[aria-current=page]{box-shadow:none}.header-nav a[aria-current=page]::after{content:"";position:absolute;bottom:0;left:10px;right:10px;height:2px;background:#efc979}
+.nav-icon{display:block;width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .header-nav .nav-cta{min-height:44px;padding:9px 16px;border-color:#f6dfaa;background:linear-gradient(135deg,#f3d797,#eac16e);color:#162c3a;font-weight:650;box-shadow:0 4px 13px #0002}
 .header-nav .nav-cta:hover{background:#f8df9e;color:#102a3a;transform:translateY(-1px)}
 .nav-cta .nav-icon{stroke:#162c3a}
@@ -120,7 +120,7 @@ dialog#consultation-success-dialog p{color:#53626e}
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 </style>
-<link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-4">
+<link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-5">
 </head>
 <body>
 <div class="contact-strip" aria-label="Firm contact details">
