@@ -11,6 +11,7 @@
 :root{--navy:#102a3a;--navy-deep:#0b2131;--gold:#d5ae67;--gold-light:#f0d391;--cream:#faf7f0;--ink:#173145;--muted:#5d6c77;--line:#e6dfd3;--white:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:105px}
+#melissa-title{scroll-margin-top:210px}
 body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
 a{color:inherit}button,input,select,textarea{font:inherit}button{cursor:pointer}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold-light);outline-offset:3px}
@@ -66,8 +67,8 @@ h1{max-width:12ch;margin:0 0 20px;color:var(--navy);font-size:clamp(42px,6vw,72p
 .values-band li svg{width:18px;height:18px;margin-top:4px;flex:none;fill:none;stroke:var(--gold-light);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .solicitor-section{padding:72px 0;background:#fff}
 .solicitor-grid{display:grid;grid-template-columns:minmax(260px,.68fr) 1.32fr;gap:clamp(30px,6vw,70px);align-items:center}
-.solicitor-photo{position:relative;overflow:hidden;margin:0;border-radius:14px;background:#e9e5dc;box-shadow:0 12px 34px rgba(16,42,58,.13)}
-.solicitor-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top}
+.solicitor-photo{position:relative;overflow:hidden;margin:0;aspect-ratio:4/5;border-radius:14px;background:#e9e5dc;box-shadow:0 12px 34px rgba(16,42,58,.13)}
+.solicitor-photo img{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top}
 .solicitor-copy h2{margin:0 0 5px;color:var(--navy);font-size:clamp(30px,4vw,44px);font-weight:500}
 .solicitor-copy .role{margin:0 0 19px;color:#987642;font-size:13px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
 .solicitor-copy p:not(.role){margin:0 0 14px;color:#344f61;font:400 16px/1.8 Georgia,"Times New Roman",serif}
@@ -104,7 +105,7 @@ dialog#consultation-success-dialog p{color:#53626e}
  .about-hero{padding-top:38px}.about-hero-grid,.story-grid,.values-grid,.solicitor-grid{grid-template-columns:1fr}
  .about-hero-grid{gap:26px}.consult-card{max-width:600px}
  .story-grid{gap:18px}.brand-panel{min-height:145px}.brand-panel img{max-height:90px}
- .solicitor-photo{max-width:420px}.solicitor-photo img{aspect-ratio:4/4.6}
+ .solicitor-photo{max-width:420px;aspect-ratio:4/4.6}
 }
 @media(max-width:480px){
  .container{width:min(100% - 28px,1160px)}
