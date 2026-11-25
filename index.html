@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en-AU">
+<head>
 <meta charset="utf-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -16,7 +17,7 @@
 html,body{background:#f7f4ee!important;color:#102a3a}
 header.site-header,html body header.site-header{background:#fff!important;background-image:none!important;color:#102a3a!important;border-bottom:1px solid #e6dfd3!important}
 header.site-header .header-nav a:not(.nav-cta),html body header.site-header .header-nav a:not(.nav-cta){color:#102a3a!important;opacity:1!important;text-shadow:none!important}
-html body:has(.client-home) > header.site-header #public-navigation a:not(.nav-cta),html body:has(.client-home) > header.site-header .header-nav#public-navigation a:not(.nav-cta){color:#fff!important;opacity:1!important;font-weight:700!important;text-shadow:0 1px 3px rgba(0,0,0,.95)!important;background:rgba(7,24,39,.94)!important;border:1px solid rgba(255,255,255,.9)!important;border-radius:999px!important}
+
 header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important}
 .client-home .hero-copy{background:#102a3a!important;color:#f7f4ee!important}
 .client-home .hero-copy h1,.client-home .hero-copy p{color:#f7f4ee!important}
@@ -129,11 +130,291 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
  .client-home .profile-location .office-map iframe{min-height:250px}
 }
 </style>
+<link rel="stylesheet" href="/docs/inbox.css?v=2">
+<style id="prevail-white-header-final">
+/* Overlay the navigation on the Sydney Harbour hero while keeping the logo legible. */
+html body:has(.client-home) > header.site-header{
+ position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:1000!important;
+ background:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
+ background-color:transparent!important;background-image:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
+ color:#fff!important;border-top:0!important;border-bottom:1px solid rgba(255,255,255,.22)!important;
+ box-shadow:none!important
+}
+html body:has(.client-home) > header.site-header nav.header-nav,
+html body:has(.client-home) > header.site-header .header-nav{background:transparent!important;background-color:transparent!important;background-image:none!important}
 
 
+html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta):focus-visible{
+ outline:3px solid #f3d08c!important;outline-offset:3px
+}
+@media(prefers-reduced-motion:reduce){
+ 
+ 
+}
+html body:has(.client-home) > header.site-header .header-nav a.nav-cta{
+ background:#d5ae67!important;color:#102a3a!important;border-color:#d5ae67!important;box-shadow:0 5px 16px rgba(0,0,0,.22)!important
+}
+html body:has(.client-home) > header.site-header a.brand{
+ padding:6px 9px!important;border-radius:8px!important;background:rgba(255,252,245,.9)!important;
+ border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 18px rgba(0,0,0,.16)!important
+}
+html body:has(.client-home) > header.site-header a.brand::before,
+html body:has(.client-home) > header.site-header a.brand::after{content:none!important;display:none!important}
+html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{
+ display:block!important;width:clamp(250px,26vw,350px)!important;max-height:88px!important;height:auto!important;object-fit:contain!important
+}
+@media(max-width:700px){
+ html body:has(.client-home) > header.site-header{padding:12px 16px!important}
+ html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{width:min(68vw,285px)!important;max-height:70px!important}
+}
+</style>
+<style id="consultation-cta-ux-polish">
+/* Accessible, consistent CTA design even if an external stylesheet is cached. */
+html body .client-home .reference-consultation-cta{
+ width:min(1160px,calc(100% - 40px));margin:28px auto 42px;
+ padding:clamp(24px,4vw,42px);display:flex;align-items:center;
+ justify-content:space-between;gap:24px;flex-wrap:wrap;
+ background:linear-gradient(120deg,#103d31 0%,#174c3d 100%)!important;
+ color:#fffaf1!important;border:1px solid #b79b6b!important;
+ border-radius:18px;box-shadow:0 12px 32px rgba(16,61,49,.14);
+}
+html body .client-home .reference-consultation-cta h2{
+ color:#fffaf1!important;font:500 clamp(27px,3.5vw,39px)/1.16 Georgia,serif!important;
+ margin:0 0 9px!important;letter-spacing:-.02em;
+}
+html body .client-home .reference-consultation-cta p{
+ color:#e8eee8!important;font:400 clamp(14px,1.5vw,16px)/1.55 system-ui,sans-serif!important;
+ margin:0!important;
+}
+html body .client-home .reference-consultation-cta .action{
+ display:inline-flex;align-items:center;justify-content:center;min-height:48px;
+ padding:13px 22px!important;background:#f1d49a!important;color:#173b2e!important;
+ border:1px solid #f1d49a!important;border-radius:9px!important;
+ font:700 15px/1.2 system-ui,sans-serif!important;text-decoration:none!important;
+ box-shadow:0 3px 10px rgba(0,0,0,.12);transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
+}
+html body .client-home .reference-consultation-cta .action:hover{
+ background:#ffe5b1!important;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.18);
+}
+html body .client-home .reference-consultation-cta .action:focus-visible{
+ outline:3px solid #fffaf1!important;outline-offset:4px;
+}
+html body .client-home .not-sure-cta>div{flex:1 1 560px;max-width:780px}
+html body .client-home .not-sure-cta p{max-width:68ch}
+@media(max-width:600px){
+ html body .client-home .reference-consultation-cta{width:calc(100% - 28px);margin:20px auto 32px;padding:24px 20px;gap:20px}
+ html body .client-home .reference-consultation-cta .action{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ html body .client-home .reference-consultation-cta .action{transition:none}
+ html body .client-home .reference-consultation-cta .action:hover{transform:none}
+}
 
+html body .client-home .not-sure-cta{
+ width:100%!important;max-width:none!important;margin:0!important;padding:42px 24px 46px!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:12px!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:#f3f2f7!important;color:#183654!important;text-align:center!important
+}
+html body .client-home .not-sure-cta>div{flex:none!important;width:min(100%,700px)!important;max-width:700px!important}
+html body .client-home .not-sure-cta h2{
+ margin:0 0 8px!important;color:#173755!important;font:500 clamp(29px,3.3vw,35px)/1.18 Georgia,serif!important;letter-spacing:0!important
+}
+html body .client-home .not-sure-cta p{
+ max-width:700px!important;margin:0 auto!important;color:#29445f!important;
+ font:400 clamp(17px,2.1vw,21px)/1.32 Georgia,serif!important
+}
+html body .client-home .not-sure-cta .not-sure-action{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:min(222px,100%)!important;min-height:42px!important;margin:7px auto 0!important;padding:10px 18px!important;
+ border:1px solid #f5dda2!important;border-radius:999px!important;
+ background:linear-gradient(115deg,#f4dfa8 0%,#edc979 50%,#f4dfa8 100%)!important;color:#102a3a!important;
+ font:700 12px/1.2 system-ui,sans-serif!important;
+ box-shadow:0 0 0 2px rgba(237,201,121,.18),0 5px 15px rgba(32,47,65,.18)!important;
+ animation:free-consultation-glow 2.8s ease-in-out infinite
+}
+html body .client-home .not-sure-cta .not-sure-action>span{position:relative!important;z-index:1!important}
+html body .client-home .not-sure-cta .not-sure-action::before{
+ content:"";position:absolute;z-index:0;top:-45%;bottom:-45%;left:-55%;width:36%;
+ background:linear-gradient(100deg,transparent,rgba(255,255,255,.82),transparent);
+ transform:skewX(-22deg);animation:free-consultation-shine 3.2s ease-in-out infinite;pointer-events:none
+}
+html body .client-home .not-sure-cta .not-sure-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
+html body .client-home .not-sure-cta .not-sure-action:focus-visible{outline:3px solid #173755!important;outline-offset:4px}
+@keyframes free-consultation-shine{0%,12%{left:-55%;opacity:0}25%{opacity:1}58%,100%{left:130%;opacity:0}}
+@keyframes free-consultation-glow{50%{box-shadow:0 0 0 4px rgba(237,201,121,.3),0 7px 18px rgba(32,47,65,.2)}}
+@media(max-width:600px){
+ html body .client-home .not-sure-cta{padding:34px 20px 38px!important}
+ html body .client-home .not-sure-cta p{font-size:18px!important;line-height:1.4!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html body .client-home .not-sure-cta .not-sure-action{animation:none!important;transition:none!important}
+ html body .client-home .not-sure-cta .not-sure-action::before{display:none!important;animation:none!important}
+ html body .client-home .not-sure-cta .not-sure-action:hover{transform:none}
+}
+html body:has(.client-home) > header.site-header.is-scrolled{
+ background:rgba(7,24,39,.9)!important;background-image:linear-gradient(180deg,rgba(7,24,39,.94),rgba(7,24,39,.86))!important;
+ border-bottom:1px solid rgba(255,255,255,.28)!important;box-shadow:0 7px 24px rgba(0,0,0,.25)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(130%)!important;backdrop-filter:blur(14px) saturate(130%)!important
+}
+</style>
+<style id="claim-consultation-button">
+html body .client-home .claim-consultation-cta{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;width:max-content!important;max-width:100%!important;
+ min-height:52px!important;margin:clamp(24px,3vw,38px) auto 0!important;padding:15px 28px!important;
+ border:1px solid #f1d49a!important;border-radius:999px!important;
+ background:linear-gradient(120deg,#f3d18b 0%,#d5ae67 48%,#edc77a 100%)!important;color:#102a3a!important;
+ font:750 15px/1.2 system-ui,sans-serif!important;text-decoration:none!important;
+ box-shadow:0 0 0 3px rgba(213,174,103,.18),0 8px 24px rgba(16,42,58,.18)!important;
+ animation:claim-cta-glow 2.8s ease-in-out infinite
+}
+html body .client-home .claim-consultation-cta>span{position:relative!important;z-index:1!important}
+html body .client-home .claim-consultation-cta::before{
+ content:"";position:absolute;z-index:0;top:-45%;bottom:-45%;left:-48%;width:34%;
+ background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);
+ transform:skewX(-22deg);animation:claim-cta-shine 3.2s ease-in-out infinite;pointer-events:none
+}
+html body .client-home .claim-consultation-cta:hover{transform:translateY(-2px);filter:brightness(1.04)}
+html body .client-home .claim-consultation-cta:focus-visible{outline:3px solid #102a3a!important;outline-offset:4px}
+@keyframes claim-cta-shine{0%,12%{left:-48%;opacity:0}24%{opacity:1}58%,100%{left:125%;opacity:0}}
+@keyframes claim-cta-glow{50%{box-shadow:0 0 0 5px rgba(213,174,103,.26),0 10px 30px rgba(16,42,58,.24)}}
+@media(prefers-reduced-motion:reduce){
+ html body .client-home .claim-consultation-cta{animation:none!important;transition:none!important}
+ html body .client-home .claim-consultation-cta::before{animation:none!important;display:none!important}
+ html body .client-home .claim-consultation-cta:hover{transform:none}
+}
+html body .client-home .not-sure-cta .claim-consultation-cta{margin:7px auto 0!important;white-space:nowrap!important;box-sizing:border-box!important}
+@media(max-width:360px){html body .client-home .not-sure-cta .claim-consultation-cta{white-space:normal!important;text-align:center!important}}
+</style>
+<style id="horizontal-logo-and-stable-scroll">
+html body:has(.client-home) > header.site-header a.brand{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:6px 12px!important;border:0!important;border-radius:8px!important;
+ background:rgba(255,252,245,.97)!important;box-shadow:0 3px 14px rgba(0,0,0,.15)!important
+}
+html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{
+ display:block!important;width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;
+ object-fit:contain!important;object-position:center!important;filter:none!important
+}
+html body .client-home .prevail-reveal-card>svg{
+ display:block!important;position:relative!important;flex:none!important;opacity:1!important;
+ transform:none!important;animation:none!important;transition:none!important;will-change:auto!important
+}
+@media(prefers-reduced-motion:reduce){
+ html body:has(.client-home) > header.site-header a.brand,
+ html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{transition:none!important}
+}
+</style>
+<style id="nav-consultation-promotion">
+html body:has(.client-home) > header.site-header .header-nav a.nav-cta{position:relative!important;isolation:isolate;overflow:hidden;display:inline-flex!important;align-items:center;justify-content:center;gap:8px;padding:8px 14px!important;background:linear-gradient(115deg,#f4d99d,#d5ae67 55%,#f0ce85)!important;border-radius:9px!important;color:#102a3a!important;transition:transform .22s ease,filter .22s ease;animation:navConsultGlow 3s ease-in-out infinite}
+.nav-consult-copy{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;z-index:1;white-space:nowrap}
+.nav-consult-offer{font:800 9px/1.15 system-ui,sans-serif;letter-spacing:.045em}
+.nav-consult-label{font:750 12px/1.2 system-ui,sans-serif}
+html body header.site-header .header-nav a.nav-cta::before{content:"";position:absolute;inset:-40% auto -40% -45%;width:32%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-22deg);animation:navConsultShine 3.8s ease-in-out infinite;pointer-events:none}
+html body header.site-header .header-nav a.nav-cta:hover{transform:translateY(-2px);filter:brightness(1.06)}
+@keyframes navConsultShine{0%,15%{left:-45%}55%,100%{left:125%}}
+@keyframes navConsultGlow{50%{filter:brightness(1.08)}}
+@media(prefers-reduced-motion:reduce){html body:has(.client-home) > header.site-header .header-nav a.nav-cta,html body header.site-header .header-nav a.nav-cta::before{animation:none!important;transition:none!important}html body header.site-header .header-nav a.nav-cta:hover{transform:none}}
+</style>
+<style id="public-smooth-scroll">
+html:has(.client-home){scroll-behavior:smooth;scroll-padding-top:110px}
+html:has(.client-home) body{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html:has(.client-home),html:has(.client-home) body{scroll-behavior:auto!important}}
+</style>
+<style id="prevail-why-reveal-style">
+html body .client-home .prevail-why{display:block!important;padding:64px 24px!important;background:#fff;text-align:center!important;color:#102438}
+html body .client-home .prevail-why h2{font:700 clamp(25px,3vw,34px)/1.2 Georgia,serif;margin:0 auto 14px!important;text-align:center!important}
+html body .client-home .prevail-why p.prevail-why-intro{display:block!important;width:100%!important;max-width:720px!important;margin:0 auto 32px!important;text-align:center!important;font:18px/1.6 Georgia,serif!important}
+html body .client-home .prevail-why-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch!important;gap:24px;max-width:1000px;width:100%;margin:0 auto!important}
+html body .client-home .prevail-reveal-card{display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:28px 24px!important;box-sizing:border-box;background:#fff;border:1px solid #e8dfd0;border-radius:12px;box-shadow:0 8px 24px #10243810;text-align:center!important;min-width:0;font:17px/1.5 Georgia,serif}
+.prevail-reveal-card strong{font-size:22px;line-height:1.2}.prevail-reveal-card svg{width:30px;height:30px;color:#b18b50;flex:none}.prevail-reveal-card>span{display:block}
+.prevail-why.reveal-ready .reveal-pending{opacity:0;transform:translateY(24px)}.prevail-why.reveal-ready .reveal-shown{animation:prevailReveal .65s cubic-bezier(.22,.7,.2,1) both;animation-delay:var(--reveal-delay,0ms)}
+@keyframes prevailReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){html body .client-home .prevail-why-grid{grid-template-columns:1fr;max-width:460px}html body .client-home .prevail-why{padding:40px 18px!important}}
+@media(prefers-reduced-motion:reduce){.prevail-why.reveal-ready .reveal-pending,.prevail-why.reveal-ready .reveal-shown{opacity:1;transform:none;animation:none}}
+</style>
+<style id="booking-confetti-style">
+html body header.site-header .header-nav a.nav-cta,html body header.site-header .header-nav a.nav-cta *{text-decoration:none!important;text-decoration-line:none!important}
+</style>
+<style id="prevail-intro-center-final">
+html body .client-home section.prevail-why > p.prevail-why-intro{display:block!important;position:relative!important;float:none!important;left:auto!important;right:auto!important;inset-inline:auto!important;width:min(100%,720px)!important;max-width:720px!important;margin:0 auto 32px!important;padding:0!important;text-align:center!important;justify-self:center!important;align-self:center!important;grid-column:1/-1!important;box-sizing:border-box!important}
+</style>
+<style id="prevail-review-style">
+.pr-track{perspective:1200px}.pr-card{animation:none!important;backface-visibility:hidden}.pr-controls button{transition:background .2s,color .2s}.pr-controls button:hover{background:#102438;color:white}
 
-
+html body .client-home .prevail-reviews{display:block!important;padding:48px 24px 56px!important;background:#f7f4ef;color:#102438;text-align:center!important}html body .client-home .prevail-reviews h2{margin:0 auto 12px!important;font:700 clamp(25px,3vw,34px)/1.2 Georgia,serif;text-align:center!important}html body .client-home .prevail-reviews .pr-intro{display:block!important;width:100%!important;max-width:680px!important;margin:12px auto!important;text-align:center!important;float:none!important}.pr-disclosure{font:12px/1.5 system-ui;color:#655b4d;margin:14px auto}.pr-track{max-width:760px;margin:20px auto}.pr-card{background:white;border:1px solid #e4d9c8;border-radius:14px;padding:26px;text-align:left;box-shadow:0 8px 24px #1024380d;min-height:230px;box-sizing:border-box;animation:prReveal .35s ease both}.pr-card[hidden]{display:none!important}.pr-head{display:flex;align-items:center;gap:12px}.pr-avatar{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#e9dbc1;color:#795925;font:700 20px Georgia}.pr-head small{display:block;color:#655b4d;font:12px system-ui;margin-top:4px}.pr-quote{margin-left:auto;color:#b18b50;font:56px/1 Georgia}.pr-card blockquote{margin:20px 0;font:18px/1.6 Georgia,serif}.pr-card footer{border-top:1px solid #e4d9c8;padding-top:12px;color:#795925;font:600 13px system-ui}.pr-controls{display:flex;align-items:center;justify-content:center;gap:14px}.pr-controls button{border:1px solid #b18b50;background:white;color:#102438;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:22px}.pr-review-link{display:inline-block;background:#102438;color:white!important;border-radius:8px;padding:12px 20px;text-decoration:none!important}.pr-count{font:13px system-ui}@keyframes prReveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.pr-card{animation:none}}
+</style>
+<style id="pr-slide-style">.pr-track{display:grid;overflow:hidden;perspective:none;touch-action:pan-y}.pr-track .pr-card{grid-area:1/1;min-width:0}.pr-track .pr-card[hidden]{display:block!important;visibility:hidden;pointer-events:none}.pr-track .pr-card:not([hidden]){visibility:visible}</style>
+<style id="booking-slot-color-status">
+.availability-dialog .premium-time-grid button[data-state="requestable"]{background:#eff6ff!important;border-color:#93c5fd!important;color:#1d4ed8!important}
+.availability-dialog .premium-time-grid button[data-state="requestable"]:hover{background:#dbeafe!important;border-color:#2563eb!important}
+.availability-dialog .premium-time-grid button[data-state="requestable"][aria-pressed="true"]{background:#2563eb!important;border-color:#2563eb!important;color:#fff!important}
+.availability-dialog .premium-time-grid button[data-state="booked"]{background:#fee2e2!important;border-color:#fca5a5!important;color:#b91c1c!important;cursor:not-allowed!important;opacity:1!important;text-decoration:line-through}
+.availability-dialog .premium-time-grid button[data-state="unavailable"]{background:#f3f4f6!important;border-color:#e5e7eb!important;color:#9ca3af!important;cursor:not-allowed!important}
+.availability-dialog .premium-calendar-days button[data-state="requestable"]:not([aria-pressed="true"]){background:#eff6ff!important;color:#1d4ed8!important}
+.availability-dialog .premium-calendar-days button[aria-pressed="true"]{background:#2563eb!important;color:#fff!important}
+.availability-dialog .premium-calendar-days button[data-state="unavailable"]{background:#f3f4f6!important;color:#a3a3a3!important}
+</style>
+<style id="consultation-popup">
+dialog.consultation-frame-dialog{position:fixed;inset:0;margin:auto;width:min(920px,calc(100vw - 24px));height:min(90dvh,860px);max-width:none;max-height:none;padding:0;border:1px solid #d8c6a9;border-radius:18px;background:#fffaf4;color:#102a3a;box-shadow:0 26px 90px #071a2a66;overflow:hidden}
+dialog.consultation-frame-dialog[open]{display:grid;grid-template-rows:60px minmax(0,1fr)}
+dialog.consultation-frame-dialog::backdrop{background:#071a2ab8;backdrop-filter:blur(4px)}
+.consultation-frame-top{display:flex;justify-content:space-between;align-items:center;padding:0 22px;border-bottom:1px solid #e9dcc8;color:#102a3a;font:500 23px Georgia,serif}
+.consultation-frame-close{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #d9cbb5;background:#fff;color:#102a3a;font-size:25px;cursor:pointer}
+.consultation-frame-body{min-height:0;overflow:auto;overscroll-behavior:contain}
+.consultation-frame-dialog .client-home{display:block!important;width:100%;min-height:0!important;margin:0!important;padding:0!important}
+.consultation-frame-dialog .client-home>:not(#contact){display:none!important}
+.consultation-frame-dialog .client-home>section#contact{display:block!important;width:100%;margin:0!important;padding:0!important}
+html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel{display:block!important;grid-template-columns:minmax(0,1fr)!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.consultation-frame-dialog #contact .consultation-intro{display:none!important}
+html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel > .consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
+.consultation-frame-dialog #consultation-form .premium-booking-steps,
+.consultation-frame-dialog #consultation-form #consultation-demo{display:none!important;margin:0!important;padding:0!important}
+.consultation-frame-dialog #consultation-form .premium-booking{margin:0!important;padding:8px 10px!important}
+.consultation-frame-dialog #consultation-form .premium-booking-head{margin:0 0 6px!important}
+html body dialog.consultation-frame-dialog .client-home #consultation-form>h3{margin:0 0 4px!important;font-size:27px!important;line-height:1.15!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:5px 14px 10px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;min-height:0!important;padding:0!important;border:0!important;border-bottom:2px solid #e6dfd3!important;border-radius:0!important;background:transparent!important;color:#102a3a!important;box-shadow:none!important;font:600 11px/1.2 system-ui,sans-serif!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>b{position:relative!important;display:grid!important;place-items:center!important;width:26px!important;height:26px!important;flex:none!important;margin:0!important;border:1px solid #d3dce1!important;border-radius:50%!important;background:#fff!important;color:#102a3a!important;font:700 10px/1 system-ui,sans-serif!important;transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .25s ease!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>span{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:25px!important;padding:5px 9px!important;border:0!important;border-radius:999px!important;background:#24465a!important;color:#fff!important;font:600 11px/1 system-ui,sans-serif!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.active{border-bottom:3px solid #d5ae67!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.completed{border-bottom:2px solid #b8c8c1!important}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.active>b{background:#102a3a!important;color:#fff!important;border-color:#102a3a!important;transform:scale(1.04)}
+html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.completed>b{background:#e8f2ea!important;color:#236444!important;border-color:#b5d1bc!important}
+@media(max-width:600px){html body dialog.consultation-frame-dialog .client-home #consultation-form>h3{font-size:24px!important}html body dialog.consultation-frame-dialog .client-home .premium-booking-steps{margin:4px 4px 8px!important;gap:2px!important}html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>span{font-size:10px!important;padding:5px 7px!important}}
+@media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}dialog.consultation-frame-dialog[open]{grid-template-rows:52px minmax(0,1fr)}.consultation-frame-top{padding:0 14px;font-size:19px}}
+</style>
+<style id="mobile-form-focus-fix">
+/* Keep mobile form controls at the browser's no-auto-zoom text size. */
+@media (max-width: 767px) {
+  #consultation-form :is(input, select, textarea),
+  #support-form :is(input, select, textarea) {
+    font-size: 16px !important;
+    line-height: 1.4;
+  }
+}
+</style>
+<style id="prevail-faq-polish">
+html body .client-home #resources.client-faq{display:block!important;max-width:1040px!important;margin-inline:auto!important;padding:48px 24px!important;box-sizing:border-box!important}
+html body .client-home #resources.client-faq>h2{font:700 clamp(27px,3vw,36px)/1.2 Georgia,serif!important;color:#102438!important;margin:0 0 26px!important}
+html body .client-home #resources.client-faq>details{display:block!important;background:#fff!important;border:1px solid #e4d9c8!important;border-radius:12px!important;margin:0 0 12px!important;padding:0!important;overflow:hidden;box-shadow:0 3px 12px #10243808;transition:border-color .2s,box-shadow .2s}
+html body .client-home #resources.client-faq>details[open]{border-color:#b18b50!important;box-shadow:0 6px 20px #1024380d}
+html body .client-home #resources.client-faq>details>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;list-style:none!important;cursor:pointer;padding:20px 24px!important;margin:0!important;width:100%!important;box-sizing:border-box!important;font:600 17px/1.45 system-ui,sans-serif!important;color:#102438!important;outline:none!important;border:0!important;background:transparent!important}
+html body .client-home #resources.client-faq>details>summary::-webkit-details-marker{display:none}
+html body .client-home #resources.client-faq>details>summary:focus-visible{outline:2px solid #b18b50!important;outline-offset:-4px!important;border-radius:10px}
+html body .client-home #resources.client-faq>details>summary::after{content:"+"!important;display:grid!important;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#f5efe5;color:#795925;font:400 23px/1 system-ui;transform:none!important;position:static!important;border:0!important}
+html body .client-home #resources.client-faq>details[open]>summary::after{content:"−"!important;background:#102438;color:white}
+html body .client-home #resources.client-faq>details>p{display:block!important;width:auto!important;max-width:none!important;margin:0 24px!important;padding:17px 0 23px!important;border-top:1px solid #eee6da!important;color:#344657!important;font:400 16px/1.8 system-ui,sans-serif!important;text-align:left!important;float:none!important;box-sizing:border-box!important}
+html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftReveal .3s ease both}
+@keyframes faqSoftReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){html body .client-home #resources.client-faq{padding:32px 16px!important}html body .client-home #resources.client-faq>details>summary{padding:16px!important;font-size:15px!important}html body .client-home #resources.client-faq>details>p{margin:0 16px!important;font-size:15px!important}}
+@media(prefers-reduced-motion:reduce){html body .client-home #resources.client-faq>details[open]>p{animation:none!important}}
+</style>
+<link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-clean-3">
+</head>
+<body>
 <div class="premium-top-contact" aria-label="Firm contact and Sydney time">
  <div class="premium-top-contact-inner">
   <a href="tel:+61299639800" class="premium-top-contact-link"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3H4a1 1 0 0 0-1 1 17 17 0 0 0 17 17 1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2Z"/></svg> (02) 9963 9800</a>
@@ -149,7 +430,7 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
   <a href="/about/"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>About</a>
   <a href="#services"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v18M5 6h14M7 6 3 13h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/></svg>Expertise</a>
   <a href="#premium-journey-title"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-11 0v2h4v-2"/></svg>Services</a>
-  <a href="#contact"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Contact</a>
+  <a href="#contact"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Contact</a>
   <a class="nav-cta" href="#contact">
    <svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4m9-4v4M3.5 10h17m-12 4h2m3 0h2m-7 3h2"/></svg>
    <span class="nav-consult-copy"><span class="nav-consult-offer">FREE 30-MIN CONSULTATION</span><span class="nav-consult-label">Book a Consultation</span></span>
@@ -495,242 +776,27 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
  viewport.dataset.marquee = '';
 })();
 </script>
-<link rel="stylesheet" href="/docs/inbox.css?v=2">
+
 <script type="module" src="/docs/client-inbox.js?v=booking-submit-errors-1"></script>
 
 
 
-<style id="prevail-white-header-final">
-/* Overlay the navigation on the Sydney Harbour hero while keeping the logo legible. */
-html body:has(.client-home) > header.site-header{
- position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:1000!important;
- background:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
- background-color:transparent!important;background-image:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
- color:#fff!important;border-top:0!important;border-bottom:1px solid rgba(255,255,255,.22)!important;
- box-shadow:none!important
-}
-html body:has(.client-home) > header.site-header nav.header-nav,
-html body:has(.client-home) > header.site-header .header-nav{background:transparent!important;background-color:transparent!important;background-image:none!important}
-html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta){
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#fff!important;opacity:1!important;font-weight:700!important;text-shadow:0 1px 3px rgba(0,0,0,.9)!important;
- background:rgba(7,24,39,.82)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.04))!important;
- border:1px solid rgba(255,255,255,.78)!important;border-radius:999px!important;
- -webkit-backdrop-filter:blur(10px) saturate(135%)!important;backdrop-filter:blur(10px) saturate(135%)!important;
- box-shadow:inset 0 1px rgba(255,255,255,.2),0 4px 14px rgba(0,0,0,.3)!important;
- transition:background .2s ease,border-color .2s ease,transform .2s ease!important
-}
-html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta):hover{
- color:#fff!important;background:rgba(7,24,39,.94)!important;border-color:#fff!important;transform:translateY(-1px)
-}
-html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta):focus-visible{
- outline:3px solid #f3d08c!important;outline-offset:3px
-}
-@media(prefers-reduced-motion:reduce){
- html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta){transition:none!important}
- html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta):hover{transform:none}
-}
-html body:has(.client-home) > header.site-header .header-nav a.nav-cta{
- background:#d5ae67!important;color:#102a3a!important;border-color:#d5ae67!important;box-shadow:0 5px 16px rgba(0,0,0,.22)!important
-}
-html body:has(.client-home) > header.site-header a.brand{
- padding:6px 9px!important;border-radius:8px!important;background:rgba(255,252,245,.9)!important;
- border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 18px rgba(0,0,0,.16)!important
-}
-html body:has(.client-home) > header.site-header a.brand::before,
-html body:has(.client-home) > header.site-header a.brand::after{content:none!important;display:none!important}
-html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{
- display:block!important;width:clamp(250px,26vw,350px)!important;max-height:88px!important;height:auto!important;object-fit:contain!important
-}
-@media(max-width:700px){
- html body:has(.client-home) > header.site-header{padding:12px 16px!important}
- html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{width:min(68vw,285px)!important;max-height:70px!important}
-}
-</style>
 
-<style id="consultation-cta-ux-polish">
-/* Accessible, consistent CTA design even if an external stylesheet is cached. */
-html body .client-home .reference-consultation-cta{
- width:min(1160px,calc(100% - 40px));margin:28px auto 42px;
- padding:clamp(24px,4vw,42px);display:flex;align-items:center;
- justify-content:space-between;gap:24px;flex-wrap:wrap;
- background:linear-gradient(120deg,#103d31 0%,#174c3d 100%)!important;
- color:#fffaf1!important;border:1px solid #b79b6b!important;
- border-radius:18px;box-shadow:0 12px 32px rgba(16,61,49,.14);
-}
-html body .client-home .reference-consultation-cta h2{
- color:#fffaf1!important;font:500 clamp(27px,3.5vw,39px)/1.16 Georgia,serif!important;
- margin:0 0 9px!important;letter-spacing:-.02em;
-}
-html body .client-home .reference-consultation-cta p{
- color:#e8eee8!important;font:400 clamp(14px,1.5vw,16px)/1.55 system-ui,sans-serif!important;
- margin:0!important;
-}
-html body .client-home .reference-consultation-cta .action{
- display:inline-flex;align-items:center;justify-content:center;min-height:48px;
- padding:13px 22px!important;background:#f1d49a!important;color:#173b2e!important;
- border:1px solid #f1d49a!important;border-radius:9px!important;
- font:700 15px/1.2 system-ui,sans-serif!important;text-decoration:none!important;
- box-shadow:0 3px 10px rgba(0,0,0,.12);transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
-}
-html body .client-home .reference-consultation-cta .action:hover{
- background:#ffe5b1!important;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.18);
-}
-html body .client-home .reference-consultation-cta .action:focus-visible{
- outline:3px solid #fffaf1!important;outline-offset:4px;
-}
-html body .client-home .not-sure-cta>div{flex:1 1 560px;max-width:780px}
-html body .client-home .not-sure-cta p{max-width:68ch}
-@media(max-width:600px){
- html body .client-home .reference-consultation-cta{width:calc(100% - 28px);margin:20px auto 32px;padding:24px 20px;gap:20px}
- html body .client-home .reference-consultation-cta .action{width:100%}
-}
-@media(prefers-reduced-motion:reduce){
- html body .client-home .reference-consultation-cta .action{transition:none}
- html body .client-home .reference-consultation-cta .action:hover{transform:none}
-}
 
-html body .client-home .not-sure-cta{
- width:100%!important;max-width:none!important;margin:0!important;padding:42px 24px 46px!important;
- display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
- gap:12px!important;border:0!important;border-radius:0!important;box-shadow:none!important;
- background:#f3f2f7!important;color:#183654!important;text-align:center!important
-}
-html body .client-home .not-sure-cta>div{flex:none!important;width:min(100%,700px)!important;max-width:700px!important}
-html body .client-home .not-sure-cta h2{
- margin:0 0 8px!important;color:#173755!important;font:500 clamp(29px,3.3vw,35px)/1.18 Georgia,serif!important;letter-spacing:0!important
-}
-html body .client-home .not-sure-cta p{
- max-width:700px!important;margin:0 auto!important;color:#29445f!important;
- font:400 clamp(17px,2.1vw,21px)/1.32 Georgia,serif!important
-}
-html body .client-home .not-sure-cta .not-sure-action{
- position:relative!important;isolation:isolate!important;overflow:hidden!important;
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- width:min(222px,100%)!important;min-height:42px!important;margin:7px auto 0!important;padding:10px 18px!important;
- border:1px solid #f5dda2!important;border-radius:999px!important;
- background:linear-gradient(115deg,#f4dfa8 0%,#edc979 50%,#f4dfa8 100%)!important;color:#102a3a!important;
- font:700 12px/1.2 system-ui,sans-serif!important;
- box-shadow:0 0 0 2px rgba(237,201,121,.18),0 5px 15px rgba(32,47,65,.18)!important;
- animation:free-consultation-glow 2.8s ease-in-out infinite
-}
-html body .client-home .not-sure-cta .not-sure-action>span{position:relative!important;z-index:1!important}
-html body .client-home .not-sure-cta .not-sure-action::before{
- content:"";position:absolute;z-index:0;top:-45%;bottom:-45%;left:-55%;width:36%;
- background:linear-gradient(100deg,transparent,rgba(255,255,255,.82),transparent);
- transform:skewX(-22deg);animation:free-consultation-shine 3.2s ease-in-out infinite;pointer-events:none
-}
-html body .client-home .not-sure-cta .not-sure-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
-html body .client-home .not-sure-cta .not-sure-action:focus-visible{outline:3px solid #173755!important;outline-offset:4px}
-@keyframes free-consultation-shine{0%,12%{left:-55%;opacity:0}25%{opacity:1}58%,100%{left:130%;opacity:0}}
-@keyframes free-consultation-glow{50%{box-shadow:0 0 0 4px rgba(237,201,121,.3),0 7px 18px rgba(32,47,65,.2)}}
-@media(max-width:600px){
- html body .client-home .not-sure-cta{padding:34px 20px 38px!important}
- html body .client-home .not-sure-cta p{font-size:18px!important;line-height:1.4!important}
-}
-@media(prefers-reduced-motion:reduce){
- html body .client-home .not-sure-cta .not-sure-action{animation:none!important;transition:none!important}
- html body .client-home .not-sure-cta .not-sure-action::before{display:none!important;animation:none!important}
- html body .client-home .not-sure-cta .not-sure-action:hover{transform:none}
-}
-html body:has(.client-home) > header.site-header.is-scrolled{
- background:rgba(7,24,39,.9)!important;background-image:linear-gradient(180deg,rgba(7,24,39,.94),rgba(7,24,39,.86))!important;
- border-bottom:1px solid rgba(255,255,255,.28)!important;box-shadow:0 7px 24px rgba(0,0,0,.25)!important;
- -webkit-backdrop-filter:blur(14px) saturate(130%)!important;backdrop-filter:blur(14px) saturate(130%)!important
-}
-</style>
-<style id="claim-consultation-button">
-html body .client-home .claim-consultation-cta{
- position:relative!important;isolation:isolate!important;overflow:hidden!important;
- display:flex!important;align-items:center!important;justify-content:center!important;width:max-content!important;max-width:100%!important;
- min-height:52px!important;margin:clamp(24px,3vw,38px) auto 0!important;padding:15px 28px!important;
- border:1px solid #f1d49a!important;border-radius:999px!important;
- background:linear-gradient(120deg,#f3d18b 0%,#d5ae67 48%,#edc77a 100%)!important;color:#102a3a!important;
- font:750 15px/1.2 system-ui,sans-serif!important;text-decoration:none!important;
- box-shadow:0 0 0 3px rgba(213,174,103,.18),0 8px 24px rgba(16,42,58,.18)!important;
- animation:claim-cta-glow 2.8s ease-in-out infinite
-}
-html body .client-home .claim-consultation-cta>span{position:relative!important;z-index:1!important}
-html body .client-home .claim-consultation-cta::before{
- content:"";position:absolute;z-index:0;top:-45%;bottom:-45%;left:-48%;width:34%;
- background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);
- transform:skewX(-22deg);animation:claim-cta-shine 3.2s ease-in-out infinite;pointer-events:none
-}
-html body .client-home .claim-consultation-cta:hover{transform:translateY(-2px);filter:brightness(1.04)}
-html body .client-home .claim-consultation-cta:focus-visible{outline:3px solid #102a3a!important;outline-offset:4px}
-@keyframes claim-cta-shine{0%,12%{left:-48%;opacity:0}24%{opacity:1}58%,100%{left:125%;opacity:0}}
-@keyframes claim-cta-glow{50%{box-shadow:0 0 0 5px rgba(213,174,103,.26),0 10px 30px rgba(16,42,58,.24)}}
-@media(prefers-reduced-motion:reduce){
- html body .client-home .claim-consultation-cta{animation:none!important;transition:none!important}
- html body .client-home .claim-consultation-cta::before{animation:none!important;display:none!important}
- html body .client-home .claim-consultation-cta:hover{transform:none}
-}
-html body .client-home .not-sure-cta .claim-consultation-cta{margin:7px auto 0!important;white-space:nowrap!important;box-sizing:border-box!important}
-@media(max-width:360px){html body .client-home .not-sure-cta .claim-consultation-cta{white-space:normal!important;text-align:center!important}}
-</style>
-<style id="horizontal-logo-and-stable-scroll">
-html body:has(.client-home) > header.site-header a.brand{
- display:flex!important;align-items:center!important;justify-content:center!important;
- padding:6px 12px!important;border:0!important;border-radius:8px!important;
- background:rgba(255,252,245,.97)!important;box-shadow:0 3px 14px rgba(0,0,0,.15)!important
-}
-html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{
- display:block!important;width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;
- object-fit:contain!important;object-position:center!important;filter:none!important
-}
-html body .client-home .prevail-reveal-card>svg{
- display:block!important;position:relative!important;flex:none!important;opacity:1!important;
- transform:none!important;animation:none!important;transition:none!important;will-change:auto!important
-}
-@media(prefers-reduced-motion:reduce){
- html body:has(.client-home) > header.site-header a.brand,
- html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{transition:none!important}
-}
-</style>
-<style id="nav-consultation-promotion">
-html body:has(.client-home) > header.site-header .header-nav a.nav-cta{position:relative!important;isolation:isolate;overflow:hidden;display:inline-flex!important;align-items:center;justify-content:center;gap:8px;padding:8px 14px!important;background:linear-gradient(115deg,#f4d99d,#d5ae67 55%,#f0ce85)!important;border-radius:9px!important;color:#102a3a!important;transition:transform .22s ease,filter .22s ease;animation:navConsultGlow 3s ease-in-out infinite}
-.nav-consult-copy{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;z-index:1;white-space:nowrap}
-.nav-consult-offer{font:800 9px/1.15 system-ui,sans-serif;letter-spacing:.045em}
-.nav-consult-label{font:750 12px/1.2 system-ui,sans-serif}
-html body header.site-header .header-nav a.nav-cta::before{content:"";position:absolute;inset:-40% auto -40% -45%;width:32%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-22deg);animation:navConsultShine 3.8s ease-in-out infinite;pointer-events:none}
-html body header.site-header .header-nav a.nav-cta:hover{transform:translateY(-2px);filter:brightness(1.06)}
-@keyframes navConsultShine{0%,15%{left:-45%}55%,100%{left:125%}}
-@keyframes navConsultGlow{50%{filter:brightness(1.08)}}
-@media(prefers-reduced-motion:reduce){html body:has(.client-home) > header.site-header .header-nav a.nav-cta,html body header.site-header .header-nav a.nav-cta::before{animation:none!important;transition:none!important}html body header.site-header .header-nav a.nav-cta:hover{transform:none}}
-</style>
-<style id="public-smooth-scroll">
-html:has(.client-home){scroll-behavior:smooth;scroll-padding-top:110px}
-html:has(.client-home) body{scroll-behavior:smooth}
-@media(prefers-reduced-motion:reduce){html:has(.client-home),html:has(.client-home) body{scroll-behavior:auto!important}}
-</style>
 
-<style id="prevail-why-reveal-style">
-html body .client-home .prevail-why{display:block!important;padding:64px 24px!important;background:#fff;text-align:center!important;color:#102438}
-html body .client-home .prevail-why h2{font:700 clamp(25px,3vw,34px)/1.2 Georgia,serif;margin:0 auto 14px!important;text-align:center!important}
-html body .client-home .prevail-why p.prevail-why-intro{display:block!important;width:100%!important;max-width:720px!important;margin:0 auto 32px!important;text-align:center!important;font:18px/1.6 Georgia,serif!important}
-html body .client-home .prevail-why-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch!important;gap:24px;max-width:1000px;width:100%;margin:0 auto!important}
-html body .client-home .prevail-reveal-card{display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:28px 24px!important;box-sizing:border-box;background:#fff;border:1px solid #e8dfd0;border-radius:12px;box-shadow:0 8px 24px #10243810;text-align:center!important;min-width:0;font:17px/1.5 Georgia,serif}
-.prevail-reveal-card strong{font-size:22px;line-height:1.2}.prevail-reveal-card svg{width:30px;height:30px;color:#b18b50;flex:none}.prevail-reveal-card>span{display:block}
-.prevail-why.reveal-ready .reveal-pending{opacity:0;transform:translateY(24px)}.prevail-why.reveal-ready .reveal-shown{animation:prevailReveal .65s cubic-bezier(.22,.7,.2,1) both;animation-delay:var(--reveal-delay,0ms)}
-@keyframes prevailReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:760px){html body .client-home .prevail-why-grid{grid-template-columns:1fr;max-width:460px}html body .client-home .prevail-why{padding:40px 18px!important}}
-@media(prefers-reduced-motion:reduce){.prevail-why.reveal-ready .reveal-pending,.prevail-why.reveal-ready .reveal-shown{opacity:1;transform:none;animation:none}}
-</style>
 
-<style id="booking-confetti-style">
-html body header.site-header .header-nav a.nav-cta,html body header.site-header .header-nav a.nav-cta *{text-decoration:none!important;text-decoration-line:none!important}
-</style>
+
+
+
+
+
+
+
 <script id="booking-confetti">
 (()=>{document.addEventListener('click',e=>{const a=e.target.closest('a[href="#contact"]');if(!a||!document.querySelector('.client-home')||!(/book|consultation|availability/i.test(a.textContent)||a.classList.contains('nav-cta'))||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const rect=a.getBoundingClientRect(),x=rect.left+rect.width/2,y=rect.top+rect.height/2;const layer=document.createElement('div');layer.setAttribute('aria-hidden','true');layer.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:2147483647;overflow:hidden';document.body.append(layer);const colors=['#d5ae67','#f4d99d','#102438','#ffffff','#7899ad'];for(let i=0;i<48;i++){const p=document.createElement('span');p.style.cssText='position:absolute;left:'+x+'px;top:'+y+'px;width:6px;height:10px;border-radius:1px;background:'+colors[i%colors.length];layer.append(p);const angle=Math.random()*Math.PI*2,dist=70+Math.random()*170,dx=Math.cos(angle)*dist,dy=Math.sin(angle)*dist;p.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate('+dx+'px,'+(dy-50)+'px) rotate(240deg)',opacity:1,offset:.45},{transform:'translate('+(dx*1.3)+'px,'+(dy+170)+'px) rotate(540deg)',opacity:0}],{duration:850+Math.random()*450,easing:'ease-out',fill:'forwards'});}setTimeout(()=>layer.remove(),1400);},true);})();
 </script>
-<style id="prevail-intro-center-final">
-html body .client-home section.prevail-why > p.prevail-why-intro{display:block!important;position:relative!important;float:none!important;left:auto!important;right:auto!important;inset-inline:auto!important;width:min(100%,720px)!important;max-width:720px!important;margin:0 auto 32px!important;padding:0!important;text-align:center!important;justify-self:center!important;align-self:center!important;grid-column:1/-1!important;box-sizing:border-box!important}
-</style>
-<style id="prevail-review-style">
-.pr-track{perspective:1200px}.pr-card{animation:none!important;backface-visibility:hidden}.pr-controls button{transition:background .2s,color .2s}.pr-controls button:hover{background:#102438;color:white}
 
-html body .client-home .prevail-reviews{display:block!important;padding:48px 24px 56px!important;background:#f7f4ef;color:#102438;text-align:center!important}html body .client-home .prevail-reviews h2{margin:0 auto 12px!important;font:700 clamp(25px,3vw,34px)/1.2 Georgia,serif;text-align:center!important}html body .client-home .prevail-reviews .pr-intro{display:block!important;width:100%!important;max-width:680px!important;margin:12px auto!important;text-align:center!important;float:none!important}.pr-disclosure{font:12px/1.5 system-ui;color:#655b4d;margin:14px auto}.pr-track{max-width:760px;margin:20px auto}.pr-card{background:white;border:1px solid #e4d9c8;border-radius:14px;padding:26px;text-align:left;box-shadow:0 8px 24px #1024380d;min-height:230px;box-sizing:border-box;animation:prReveal .35s ease both}.pr-card[hidden]{display:none!important}.pr-head{display:flex;align-items:center;gap:12px}.pr-avatar{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#e9dbc1;color:#795925;font:700 20px Georgia}.pr-head small{display:block;color:#655b4d;font:12px system-ui;margin-top:4px}.pr-quote{margin-left:auto;color:#b18b50;font:56px/1 Georgia}.pr-card blockquote{margin:20px 0;font:18px/1.6 Georgia,serif}.pr-card footer{border-top:1px solid #e4d9c8;padding-top:12px;color:#795925;font:600 13px system-ui}.pr-controls{display:flex;align-items:center;justify-content:center;gap:14px}.pr-controls button{border:1px solid #b18b50;background:white;color:#102438;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:22px}.pr-review-link{display:inline-block;background:#102438;color:white!important;border-radius:8px;padding:12px 20px;text-decoration:none!important}.pr-count{font:13px system-ui}@keyframes prReveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.pr-card{animation:none}}
-</style><style id="pr-slide-style">.pr-track{display:grid;overflow:hidden;perspective:none;touch-action:pan-y}.pr-track .pr-card{grid-area:1/1;min-width:0}.pr-track .pr-card[hidden]{display:block!important;visibility:hidden;pointer-events:none}.pr-track .pr-card:not([hidden]){visibility:visible}</style><script id="prevail-review-script">document.addEventListener('DOMContentLoaded',()=>{const section=document.querySelector('.prevail-reviews');if(!section)return;const track=section.querySelector('.pr-track'),cards=[...track.querySelectorAll('.pr-card')];if(cards.length<2)return;let i=0,busy=false,start=null;const reduced=matchMedia('(prefers-reduced-motion: reduce)');function show(step){if(busy)return;const next=(i+step+cards.length)%cards.length,old=cards[i],fresh=cards[next];if(reduced.matches||!old.animate){old.hidden=true;fresh.hidden=false;i=next;return}busy=true;fresh.hidden=false;const opts={duration:650,easing:'cubic-bezier(.22,.7,.2,1)'};const a=old.animate([{transform:'translateX(0)',opacity:1},{transform:'translateX('+(-step*100)+'%)',opacity:0}],opts);const b=fresh.animate([{transform:'translateX('+(step*100)+'%)',opacity:0},{transform:'translateX(0)',opacity:1}],opts);Promise.allSettled([a.finished,b.finished]).then(()=>{old.hidden=true;i=next;busy=false})}track.addEventListener('touchstart',e=>{start=e.touches[0].clientX},{passive:true});track.addEventListener('touchend',e=>{if(start===null)return;const delta=e.changedTouches[0].clientX-start;start=null;if(Math.abs(delta)>45)show(delta<0?1:-1)},{passive:true});track.addEventListener('touchcancel',()=>{start=null});setInterval(()=>{if(!reduced.matches&&!document.hidden&&!section.matches(':hover,:focus-within')&&start===null)show(1)},6000)});</script>
+<script id="prevail-review-script">document.addEventListener('DOMContentLoaded',()=>{const section=document.querySelector('.prevail-reviews');if(!section)return;const track=section.querySelector('.pr-track'),cards=[...track.querySelectorAll('.pr-card')];if(cards.length<2)return;let i=0,busy=false,start=null;const reduced=matchMedia('(prefers-reduced-motion: reduce)');function show(step){if(busy)return;const next=(i+step+cards.length)%cards.length,old=cards[i],fresh=cards[next];if(reduced.matches||!old.animate){old.hidden=true;fresh.hidden=false;i=next;return}busy=true;fresh.hidden=false;const opts={duration:650,easing:'cubic-bezier(.22,.7,.2,1)'};const a=old.animate([{transform:'translateX(0)',opacity:1},{transform:'translateX('+(-step*100)+'%)',opacity:0}],opts);const b=fresh.animate([{transform:'translateX('+(step*100)+'%)',opacity:0},{transform:'translateX(0)',opacity:1}],opts);Promise.allSettled([a.finished,b.finished]).then(()=>{old.hidden=true;i=next;busy=false})}track.addEventListener('touchstart',e=>{start=e.touches[0].clientX},{passive:true});track.addEventListener('touchend',e=>{if(start===null)return;const delta=e.changedTouches[0].clientX-start;start=null;if(Math.abs(delta)>45)show(delta<0?1:-1)},{passive:true});track.addEventListener('touchcancel',()=>{start=null});setInterval(()=>{if(!reduced.matches&&!document.hidden&&!section.matches(':hover,:focus-within')&&start===null)show(1)},6000)});</script>
 <script id="availability-dialog-controller">
 (() => {
  const selectors = '.client-home a[href="#contact"], .site-header .header-nav a.nav-cta';
@@ -772,127 +838,5 @@ html body .client-home .prevail-reviews{display:block!important;padding:48px 24p
  }, true);
 })();
 </script>
-
-<style id="booking-slot-color-status">
-.availability-dialog .premium-time-grid button[data-state="requestable"]{background:#eff6ff!important;border-color:#93c5fd!important;color:#1d4ed8!important}
-.availability-dialog .premium-time-grid button[data-state="requestable"]:hover{background:#dbeafe!important;border-color:#2563eb!important}
-.availability-dialog .premium-time-grid button[data-state="requestable"][aria-pressed="true"]{background:#2563eb!important;border-color:#2563eb!important;color:#fff!important}
-.availability-dialog .premium-time-grid button[data-state="booked"]{background:#fee2e2!important;border-color:#fca5a5!important;color:#b91c1c!important;cursor:not-allowed!important;opacity:1!important;text-decoration:line-through}
-.availability-dialog .premium-time-grid button[data-state="unavailable"]{background:#f3f4f6!important;border-color:#e5e7eb!important;color:#9ca3af!important;cursor:not-allowed!important}
-.availability-dialog .premium-calendar-days button[data-state="requestable"]:not([aria-pressed="true"]){background:#eff6ff!important;color:#1d4ed8!important}
-.availability-dialog .premium-calendar-days button[aria-pressed="true"]{background:#2563eb!important;color:#fff!important}
-.availability-dialog .premium-calendar-days button[data-state="unavailable"]{background:#f3f4f6!important;color:#a3a3a3!important}
-</style>
-
-<style id="consultation-popup">
-dialog.consultation-frame-dialog{position:fixed;inset:0;margin:auto;width:min(920px,calc(100vw - 24px));height:min(90dvh,860px);max-width:none;max-height:none;padding:0;border:1px solid #d8c6a9;border-radius:18px;background:#fffaf4;color:#102a3a;box-shadow:0 26px 90px #071a2a66;overflow:hidden}
-dialog.consultation-frame-dialog[open]{display:grid;grid-template-rows:60px minmax(0,1fr)}
-dialog.consultation-frame-dialog::backdrop{background:#071a2ab8;backdrop-filter:blur(4px)}
-.consultation-frame-top{display:flex;justify-content:space-between;align-items:center;padding:0 22px;border-bottom:1px solid #e9dcc8;color:#102a3a;font:500 23px Georgia,serif}
-.consultation-frame-close{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #d9cbb5;background:#fff;color:#102a3a;font-size:25px;cursor:pointer}
-.consultation-frame-body{min-height:0;overflow:auto;overscroll-behavior:contain}
-.consultation-frame-dialog .client-home{display:block!important;width:100%;min-height:0!important;margin:0!important;padding:0!important}
-.consultation-frame-dialog .client-home>:not(#contact){display:none!important}
-.consultation-frame-dialog .client-home>section#contact{display:block!important;width:100%;margin:0!important;padding:0!important}
-html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel{display:block!important;grid-template-columns:minmax(0,1fr)!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
-.consultation-frame-dialog #contact .consultation-intro{display:none!important}
-html body dialog.consultation-frame-dialog .client-home section#contact .contact-panel > .consultation-form{display:block!important;grid-column:1!important;min-height:0!important;padding:10px 14px 16px!important;border:0!important}
-.consultation-frame-dialog #consultation-form .premium-booking-steps,
-.consultation-frame-dialog #consultation-form #consultation-demo{display:none!important;margin:0!important;padding:0!important}
-.consultation-frame-dialog #consultation-form .premium-booking{margin:0!important;padding:8px 10px!important}
-.consultation-frame-dialog #consultation-form .premium-booking-head{margin:0 0 6px!important}
-html body dialog.consultation-frame-dialog .client-home #consultation-form>h3{margin:0 0 4px!important;font-size:27px!important;line-height:1.15!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:5px 14px 10px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;min-height:0!important;padding:0!important;border:0!important;border-bottom:2px solid #e6dfd3!important;border-radius:0!important;background:transparent!important;color:#102a3a!important;box-shadow:none!important;font:600 11px/1.2 system-ui,sans-serif!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>b{position:relative!important;display:grid!important;place-items:center!important;width:26px!important;height:26px!important;flex:none!important;margin:0!important;border:1px solid #d3dce1!important;border-radius:50%!important;background:#fff!important;color:#102a3a!important;font:700 10px/1 system-ui,sans-serif!important;transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .25s ease!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>span{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:25px!important;padding:5px 9px!important;border:0!important;border-radius:999px!important;background:#24465a!important;color:#fff!important;font:600 11px/1 system-ui,sans-serif!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.active{border-bottom:3px solid #d5ae67!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.completed{border-bottom:2px solid #b8c8c1!important}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.active>b{background:#102a3a!important;color:#fff!important;border-color:#102a3a!important;transform:scale(1.04)}
-html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span.completed>b{background:#e8f2ea!important;color:#236444!important;border-color:#b5d1bc!important}
-@media(max-width:600px){html body dialog.consultation-frame-dialog .client-home #consultation-form>h3{font-size:24px!important}html body dialog.consultation-frame-dialog .client-home .premium-booking-steps{margin:4px 4px 8px!important;gap:2px!important}html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>span>span{font-size:10px!important;padding:5px 7px!important}}
-@media(max-width:600px){dialog.consultation-frame-dialog{width:calc(100vw - 12px);height:94dvh;border-radius:12px}dialog.consultation-frame-dialog[open]{grid-template-rows:52px minmax(0,1fr)}.consultation-frame-top{padding:0 14px;font-size:19px}}
-</style>
-
+</body>
 </html>
-
-<style id="mobile-form-focus-fix">
-/* Keep mobile form controls at the browser's no-auto-zoom text size. */
-@media (max-width: 767px) {
-  #consultation-form :is(input, select, textarea),
-  #support-form :is(input, select, textarea) {
-    font-size: 16px !important;
-    line-height: 1.4;
-  }
-}
-</style>
-
-<style id="prevail-faq-polish">
-html body .client-home #resources.client-faq{display:block!important;max-width:1040px!important;margin-inline:auto!important;padding:48px 24px!important;box-sizing:border-box!important}
-html body .client-home #resources.client-faq>h2{font:700 clamp(27px,3vw,36px)/1.2 Georgia,serif!important;color:#102438!important;margin:0 0 26px!important}
-html body .client-home #resources.client-faq>details{display:block!important;background:#fff!important;border:1px solid #e4d9c8!important;border-radius:12px!important;margin:0 0 12px!important;padding:0!important;overflow:hidden;box-shadow:0 3px 12px #10243808;transition:border-color .2s,box-shadow .2s}
-html body .client-home #resources.client-faq>details[open]{border-color:#b18b50!important;box-shadow:0 6px 20px #1024380d}
-html body .client-home #resources.client-faq>details>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;list-style:none!important;cursor:pointer;padding:20px 24px!important;margin:0!important;width:100%!important;box-sizing:border-box!important;font:600 17px/1.45 system-ui,sans-serif!important;color:#102438!important;outline:none!important;border:0!important;background:transparent!important}
-html body .client-home #resources.client-faq>details>summary::-webkit-details-marker{display:none}
-html body .client-home #resources.client-faq>details>summary:focus-visible{outline:2px solid #b18b50!important;outline-offset:-4px!important;border-radius:10px}
-html body .client-home #resources.client-faq>details>summary::after{content:"+"!important;display:grid!important;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#f5efe5;color:#795925;font:400 23px/1 system-ui;transform:none!important;position:static!important;border:0!important}
-html body .client-home #resources.client-faq>details[open]>summary::after{content:"−"!important;background:#102438;color:white}
-html body .client-home #resources.client-faq>details>p{display:block!important;width:auto!important;max-width:none!important;margin:0 24px!important;padding:17px 0 23px!important;border-top:1px solid #eee6da!important;color:#344657!important;font:400 16px/1.8 system-ui,sans-serif!important;text-align:left!important;float:none!important;box-sizing:border-box!important}
-html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftReveal .3s ease both}
-@keyframes faqSoftReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:600px){html body .client-home #resources.client-faq{padding:32px 16px!important}html body .client-home #resources.client-faq>details>summary{padding:16px!important;font-size:15px!important}html body .client-home #resources.client-faq>details>p{margin:0 16px!important;font-size:15px!important}}
-@media(prefers-reduced-motion:reduce){html body .client-home #resources.client-faq>details[open]>p{animation:none!important}}
-</style>
-<style id="prevail-pill-navigation-icons-v2">
-html body:has(.client-home)>header.site-header,html body body>header.site-header{
- position:sticky!important;top:0!important;z-index:100!important;
- background:rgba(9,27,42,.91)!important;background-color:rgba(9,27,42,.91)!important;background-image:none!important;
- color:#fff!important;border-bottom:1px solid rgba(214,224,230,.15)!important;
- box-shadow:0 7px 22px rgba(4,15,24,.16)!important;
- -webkit-backdrop-filter:blur(15px) saturate(125%)!important;backdrop-filter:blur(15px) saturate(125%)!important
-}
-html body .site-header .header-nav{
- display:flex!important;align-items:center!important;justify-content:flex-end!important;
- flex-wrap:nowrap!important;gap:10px!important;min-width:0!important
-}
-html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta){
- display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
- box-sizing:border-box!important;min-height:42px!important;padding:8px 15px!important;
- color:#f7f5ef!important;background:rgba(255,255,255,.045)!important;
- border:1px solid rgba(194,209,218,.38)!important;border-radius:999px!important;
- text-decoration:none!important;font:500 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif!important;
- letter-spacing:.01em!important;white-space:nowrap!important;
- transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease!important
-}
-html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta) .nav-icon{
- display:block!important;visibility:visible!important;opacity:1!important;
- width:16px!important;height:16px!important;min-width:16px!important;flex:0 0 16px!important;
- fill:none!important;stroke:#e8c77f!important;stroke-width:1.65!important;
- stroke-linecap:round!important;stroke-linejoin:round!important
-}
-html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta):hover,
-html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta)[aria-current=location]{
- color:#fff!important;background:rgba(255,255,255,.105)!important;border-color:rgba(232,199,127,.72)!important;
- box-shadow:0 0 0 1px rgba(232,199,127,.1)!important
-}
-html body:has(.client-home)>header.site-header #public-navigation a.nav-cta{
- display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
- box-sizing:border-box!important;min-height:44px!important;padding:9px 17px!important;
- color:#162c3a!important;background:linear-gradient(135deg,#f3d797,#eac16e)!important;
- border:1px solid rgba(255,233,180,.8)!important;border-radius:999px!important;
- text-decoration:none!important;font:650 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif!important;
- box-shadow:0 4px 13px rgba(0,0,0,.17)!important
-}
-html body:has(.client-home)>header.site-header #public-navigation a.nav-cta .mockup-icon{width:16px!important;height:16px!important;flex:none!important}
-html body:has(.client-home)>header.site-header .header-nav#public-navigation a:focus-visible{outline:2px solid #f0d391!important;outline-offset:3px!important}
-@media(max-width:940px){
- html body .site-header .header-nav{gap:7px!important}
- html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta){padding:7px 11px!important;font-size:13px!important}
-}
-@media(max-width:700px){
- html body .site-header .header-nav{flex-wrap:wrap!important;justify-content:center!important;gap:7px!important}
- html body:has(.client-home)>header.site-header .header-nav#public-navigation a:not(.nav-cta){min-height:40px!important;padding:7px 12px!important;font-size:13px!important}
- html body .site-header .header-nav .nav-cta{min-height:42px!important}
-}
-@media(prefers-reduced-motion:reduce){html body .site-header .header-nav a{transition:none!important}}
-</style>
