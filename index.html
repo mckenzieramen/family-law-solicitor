@@ -29,7 +29,7 @@ html body .client-home .hero-grid.hero-video-hero{
  overflow:hidden!important;background:#102a3a!important
 }
 html body .client-home .hero-video-backdrop{position:absolute!important;inset:0!important;z-index:-1!important;overflow:hidden!important;pointer-events:none!important}
-html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 46%!important;filter:brightness(.76) saturate(.92)!important}
+html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:56% 46%!important;transform:scale(1.16)!important;transform-origin:56% 50%!important;filter:brightness(.76) saturate(.92)!important}
 html body .client-home .hero-video-shade{position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(7,22,35,.66) 0%,rgba(7,22,35,.42) 52%,rgba(7,22,35,.12) 100%),linear-gradient(0deg,rgba(7,22,35,.3),transparent 46%)!important}
 html body .client-home .hero-grid.hero-video-hero .hero-copy{
  position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
@@ -429,7 +429,7 @@ function home(){
   };
   heroVideo.defaultPlaybackRate=0.8;
   heroVideo.playbackRate=0.8;
-  const playHeroVideo=()=>{heroVideo.playbackRate=0.7;return heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false))};
+  const playHeroVideo=()=>{heroVideo.playbackRate=0.8;return heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false))};
   heroMotion.addEventListener('click',()=>{
    if(heroVideo.paused)playHeroVideo();
    else{heroVideo.pause();setMotionState(false)}
