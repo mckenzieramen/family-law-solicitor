@@ -451,7 +451,6 @@ function home(){
    const videoObserver=new IntersectionObserver(([entry])=>{
     inViewport=entry.isIntersecting;
     syncHeroVideo();
-    if(inViewport)videoObserver.disconnect();
    },{threshold:0.08});
    videoObserver.observe(heroVideo);
   }else syncHeroVideo();
