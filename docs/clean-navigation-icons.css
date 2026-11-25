@@ -1,6 +1,6 @@
 /* Reference-matched navigation icons — transparent overlay, no pill backgrounds. */
 html body:has(.client-home)>header.site-header {
-  position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;
+  position:sticky!important;top:0!important;z-index:1000!important;
   background:transparent!important;background-color:transparent!important;background-image:none!important;
   border:0!important;box-shadow:none!important;
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important
@@ -71,3 +71,8 @@ html body>header.site-header #public-navigation>a.nav-cta { margin-left:clamp(8p
 /* Secondary public pages use the same navigation, with their existing mobile toggle. */
 html body:not(:has(.client-home))>header.site-header{background:rgba(9,27,42,.94);}
 @media(max-width:760px){html body:not(:has(.client-home))>header.site-header nav#public-navigation:not(.is-open){display:none!important}html body:not(:has(.client-home))>header.site-header nav#public-navigation.is-open{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important}}
+
+/* Shared compact header logo; footer and content logos are unaffected. */
+html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:clamp(165px,18vw,230px)!important;max-width:230px!important;min-width:0!important;flex:0 0 auto!important;padding:4px 6px!important;box-sizing:border-box!important;height:auto!important;min-height:0!important}
+html body>header.site-header a.brand img,html body:has(.client-home)>header.site-header a.brand img.prevail-real-logo{display:block!important;width:100%!important;height:auto!important;max-height:72px!important;object-fit:contain!important}
+@media(max-width:760px){html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:min(46vw,185px)!important}}
