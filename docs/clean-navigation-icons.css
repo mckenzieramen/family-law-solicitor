@@ -77,11 +77,11 @@ html body>header.site-header a.brand,html body:has(.client-home)>header.site-hea
 html body>header.site-header a.brand img,html body:has(.client-home)>header.site-header a.brand img.prevail-real-logo{display:block!important;width:100%!important;height:auto!important;max-height:72px!important;object-fit:contain!important}
 @media(max-width:760px){html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:min(46vw,185px)!important}}
 
-html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important}
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:rgba(255,255,255,.78)!important;background-color:rgba(255,255,255,.78)!important;background-image:none!important;box-shadow:none!important}
 html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(255,255,255,.78)!important}
 
 /* Keep both header rows together; the measured contact height prevents gaps. */
-html body:has(.client-home)> .premium-top-contact{position:fixed!important;inset:0 0 auto!important;z-index:1001!important;background:#091e2d!important;transition:background-color .25s ease,backdrop-filter .25s ease!important}
+html body:has(.client-home)> .premium-top-contact{position:fixed!important;inset:0 0 auto!important;z-index:1001!important;background:rgba(255,255,255,.78)!important;transition:background-color .25s ease,backdrop-filter .25s ease!important}
 html body:has(.client-home):has(>header.site-header.is-scrolled)> .premium-top-contact{background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
 html body:has(.client-home)>header.site-header.site-header{transition:background-color .25s ease,backdrop-filter .25s ease!important}
 html body:has(.client-home)>header.site-header.site-header.is-scrolled{-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
@@ -93,3 +93,9 @@ html body:has(.client-home)>header.site-header.site-header.is-scrolled #public-n
 html body:has(.client-home):has(>header.site-header.is-scrolled)>.premium-top-contact :is(.premium-top-contact-link,.premium-top-sydney-time,#premium-top-clock){color:#102a3a!important}
 html body:has(.client-home):has(>header.site-header.is-scrolled)>.premium-top-contact .mockup-icon{color:#79551d!important}
 @media(max-width:850px){html body:has(.client-home)>header.site-header.site-header.is-scrolled nav#public-navigation[data-collapsed=false]{background:rgba(255,255,255,.96)!important}}
+
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled),html body:has(.client-home)>.premium-top-contact{-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled) #public-navigation>a:not(.nav-cta){color:#102a3a!important;text-shadow:none!important}
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled) #public-navigation>a:not(.nav-cta):is(:hover,[aria-current=page],[aria-current=location]){color:#79551d!important}
+html body:has(.client-home)>.premium-top-contact :is(.premium-top-contact-link,.premium-top-sydney-time,#premium-top-clock){color:#102a3a!important}
+html body:has(.client-home)>.premium-top-contact .mockup-icon{color:#79551d!important}
