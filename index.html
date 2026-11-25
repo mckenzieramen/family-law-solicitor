@@ -254,7 +254,7 @@ function home(){
  </section>
  <aside class="reference-consultation-cta not-sure-cta" aria-labelledby="not-sure-title">
   <div><h2 id="not-sure-title">Not sure where to start?</h2><p>Separation raises a lot of questions, and you don’t need to have all the answers before you call. In a free 30-minute consultation, you can talk through your situation, find out where you stand and what your options are, and leave with clear next steps. There’s no obligation to go further.</p></div>
-  <a class="action not-sure-action" href="#contact"><span>Claim your free consultation now</span></a>
+  <a class="action claim-consultation-cta" href="#contact"><span>Claim your free consultation now</span></a>
  </aside>
  
  
@@ -271,7 +271,7 @@ function home(){
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v17M7 21h10M4 7h16M7 7l-4 7h8L7 7Zm10 0-4 7h8l-4-7Z"/></svg></span><h3>Preparation</h3><p>Gather information and documents requested for your matter.</p></div>
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg></span><h3>Next steps</h3><p>Agree on a plan appropriate to your circumstances.</p></div>
    </div>
-   <a class="action claim-consultation-cta" href="#contact"><span>Claim your free consultation now</span></a>
+   
   </div>
  </section>
  <aside class="reference-consultation-cta" aria-labelledby="reference-consultation-title">
@@ -687,6 +687,8 @@ html body .client-home .claim-consultation-cta:focus-visible{outline:3px solid #
  html body .client-home .claim-consultation-cta::before{animation:none!important;display:none!important}
  html body .client-home .claim-consultation-cta:hover{transform:none}
 }
+html body .client-home .not-sure-cta .claim-consultation-cta{margin:7px auto 0!important;white-space:nowrap!important;box-sizing:border-box!important}
+@media(max-width:360px){html body .client-home .not-sure-cta .claim-consultation-cta{white-space:normal!important;text-align:center!important}}
 </style>
 <script id="availability-dialog-controller">
 (() => {
