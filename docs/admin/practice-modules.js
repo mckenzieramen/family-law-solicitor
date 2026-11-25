@@ -463,7 +463,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       const fs=await import(firebaseModuleUrl);
       const q=fs.query(fs.collection(context.db,'firmRecords'),fs.where('firmUid','==',context.firmUid),fs.limit(250));
       practiceStop=fs.onSnapshot(q,snapshot=>{
-        practiceRecords=snapshot.docs.map(d=>({id:d.id,...d.data()}));
+        practiceRecords=snapshot.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.payload?.uploadState!=='pending');
         stopLoading(false);renderRecords();
       },error=>{
         stopLoading(true);document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,error.code==='permission-denied'?'Firebase denied access. Check that the latest Firestore rules are deployed.':'Could not load saved firm records.',true));
@@ -511,7 +511,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
     }
     delete form.dataset.reviewed;
     if(type==='document'&&!file){setStatus(form,'Choose a document before uploading.',true);return;}
-    if(file&&file.size>5*1024*1024){setStatus(form,'Files must be 5 MB or smaller.',true);return;}
+    if(file&&file.size>50*1024*1024){setStatus(form,'Files must be 50 MB or smaller.',true);return;}
     const submitButton=form.querySelector('[type="submit"]');
     if(submitButton)submitButton.disabled=true;
     setStatus(form,type==='document'?'Uploading document securely…':'Saving securely…');
@@ -522,15 +522,10 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       const now={createdBy:context.user.uid,updatedBy:context.user.uid,createdAt:fs.serverTimestamp(),updatedAt:fs.serverTimestamp()};
       let fileBatch=null;
       if(file){
-        const bytes=new Uint8Array(await file.arrayBuffer());
         const chunkSize=700*1024;
-        const count=Math.ceil(bytes.length/chunkSize);
-        fileBatch=fs.writeBatch(context.db);
-        for(let i=0;i<count;i++){
-          fileBatch.set(fs.doc(recordRef,'fileChunks',String(i)),{index:i,bytes:fs.Bytes.fromUint8Array(bytes.slice(i*chunkSize,(i+1)*chunkSize))});
-        }
+        const count=Math.ceil(file.size/chunkSize);
         payload.fileName=file.name;payload.contentType=file.type;payload.fileSize=file.size;payload.fileBackend='firestore';payload.chunkCount=count;
-        setStatus(form,'Saving document…');
+        fileBatch={count,chunkSize};
       }
       if(type==='trustTransaction')payload.recordKind=payload.transactionType||'Receipt';
       const record={firmUid:context.firmUid,recordType:type,payload, ...now};
@@ -539,7 +534,26 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
         batch.set(fs.doc(context.db,'users',String(payload.uid)),{role:'employee',lawyerUid:context.firmUid},{merge:true});
         batch.set(recordRef,record);
         await batch.commit();
-      }else if(fileBatch){fileBatch.set(recordRef,record);await fileBatch.commit();}else await fs.setDoc(recordRef,record);
+      }else if(fileBatch){
+        const {count,chunkSize}=fileBatch;
+        await fs.setDoc(recordRef,{...record,payload:{...payload,uploadState:'pending'}});
+        let saved=0;
+        try{
+          for(let i=0;i<count;i+=4){
+            const batch=fs.writeBatch(context.db);
+            for(let j=i;j<Math.min(i+4,count);j++){
+              const bytes=new Uint8Array(await file.slice(j*chunkSize,(j+1)*chunkSize).arrayBuffer());
+              batch.set(fs.doc(recordRef,'fileChunks',String(j)),{index:j,bytes:fs.Bytes.fromUint8Array(bytes)});
+            }
+            await batch.commit();saved=Math.min(i+4,count);
+            setStatus(form,'Uploading… '+Math.min(99,Math.floor(saved/count*100))+'%');
+          }
+          await fs.updateDoc(recordRef,{payload,updatedAt:fs.serverTimestamp(),updatedBy:context.user.uid});
+        }catch(error){
+          try{for(let i=0;i<saved;i+=4){const batch=fs.writeBatch(context.db);for(let j=i;j<Math.min(i+4,saved);j++)batch.delete(fs.doc(recordRef,'fileChunks',String(j)));await batch.commit();}}catch{}
+          throw error;
+        }
+      }else await fs.setDoc(recordRef,record);
       if(type==='document'){practiceRecords=[...practiceRecords.filter(x=>x.id!==recordRef.id),{id:recordRef.id,...record}];renderRecords();const panel=document.querySelector('.matter-premium-detail');if(panel&&!panel.hidden&&panel.dataset.activeSection==='1')panel.querySelector('[data-matter-menu="1"]')?.click();}setStatus(form,type==='document'?'Successfully uploaded.':'Saved successfully.');
       form.reset();delete form.dataset.matterId;
       const dialog=form.closest('dialog');
