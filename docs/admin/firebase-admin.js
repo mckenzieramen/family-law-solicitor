@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
 import { getStorage } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js';
-import { getAuth, getIdTokenResult, onIdTokenChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
+import { getAuth, getIdTokenResult, onAuthStateChanged, browserLocalPersistence, setPersistence, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js';
 import { doc, getDocFromServer, getFirestore, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 
 import { mountInbox, clearInbox } from './inbox.js?v=ticket-workspace-9';
@@ -56,7 +56,7 @@ function showAuthStatus(message) {
 const saveStatus = document.getElementById('save-status');
 let generation = 0;
 let checklist;
-const entryCard = document.getElementById('staff-entry');
+const entryCard = document.getElementById('staff-entry') || document.querySelector('main.staff-entry');
 const dashboardSession = document.getElementById('dashboard-session');
 const signOutHome = logout.parentElement;
 
@@ -127,8 +127,10 @@ login.addEventListener('submit', async event => {
   const button = login.querySelector('button');
   const data = new FormData(login);
   button.disabled = true;
-  showAuthStatus('Signing in…');
+  showAuthStatus('');
+  window.prevailAuthScreen?.('loading');
   try {
+    await setPersistence(auth, browserLocalPersistence);
     await signInWithEmailAndPassword(auth, data.get('email').trim(), data.get('password'));
     login.reset();
   } catch (error) {
@@ -141,6 +143,8 @@ login.addEventListener('submit', async event => {
       'auth/invalid-api-key': 'The Firebase connection is misconfigured. Contact your Firebase administrator.'
     };
     showAuthError(messages[error?.code] || 'Sign-in failed. Contact your Firebase administrator.');
+    if (entryCard) entryCard.hidden = false;
+    window.prevailAuthScreen?.('signin');
   } finally {
     button.disabled = false;
   }
@@ -151,14 +155,15 @@ logout.addEventListener('click', async () => {
   catch { (panel.hidden ? authStatus : saveStatus).textContent = 'Sign-out failed. Please try again.'; }
 });
 
-onIdTokenChanged(auth, async user => {
+onAuthStateChanged(auth, async user => {
   const current = ++generation;
+  window.prevailAuthScreen?.('loading');
   checklist = undefined;
   clearWorkflow();
   clearInbox();
   window.dispatchEvent(new CustomEvent('practice-firebase-clear'));
   if (entryCard) {
-    entryCard.hidden = false;
+    entryCard.hidden = true;
     signOutHome.append(logout);
   }
   panel.hidden = true;
@@ -170,8 +175,12 @@ onIdTokenChanged(auth, async user => {
   list.replaceChildren();
   login.hidden = Boolean(user);
   logout.hidden = !user;
-  showAuthStatus(user ? 'Checking staff access…' : 'Sign in with your staff account.');
-  if (!user) return;
+  showAuthStatus(user ? '' : 'Sign in with your staff account.');
+  if (!user) {
+    if (entryCard) entryCard.hidden = false;
+    window.prevailAuthScreen?.('signin');
+    return;
+  }
   try {
     const { claims } = await getIdTokenResult(user);
     if (current !== generation) return;
@@ -181,7 +190,9 @@ onIdTokenChanged(auth, async user => {
     const admin = role === 'admin' && profile?.Active === true;
     if (current !== generation) return;
     if (role !== 'solicitor' && (employeePanel || (!admin && role !== 'employee'))) {
+      if (entryCard) entryCard.hidden = false;
       showAuthError('This account does not have access to this workspace. Contact your Firebase administrator.');
+      window.prevailAuthScreen?.('error');
       return;
     }
     if (employeePanel) employeePanel.hidden = false;
@@ -215,10 +226,16 @@ onIdTokenChanged(auth, async user => {
       window.dispatchEvent(new CustomEvent('practice-firebase-ready', {detail:{db,storage,user,firmUid,role,sampleMode}}));
     }
     authStatus.textContent = role === 'solicitor' ? 'Signed in as solicitor.' : admin ? 'Signed in as admin.' : 'Signed in as employee.';
+    if (entryCard) entryCard.hidden = true;
+    window.prevailAuthScreen?.('workspace');
   } catch (error) {
-    if (current === generation) showAuthError(error?.code === 'permission-denied'
-      ? 'Access denied by Firestore. Verify your staff role and published access rules.'
-      : 'Workspace connection error. Check Firestore and refresh the page.');
+    if (current === generation) {
+      if (entryCard) entryCard.hidden = false;
+      showAuthError(error?.code === 'permission-denied'
+        ? 'Access denied by Firestore. Verify your staff role and published access rules.'
+        : 'Workspace connection error. Check Firestore and refresh the page.');
+      window.prevailAuthScreen?.('error');
+    }
   }
 });
 
