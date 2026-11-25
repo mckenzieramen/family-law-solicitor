@@ -17,7 +17,7 @@
       html: header('Matter files','Documents','Secure matter file library with search, filters and document details.',button('Upload document','pm-upload'))+
         '<div class="pm-panel"><div class="pm-searchbar">'+field('Search documents','search','search','placeholder="Document name, keyword or content"')+select('Matter','matter',['All matters'])+select('Client','client',['All clients'])+select('Category','category',['All categories','Court documents','Financial documents','Correspondence','Agreements','Client documents','Forms'])+field('Uploaded date','uploadedDate','date')+'<button type="button" class="pm-link" data-clear-filters>Clear filters</button></div>'+
         table(['Document name','Category','Matter','Uploaded by','Date uploaded','Actions'],'No documents have been uploaded yet.')+'</div><aside class="pm-detail-card"><h3>Document details</h3><p>Select a document to see its matter, client, uploader and file information.</p><div class="pm-actions"><button disabled>Download</button><button disabled>Share</button><button disabled>Rename</button><button disabled>Move</button><button disabled>Delete</button></div></aside>'+
-        dialog('pm-upload','Upload document',field('Document name','title','text','required maxlength="180"')+field('Choose file','file','file','required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png"')+select('Category','category',['Court documents','Financial documents','Correspondence','Agreements','Client documents','Forms','Other'])+field('Matter reference','matter','text','maxlength="80"')+field('Client name','client','text','maxlength="120"')+area('Description','description',3),'Upload document'),
+        dialog('pm-upload','Upload document',field('Document name','title','text','required maxlength="180"')+field('Choose file','file','file','required')+select('Category','category',['Court documents','Financial documents','Correspondence','Agreements','Client documents','Forms','Other'])+field('Matter reference','matter','text','maxlength="80"')+field('Client name','client','text','maxlength="120"')+area('Description','description',3),'Upload document'),
       },
     'work-time': {
       html: header('Practice operations','Time & Expenses','Track billable work and disbursements by date, matter and staff.',button('Add time entry','pm-time')+button('Add expense','pm-expense',false))+
@@ -543,7 +543,16 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       if(type==='document'){practiceRecords=[...practiceRecords.filter(x=>x.id!==recordRef.id),{id:recordRef.id,...record}];renderRecords();const panel=document.querySelector('.matter-premium-detail');if(panel&&!panel.hidden&&panel.dataset.activeSection==='1')panel.querySelector('[data-matter-menu="1"]')?.click();}setStatus(form,type==='document'?'Successfully uploaded.':'Saved successfully.');
       form.reset();delete form.dataset.matterId;
       const dialog=form.closest('dialog');
-      if(dialog?.open)setTimeout(()=>dialog.close(),type==='document'?450:450);
+      if(type==='document'){
+        if(dialog?.open)dialog.close();
+        const confirmation=document.createElement('dialog');confirmation.className='pm-dialog';
+        confirmation.innerHTML='<div class="pm-form" style="padding:26px;text-align:center"><div aria-hidden="true" style="margin:0 auto 14px;width:54px;height:54px;border-radius:50%;background:#e5efdf;color:#397447;display:grid;place-items:center;font-size:30px">✓</div><h3 style="margin:0;color:#102438">Successfully uploaded</h3><p>Your document has been added to the workspace.</p><div style="border:1px solid #ded3c4;border-radius:8px;padding:12px;text-align:left"><strong data-file-name></strong><p data-file-matter></p></div><button type="button" class="pm-button pm-primary" style="width:100%;margin-top:16px" data-done>Done</button></div>';
+        confirmation.querySelector('[data-file-name]').textContent=payload.fileName||payload.title||'Document';
+        confirmation.querySelector('[data-file-matter]').textContent=payload.matter?'Matter reference: '+payload.matter:'';
+        confirmation.querySelector('[data-done]').onclick=()=>confirmation.close();
+        confirmation.addEventListener('close',()=>confirmation.remove(),{once:true});
+        document.body.append(confirmation);confirmation.showModal();
+      }else if(dialog?.open)setTimeout(()=>dialog.close(),450);
     }catch(error){
       if(uploadedPath){try{const storage=await import(storageModuleUrl);await storage.deleteObject(storage.ref(context.storage,uploadedPath));}catch{}}
       const message=error?.code==='storage/unauthorized'?'Document upload denied by storage permissions. Ask your administrator to verify your firm access.':error?.code==='storage/quota-exceeded'?'Document storage quota exceeded. Contact your administrator.':error?.code==='storage/bucket-not-found'?'Document storage is not configured. Contact your administrator.':error?.code==='permission-denied'
