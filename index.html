@@ -56,6 +56,17 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
  html body .client-home .hero-grid.hero-video-hero .hero-background-video{object-position:50% 50%!important;transform:scale(1)!important;transform-origin:50% 50%!important}
  html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle{right:14px!important;bottom:12px!important;min-height:38px!important;padding:8px 10px!important;font-size:12px!important}
 }
+
+/* Use the supplied Sydney Harbour rainbow image on small screens for a calm, static hero. */
+@media(max-width:767px){
+ html body .client-home .hero-video-backdrop{
+  background:linear-gradient(180deg,rgba(7,22,35,.15),rgba(7,22,35,.3)),url("/docs/rainbow-sydney-harbour-mobile.webp?v=1") 64% center/cover no-repeat!important
+ }
+ html body .client-home .hero-background-video{display:none!important}
+ html body .client-home .hero-video-shade{
+  background:linear-gradient(90deg,rgba(7,22,35,.4),rgba(7,22,35,.12)),linear-gradient(0deg,rgba(7,22,35,.24),transparent 56%)!important
+ }
+}
 </style>
 
 <meta name="description" content="Prevail Family Law — practical, compassionate family law advice in New South Wales.">
@@ -127,7 +138,6 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
  <div class="premium-top-contact-inner">
   <a href="tel:+61299639800" class="premium-top-contact-link"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3H4a1 1 0 0 0-1 1 17 17 0 0 0 17 17 1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2Z"/></svg> (02) 9963 9800</a>
   <a href="#contact" class="premium-top-contact-link"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg> Contact our team</a>
-  <a href="#contact-info" class="premium-top-contact-link"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg> North Sydney, NSW</a>
   <span class="premium-top-sydney-time" aria-label="Sydney local time"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <span id="premium-top-clock">Sydney local time</span></span>
  </div>
 </div>
@@ -138,8 +148,8 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
   <a href="#services">Services</a>
   <a href="#resources">FAQs</a>
   
-  <a href="#about">About</a>
-  <a href="#contact-info">Contact</a>
+  <a href="#prevail-why">About</a>
+  <a href="#contact">Contact</a>
   <a class="nav-cta" href="#contact">
    <svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4m9-4v4M3.5 10h17m-12 4h2m3 0h2m-7 3h2"/></svg>
    <span class="nav-consult-copy"><span class="nav-consult-offer">FREE 30-MIN CONSULTATION</span><span class="nav-consult-label">Book a Consultation</span></span>
@@ -303,7 +313,6 @@ function home(){
   <div class="consultation-intro">
    <h2 id="consultation-title">Book a Consultation</h2>
    <p>Tell us what you’d like to discuss, from separation and parenting arrangements to property and finances.</p>
-   <a href="#contact-info">Office location and directions</a>
   </div>
   <dialog id="consultation-success-dialog" class="consultation-success-dialog" aria-labelledby="consultation-success-title">
  <div class="consultation-success-content">
@@ -334,43 +343,6 @@ function home(){
    <div class="consultation-footer"><button class="action" type="submit" disabled>Send inquiry</button><p id="consultation-result" role="status"></p></div>
   </form>
  </div></section>
- <div class="client-band"><div class="client-section client-columns profile-location">
-  <section id="about" class="profile-preview" aria-labelledby="about-title">
-   <a class="profile-preview-link" href="./melissa-gok/">
-    <div class="profile-portrait"><img src="melissa-gok.webp" width="150" height="150" loading="lazy" alt=""></div>
-    <div class="profile-copy">
-     <p class="eyebrow">Meet the solicitor</p>
-     <h2 id="about-title">Melissa Gok</h2>
-     <p class="profile-position">Principal, Prevail Family Law</p>
-     <p class="profile-preview-bio">NSW solicitor with experience in family law and estates.</p>
-     <span class="profile-link-label">View profile and contact details <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></span>
-    </div>
-   </a>
-   <a class="profile-preview-link" href="./paul-etherington/">
-    <div class="profile-portrait"><img src="paul-etherington.webp" width="150" height="150" loading="lazy" alt=""></div>
-    <div class="profile-copy">
-     <p class="eyebrow">Etheringtons Solicitors</p>
-     <h3>Paul Etherington</h3>
-     <p class="profile-position">Principal and founder</p>
-     <p class="profile-preview-bio">North Sydney, NSW</p>
-     <span class="profile-link-label">View Paul’s profile</span>
-    </div>
-   </a>
-  </section>
-  <section id="contact-info" class="location-card" aria-labelledby="location-title">
-   <div class="location-heading">
-    <span class="location-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-    <div><h2 id="location-title">Office location</h2><p>Etheringtons Solicitors · North Sydney</p></div>
-   </div>
-   <div class="office-map" id="office-map">
-    <div class="location-actions"><a href="https://www.google.com/maps/search/?api=1&amp;query=Etheringtons%20Solicitors%2C%20North%20Sydney" target="_blank" rel="noopener noreferrer">Get directions <span class="direction-icon direction-external" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 18 18 6M9 6h9v9"/></svg></span></a></div>
-    <p class="map-note">The embedded Google Map may use cookies.</p>
-    <iframe id="office-map-frame" title="Google map showing Etheringtons Solicitors" referrerpolicy="no-referrer" src="https://maps.google.com/maps?q=Etheringtons%20Solicitors%2C%20North%20Sydney&amp;ll=-33.837858,151.209414&amp;z=17&amp;output=embed"></iframe>
-   </div>
-  </section>
- </div></div>
- 
- 
  <details class="support-widget">
   <summary>How can I help?</summary>
   <div class="support-content">
@@ -380,7 +352,6 @@ function home(){
    <div id="support-result" role="status"></div>
   </div>
  </details>
- <aside class="privacy-notice" aria-label="Privacy controls"><p>The embedded Google Map may use cookies.</p><button type="button" data-dismiss-privacy>Dismiss</button></aside>
  </main><footer class="client-footer"><span>Prevail Family Law · Sydney, NSW</span><small>Prevail Family Law</small></footer>`;
  const heroVideo=app.querySelector('#home-hero-video');
  if(heroVideo){
