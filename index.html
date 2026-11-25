@@ -413,6 +413,9 @@ html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftRe
 @media(prefers-reduced-motion:reduce){html body .client-home #resources.client-faq>details[open]>p{animation:none!important}}
 </style>
 <link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-4">
+<style id="prevail-card-scroll-motion">
+@media(prefers-reduced-motion:no-preference){.prevail-why-grid{overflow:clip;overflow-clip-margin:28px}.prevail-why-grid[data-motion-ready]>.prevail-reveal-card{transform:translateX(var(--card-offset,0px));opacity:var(--card-opacity,1);will-change:transform,opacity}}
+</style>
 </head>
 <body>
 <div class="premium-top-contact" aria-label="Firm contact and Sydney time">
@@ -837,6 +840,9 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
   body.scrollTop = 0;
  }, true);
 })();
+</script>
+<script>
+(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let pending=false;const update=()=>{pending=false;const h=innerHeight;document.querySelectorAll('.prevail-why-grid').forEach(grid=>{const r=grid.getBoundingClientRect();const p=Math.max(0,Math.min(1,(h-r.top)/(h*.5)));grid.setAttribute('data-motion-ready','');Array.from(grid.children).forEach((card,i)=>{const t=Math.max(0,Math.min(1,(p-i*.10)/(1-i*.10)));const eased=1-Math.pow(1-t,3);card.style.setProperty('--card-offset',(-Math.min(110,innerWidth*.12)*(1-eased))+'px');card.style.setProperty('--card-opacity',String(.15+.85*eased));});});};const schedule=()=>{if(!pending){pending=true;requestAnimationFrame(update)}};addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();})();
 </script>
 </body>
 </html>
