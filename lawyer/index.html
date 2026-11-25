@@ -20,6 +20,7 @@ html.auth-revealing #staff-checklist,html.auth-revealing #employee-panel{animati
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lawyer Workspace | Prevail Family Law</title>
 <link rel="stylesheet" href="/docs/homepage.css?v=editorial-8">
+<link rel="stylesheet" href="/docs/admin/dashboard.css?v=admin-dashboard-11">
 <style>
 [hidden]{display:none!important}#staff-login label{display:block;margin:12px 0}#staff-login input{display:block;width:100%;padding:9px;border:1px solid #b9a7ad;border-radius:5px;font:inherit}#staff-login button,#staff-logout{cursor:pointer;font:inherit;border:0}#staff-logout{padding:8px 12px;border-radius:5px}#staff-checklist .duty-group{border:1px solid #ded7cd;background:#fffdf8;border-radius:8px;padding:14px}
 .lawyer-shortcuts{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.lawyer-shortcuts a{border:1px solid currentColor;border-radius:6px;padding:10px 14px;text-decoration:none;color:inherit}</style>
@@ -33,21 +34,22 @@ html.auth-revealing #staff-checklist,html.auth-revealing #employee-panel{animati
 </head>
 <body class="solicitor-profile" data-lawyer>
 <div id="prevail-auth-loader" aria-label="Opening your workspace"><style>@keyframes matterBalance{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}@keyframes matterProgress{from{transform:translateX(-100%)}to{transform:translateX(300%)}}.matter-balance{transform-origin:32px 16px;animation:matterBalance 1.8s ease-in-out infinite}.matter-progress{animation:matterProgress 1.3s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.matter-balance,.matter-progress{animation:none}}</style><div role="status" style="min-height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 64 64" fill="none" stroke="#a47b36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8V53M20 55H44"/><circle cx="32" cy="7" r="2"/><g class="matter-balance"><path d="M10 16H54M13 16L4 38H22L13 16ZM51 16L42 38H60L51 16Z"/><path d="M4 38Q13 49 22 38M42 38Q51 49 60 38"/></g></svg><div style="font:17px Georgia;letter-spacing:2px">PREVAIL</div><div style="font:10px Georgia;letter-spacing:3px">FAMILY LAW</div><div style="width:85px;height:2px;background:#e7dcc9;overflow:hidden;margin-top:8px"><div class="matter-progress" style="width:35%;height:100%;background:#a47b36"></div></div><div style="font-size:11px;color:#a47b36">Loading workspace records...</div></div></div>
-<main class="profile-page staff-entry" hidden>
- <section class="staff-entry-intro">
-  <p class="profile-eyebrow">Prevail Family Law · Staff workspace</p>
-  <h1>Lawyer Workspace</h1>
-  <p>Track legal assistant duties and save checklist progress to the firm’s Firebase project.</p>
- </section>
- <section class="staff-entry-action">
-  <h2>Staff sign-in</h2>
-  <form id="staff-login" hidden>
-   <label>Email<input name="email" type="email" autocomplete="username" required></label>
-   <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-   <button class="profile-button" type="submit">Sign in</button>
-  </form>
-  <p id="auth-status" class="entry-note" role="status"></p>
-  <button id="staff-logout" type="button" hidden>Sign out</button>
+<main class="admin-sign-in" id="staff-entry" hidden>
+ <section class="admin-sign-in-card" aria-labelledby="staff-sign-in-title">
+  <header class="admin-sign-in-header">
+   <img class="admin-brand-logo" src="/prevail-official-logo.png" alt="Prevail Family Law">
+   <span class="admin-sign-in-brand">Staff workspace</span>
+  </header>
+  <div class="admin-sign-in-body">
+   <h1 id="staff-sign-in-title">Staff sign-in</h1>
+   <form id="staff-login" hidden>
+    <label>Email address<input name="email" type="email" autocomplete="username" required></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <button type="submit">Sign in</button>
+   </form>
+   <p id="auth-status" class="entry-note" role="status"></p>
+   <button id="staff-logout" type="button" hidden>Sign out</button>
+  </div>
  </section>
 </main>
 <section class="profile-page" id="staff-checklist" hidden>
@@ -58,4 +60,3 @@ html.auth-revealing #staff-checklist,html.auth-revealing #employee-panel{animati
 <section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><nav aria-label="Solicitor workspace shortcuts" class="lawyer-shortcuts"><a href="/admin/#work-matters">Matters</a><a href="/admin/#work-approvals">Approvals</a><a href="/admin/#work-calendar">Calendar</a><a href="/admin/#work-documents">Documents</a><a href="/admin/#work-queue">Tasks</a><a href="/admin/">Full workspace</a></nav></section><script type="module" src="../admin/firebase-admin.js?v=auth-transition-60"></script>
 </body>
 </html>
-\n\n
