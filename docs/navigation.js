@@ -127,19 +127,11 @@ window.addEventListener('popstate', restoreSectionPosition);
 window.addEventListener('load', restoreSectionPosition);
 
 
-/* Keep only the approved client-trust strip below the hero.
-   Older cached home templates can still render a second shortcut bar. */
+/* Remove cached shortcut bars below the hero. */
 function removeDuplicateHeroShortcuts(){
  const hero=document.querySelector('.client-home');
  if(!hero)return;
- const trust=hero.querySelector('.prevail-trust-strip');
- if(!trust)return;
- const duplicateLabels=['explore services','frequently asked questions','client reviews','request consultation'];
- for(const nav of hero.querySelectorAll('nav')){
-  if(nav.closest('header')||nav===trust)continue;
-  const labels=[...nav.querySelectorAll('a')].map(a=>a.textContent.trim().toLowerCase());
-  if(duplicateLabels.every(label=>labels.includes(label)))nav.remove();
- }
+ for(const nav of hero.querySelectorAll('nav.premium-quick-links'))nav.remove();
 }
 const duplicateNavObserver=new MutationObserver(removeDuplicateHeroShortcuts);
 duplicateNavObserver.observe(clientApp,{childList:true,subtree:true});

@@ -53,18 +53,10 @@
     }
     tick();const timer=setInterval(()=>{if(!clock.isConnected){clearInterval(timer);return;}tick();},60000);
   }
-  function enhanceQuickNav(root){
-    if(root.querySelector('.premium-quick-links'))return;
-    const hero=root.querySelector('.hero-grid');if(!hero)return;
-    const bar=document.createElement('nav');bar.className='premium-quick-links';bar.setAttribute('aria-label','Quick navigation');
-    const items=[['Explore services','#services'],['Frequently asked questions','#resources'],['Client reviews','#reviews'],['Request consultation','#contact']];
-    for(const [name,href] of items){const link=document.createElement('a');link.href=href;link.textContent=name;bar.append(link);}
-    hero.after(bar);
-  }
   function init(){
     const root=document.querySelector('.client-home');
     ensureGlobalControls();
-    if(root){enhanceFaq(root);enhanceClock(root);enhanceQuickNav(root);}
+    if(root){enhanceFaq(root);enhanceClock(root);}
     updateScroll();
   }
   let scheduled=false;
