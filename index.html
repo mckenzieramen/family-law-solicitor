@@ -136,7 +136,7 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
   <span class="premium-top-sydney-time" aria-label="Sydney local time"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <span id="premium-top-clock">Sydney local time</span></span>
  </div>
 </div>
-<header class="site-header" style="background:#ffffff!important;background-color:#ffffff!important;background-image:none!important;color:#073e2f!important;border-bottom:1px solid #e9e5dd!important">
+<header class="site-header" >
  <a class="brand" href="/" aria-label="Prevail Family Law home"><img class="prevail-real-logo" src="/Prevail-Family-Law-Horizontal-Logo.webp?v=transparent-1" alt="Prevail Family Law" width="1600" height="534"></a>
  <button class="menu-toggle" type="button" aria-controls="public-navigation" aria-expanded="false" hidden>Menu <svg class="ui-icon ui-icon-menu" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
  <nav class="header-nav" id="public-navigation" aria-label="Main navigation">
@@ -523,45 +523,37 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 
 
 <style id="prevail-white-header-final">
-/* White header directly in the homepage so it cannot depend on an external CSS load. */
-html body header.site-header,
-html body .site-header,
-body > header.site-header {
- background:#ffffff!important;
- background-color:#ffffff!important;
- background-image:none!important;
- color:#073e2f!important;
- border-top:0!important;
- border-bottom:1px solid #e9e5dd!important;
- box-shadow:0 4px 20px rgba(7,62,47,.06)!important;
+/* Overlay the navigation on the Sydney Harbour hero while keeping the logo legible. */
+html body:has(.client-home) > header.site-header{
+ position:absolute!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:40!important;
+ background:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
+ background-color:transparent!important;background-image:linear-gradient(180deg,rgba(8,25,38,.34),rgba(8,25,38,.12))!important;
+ color:#fff!important;border-top:0!important;border-bottom:1px solid rgba(255,255,255,.22)!important;
+ box-shadow:none!important
 }
-html body header.site-header nav.header-nav,
-html body .site-header .header-nav {
- background:transparent!important;
- background-color:transparent!important;
- background-image:none!important;
+html body:has(.client-home) > header.site-header nav.header-nav,
+html body:has(.client-home) > header.site-header .header-nav{background:transparent!important;background-color:transparent!important;background-image:none!important}
+html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta){
+ color:#fff!important;text-shadow:0 1px 5px rgba(0,0,0,.72)!important;background:transparent!important
 }
-html body .site-header .header-nav a:not(.nav-cta){
- color:#073e2f!important;
+html body:has(.client-home) > header.site-header .header-nav a:not(.nav-cta):hover{
+ color:#f3d08c!important;background:rgba(255,255,255,.12)!important
 }
-html body .site-header .header-nav a:not(.nav-cta):hover{color:#bb892c!important}
-html body .site-header .header-nav a.nav-cta{
- background:#073e2f!important;
- color:#ffffff!important;
- border-color:#073e2f!important;
+html body:has(.client-home) > header.site-header .header-nav a.nav-cta{
+ background:#d5ae67!important;color:#102a3a!important;border-color:#d5ae67!important;box-shadow:0 5px 16px rgba(0,0,0,.22)!important
 }
-html body .site-header a.brand{
- background:transparent!important;
- border:0!important;
- box-shadow:none!important;
+html body:has(.client-home) > header.site-header a.brand{
+ padding:6px 9px!important;border-radius:8px!important;background:rgba(255,252,245,.9)!important;
+ border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 18px rgba(0,0,0,.16)!important
 }
-html body .site-header a.brand::before,
-html body .site-header a.brand::after{content:none!important;display:none!important}
-html body .site-header a.brand img.prevail-real-logo{
- display:block!important;
- width:100%!important;
- height:auto!important;
- object-fit:contain!important;
+html body:has(.client-home) > header.site-header a.brand::before,
+html body:has(.client-home) > header.site-header a.brand::after{content:none!important;display:none!important}
+html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{
+ display:block!important;width:clamp(250px,26vw,350px)!important;max-height:88px!important;height:auto!important;object-fit:contain!important
+}
+@media(max-width:700px){
+ html body:has(.client-home) > header.site-header{padding:12px 16px!important}
+ html body:has(.client-home) > header.site-header a.brand img.prevail-real-logo{width:min(68vw,285px)!important;max-height:70px!important}
 }
 </style>
 
