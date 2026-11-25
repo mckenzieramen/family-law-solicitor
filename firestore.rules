@@ -242,6 +242,16 @@ service cloud.firestore {
       allow delete: if managesFirm(resource.data.firmUid);
     }
 
+    match /firmRecords/{recordId}/downloadRequests/{uid} {
+      function docRecord() { return get(/databases/$(database)/documents/firmRecords/$(recordId)).data; }
+      function lawyer() { return isSolicitor() && request.auth.uid == docRecord().firmUid; }
+      allow get: if isFirmStaff() && belongsToFirm(docRecord().firmUid) && (request.auth.uid == uid || lawyer());
+      allow list: if lawyer();
+      allow create: if isFirmStaff() && belongsToFirm(docRecord().firmUid) && request.auth.uid == uid && docRecord().recordType == 'document' && request.resource.data.keys().hasOnly(['status','requestedAt']) && request.resource.data.status == 'pending' && request.resource.data.requestedAt == request.time;
+      allow update: if (lawyer() && resource.data.status == 'pending' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) && request.resource.data.status in ['approved','declined']) || (isFirmStaff() && belongsToFirm(docRecord().firmUid) && request.auth.uid == uid && resource.data.status == 'declined' && request.resource.data.keys().hasOnly(['status','requestedAt']) && request.resource.data.status == 'pending' && request.resource.data.requestedAt == request.time);
+      allow delete: if false;
+    }
+
     match /firmRecords/{recordId}/fileChunks/{chunkId} {
       function parentRecord() {
         return get(/databases/$(database)/documents/firmRecords/$(recordId)).data;
@@ -249,7 +259,7 @@ service cloud.firestore {
       function nextRecord() {
         return getAfter(/databases/$(database)/documents/firmRecords/$(recordId)).data;
       }
-      allow read: if isFirmStaff() && belongsToFirm(parentRecord().firmUid);
+      allow read: if isFirmStaff() && belongsToFirm(parentRecord().firmUid) && parentRecord().payload.get('uploadState','') != 'pending' && ((isSolicitor() && request.auth.uid == parentRecord().firmUid) || get(/databases/$(database)/documents/firmRecords/$(recordId)/downloadRequests/$(request.auth.uid)).data.status == 'approved');
       allow create: if isFirmStaff()
         && (!exists(/databases/$(database)/documents/firmRecords/$(recordId)) || parentRecord().payload.get('uploadState', '') == 'pending')
         && belongsToFirm(nextRecord().firmUid)
