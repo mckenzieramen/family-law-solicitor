@@ -844,7 +844,7 @@ html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftRe
 @media(prefers-reduced-motion:reduce){html body .client-home #resources.client-faq>details[open]>p{animation:none!important}}
 </style>
 <style id="prevail-pill-navigation-icons-v2">
-html body header.site-header,html body body>header.site-header{
+html body:has(.client-home)>header.site-header,html body body>header.site-header{
  position:sticky!important;top:0!important;z-index:100!important;
  background:rgba(9,27,42,.91)!important;background-color:rgba(9,27,42,.91)!important;background-image:none!important;
  color:#fff!important;border-bottom:1px solid rgba(214,224,230,.15)!important;
@@ -855,7 +855,7 @@ html body .site-header .header-nav{
  display:flex!important;align-items:center!important;justify-content:flex-end!important;
  flex-wrap:nowrap!important;gap:10px!important;min-width:0!important
 }
-html body .site-header .header-nav a:not(.nav-cta){
+html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta){
  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
  box-sizing:border-box!important;min-height:42px!important;padding:8px 15px!important;
  color:#f7f5ef!important;background:rgba(255,255,255,.045)!important;
@@ -864,18 +864,18 @@ html body .site-header .header-nav a:not(.nav-cta){
  letter-spacing:.01em!important;white-space:nowrap!important;
  transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease!important
 }
-html body .site-header .header-nav a:not(.nav-cta) .nav-icon{
+html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta) .nav-icon{
  display:block!important;visibility:visible!important;opacity:1!important;
  width:16px!important;height:16px!important;min-width:16px!important;flex:0 0 16px!important;
  fill:none!important;stroke:#e8c77f!important;stroke-width:1.65!important;
  stroke-linecap:round!important;stroke-linejoin:round!important
 }
-html body .site-header .header-nav a:not(.nav-cta):hover,
-html body .site-header .header-nav a:not(.nav-cta)[aria-current=location]{
+html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta):hover,
+html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta)[aria-current=location]{
  color:#fff!important;background:rgba(255,255,255,.105)!important;border-color:rgba(232,199,127,.72)!important;
  box-shadow:0 0 0 1px rgba(232,199,127,.1)!important
 }
-html body .site-header .header-nav a.nav-cta{
+html body:has(.client-home)>header.site-header #public-navigation a.nav-cta{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
  box-sizing:border-box!important;min-height:44px!important;padding:9px 17px!important;
  color:#162c3a!important;background:linear-gradient(135deg,#f3d797,#eac16e)!important;
@@ -883,15 +883,15 @@ html body .site-header .header-nav a.nav-cta{
  text-decoration:none!important;font:650 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif!important;
  box-shadow:0 4px 13px rgba(0,0,0,.17)!important
 }
-html body .site-header .header-nav a.nav-cta .mockup-icon{width:16px!important;height:16px!important;flex:none!important}
-html body .site-header .header-nav a:focus-visible{outline:2px solid #f0d391!important;outline-offset:3px!important}
+html body:has(.client-home)>header.site-header #public-navigation a.nav-cta .mockup-icon{width:16px!important;height:16px!important;flex:none!important}
+html body:has(.client-home)>header.site-header #public-navigation a:focus-visible{outline:2px solid #f0d391!important;outline-offset:3px!important}
 @media(max-width:940px){
  html body .site-header .header-nav{gap:7px!important}
- html body .site-header .header-nav a:not(.nav-cta){padding:7px 11px!important;font-size:13px!important}
+ html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta){padding:7px 11px!important;font-size:13px!important}
 }
 @media(max-width:700px){
  html body .site-header .header-nav{flex-wrap:wrap!important;justify-content:center!important;gap:7px!important}
- html body .site-header .header-nav a:not(.nav-cta){min-height:40px!important;padding:7px 12px!important;font-size:13px!important}
+ html body:has(.client-home)>header.site-header #public-navigation a:not(.nav-cta){min-height:40px!important;padding:7px 12px!important;font-size:13px!important}
  html body .site-header .header-nav .nav-cta{min-height:42px!important}
 }
 @media(prefers-reduced-motion:reduce){html body .site-header .header-nav a{transition:none!important}}
