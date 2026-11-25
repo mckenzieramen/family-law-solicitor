@@ -834,3 +834,20 @@ html body dialog.consultation-frame-dialog .client-home .premium-booking-steps>s
   }
 }
 </style>
+
+<style id="prevail-faq-polish">
+html body .client-home #resources.client-faq{display:block!important;max-width:1040px!important;margin-inline:auto!important;padding:48px 24px!important;box-sizing:border-box!important}
+html body .client-home #resources.client-faq>h2{font:700 clamp(27px,3vw,36px)/1.2 Georgia,serif!important;color:#102438!important;margin:0 0 26px!important}
+html body .client-home #resources.client-faq>details{display:block!important;background:#fff!important;border:1px solid #e4d9c8!important;border-radius:12px!important;margin:0 0 12px!important;padding:0!important;overflow:hidden;box-shadow:0 3px 12px #10243808;transition:border-color .2s,box-shadow .2s}
+html body .client-home #resources.client-faq>details[open]{border-color:#b18b50!important;box-shadow:0 6px 20px #1024380d}
+html body .client-home #resources.client-faq>details>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;list-style:none!important;cursor:pointer;padding:20px 24px!important;margin:0!important;width:100%!important;box-sizing:border-box!important;font:600 17px/1.45 system-ui,sans-serif!important;color:#102438!important;outline:none!important;border:0!important;background:transparent!important}
+html body .client-home #resources.client-faq>details>summary::-webkit-details-marker{display:none}
+html body .client-home #resources.client-faq>details>summary:focus-visible{outline:2px solid #b18b50!important;outline-offset:-4px!important;border-radius:10px}
+html body .client-home #resources.client-faq>details>summary::after{content:"+"!important;display:grid!important;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#f5efe5;color:#795925;font:400 23px/1 system-ui;transform:none!important;position:static!important;border:0!important}
+html body .client-home #resources.client-faq>details[open]>summary::after{content:"−"!important;background:#102438;color:white}
+html body .client-home #resources.client-faq>details>p{display:block!important;width:auto!important;max-width:none!important;margin:0 24px!important;padding:17px 0 23px!important;border-top:1px solid #eee6da!important;color:#344657!important;font:400 16px/1.8 system-ui,sans-serif!important;text-align:left!important;float:none!important;box-sizing:border-box!important}
+html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftReveal .3s ease both}
+@keyframes faqSoftReveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){html body .client-home #resources.client-faq{padding:32px 16px!important}html body .client-home #resources.client-faq>details>summary{padding:16px!important;font-size:15px!important}html body .client-home #resources.client-faq>details>p{margin:0 16px!important;font-size:15px!important}}
+@media(prefers-reduced-motion:reduce){html body .client-home #resources.client-faq>details[open]>p{animation:none!important}}
+</style>
