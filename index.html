@@ -259,11 +259,11 @@ function home(){
  </div>
  
   
- <section class="premium-journey" aria-labelledby="premium-journey-title">
+ <section class="premium-journey" aria-label="Legal process steps">
   <div class="premium-journey-inner">
-   <span class="premium-eyebrow">A clear process, at your pace</span>
-   <h2 id="premium-journey-title">Your legal journey</h2>
-   <p class="premium-journey-intro">Every matter is different. These are the usual early stages of getting legal assistance; your solicitor will explain the steps relevant to you.</p>
+   
+   
+   
    <div class="premium-journey-grid">
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4h16v12H9l-5 4V4Zm4 5h8m-8 3h5"/></svg></span><h3>Initial enquiry</h3><p>Tell us briefly what assistance you are looking for.</p></div>
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4m8-4v4M4 11h16m-11 4 2 2 4-4"/></svg></span><h3>Consultation</h3><p>Discuss your questions and priorities with the solicitor.</p></div>
@@ -271,6 +271,7 @@ function home(){
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v17M7 21h10M4 7h16M7 7l-4 7h8L7 7Zm10 0-4 7h8l-4-7Z"/></svg></span><h3>Preparation</h3><p>Gather information and documents requested for your matter.</p></div>
     <div class="premium-step"><span class="premium-step-number"><svg class="mockup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg></span><h3>Next steps</h3><p>Agree on a plan appropriate to your circumstances.</p></div>
    </div>
+   <a class="action claim-consultation-cta" href="#contact"><span>Claim your free consultation now</span></a>
   </div>
  </section>
  <aside class="reference-consultation-cta" aria-labelledby="reference-consultation-title">
@@ -612,6 +613,33 @@ html body .client-home .not-sure-cta p{max-width:68ch}
 @media(prefers-reduced-motion:reduce){
  html body .client-home .reference-consultation-cta .action{transition:none}
  html body .client-home .reference-consultation-cta .action:hover{transform:none}
+}
+</style>
+<style id="claim-consultation-button">
+html body .client-home .claim-consultation-cta{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;width:max-content!important;max-width:100%!important;
+ min-height:52px!important;margin:clamp(24px,3vw,38px) auto 0!important;padding:15px 28px!important;
+ border:1px solid #f1d49a!important;border-radius:999px!important;
+ background:linear-gradient(120deg,#f3d18b 0%,#d5ae67 48%,#edc77a 100%)!important;color:#102a3a!important;
+ font:750 15px/1.2 system-ui,sans-serif!important;text-decoration:none!important;
+ box-shadow:0 0 0 3px rgba(213,174,103,.18),0 8px 24px rgba(16,42,58,.18)!important;
+ animation:claim-cta-glow 2.8s ease-in-out infinite
+}
+html body .client-home .claim-consultation-cta>span{position:relative!important;z-index:1!important}
+html body .client-home .claim-consultation-cta::before{
+ content:"";position:absolute;z-index:0;top:-45%;bottom:-45%;left:-48%;width:34%;
+ background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);
+ transform:skewX(-22deg);animation:claim-cta-shine 3.2s ease-in-out infinite;pointer-events:none
+}
+html body .client-home .claim-consultation-cta:hover{transform:translateY(-2px);filter:brightness(1.04)}
+html body .client-home .claim-consultation-cta:focus-visible{outline:3px solid #102a3a!important;outline-offset:4px}
+@keyframes claim-cta-shine{0%,12%{left:-48%;opacity:0}24%{opacity:1}58%,100%{left:125%;opacity:0}}
+@keyframes claim-cta-glow{50%{box-shadow:0 0 0 5px rgba(213,174,103,.26),0 10px 30px rgba(16,42,58,.24)}}
+@media(prefers-reduced-motion:reduce){
+ html body .client-home .claim-consultation-cta{animation:none!important;transition:none!important}
+ html body .client-home .claim-consultation-cta::before{animation:none!important;display:none!important}
+ html body .client-home .claim-consultation-cta:hover{transform:none}
 }
 </style>
 <script id="availability-dialog-controller">
