@@ -29,13 +29,13 @@ html body .client-home .hero-grid.hero-video-hero{
  overflow:hidden!important;background:#102a3a!important
 }
 html body .client-home .hero-video-backdrop{position:absolute!important;inset:0!important;z-index:-1!important;overflow:hidden!important;pointer-events:none!important}
-html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:56% 46%!important;transform:scale(1.16)!important;transform-origin:56% 50%!important;filter:brightness(.76) saturate(.92)!important}
+html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 46%!important;transform:scale(1.04)!important;transform-origin:50% 50%!important;filter:brightness(.76) saturate(.92)!important}
 html body .client-home .hero-video-shade{position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(7,22,35,.66) 0%,rgba(7,22,35,.42) 52%,rgba(7,22,35,.12) 100%),linear-gradient(0deg,rgba(7,22,35,.3),transparent 46%)!important}
 html body .client-home .hero-grid.hero-video-hero .hero-copy{
  position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
  width:min(100%,760px)!important;max-width:760px!important;min-width:0!important;margin:0!important;padding:clamp(24px,4vw,48px)!important;
  border:1px solid rgba(213,174,103,.52)!important;border-left:5px solid #d5ae67!important;border-radius:12px!important;
- background:rgba(10,29,44,.86)!important;color:#fff!important;box-shadow:0 24px 65px rgba(3,14,24,.42)!important;
+ background:rgba(10,29,44,.72)!important;color:#fff!important;box-shadow:0 24px 65px rgba(3,14,24,.42)!important;
  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)
 }
 html body .client-home .hero-grid.hero-video-hero .hero-copy h1{max-width:16ch!important;margin:0 0 18px!important;color:#fff!important;font-size:clamp(38px,5.2vw,72px)!important;line-height:1.06!important;text-wrap:balance}
@@ -58,7 +58,7 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
  html body .client-home .hero-grid.hero-video-hero .hero-copy{width:100%!important;padding:24px 20px!important}
  html body .client-home .hero-grid.hero-video-hero .hero-copy h1{font-size:clamp(36px,9vw,52px)!important;max-width:15ch!important}
  html body .client-home .hero-grid.hero-video-hero .hero-copy p{font-size:16px!important}
- html body .client-home .hero-grid.hero-video-hero .hero-background-video{object-position:62% 50%!important;transform:scale(1.04)!important;transform-origin:62% 50%!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-background-video{object-position:50% 50%!important;transform:scale(1)!important;transform-origin:50% 50%!important}
  html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle{right:14px!important;bottom:12px!important;min-height:38px!important;padding:8px 10px!important;font-size:12px!important}
 }
 </style>
@@ -241,8 +241,8 @@ function home(){
  app.innerHTML=`<main class="hero client-home">
  <section class="hero-grid hero-video-hero" aria-labelledby="hero-title">
   <div class="hero-video-backdrop" aria-hidden="true">
-   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/29757452/pexels-photo-29757452.jpeg?auto=compress&amp;dpr=1&amp;h=750&amp;w=1260">
-    <source src="https://videos.pexels.com/video-files/29757452/12788874_1920_1080_30fps.mp4" type="video/mp4">
+   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/37217200/pexels-photo-37217200.jpeg?auto=compress&amp;dpr=1&amp;h=750&amp;w=1260">
+    <source src="https://videos.pexels.com/video-files/37217200/15766335_3840_2160_30fps.mp4" type="video/mp4">
    </video>
    <div class="hero-video-shade"></div>
   </div>
