@@ -458,14 +458,15 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       }else document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Sign in to the live workspace to save records.',true));
       return;
     }
+    const matterTable=byId('work-matters')?.querySelector('#pm-matter-table');const loadingBody=matterTable?.querySelector('tbody');const loadingRow=()=>{if(!loadingBody)return;loadingBody.innerHTML='<tr><td colspan="99" style="padding:20px"><style>@keyframes matterShimmer{to{background-position:-200% 0}}.matter-skeleton{height:32px;margin:10px 0;border-radius:7px;background:linear-gradient(100deg,#eee8de 20%,#faf7f1 45%,#eee8de 70%);background-size:200% 100%;animation:matterShimmer 1.5s linear infinite}@media(prefers-reduced-motion:reduce){.matter-skeleton{animation:none}}</style><div role="status" style="color:#8b713e;font-size:12px">Loading matters…</div>'+Array.from({length:5},()=>'<div class="matter-skeleton" aria-hidden="true"></div>').join('')+'</td></tr>';matterTable.setAttribute('aria-busy','true');};const stopLoading=(error)=>{matterTable?.removeAttribute('aria-busy');if(error&&loadingBody)loadingBody.innerHTML='<tr><td colspan="99" style="padding:24px;text-align:center" role="alert">Unable to load matters. Please check your connection or permissions.</td></tr>';};loadingRow();
     try {
       const fs=await import(firebaseModuleUrl);
       const q=fs.query(fs.collection(context.db,'firmRecords'),fs.where('firmUid','==',context.firmUid),fs.limit(250));
       practiceStop=fs.onSnapshot(q,snapshot=>{
         practiceRecords=snapshot.docs.map(d=>({id:d.id,...d.data()}));
-        renderRecords();
+        stopLoading(false);renderRecords();
       },error=>{
-        document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,error.code==='permission-denied'?'Firebase denied access. Check that the latest Firestore rules are deployed.':'Could not load saved firm records.',true));
+        stopLoading(true);document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,error.code==='permission-denied'?'Firebase denied access. Check that the latest Firestore rules are deployed.':'Could not load saved firm records.',true));
       });
       const settingsRef=fs.doc(context.db,'firmSettings',context.firmUid);
       practiceSettingsStop=fs.onSnapshot(settingsRef,snapshot=>{
@@ -480,7 +481,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
         }
       });
     } catch {
-      document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Firebase connection failed. Nothing has been saved.',true));
+      stopLoading(true);document.querySelectorAll('.pm-dialog [data-preview-form]').forEach(form=>setStatus(form,'Firebase connection failed. Nothing has been saved.',true));
     }
   }
   window.addEventListener('practice-firebase-ready',event=>{connectPractice(event.detail);});
