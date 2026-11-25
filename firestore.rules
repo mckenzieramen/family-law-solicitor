@@ -242,6 +242,29 @@ service cloud.firestore {
       allow delete: if managesFirm(resource.data.firmUid);
     }
 
+    match /firmRecords/{recordId}/fileChunks/{chunkId} {
+      function parentRecord() {
+        return get(/databases/$(database)/documents/firmRecords/$(recordId)).data;
+      }
+      function nextRecord() {
+        return getAfter(/databases/$(database)/documents/firmRecords/$(recordId)).data;
+      }
+      allow read: if isFirmStaff() && belongsToFirm(parentRecord().firmUid);
+      allow create: if isFirmStaff()
+        && !exists(/databases/$(database)/documents/firmRecords/$(recordId))
+        && belongsToFirm(nextRecord().firmUid)
+        && nextRecord().createdBy == request.auth.uid
+        && nextRecord().recordType == 'document'
+        && nextRecord().payload.fileBackend == 'firestore'
+        && request.resource.data.keys().hasOnly(['index','bytes'])
+        && request.resource.data.index is int
+        && request.resource.data.index >= 0
+        && request.resource.data.index < nextRecord().payload.chunkCount
+        && request.resource.data.bytes is bytes
+        && request.resource.data.bytes.size() <= 716800;
+      allow update, delete: if false;
+    }
+
     match /firmSettings/{firmUid} {
       allow get: if isFirmStaff() && belongsToFirm(firmUid);
       allow list: if false;
