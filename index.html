@@ -58,6 +58,7 @@ html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86
  html body .client-home .hero-grid.hero-video-hero .hero-copy{width:100%!important;padding:24px 20px!important}
  html body .client-home .hero-grid.hero-video-hero .hero-copy h1{font-size:clamp(36px,9vw,52px)!important;max-width:15ch!important}
  html body .client-home .hero-grid.hero-video-hero .hero-copy p{font-size:16px!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-background-video{object-position:62% 50%!important;transform:scale(1.04)!important;transform-origin:62% 50%!important}
  html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle{right:14px!important;bottom:12px!important;min-height:38px!important;padding:8px 10px!important;font-size:12px!important}
 }
 </style>
@@ -240,8 +241,8 @@ function home(){
  app.innerHTML=`<main class="hero client-home">
  <section class="hero-grid hero-video-hero" aria-labelledby="hero-title">
   <div class="hero-video-backdrop" aria-hidden="true">
-   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="harbour-family-sunset.webp">
-    <source src="https://videos.pexels.com/video-files/20186335/20186335-hd_1920_1080_60fps.mp4" type="video/mp4">
+   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/29757452/pexels-photo-29757452.jpeg?auto=compress&amp;dpr=1&amp;h=750&amp;w=1260">
+    <source src="https://videos.pexels.com/video-files/29757452/12788874_1920_1080_30fps.mp4" type="video/mp4">
    </video>
    <div class="hero-video-shade"></div>
   </div>
@@ -426,8 +427,8 @@ function home(){
    heroMotion.setAttribute('aria-label',playing?'Pause background video':'Play background video');
    heroMotion.setAttribute('aria-pressed',String(playing));
   };
-  heroVideo.defaultPlaybackRate=0.7;
-  heroVideo.playbackRate=0.7;
+  heroVideo.defaultPlaybackRate=0.8;
+  heroVideo.playbackRate=0.8;
   const playHeroVideo=()=>{heroVideo.playbackRate=0.7;return heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false))};
   heroMotion.addEventListener('click',()=>{
    if(heroVideo.paused)playHeroVideo();
