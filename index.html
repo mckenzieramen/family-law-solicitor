@@ -426,7 +426,9 @@ function home(){
    heroMotion.setAttribute('aria-label',playing?'Pause background video':'Play background video');
    heroMotion.setAttribute('aria-pressed',String(playing));
   };
-  const playHeroVideo=()=>heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false));
+  heroVideo.defaultPlaybackRate=0.7;
+  heroVideo.playbackRate=0.7;
+  const playHeroVideo=()=>{heroVideo.playbackRate=0.7;return heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false))};
   heroMotion.addEventListener('click',()=>{
    if(heroVideo.paused)playHeroVideo();
    else{heroVideo.pause();setMotionState(false)}
