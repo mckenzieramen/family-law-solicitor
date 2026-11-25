@@ -29,7 +29,7 @@ html body .client-home .hero-grid.hero-video-hero{
  overflow:hidden!important;background:#102a3a!important
 }
 html body .client-home .hero-video-backdrop{position:absolute!important;inset:0!important;z-index:-1!important;overflow:hidden!important;pointer-events:none!important}
-html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 46%!important;transform:scale(1.04)!important;transform-origin:50% 50%!important;filter:brightness(.76) saturate(.92)!important}
+html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 46%!important;transform:none!important;transform-origin:50% 50%!important;filter:none!important}
 html body .client-home .hero-video-shade{position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(7,22,35,.58) 0%,rgba(7,22,35,.34) 38%,rgba(7,22,35,.08) 75%,rgba(7,22,35,0) 100%),linear-gradient(0deg,rgba(7,22,35,.2),transparent 46%)!important}
 html body .client-home .hero-grid.hero-video-hero .hero-copy{
  position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
@@ -241,8 +241,8 @@ function home(){
  app.innerHTML=`<main class="hero client-home">
  <section class="hero-grid hero-video-hero" aria-labelledby="hero-title">
   <div class="hero-video-backdrop" aria-hidden="true">
-   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="https://images.pexels.com/videos/37217200/pexels-photo-37217200.jpeg?auto=compress&amp;dpr=1&amp;h=750&amp;w=1260">
-    <source src="https://videos.pexels.com/video-files/37217200/15766335_3840_2160_30fps.mp4" type="video/mp4">
+   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="auto" poster="https://images.pexels.com/videos/37217200/pexels-photo-37217200.jpeg?auto=compress&amp;dpr=1&amp;h=750&amp;w=1260">
+    <source src="/docs/harbour-hero-optimized.mp4" type="video/mp4">
    </video>
    <div class="hero-video-shade"></div>
   </div>
@@ -422,22 +422,39 @@ function home(){
  const heroVideo=app.querySelector('#home-hero-video');
  const heroMotion=app.querySelector('#home-hero-motion');
  if(heroVideo&&heroMotion){
+  const motionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const saveData=navigator.connection?.saveData===true;
+  let userPaused=false,manualPlay=false,inViewport=true;
   const setMotionState=playing=>{
    heroMotion.textContent=playing?'Pause background video':'Play background video';
    heroMotion.setAttribute('aria-label',playing?'Pause background video':'Play background video');
    heroMotion.setAttribute('aria-pressed',String(playing));
   };
-  heroVideo.defaultPlaybackRate=0.8;
-  heroVideo.playbackRate=0.8;
-  const playHeroVideo=()=>{heroVideo.playbackRate=0.8;return heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false))};
+  const syncHeroVideo=()=>{
+   const shouldPlay=!document.hidden&&inViewport&&!userPaused&&(manualPlay||(!motionPreference.matches&&!saveData));
+   if(shouldPlay&&heroVideo.paused){
+    heroVideo.playbackRate=0.8;
+    heroVideo.play().catch(()=>setMotionState(false));
+   }else if(!shouldPlay&&!heroVideo.paused)heroVideo.pause();
+   setMotionState(shouldPlay&&!heroVideo.paused);
+  };
+  heroVideo.addEventListener('playing',()=>setMotionState(true));
+  heroVideo.addEventListener('pause',()=>setMotionState(false));
   heroMotion.addEventListener('click',()=>{
-   if(heroVideo.paused)playHeroVideo();
-   else{heroVideo.pause();setMotionState(false)}
+   if(heroVideo.paused){manualPlay=true;userPaused=false;}
+   else{manualPlay=false;userPaused=true;}
+   syncHeroVideo();
   });
-  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const saveData=navigator.connection?.saveData===true;
-  if(!reducedMotion&&!saveData)playHeroVideo();
-  else setMotionState(false);
+  motionPreference.addEventListener?.('change',syncHeroVideo);
+  document.addEventListener('visibilitychange',syncHeroVideo);
+  if('IntersectionObserver' in window){
+   const videoObserver=new IntersectionObserver(([entry])=>{
+    inViewport=entry.isIntersecting;
+    syncHeroVideo();
+    if(inViewport)videoObserver.disconnect();
+   },{threshold:0.08});
+   videoObserver.observe(heroVideo);
+  }else syncHeroVideo();
  }
 
 }
