@@ -7,7 +7,7 @@
   const header = (eyebrow,title,description,action='') => '<header class="pm-heading"><div><p class="module-eyebrow">'+eyebrow+'</p><p>'+description+'</p></div>'+action+'</header>';
   const toolbar = fields => '<div class="pm-toolbar">'+fields+'</div>';
   const button = (label,dialog,primary=true) => '<button type="button" class="pm-button '+(primary?'pm-primary':'')+'" data-open-dialog="'+dialog+'">'+label+'</button>';
-  const dialog = (id,title,fields,submitText) => '<dialog class="pm-dialog" id="'+id+'"><form class="pm-form" data-preview-form><header><div><p class="module-eyebrow">New record</p><h3>'+title+'</h3></div><button type="button" class="pm-close" data-close-dialog aria-label="Close">×</button></header>'+notice+'<div class="pm-form-grid">'+fields+'</div><footer><p role="status" class="pm-status"></p><button type="button" class="pm-button" data-close-dialog>Cancel</button><button class="pm-button pm-primary" type="submit">'+submitText+'</button></footer></form></dialog>';
+  const dialog = (id,title,fields,submitText) => '<dialog class="pm-dialog" id="'+id+'"><form class="pm-form" data-preview-form><header><div><p class="module-eyebrow">New record</p><h3>'+title+'</h3></div><button type="button" class="pm-close" data-close-dialog aria-label="Close">×</button></header>'+(id==='pm-upload'?'':notice)+'<div class="pm-form-grid">'+fields+'</div><footer><p role="status" class="pm-status"></p><button type="button" class="pm-button" data-close-dialog>Cancel</button><button class="pm-button pm-primary" type="submit">'+submitText+'</button></footer></form></dialog>';
   const field=(label,name,type='text',opts='')=>'<label>'+label+'<input name="'+name+'" type="'+type+'" '+opts+'></label>';
   const select=(label,name,items)=>'<label>'+label+'<select name="'+name+'">'+items.map(x=>'<option>'+x+'</option>').join('')+'</select></label>';
   const area=(label,name,rows=3,opts='')=>'<label class="pm-span-2">'+label+'<textarea name="'+name+'" rows="'+rows+'" '+opts+'></textarea></label>';
@@ -498,6 +498,18 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       if(payload.role&&payload.role!=='Employee'){setStatus(form,'Only Employee access can be granted from this form. Use authorised account management for solicitor or admin access.',true);return;}
       payload.role='Employee';
     }
+    if(type==='document'&&file&&form.dataset.reviewed!=='yes'){
+      const review=document.createElement('dialog');review.className='pm-dialog';
+      review.innerHTML='<div class="pm-form"><header><h3>Review document</h3></header><div class="pm-form-grid" data-review-details></div><div data-review-preview></div><footer><button type="button" class="pm-button" data-back>Back</button><button type="button" class="pm-button pm-primary" data-confirm>Confirm &amp; Upload</button></footer></div>';
+      const details=review.querySelector('[data-review-details]');
+      for(const [label,value] of Object.entries({'Document':payload.title,'File':file.name,'Category':payload.category,'Matter':payload.matter,'Client':payload.client,'Description':payload.description,'Size':(file.size/1024).toFixed(1)+' KB'})){const p=document.createElement('p');p.textContent=label+': '+(value||'—');details.append(p);}
+      let url='';if(file.type.startsWith('image/')||file.type==='application/pdf'){url=URL.createObjectURL(file);const preview=document.createElement(file.type.startsWith('image/')?'img':'iframe');preview.src=url;preview.style.cssText='width:100%;max-height:240px;object-fit:contain;border:0';preview.title='Document preview';review.querySelector('[data-review-preview]').append(preview);}
+      review.addEventListener('close',()=>{if(url)URL.revokeObjectURL(url);review.remove();},{once:true});
+      review.querySelector('[data-back]').onclick=()=>review.close();
+      review.querySelector('[data-confirm]').onclick=()=>{review.close();form.dataset.reviewed='yes';form.requestSubmit();};
+      document.body.append(review);review.showModal();return;
+    }
+    delete form.dataset.reviewed;
     if(type==='document'&&!file){setStatus(form,'Choose a document before uploading.',true);return;}
     if(file&&file.size>25*1024*1024){setStatus(form,'Files must be smaller than 25 MB.',true);return;}
     const submitButton=form.querySelector('[type="submit"]');
@@ -512,7 +524,11 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       if(file){
         const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-150)||'upload';
         uploadedPath='firmFiles/'+context.firmUid+'/'+recordRef.id+'/'+safeName;
-        await storage.uploadBytes(storage.ref(context.storage,uploadedPath),file,{contentType:file.type});
+        await new Promise((resolve,reject)=>{
+          const task=storage.uploadBytesResumable(storage.ref(context.storage,uploadedPath),file,{contentType:file.type});
+          const timer=setTimeout(()=>{task.cancel();reject(new Error('Upload timed out'));},120000);
+          task.on('state_changed',snap=>setStatus(form,'Uploading… '+Math.round(100*snap.bytesTransferred/snap.totalBytes)+'%'),error=>{clearTimeout(timer);reject(error);},()=>{clearTimeout(timer);setStatus(form,'Finalising document…');resolve();});
+        });
         payload.fileName=file.name;payload.storagePath=uploadedPath;payload.contentType=file.type;payload.fileSize=file.size;
       }
       if(type==='trustTransaction')payload.recordKind=payload.transactionType||'Receipt';
@@ -523,17 +539,17 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
         batch.set(recordRef,record);
         await batch.commit();
       }else await fs.setDoc(recordRef,record);
-      setStatus(form,'Saved to the firm Firebase workspace.');
+      setStatus(form,type==='document'?'Successfully uploaded.':'Saved successfully.');
       form.reset();
       const dialog=form.closest('dialog');
-      if(dialog?.open)setTimeout(()=>dialog.close(),450);
+      if(dialog?.open)setTimeout(()=>dialog.close(),type==='document'?1200:450);
     }catch(error){
       if(uploadedPath){try{const storage=await import(storageModuleUrl);await storage.deleteObject(storage.ref(context.storage,uploadedPath));}catch{}}
       const message=error?.code==='storage/unauthorized'?'Document upload denied by storage permissions. Ask your administrator to verify your firm access.':error?.code==='storage/quota-exceeded'?'Document storage quota exceeded. Contact your administrator.':error?.code==='storage/bucket-not-found'?'Document storage is not configured. Contact your administrator.':error?.code==='permission-denied'
         ? (type==='employee' ? 'Firestore denied this team member. Publish the updated Firestore rules and verify your active firm role and the employee’s existing Firebase UID.' : 'Firebase denied this save. Publish the latest Firestore and Storage rules, and check your firm role.')
         : type==='employee'
           ? 'Could not grant employee access. Check that the UID is an existing Firebase account without a conflicting role.'
-          : 'Could not save this record. Check the connection and try again.';
+          : type==='document'?'Upload could not be completed. Check your connection and try again.':'Could not save this record. Check the connection and try again.';
       setStatus(form,message,true);
     }finally{if(submitButton)submitButton.disabled=false;}
   }
