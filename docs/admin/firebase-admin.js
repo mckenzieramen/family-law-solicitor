@@ -189,7 +189,9 @@ onAuthStateChanged(auth, async user => {
     const role = claims.role === 'solicitor' ? 'solicitor' : profile?.role;
     const admin = role === 'admin' && profile?.Active === true;
     if (current !== generation) return;
-    if (role !== 'solicitor' && (employeePanel || (!admin && role !== 'employee'))) {
+    const lawyerWorkspace = Boolean(employeePanel);
+    const allowedForWorkspace = role === 'solicitor' || admin || (!lawyerWorkspace && role === 'employee');
+    if (!allowedForWorkspace) {
       if (entryCard) entryCard.hidden = false;
       showAuthError('This account does not have access to this workspace. Contact your Firebase administrator.');
       window.prevailAuthScreen?.('error');
