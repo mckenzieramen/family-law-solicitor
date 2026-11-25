@@ -1695,7 +1695,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         item.done = !item.done;
         render();
       } else await updateDoc(doc(items, item.id), {done:!item.done, updatedAt:serverTimestamp()});
-      if (current === session) notify(item.done ? 'Item reopened' : 'Item completed', item.title);
+      // Completion is reflected directly in the task row and summary cards; no success toast.
     } catch {
       if (current === session) notify('Update failed', 'Could not update this item. Please try again.', true);
     } finally { button.disabled = false; }
