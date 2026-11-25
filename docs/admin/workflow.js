@@ -154,6 +154,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   const items = sampleMode ? null : collection(db, 'staffWorkspaces', uid, 'items');
   const today = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Australia/Sydney', year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let records = [];
+  let selectedTaskId='',taskView='list';
   let consultationRequests = [];
   let allEnquiryContacts = [];
   let selectedContactKey = '';
@@ -168,7 +169,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   let loadError = null;
   const matterField = '<label>Matter reference<input name="matter" maxlength="80"></label>';
   const calendarOptions = '<option value="admin">Admin Calendar</option><option value="client">Client Calendar</option>';
-  root.innerHTML = `
+  root.innerHTML = `<style>#work-queue #tw-metrics{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 20px}#tw-metrics>button{flex:1;min-width:110px;text-align:left;background:#fffdf9;border:1px solid #ded3c4;border-radius:9px;padding:15px;color:#102438}#tw-metrics>button[aria-pressed=true]{border-color:#a47b36;background:#f7edda}#tw-metrics strong{display:block;font:700 28px Georgia}#tw-metrics span{font-size:12px}.tw-switch{display:flex;align-items:center;gap:5px}.tw-grid{display:flex;gap:12px;min-height:340px}.tw-list{flex:1;min-width:0;overflow:auto;border:1px solid #ded3c4;border-radius:9px;background:#fffdf9}.tw-detail{width:30%;min-width:240px;border:1px solid #ded3c4;border-radius:9px;padding:16px;background:#fffdf9;display:flex;flex-direction:column;color:#102438}.tw-detail header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ded3c4}.tw-detail h2{font:700 22px Georgia}.tw-detail dt{color:#65717d;font-size:12px}.tw-detail dd{margin:4px 0 12px;font-weight:600}.tw-detail p{white-space:pre-wrap;overflow-wrap:anywhere}.tw-detail footer{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}.tw-selected{background:#f7edda}.tw-status{background:#f1e8d6;color:#88652f;border-radius:5px;padding:4px 8px;font-size:12px}.tw-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}.tw-board>div{background:#f5f1eb;padding:10px;border-radius:8px}.tw-board button{display:block;width:100%;margin:8px 0;text-align:left}.tw-board small{display:block}@media(max-width:900px){.tw-grid{flex-direction:column}.tw-detail{width:auto}}</style>
  <section class="workflow-panel" id="work-templates">
   <div class="admin-section-heading"><h2>Email and document templates</h2></div>
   <p>Choose a template to prefill a draft, then replace the bracketed details.</p>
@@ -223,7 +224,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
  <p id="work-status" role="status">Loading work items…</p>
  <section class="workflow-panel" id="work-queue">
   <div class="admin-section-heading"><h2>Tasks &amp; deadlines</h2><button class="work-button" type="button" id="new-work-task">Add task</button></div>
-    <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
+    <div class="legal-actions"><label>Search tasks<input id="work-task-search" type="search" placeholder="Title or matter reference"></label><label>Show tasks<select id="legal-task-filter"><option value="all">All tasks</option><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="unscheduled">Without due date</option><option value="done">Completed</option></select></label><label>Priority<select id="work-task-priority"><option value="">All priorities</option>${priorities.map(priority => `<option>${priority}</option>`).join('')}</select></label></div><p class="work-result-count" id="work-task-count" role="status"></p><div id="work-priority-list"></div>
  </section>
  <section class="workflow-panel calendar-workspace" id="work-calendar" data-calendar-mode="month" aria-label="Firm schedule">
   <div class="calendar-controls">
@@ -564,7 +565,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     const taskQuery = find('#work-task-search').value.trim().toLowerCase();
     const priority = find('#work-task-priority').value;
     const matchingTasks = tasks.filter(item => {
-      const matchesView = filter === 'done' ? item.done : !item.done &&
+      const matchesView = filter === 'all' ? true : filter === 'done' ? item.done : !item.done &&
         (filter !== 'today' || item.date === date) &&
         (filter !== 'overdue' || overdue(item)) &&
         (filter !== 'unscheduled' || !item.date);
@@ -573,10 +574,12 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     }).sort(order);
     find('#work-task-count').textContent = loaded ? `${matchingTasks.length} of ${tasks.length} tasks` : '';
     const taskList = find('#work-priority-list');
-    taskList.innerHTML = matchingTasks.length ? `<div class="staff-table-scroll"><table class="staff-task-table">
-      <thead><tr><th scope="col">Task</th><th scope="col">Matter</th><th scope="col">Priority</th><th scope="col">Due date</th><th scope="col">Actions</th></tr></thead>
-      <tbody>${matchingTasks.map(item => `<tr><td><strong>${escape(item.title)}</strong><small>${item.done ? 'Completed' : overdue(item) ? 'Overdue' : 'Open'}</small></td><td>${escape(item.matter || '—')}</td><td><span class="task-priority" data-priority="${escape(item.priority)}">${escape(item.priority)}</span></td><td>${escape(item.date || '—')}</td><td><div class="work-actions"><button type="button" data-edit="${escape(item.id)}">Edit</button><button type="button" data-toggle="${escape(item.id)}">${item.done ? 'Reopen' : 'Complete'}</button><button type="button" data-remove="${escape(item.id)}">Delete</button></div></td></tr>`).join('')}</tbody></table></div>` :
-      `<p class="work-empty">${escape(loaded ? 'No tasks match this view.' : (loadError || 'Loading tasks…'))}</p>`;
+    const taskStatus=t=>t.done?'Completed':overdue(t)?'Overdue':'Open';
+    const selected=tasks.find(t=>t.id===selectedTaskId);
+    taskList.innerHTML='<div class="tw-grid"><div class="tw-list">'+(taskView==='board'?'<div class="tw-board">'+['Open','Overdue','Completed'].map(stage=>'<div><h3>'+stage+'</h3>'+matchingTasks.filter(t=>taskStatus(t)===stage).map(t=>'<button type="button" data-tw-select="'+escape(t.id)+'">'+escape(t.title)+'<small>'+escape(t.date||'No due date')+'</small></button>').join('')+'</div>').join('')+'</div>': '<div class="staff-table-scroll"><table class="staff-task-table"><thead><tr><th>Task name</th><th>Matter</th><th>Due date</th><th>Priority</th><th>Status</th></tr></thead><tbody>'+matchingTasks.map(t=>'<tr class="'+(t.id===selectedTaskId?'tw-selected':'')+'"><td><button type="button" data-toggle="'+escape(t.id)+'" aria-label="Toggle completion">'+(t.done?'✓':'□')+'</button> <button type="button" data-tw-select="'+escape(t.id)+'">'+escape(t.title)+'</button></td><td>'+escape(t.matter||'—')+'</td><td>'+escape(t.date||'—')+'</td><td><span class="task-priority" data-priority="'+escape(t.priority)+'">'+escape(t.priority)+'</span></td><td><span class="tw-status">'+taskStatus(t)+'</span></td></tr>').join('')+'</tbody></table></div>')+(!matchingTasks.length?'<p class="work-empty">No tasks match this view.</p>':'')+'</div>'+(selected?'<aside class="tw-detail"><header><h3>Task Details</h3><button type="button" data-tw-close>×</button></header><h2>'+escape(selected.title)+'</h2><span class="tw-status">'+taskStatus(selected)+'</span><dl><dt>Linked matter</dt><dd>'+escape(selected.matter||'—')+'</dd><dt>Due date</dt><dd>'+escape(selected.date||'—')+'</dd><dt>Priority</dt><dd>'+escape(selected.priority||'—')+'</dd></dl><h4>Description</h4><p>'+escape(selected.notes||'No description recorded.')+'</p><footer><button type="button" data-edit="'+escape(selected.id)+'">Edit task</button><button type="button" data-toggle="'+escape(selected.id)+'">'+(selected.done?'Reopen':'Mark as completed')+'</button><button type="button" data-remove="'+escape(selected.id)+'">Delete</button></footer></aside>':'')+'</div>';
+    let metrics=find('#tw-metrics');if(!metrics){metrics=document.createElement('div');metrics.id='tw-metrics';find('#work-queue .legal-actions').before(metrics);}metrics.innerHTML=[['all','All tasks',tasks.length],['open','Open',tasks.filter(t=>!t.done).length],['overdue','Overdue',tasks.filter(overdue).length],['done','Completed',tasks.filter(t=>t.done).length]].map(([v,l,n])=>'<button type="button" data-tw-filter="'+v+'" aria-pressed="'+(filter===v)+'"><strong>'+n+'</strong><span>'+l+'</span></button>').join('')+'<div class="tw-switch"><button type="button" data-tw-view="list">List view</button><button type="button" data-tw-view="board">Board view</button></div>';
+    metrics.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.twFilter)find('#legal-task-filter').value=b.dataset.twFilter;if(b.dataset.twView)taskView=b.dataset.twView;find('#legal-task-filter').dispatchEvent(new Event('change',{bubbles:true}));};
+    taskList.onclick=e=>{const b=e.target.closest('[data-tw-select],[data-tw-close]');if(!b)return;selectedTaskId=b.dataset.twSelect||'';find('#legal-task-filter').dispatchEvent(new Event('change',{bubbles:true}));};
     for (const [id, total] of [
       ['legal-today', records.filter(item => item.kind === 'Appointment' && !item.done && item.date === date).length],
       ['legal-overdue', tasks.filter(overdue).length]
