@@ -100,7 +100,7 @@ service cloud.firestore {
       return d.keys().hasOnly([
           'kind', 'title', 'notes', 'matter', 'date', 'priority', 'done',
           'recipient', 'updatedAt', 'calendar', 'time', 'followUpStatus',
-          'assignedTo', 'linkedType', 'taskCategory', 'checklist', 'taskStatus', 'endTime', 'eventType'
+          'assignedTo', 'linkedType', 'taskCategory', 'checklist', 'taskStatus', 'endTime', 'eventType', 'requireAttachment', 'requireApproval'
         ])
         && d.keys().hasAll([
           'kind', 'title', 'notes', 'matter', 'date', 'priority',
@@ -124,6 +124,9 @@ service cloud.firestore {
         && d.get('linkedType', '') in ['', 'Matter', 'Client enquiry', 'Client & Contact', 'General task']
         && d.get('taskCategory', '') in ['', 'Document preparation', 'Client follow-up', 'Legal research', 'Court preparation', 'Administrative', 'Other']
         && d.get('checklist', {}) is map && d.get('checklist', {}).size() <= 100
+        && d.get('requireAttachment', false) is bool
+        && d.get('requireApproval', false) is bool
+        && (!d.get('requireAttachment', false) || d.get('requireApproval', false))
         && d.get('taskStatus', '') in ['', 'Open', 'In Progress', 'Completed']
         && d.get('endTime', '') is string && d.get('endTime', '').matches('(([01][0-9]|2[0-3]):[0-5][0-9])?')
         && d.get('eventType', '') is string && d.get('eventType', '').size() <= 80
