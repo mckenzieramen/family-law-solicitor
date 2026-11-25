@@ -1,6 +1,20 @@
 <!doctype html>
-<html lang="en-AU">
+<html lang="en-AU" class="auth-pending">
 <head>
+<style id="prevail-auth-transition">
+html.auth-pending #staff-entry,html.auth-pending main.staff-entry,html.auth-pending #staff-checklist,html.auth-pending #employee-panel{display:none!important}
+#prevail-auth-loader{display:none;position:fixed;inset:0;z-index:2147483647;background:#f5f1eb;align-items:center;justify-content:center;pointer-events:auto}
+html.auth-pending #prevail-auth-loader,html.auth-revealing #prevail-auth-loader{display:flex}
+#prevail-auth-loader svg{width:54px;height:54px;stroke:#b18a48;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:prevail-balance-motion 1.8s ease-in-out infinite;transform-origin:50% 25%}
+@keyframes prevail-balance-motion{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+html.auth-revealing #prevail-auth-loader{animation:prevail-loader-fade .38s ease both;pointer-events:none}
+html.auth-revealing #staff-checklist,html.auth-revealing #employee-panel{animation:prevail-workspace-reveal .38s ease both}
+@keyframes prevail-loader-fade{from{opacity:1}to{opacity:0}}
+@keyframes prevail-workspace-reveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#prevail-auth-loader svg,html.auth-revealing #prevail-auth-loader,html.auth-revealing #staff-checklist,html.auth-revealing #employee-panel{animation:none}}
+</style>
+<script>window.prevailAuthScreen=function(mode){var root=document.documentElement;root.classList.remove('auth-revealing');if(mode==='loading'){root.classList.add('auth-pending');return;}if(mode==='workspace'){root.classList.add('auth-revealing');}root.classList.remove('auth-pending');if(mode==='workspace'){setTimeout(function(){root.classList.remove('auth-revealing');},420);}};</script>
+
 <base href="/docs/lawyer/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -18,7 +32,8 @@
 <link rel="stylesheet" href="/prevail-brand.css?v=executive-navy-gold-1">
 </head>
 <body class="solicitor-profile" data-lawyer>
-<main class="profile-page staff-entry">
+<div id="prevail-auth-loader" role="status" aria-label="Opening your workspace"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 10v43M20 54h24M9 19l46-5M14 19L5 39h18L14 19M50 15L41 35h18L50 15M5 39q9 12 18 0M41 35q9 12 18 0"/><circle cx="32" cy="7" r="2"/></svg></div>
+<main class="profile-page staff-entry" hidden>
  <section class="staff-entry-intro">
   <p class="profile-eyebrow">Prevail Family Law · Staff workspace</p>
   <h1>Lawyer Workspace</h1>
@@ -31,7 +46,7 @@
    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
    <button class="profile-button" type="submit">Sign in</button>
   </form>
-  <p id="auth-status" class="entry-note" role="status">Connecting to Firebase…</p>
+  <p id="auth-status" class="entry-note" role="status"></p>
   <button id="staff-logout" type="button" hidden>Sign out</button>
  </section>
 </main>
@@ -40,7 +55,7 @@
  <p id="save-status" role="status"></p>
  <div id="duty-groups" class="duty-groups"></div>
 </section>
-<section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><nav aria-label="Solicitor workspace shortcuts" class="lawyer-shortcuts"><a href="/admin/#work-matters">Matters</a><a href="/admin/#work-approvals">Approvals</a><a href="/admin/#work-calendar">Calendar</a><a href="/admin/#work-documents">Documents</a><a href="/admin/#work-queue">Tasks</a><a href="/admin/">Full workspace</a></nav></section><script type="module" src="../admin/firebase-admin.js?v=admin-role"></script>
+<section class="profile-page" id="employee-panel" hidden><h2>Add employee</h2><p>Enter the UID from an existing Firebase Authentication account.</p><form id="employee-form"><label>Employee UID <input name="uid" required maxlength="128"></label><button class="profile-button">Grant admin access</button></form><p id="employee-status" role="status"></p><nav aria-label="Solicitor workspace shortcuts" class="lawyer-shortcuts"><a href="/admin/#work-matters">Matters</a><a href="/admin/#work-approvals">Approvals</a><a href="/admin/#work-calendar">Calendar</a><a href="/admin/#work-documents">Documents</a><a href="/admin/#work-queue">Tasks</a><a href="/admin/">Full workspace</a></nav></section><script type="module" src="../admin/firebase-admin.js?v=auth-transition-60"></script>
 </body>
 </html>
 \n\n
