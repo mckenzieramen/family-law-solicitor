@@ -251,7 +251,7 @@ service cloud.firestore {
       }
       allow read: if isFirmStaff() && belongsToFirm(parentRecord().firmUid);
       allow create: if isFirmStaff()
-        && !exists(/databases/$(database)/documents/firmRecords/$(recordId))
+        && (!exists(/databases/$(database)/documents/firmRecords/$(recordId)) || parentRecord().payload.get('uploadState', '') == 'pending')
         && belongsToFirm(nextRecord().firmUid)
         && nextRecord().createdBy == request.auth.uid
         && nextRecord().recordType == 'document'
@@ -262,7 +262,8 @@ service cloud.firestore {
         && request.resource.data.index < nextRecord().payload.chunkCount
         && request.resource.data.bytes is bytes
         && request.resource.data.bytes.size() <= 716800;
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isFirmStaff() && belongsToFirm(parentRecord().firmUid) && parentRecord().createdBy == request.auth.uid && parentRecord().payload.get('uploadState', '') == 'pending';
     }
 
     match /firmSettings/{firmUid} {
