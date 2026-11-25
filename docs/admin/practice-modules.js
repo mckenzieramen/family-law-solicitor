@@ -517,8 +517,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
     setStatus(form,type==='document'?'Uploading document securely…':'Saving securely…');
     let uploadedPath='';
     try{
-      const fs=await import(firebaseModuleUrl);
-      const storage=await import(storageModuleUrl);
+      const [fs,storage]=await Promise.all([import(firebaseModuleUrl),import(storageModuleUrl)]);
       const recordRef=fs.doc(fs.collection(context.db,'firmRecords'));
       const now={createdBy:context.user.uid,updatedBy:context.user.uid,createdAt:fs.serverTimestamp(),updatedAt:fs.serverTimestamp()};
       if(file){
@@ -527,7 +526,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
         await new Promise((resolve,reject)=>{
           const task=storage.uploadBytesResumable(storage.ref(context.storage,uploadedPath),file,{contentType:file.type});
           const timer=setTimeout(()=>{task.cancel();reject(new Error('Upload timed out'));},120000);
-          task.on('state_changed',snap=>setStatus(form,'Uploading… '+Math.round(100*snap.bytesTransferred/snap.totalBytes)+'%'),error=>{clearTimeout(timer);reject(error);},()=>{clearTimeout(timer);setStatus(form,'Finalising document…');resolve();});
+          task.on('state_changed',snap=>setStatus(form,'Uploading… '+Math.round(100*snap.bytesTransferred/snap.totalBytes)+'%'),error=>{clearTimeout(timer);reject(error);},()=>{clearTimeout(timer);setStatus(form,'Saving document details…');resolve();});
         });
         payload.fileName=file.name;payload.storagePath=uploadedPath;payload.contentType=file.type;payload.fileSize=file.size;
       }
@@ -542,7 +541,7 @@ const body=page.querySelector('.mf-body');const selectTab=i=>{page.querySelector
       setStatus(form,type==='document'?'Successfully uploaded.':'Saved successfully.');
       form.reset();
       const dialog=form.closest('dialog');
-      if(dialog?.open)setTimeout(()=>dialog.close(),type==='document'?1200:450);
+      if(dialog?.open)setTimeout(()=>dialog.close(),type==='document'?450:450);
     }catch(error){
       if(uploadedPath){try{const storage=await import(storageModuleUrl);await storage.deleteObject(storage.ref(context.storage,uploadedPath));}catch{}}
       const message=error?.code==='storage/unauthorized'?'Document upload denied by storage permissions. Ask your administrator to verify your firm access.':error?.code==='storage/quota-exceeded'?'Document storage quota exceeded. Contact your administrator.':error?.code==='storage/bucket-not-found'?'Document storage is not configured. Contact your administrator.':error?.code==='permission-denied'
