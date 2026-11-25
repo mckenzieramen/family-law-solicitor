@@ -22,6 +22,45 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 .client-home .reference-consultation-cta,.client-home #reviews{background:#102a3a!important;color:#f7f4ee!important}
 </style>
 <link rel="stylesheet" href="/prevail-brand.css?v=calendar-first-25">
+<style id="home-video-hero">
+html body .client-home .hero-grid.hero-video-hero{
+ position:relative!important;isolation:isolate!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ grid-template-columns:none!important;min-height:clamp(560px,72svh,780px)!important;padding:clamp(26px,6vw,78px)!important;
+ overflow:hidden!important;background:#102a3a!important
+}
+html body .client-home .hero-video-backdrop{position:absolute!important;inset:0!important;z-index:-1!important;overflow:hidden!important;pointer-events:none!important}
+html body .client-home .hero-background-video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 46%!important;filter:brightness(.76) saturate(.92)!important}
+html body .client-home .hero-video-shade{position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(7,22,35,.66) 0%,rgba(7,22,35,.42) 52%,rgba(7,22,35,.12) 100%),linear-gradient(0deg,rgba(7,22,35,.3),transparent 46%)!important}
+html body .client-home .hero-grid.hero-video-hero .hero-copy{
+ position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+ width:min(100%,760px)!important;max-width:760px!important;min-width:0!important;margin:0!important;padding:clamp(24px,4vw,48px)!important;
+ border:1px solid rgba(213,174,103,.52)!important;border-left:5px solid #d5ae67!important;border-radius:12px!important;
+ background:rgba(10,29,44,.86)!important;color:#fff!important;box-shadow:0 24px 65px rgba(3,14,24,.42)!important;
+ -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)
+}
+html body .client-home .hero-grid.hero-video-hero .hero-copy h1{max-width:16ch!important;margin:0 0 18px!important;color:#fff!important;font-size:clamp(38px,5.2vw,72px)!important;line-height:1.06!important;text-wrap:balance}
+html body .client-home .hero-grid.hero-video-hero .hero-copy h1 em{color:#f0cb86!important}
+html body .client-home .hero-grid.hero-video-hero .hero-copy .eyebrow{color:#f0cb86!important}
+html body .client-home .hero-grid.hero-video-hero .hero-copy p{max-width:62ch!important;margin:0 0 14px!important;color:#fff!important;font-size:clamp(16px,1.35vw,19px)!important;line-height:1.65!important}
+html body .client-home .hero-grid.hero-video-hero .hero-copy p strong{color:#fff!important}
+html body .client-home .hero-grid.hero-video-hero .hero-actions{display:flex!important;flex-wrap:wrap!important;gap:12px!important;margin-top:10px!important}
+html body .client-home .hero-grid.hero-video-hero .hero-actions a:first-child{background:#d5ae67!important;border-color:#d5ae67!important;color:#102a3a!important;font-weight:750!important}
+html body .client-home .hero-grid.hero-video-hero .hero-actions a:nth-child(2){background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.72)!important;color:#fff!important}
+html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle{
+ position:absolute!important;right:20px!important;bottom:18px!important;z-index:2!important;min-height:42px!important;padding:9px 13px!important;
+ border:1px solid rgba(255,255,255,.75)!important;border-radius:7px!important;background:rgba(10,29,44,.78)!important;
+ color:#fff!important;font:600 13px/1.2 system-ui,sans-serif!important;cursor:pointer!important
+}
+html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle:focus-visible{outline:3px solid #f0cb86!important;outline-offset:3px!important}
+html body .client-home .hero-grid.hero-video-hero ::selection{background:#f0cb86;color:#102a3a}
+@media(max-width:700px){
+ html body .client-home .hero-grid.hero-video-hero{min-height:620px!important;padding:22px 16px 78px!important;align-items:flex-end!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-copy{width:100%!important;padding:24px 20px!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-copy h1{font-size:clamp(36px,9vw,52px)!important;max-width:15ch!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-copy p{font-size:16px!important}
+ html body .client-home .hero-grid.hero-video-hero .hero-motion-toggle{right:14px!important;bottom:12px!important;min-height:38px!important;padding:8px 10px!important;font-size:12px!important}
+}
+</style>
 
 <meta name="description" content="Prevail Family Law — practical, compassionate family law advice in New South Wales.">
 <style>
@@ -199,9 +238,23 @@ function home(){
  entry.hidden=true;
  document.querySelector('.header-nav').hidden=false;
  app.innerHTML=`<main class="hero client-home">
- <section class="hero-grid" aria-labelledby="hero-title">
-  <div class="hero-copy"><p class="eyebrow">Family law · Sydney, NSW</p><h1 id="hero-title">Compassionate, Strategic &amp; Practical <em>Family Law Advice</em></h1><p>Trusted legal support in <strong>divorce, parenting arrangements, property settlements and financial agreements.</strong></p><div class="hero-actions"><a class="hero-link" href="#contact">Book a consultation <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a><a href="#services">Our services <span class="direction-icon direction-down" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5v14m-5-5 5 5 5-5"/></svg></span></a></div></div>
-  <figure class="hero-photo"><img src="harbour-family-sunset.webp" alt="Illustration of a family overlooking Sydney Harbour at sunset" fetchpriority="high"></figure>
+ <section class="hero-grid hero-video-hero" aria-labelledby="hero-title">
+  <div class="hero-video-backdrop" aria-hidden="true">
+   <video id="home-hero-video" class="hero-background-video" muted loop playsinline preload="none" poster="harbour-family-sunset.webp">
+    <source src="https://videos.pexels.com/video-files/20186335/20186335-hd_1920_1080_60fps.mp4" type="video/mp4">
+   </video>
+   <div class="hero-video-shade"></div>
+  </div>
+  <div class="hero-copy">
+   <p class="eyebrow">Family law · Sydney, NSW</p>
+   <h1 id="hero-title">Compassionate, Strategic &amp; Practical <em>Family Law Advice</em></h1>
+   <p>Trusted legal support in <strong>divorce, parenting arrangements, property settlements and financial agreements.</strong></p>
+   <div class="hero-actions">
+    <a class="hero-link" href="#contact">Book a consultation <span class="direction-icon direction-right" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 12h14m-5-5 5 5-5 5"/></svg></span></a>
+    <a href="#services">Our services <span class="direction-icon direction-down" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5v14m-5-5 5 5 5-5"/></svg></span></a>
+   </div>
+  </div>
+  <button id="home-hero-motion" class="hero-motion-toggle" type="button" aria-label="Pause background video" aria-pressed="true">Pause background video</button>
  </section>
  <div class="prevail-trust-strip" aria-label="Our commitments to clients">
   <div class="prevail-trust-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 11.3 5.7 8.6 2.5 11.8l6.3 6.3a2.3 2.3 0 0 0 3.3 0l2-2m-2.8-7.2 2.1-2.1a3 3 0 0 1 4.2 0l3.9 3.9-4.6 4.6m-6.3-4.2 3.8 3.8m-8-7.6 2.5-2.5a3 3 0 0 1 4.2 0l1 1"/></svg><span>Client-Focused<br>Approach</span></div>
@@ -365,6 +418,25 @@ function home(){
  </details>
  <aside class="privacy-notice" aria-label="Privacy controls"><p>The embedded Google Map may use cookies.</p><button type="button" data-dismiss-privacy>Dismiss</button></aside>
  </main><footer class="client-footer"><span>Prevail Family Law · Sydney, NSW</span><small>Prevail Family Law</small></footer>`;
+ const heroVideo=app.querySelector('#home-hero-video');
+ const heroMotion=app.querySelector('#home-hero-motion');
+ if(heroVideo&&heroMotion){
+  const setMotionState=playing=>{
+   heroMotion.textContent=playing?'Pause background video':'Play background video';
+   heroMotion.setAttribute('aria-label',playing?'Pause background video':'Play background video');
+   heroMotion.setAttribute('aria-pressed',String(playing));
+  };
+  const playHeroVideo=()=>heroVideo.play().then(()=>setMotionState(true)).catch(()=>setMotionState(false));
+  heroMotion.addEventListener('click',()=>{
+   if(heroVideo.paused)playHeroVideo();
+   else{heroVideo.pause();setMotionState(false)}
+  });
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData=navigator.connection?.saveData===true;
+  if(!reducedMotion&&!saveData)playHeroVideo();
+  else setMotionState(false);
+ }
+
 }
 entry.addEventListener('click',()=>{if(app.querySelector('.shell'))home();else showStaff();window.scrollTo(0,0)});
 app.addEventListener('click',event=>{const link=event.target.closest('.service-grid h3 a');if(link){const details=document.querySelector(link.getAttribute('href'));if(details)details.open=true}});
