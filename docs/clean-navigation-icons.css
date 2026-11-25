@@ -6,7 +6,7 @@ html body:has(.client-home)>header.site-header,html body:has(.client-home)>heade
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important
 }
 html body:has(.client-home)>header.site-header.is-scrolled {
-  background:rgba(9,27,42,.66)!important;background-image:none!important;
+  background:rgba(255,255,255,.78)!important;background-image:none!important;
   -webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important
 }
 html body>header.site-header nav#public-navigation {
@@ -78,10 +78,18 @@ html body>header.site-header a.brand img,html body:has(.client-home)>header.site
 @media(max-width:760px){html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:min(46vw,185px)!important}}
 
 html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important}
-html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(9,27,42,.66)!important}
+html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(255,255,255,.78)!important}
 
 /* Keep both header rows together; the measured contact height prevents gaps. */
 html body:has(.client-home)> .premium-top-contact{position:fixed!important;inset:0 0 auto!important;z-index:1001!important;background:#091e2d!important;transition:background-color .25s ease,backdrop-filter .25s ease!important}
-html body:has(.client-home):has(>header.site-header.is-scrolled)> .premium-top-contact{background:rgba(9,27,42,.66)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
+html body:has(.client-home):has(>header.site-header.is-scrolled)> .premium-top-contact{background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
 html body:has(.client-home)>header.site-header.site-header{transition:background-color .25s ease,backdrop-filter .25s ease!important}
 html body:has(.client-home)>header.site-header.site-header.is-scrolled{-webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important}
+
+/* White frosted glass on scroll, with accessible dark foregrounds. */
+html body:has(.client-home)>header.site-header.site-header.is-scrolled #public-navigation>a:not(.nav-cta){color:#102a3a!important;text-shadow:none!important}
+html body:has(.client-home)>header.site-header.site-header.is-scrolled #public-navigation>a:not(.nav-cta):is(:hover,[aria-current=page],[aria-current=location]){color:#79551d!important}
+html body:has(.client-home)>header.site-header.site-header.is-scrolled #public-navigation>a:not(.nav-cta)+a:not(.nav-cta)::before{background:rgba(16,42,58,.2)}
+html body:has(.client-home):has(>header.site-header.is-scrolled)>.premium-top-contact :is(.premium-top-contact-link,.premium-top-sydney-time,#premium-top-clock){color:#102a3a!important}
+html body:has(.client-home):has(>header.site-header.is-scrolled)>.premium-top-contact .mockup-icon{color:#79551d!important}
+@media(max-width:850px){html body:has(.client-home)>header.site-header.site-header.is-scrolled nav#public-navigation[data-collapsed=false]{background:rgba(255,255,255,.96)!important}}
