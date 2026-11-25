@@ -1,6 +1,6 @@
 /* Reference-matched navigation icons — transparent overlay, no pill backgrounds. */
-html body:has(.client-home)>header.site-header {
-  position:sticky!important;top:0!important;z-index:1000!important;
+html body:has(.client-home)>header.site-header,html body:has(.client-home)>header.site-header.site-header {
+  position:fixed!important;top:var(--public-contact-height,24px)!important;left:0!important;right:0!important;z-index:1000!important;
   background:transparent!important;background-color:transparent!important;background-image:none!important;
   border:0!important;box-shadow:none!important;
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important
@@ -76,3 +76,6 @@ html body:not(:has(.client-home))>header.site-header{background:rgba(9,27,42,.94
 html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:clamp(165px,18vw,230px)!important;max-width:230px!important;min-width:0!important;flex:0 0 auto!important;padding:4px 6px!important;box-sizing:border-box!important;height:auto!important;min-height:0!important}
 html body>header.site-header a.brand img,html body:has(.client-home)>header.site-header a.brand img.prevail-real-logo{display:block!important;width:100%!important;height:auto!important;max-height:72px!important;object-fit:contain!important}
 @media(max-width:760px){html body>header.site-header a.brand,html body:has(.client-home)>header.site-header a.brand{width:min(46vw,185px)!important}}
+
+html body:has(.client-home)>header.site-header.site-header:not(.is-scrolled){background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important}
+html body:has(.client-home)>header.site-header.site-header.is-scrolled{background:rgba(9,27,42,.83)!important}
