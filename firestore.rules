@@ -141,6 +141,21 @@ service cloud.firestore {
       allow delete: if ownsChecklist(uid);
     }
 
+    match /staffWorkspaces/{uid}/items/{itemId}/attachments/{attachmentId} {
+      allow read: if ownsChecklist(uid);
+      allow create: if ownsChecklist(uid)
+        && exists(/databases/$(database)/documents/staffWorkspaces/$(uid)/items/$(itemId))
+        && request.resource.data.keys().hasOnly(['name','mime','bytes','createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 255
+        && request.resource.data.mime is string
+        && request.resource.data.mime.size() <= 200
+        && request.resource.data.bytes is bytes
+        && request.resource.data.bytes.size() <= 716800
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+
     function inboxStaff() {
       return signedIn() && (isSolicitor() || isActiveAdmin());
     }
