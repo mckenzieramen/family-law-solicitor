@@ -414,7 +414,7 @@ html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftRe
 </style>
 <link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-4">
 <style id="prevail-card-scroll-motion">
-@media(prefers-reduced-motion:no-preference){.prevail-why{overflow-x:clip}.prevail-why-grid[data-motion-ready]>.prevail-reveal-card{transform:translateX(var(--card-offset,0px));opacity:var(--card-opacity,1);transition:transform 180ms cubic-bezier(.2,.7,.3,1),opacity 180ms ease;will-change:transform,opacity}}
+@media(prefers-reduced-motion:no-preference){.prevail-why{overflow-x:clip}.prevail-why-grid[data-motion-ready]>.prevail-reveal-card{transform:translate3d(var(--card-offset,0px),0,0);opacity:var(--card-opacity,1);transition:none!important;will-change:transform,opacity}}
 </style>
 </head>
 <body>
@@ -842,7 +842,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 })();
 </script>
 <script>
-(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let pending=false;const update=()=>{pending=false;const h=innerHeight;document.querySelectorAll('.prevail-why-grid').forEach(grid=>{const r=grid.getBoundingClientRect();const p=Math.max(0,Math.min(1,(h-r.top)/(h*.5)));grid.setAttribute('data-motion-ready','');Array.from(grid.children).forEach((card,i)=>{const t=Math.max(0,Math.min(1,(p-i*.08)/(1-i*.08)));const eased=t*t*(3-2*t);const distance=grid.getBoundingClientRect().left+card.offsetLeft-grid.offsetLeft+card.offsetWidth+24;card.style.setProperty('--card-offset',(-Math.max(card.offsetWidth,distance)*(1-eased))+'px');card.style.setProperty('--card-opacity',String(eased));});});};const schedule=()=>{if(!pending){pending=true;requestAnimationFrame(update)}};addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();})();
+(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let frame=0,last=0;const states=new WeakMap();const clamp=v=>Math.max(0,Math.min(1,v));function update(now){frame=0;const dt=last?Math.min(40,now-last):16;last=now;let moving=false;document.querySelectorAll('.prevail-why-grid').forEach(grid=>{const r=grid.getBoundingClientRect(),h=innerHeight;const p=clamp((h-r.top)/(h*.44));grid.setAttribute('data-motion-ready','');Array.from(grid.children).forEach((card,i)=>{const t=clamp((p-i*.065)/(1-i*.065));const target=t*t*(3-2*t);let v=states.has(card)?states.get(card):target;v+=(target-v)*(1-Math.exp(-dt/65));if(Math.abs(target-v)<.001)v=target;else moving=true;states.set(card,v);const distance=Math.max(card.offsetWidth,r.left+card.offsetLeft-grid.offsetLeft+card.offsetWidth+24);card.style.setProperty('--card-offset',(-distance*(1-v))+'px');card.style.setProperty('--card-opacity',String(v));});});if(moving)frame=requestAnimationFrame(update);else last=0;}function schedule(){if(!frame)frame=requestAnimationFrame(update)}addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();})();
 </script>
 </body>
 </html>
