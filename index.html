@@ -414,7 +414,10 @@ html body .client-home #resources.client-faq>details[open]>p{animation:faqSoftRe
 </style>
 <link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-4">
 <style id="prevail-card-scroll-motion">
-@media(prefers-reduced-motion:no-preference){.prevail-why{overflow-x:clip}.prevail-why-grid[data-motion-ready]>.prevail-reveal-card{transform:translate3d(var(--card-offset,0px),0,0);opacity:var(--card-opacity,1);transition:none!important;will-change:transform,opacity}}
+@media(prefers-reduced-motion:no-preference){
+.prevail-why-grid[data-motion-ready]>.prevail-reveal-card{opacity:0;transform:translate3d(0,28px,0);transition:opacity 720ms ease,transform 850ms cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}
+.prevail-why-grid[data-motion-ready]>.prevail-reveal-card.is-revealed{opacity:1;transform:translate3d(0,0,0)}
+}
 </style>
 </head>
 <body>
@@ -842,7 +845,7 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 })();
 </script>
 <script>
-(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let frame=0,last=0;const states=new WeakMap();const clamp=v=>Math.max(0,Math.min(1,v));function update(now){frame=0;const dt=last?Math.min(40,now-last):16;last=now;let moving=false;document.querySelectorAll('.prevail-why-grid').forEach(grid=>{const r=grid.getBoundingClientRect(),h=innerHeight;const p=clamp((h-r.top)/(h*.44));grid.setAttribute('data-motion-ready','');Array.from(grid.children).forEach((card,i)=>{const t=clamp((p-i*.065)/(1-i*.065));const target=t*t*(3-2*t);let v=states.has(card)?states.get(card):target;v+=(target-v)*(1-Math.exp(-dt/65));if(Math.abs(target-v)<.001)v=target;else moving=true;states.set(card,v);const distance=Math.max(card.offsetWidth,r.left+card.offsetLeft-grid.offsetLeft+card.offsetWidth+24);card.style.setProperty('--card-offset',(-distance*(1-v))+'px');card.style.setProperty('--card-opacity',String(v));});});if(moving)frame=requestAnimationFrame(update);else last=0;}function schedule(){if(!frame)frame=requestAnimationFrame(update)}addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();})();
+(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver'in window))return;function init(){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add('is-revealed');observer.unobserve(entry.target)})},{threshold:.12});document.querySelectorAll('.prevail-why-grid').forEach(grid=>{const cards=Array.from(grid.querySelectorAll('.prevail-reveal-card'));grid.setAttribute('data-motion-ready','');cards.forEach((card,i)=>{card.style.setProperty('--reveal-delay',matchMedia('(max-width:700px)').matches?'0ms':i*110+'ms');observer.observe(card)});});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();})();
 </script>
 </body>
 </html>
