@@ -22,7 +22,7 @@ header.site-header .nav-cta{background:#d5ae67!important;color:#102a3a!important
 .client-home .hero-copy h1,.client-home .hero-copy p{color:#f7f4ee!important}
 .client-home .reference-consultation-cta,.client-home #reviews{background:#102a3a!important;color:#f7f4ee!important}
 </style>
-<link rel="stylesheet" href="/prevail-brand.css?v=calendar-first-25">
+<link rel="stylesheet" href="/prevail-brand.css?v=calendar-first-26-footer">
 <style id="home-video-hero">
 html body .client-home .hero-grid.hero-video-hero{
  position:relative!important;isolation:isolate!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
@@ -352,7 +352,50 @@ function home(){
    <div id="support-result" role="status"></div>
   </div>
  </details>
- </main><footer class="client-footer"><span>Prevail Family Law · Sydney, NSW</span><small>Prevail Family Law</small></footer>`;
+ </main><footer class="client-footer premium-footer">
+ <div class="footer-inner">
+  <section class="footer-brand" aria-label="Prevail Family Law contact details">
+   <a class="footer-logo" href="/" aria-label="Prevail Family Law home"><img src="/docs/Prevail-Family-Law-Gold-Logo.webp?v=footer-logo-1" alt="Prevail Family Law" width="240" height="263"></a>
+   <div class="footer-brand-rule"></div>
+   <div class="footer-contact-list">
+    <a href="tel:+61485079942"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3H4a1 1 0 0 0-1 1 17 17 0 0 0 17 17 1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2Z"/></svg><span>0485 079 942</span></a>
+    <a href="mailto:info@prevailfamilylaw.com.au"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>info@prevailfamilylaw.com.au</span></a>
+   </div>
+  </section>
+  <nav class="footer-column" aria-label="Navigate">
+   <h2>Navigate</h2>
+   <a href="/">Home</a>
+   <a href="#prevail-why">About</a>
+   <a href="#services">Family Law</a>
+   <a href="#contact">Contact</a>
+   <a href="#contact">Free Consultation</a>
+  </nav>
+  <nav class="footer-column footer-services" aria-label="Family Law Services">
+   <h2>Family Law Services</h2>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/divorce-and-separation/" target="_blank" rel="noopener noreferrer">Divorce and Separation</a>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/property-division/" target="_blank" rel="noopener noreferrer">Property Division</a>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/children-and-parenting/" target="_blank" rel="noopener noreferrer">Children and Parenting</a>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/family-court-representation/" target="_blank" rel="noopener noreferrer">Family Court Representation</a>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/same-sex-and-de-facto-relationships/" target="_blank" rel="noopener noreferrer">Same-Sex and De Facto Relationships</a>
+   <a href="https://goldenrod-oyster-814782.hostingersite.com/mediation/" target="_blank" rel="noopener noreferrer">Mediation</a>
+  </nav>
+  <section class="footer-column footer-callback" aria-labelledby="footer-callback-title">
+   <h2 id="footer-callback-title">Get a Call Back</h2>
+   <form action="mailto:info@prevailfamilylaw.com.au?subject=Callback%20request" method="post" enctype="text/plain">
+    <label class="footer-visually-hidden" for="footer-callback-name">Name</label>
+    <input id="footer-callback-name" name="Name" type="text" placeholder="Name" autocomplete="name" required>
+    <label class="footer-visually-hidden" for="footer-callback-phone">Phone Number</label>
+    <input id="footer-callback-phone" name="Phone Number" type="tel" placeholder="Phone Number" autocomplete="tel" required>
+    <label class="footer-visually-hidden" for="footer-callback-time">Best Day and Time to Call</label>
+    <input id="footer-callback-time" name="Best Day and Time to Call" type="text" placeholder="Best Day and Time to Call" required>
+    <label class="footer-visually-hidden" for="footer-callback-email">Email</label>
+    <input id="footer-callback-email" name="Email" type="email" placeholder="Email" autocomplete="email" required>
+    <button type="submit">Submit</button>
+   </form>
+   <p class="footer-callback-note">Submitting opens your email app to send the callback request.</p>
+  </section>
+ </div>
+</footer>`;
  const heroVideo=app.querySelector('#home-hero-video');
  if(heroVideo){
   const motionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
