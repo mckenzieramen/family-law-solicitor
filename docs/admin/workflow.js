@@ -899,7 +899,13 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       ).join('') || '<p>No open follow-ups.</p>'}</details>`;
     }).join('');
   }
+  const folderKey='prevail.mailFolders.'+(sampleMode?'sample':'live');
+  let folders=[];try{folders=JSON.parse(localStorage.getItem(folderKey)||'[]');if(!Array.isArray(folders))folders=[]}catch{}
+  function saveFolders(next){try{localStorage.setItem(folderKey,JSON.stringify(next));folders=next;return true}catch{return false}}
+  function folderDialog(){const d=document.createElement('dialog');d.className='corr-template-dialog';d.innerHTML='<h2>New folder</h2><form><label>Folder name<input name="folder" maxlength="45" required placeholder="e.g. Client follow-ups"></label><p role="status"></p><div style="display:flex;gap:8px"><button type="button" data-close>Cancel</button><button type="submit">Create folder</button></div></form>';document.body.append(d);const f=d.querySelector('form');d.querySelector('[data-close]').onclick=()=>d.close();d.onclose=()=>d.remove();f.onsubmit=e=>{e.preventDefault();const name=f.elements.folder.value.trim();if(!name||folders.some(x=>x.name.toLowerCase()===name.toLowerCase())){f.querySelector('[role=status]').textContent='Enter a unique folder name.';return}const id='custom-'+crypto.randomUUID();if(!saveFolders([...folders,{id,name,items:[]}])){f.querySelector('[role=status]').textContent='Unable to save folder.';return}correspondenceFilter=id;d.close();renderDrafts()};d.showModal()}
+  function renderFolders(){const nav=find('.corr-mail-nav');if(!nav)return;let host=nav.querySelector('.corr-custom-folders');if(!host){host=document.createElement('div');host.className='corr-custom-folders';nav.querySelector('[data-new-draft=followup]').after(host)}host.replaceChildren();const make=(label,path,fn)=>{const b=document.createElement('button');b.type='button';b.title=label;b.setAttribute('aria-label',label);b.innerHTML='<svg class="corr-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="'+path+'"/></svg><span class="corr-label"></span>';b.querySelector('span').textContent=label;b.onclick=fn;host.append(b);return b};for(const folder of folders){const b=make(folder.name,'M3 6h7l2 2h9v12H3z',()=>{correspondenceFilter=folder.id;renderDrafts()});b.setAttribute('aria-selected',String(correspondenceFilter===folder.id))}make('Add new folder','M3 6h7l2 2h9v12H3zM8 14h8m-4-4v8',folderDialog).classList.add('corr-add-folder');nav.querySelectorAll('[data-corr-filter]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.corrFilter===correspondenceFilter)))}
   function renderDrafts() {
+    renderFolders();
     const allItems = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
     const received = records.filter(isAttorneyEmail);
     const bookings = (sampleMode?consultationRequests:allEnquiryContacts).map(item=>({...item,kind:'Email draft',title:'[ATTY EMAIL] Booking: '+item.title,recipient:item.contact?.email||'',notes:item.notes||'',booking:true,updatedAt:item.createdAt}));
@@ -908,7 +914,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     if(emailBadge){emailBadge.textContent=received.length>99?'99+':String(received.length);emailBadge.hidden=received.length===0;}
     const query = find('#correspondence-search').value.trim().toLowerCase();
     const sort = find('#correspondence-sort').value;
-    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email' || (correspondenceFilter === 'inbox' && isAttorneyEmail(item)) || (correspondenceFilter === 'drafts' && !isAttorneyEmail(item)) || (correspondenceFilter === 'booking' && item.booking))
+    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email' || (correspondenceFilter === 'inbox' && isAttorneyEmail(item)) || (correspondenceFilter === 'drafts' && !isAttorneyEmail(item)) || (correspondenceFilter === 'booking' && item.booking) || folders.some(f=>f.id===correspondenceFilter&&f.items.includes(item.id)))
       .filter(item => [item.title,item.recipient,item.matter,item.notes].join(' ').toLowerCase().includes(query))
       .sort((a,b) => {
         const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
@@ -916,7 +922,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       });
     if(filtered.some(item=>item.id===selectedCorrespondenceId)){}else selectedCorrespondenceId=filtered[0]?.id||'';
     const count=find('#correspondence-count');
-    if(count) count.textContent='Correspondence ('+filtered.length+')';
+    if(count) count.textContent=(folders.find(f=>f.id===correspondenceFilter)?.name||'Correspondence')+' ('+filtered.length+')';
     find('#work-draft-count').textContent=loaded ? (filtered.length+' of '+emailItems.length+' messages') : '';
     const list=find('#correspondence-items');
     const icon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>';
@@ -933,6 +939,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
       return;
     }
+    const addFolderControl=()=>{if(!folders.length)return;const box=document.createElement('label');box.className='corr-folder-assignment';box.textContent='Folder ';const select=document.createElement('select');select.add(new Option('No custom folder',''));for(const f of folders)select.add(new Option(f.name,f.id));select.value=folders.find(f=>f.items.includes(active.id))?.id||'';select.onchange=()=>{const next=folders.map(f=>({...f,items:[...f.items.filter(id=>id!==active.id),...(f.id===select.value?[active.id]:[])]}));if(saveFolders(next))renderDrafts();else select.value=folders.find(f=>f.items.includes(active.id))?.id||''};box.append(select);reader.querySelector('.correspondence-message')?.prepend(box)};queueMicrotask(addFolderControl);
     if(active.booking){reader.innerHTML='<article class="correspondence-message"><h3>'+escape(active.title.replace(/^\[ATTY EMAIL\] /,''))+'</h3><p>Booking enquiry · '+escape(active.recipient||'No email provided')+'</p><p>Preferred date: '+escape(active.date||'Not specified')+' '+escape(active.time||'')+'</p><div class="correspondence-message-body"><pre>'+escape(active.notes)+'</pre></div><div class="correspondence-compose-tabs"><button type="button" data-booking-reply>Reply to booking</button></div></article>';reader.querySelector('[data-booking-reply]').onclick=()=>open(editors['Email draft'],null,{title:'Re: Consultation booking',recipient:active.recipient,notes:''});return;}
     const incoming=isAttorneyEmail(active);
     const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
