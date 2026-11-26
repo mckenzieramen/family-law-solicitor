@@ -243,6 +243,15 @@ service cloud.firestore {
       allow update: if visitor() && resource.data.ownerUid == chatId && validChatContact();
       allow get: if visitor() || inboxStaff();
       allow list: if inboxStaff() && request.query.limit <= 100;
+      match /typing/{side} {
+        allow get: if (visitor() || inboxStaff()) && side in ['visitor','staff'];
+        allow create, update: if exists(/databases/$(database)/documents/supportChats/$(chatId))
+          && ((visitor() && side == 'visitor') || (inboxStaff() && side == 'staff'))
+          && request.resource.data.keys().hasOnly(['active','updatedAt'])
+          && request.resource.data.keys().hasAll(['active','updatedAt'])
+          && request.resource.data.active is bool
+          && request.resource.data.updatedAt == request.time;
+      }
       match /messages/{messageId} {
         allow read: if visitor() || inboxStaff();
         allow create: if exists(/databases/$(database)/documents/supportChats/$(chatId))
