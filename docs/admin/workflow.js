@@ -343,6 +343,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    <button type="button" class="correspondence-list-open" id="correspondence-list-open" aria-label="Show correspondence list" hidden>☰ Inbox</button>
   </div>
   <div class="correspondence-layout" id="correspondence-layout">
+   <nav class="corr-mail-nav" aria-label="Mailbox folders"><button type="button" class="corr-compose" data-new-draft="blank">＋ Compose</button><button type="button" data-corr-filter="all" aria-selected="true">All messages</button><button type="button" data-corr-filter="inbox" aria-selected="false">Inbox</button><button type="button" data-corr-filter="drafts" aria-selected="false">Drafts</button><button type="button" disabled title="Mailbox integration required">Sent</button><button type="button" disabled title="Not yet supported">Archived</button><button type="button" disabled title="Not yet supported">Trash</button></nav>
    <aside class="correspondence-list-pane" id="correspondence-list-pane" aria-label="Correspondence list">
     <div class="correspondence-list-heading"><div><strong id="correspondence-count">Correspondence</strong><span id="work-draft-count" class="work-result-count" role="status"></span></div><button type="button" id="correspondence-list-close" aria-label="Hide correspondence list">‹</button></div>
     <div id="correspondence-items"><p class="work-empty">Loading correspondence…</p></div>
@@ -906,7 +907,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     if(emailBadge){emailBadge.textContent=received.length>99?'99+':String(received.length);emailBadge.hidden=received.length===0;}
     const query = find('#correspondence-search').value.trim().toLowerCase();
     const sort = find('#correspondence-sort').value;
-    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email')
+    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email' || (correspondenceFilter === 'inbox' && isAttorneyEmail(item)) || (correspondenceFilter === 'drafts' && !isAttorneyEmail(item)))
       .filter(item => [item.title,item.recipient,item.matter,item.notes].join(' ').toLowerCase().includes(query))
       .sort((a,b) => {
         const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
@@ -923,8 +924,8 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const title=item.title.replace(/^\[ATTY EMAIL\] /,'');
       const selected=item.id===selectedCorrespondenceId;
       const sender=(incoming?'From: ':'To: ')+(item.recipient||'No recipient');
-      return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+icon+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
-    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(correspondenceFilter==='all'||correspondenceFilter==='email'?'No correspondence yet':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
+      return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+escape((item.recipient||'Staff').split(/[@.\s]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''))+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small><small class="corr-snippet">'+escape((item.notes||'').replace(/\s+/g,' ').slice(0,90))+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
+    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(['all','email','inbox','drafts'].includes(correspondenceFilter)?'No messages in this folder':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
     const active=filtered.find(item=>item.id===selectedCorrespondenceId) || null;
     const reader=find('#correspondence-reader-content');
     if(!active){
