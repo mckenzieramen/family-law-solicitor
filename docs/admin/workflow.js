@@ -343,12 +343,12 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
    <button type="button" class="correspondence-list-open" id="correspondence-list-open" aria-label="Show correspondence list" hidden>☰ Inbox</button>
   </div>
   <div class="correspondence-layout" id="correspondence-layout">
-   <nav class="corr-mail-nav" aria-label="Mailbox folders"><button type="button" class="corr-compose" data-new-draft="blank">＋ Compose</button><button type="button" data-corr-filter="all" aria-selected="true">All messages</button><button type="button" data-corr-filter="inbox" aria-selected="false">Inbox</button><button type="button" data-corr-filter="drafts" aria-selected="false">Drafts</button><button type="button" disabled title="Mailbox integration required">Sent</button><button type="button" disabled title="Not yet supported">Archived</button><button type="button" disabled title="Not yet supported">Trash</button></nav>
+   <nav class="corr-mail-nav" aria-label="Mailbox folders"><button type="button" class="corr-compose" data-new-draft="blank">＋ Compose</button><button type="button" data-corr-filter="all" aria-selected="true">All messages</button><button type="button" data-corr-filter="inbox" aria-selected="false">Inbox</button><button type="button" data-corr-filter="drafts" aria-selected="false">Drafts</button><button type="button" disabled title="Mailbox integration required">Sent</button><button type="button" disabled title="Not yet supported">Archived</button><button type="button" disabled title="Not yet supported">Trash</button><button type="button" data-corr-filter="booking" aria-selected="false">Bookings</button><button type="button" data-new-draft="followup">Templates</button></nav>
    <aside class="correspondence-list-pane" id="correspondence-list-pane" aria-label="Correspondence list">
     <div class="correspondence-list-heading"><div><strong id="correspondence-count">Correspondence</strong><span id="work-draft-count" class="work-result-count" role="status"></span></div><button type="button" id="correspondence-list-close" aria-label="Hide correspondence list">‹</button></div>
     <div id="correspondence-items"><p class="work-empty">Loading correspondence…</p></div>
     <div id="work-drafts" hidden></div><div id="attorney-email-list" hidden></div>
-    <div class="correspondence-list-footer"><button type="button" data-new-draft="blank">＋ New email draft</button><button type="button" data-new-draft="followup">Client follow-up template</button></div>
+    
    </aside>
    <section class="correspondence-reader" id="correspondence-reader" aria-label="Selected correspondence">
     <div class="correspondence-reader-toolbar"><button type="button" id="correspondence-reader-close" aria-label="Close message">×</button><span>Message details</span><button type="button" class="correspondence-reader-list" id="correspondence-reader-list">☰ Inbox</button></div>
@@ -902,12 +902,13 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
   function renderDrafts() {
     const allItems = records.filter(item => item.kind === 'Email draft' && !isAttorneyEmail(item));
     const received = records.filter(isAttorneyEmail);
-    const emailItems = [...received,...allItems].sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
+    const bookings = (sampleMode?consultationRequests:allEnquiryContacts).map(item=>({...item,kind:'Email draft',title:'[ATTY EMAIL] Booking: '+item.title,recipient:item.contact?.email||'',notes:item.notes||'',booking:true,updatedAt:item.createdAt}));
+    const emailItems = [...received,...allItems,...bookings].sort((a,b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0));
     const emailBadge=document.getElementById('nav-email-badge');
     if(emailBadge){emailBadge.textContent=received.length>99?'99+':String(received.length);emailBadge.hidden=received.length===0;}
     const query = find('#correspondence-search').value.trim().toLowerCase();
     const sort = find('#correspondence-sort').value;
-    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email' || (correspondenceFilter === 'inbox' && isAttorneyEmail(item)) || (correspondenceFilter === 'drafts' && !isAttorneyEmail(item)))
+    const filtered = emailItems.filter(item => correspondenceFilter === 'all' || correspondenceFilter === 'email' || (correspondenceFilter === 'inbox' && isAttorneyEmail(item)) || (correspondenceFilter === 'drafts' && !isAttorneyEmail(item)) || (correspondenceFilter === 'booking' && item.booking))
       .filter(item => [item.title,item.recipient,item.matter,item.notes].join(' ').toLowerCase().includes(query))
       .sort((a,b) => {
         const delta=(a.updatedAt?.toMillis?.() ?? Date.parse(a.date||'') ?? 0) - (b.updatedAt?.toMillis?.() ?? Date.parse(b.date||'') ?? 0);
@@ -925,13 +926,14 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const selected=item.id===selectedCorrespondenceId;
       const sender=(incoming?'From: ':'To: ')+(item.recipient||'No recipient');
       return '<button type="button" class="correspondence-row'+(selected?' is-selected':'')+'" data-correspondence-id="'+escape(item.id)+'" aria-pressed="'+selected+'"><span class="correspondence-row-icon">'+escape((item.recipient||'Staff').split(/[@.\s]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join(''))+'</span><span class="correspondence-row-copy"><strong>'+escape(title)+'</strong><small>'+escape(sender)+'</small><small class="correspondence-row-matter">▱ '+escape(item.matter||'No matter linked')+'</small><small class="corr-snippet">'+escape((item.notes||'').replace(/\s+/g,' ').slice(0,90))+'</small></span><time>'+escape(item.date||'Draft')+'</time></button>';
-    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(['all','email','inbox','drafts'].includes(correspondenceFilter)?'No messages in this folder':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
+    }).join('') : '<div class="correspondence-empty-list"><strong>'+escape(['all','email','inbox','drafts','booking'].includes(correspondenceFilter)?'No messages in this folder':'No '+(correspondenceFilter==='note'?'internal notes':correspondenceFilter+' records')+' logged')+'</strong><p>'+(loaded?'Log a received email or create a draft to start the thread.':'Loading saved correspondence…')+'</p></div>';
     const active=filtered.find(item=>item.id===selectedCorrespondenceId) || null;
     const reader=find('#correspondence-reader-content');
     if(!active){
       reader.innerHTML='<div class="correspondence-empty-state"><span class="correspondence-empty-icon" aria-hidden="true">✉</span><h3>Select a message</h3><p>Choose an email from the inbox to read the full correspondence.</p></div>';
       return;
     }
+    if(active.booking){reader.innerHTML='<article class="correspondence-message"><h3>'+escape(active.title.replace(/^\[ATTY EMAIL\] /,''))+'</h3><p>Booking enquiry · '+escape(active.recipient||'No email provided')+'</p><p>Preferred date: '+escape(active.date||'Not specified')+' '+escape(active.time||'')+'</p><div class="correspondence-message-body"><pre>'+escape(active.notes)+'</pre></div><div class="correspondence-compose-tabs"><button type="button" data-booking-reply>Reply to booking</button></div></article>';reader.querySelector('[data-booking-reply]').onclick=()=>open(editors['Email draft'],null,{title:'Re: Consultation booking',recipient:active.recipient,notes:''});return;}
     const incoming=isAttorneyEmail(active);
     const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
     const stamp=active.date?escape(active.date):'Saved draft';
@@ -1090,6 +1092,7 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
         }).filter(Boolean);
         consultationRequests = allEnquiryContacts.filter(item => item.date);
         consultationRequestsLoaded = true;
+        renderDrafts();
         renderCalendar();
         renderDashboard();
       },
