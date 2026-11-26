@@ -657,15 +657,7 @@ function home(){
    <div class="consultation-footer"><button class="action" type="submit" disabled>Send inquiry</button><p id="consultation-result" role="status"></p></div>
   </form>
  </div></section>
- <details class="support-widget">
-  <summary>How can I help?</summary>
-  <div class="support-content">
-   <h2>Contact support</h2>
-   <p>Ask a general question. Replies appear here when the team responds.</p>
-   <form id="support-form" method="post"><label>Your question<textarea name="message" required maxlength="600" rows="3" placeholder="Please leave out confidential details"></textarea></label><button class="action" type="submit" disabled>Send question</button></form>
-   <div id="support-result" role="status"></div>
-  </div>
- </details>
+ 
  </main><footer class="client-footer premium-footer">
  <div class="footer-inner">
   <section class="footer-brand" aria-label="Prevail Family Law contact details">
@@ -887,5 +879,5 @@ if(staffMode==='admin'){tab='Legal Assistant Duties';workspace();}
 </script>
 
 <script src="/docs/expertise-menu.js?v=parenting-orders-5" defer></script>
-<script>(()=>{if(new URLSearchParams(location.search).get('chat')!=='1')return;function openChat(){const w=document.querySelector('details.support-widget');if(!w)return;w.open=true;w.querySelector('textarea')?.focus({preventScroll:true});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',openChat,{once:true});else openChat();})();</script><link rel="stylesheet" href="/docs/live-chat.css?v=1"><script type="module" src="/docs/live-chat.js?v=1"></script></body>
+<link rel="stylesheet" href="/docs/live-chat.css?v=1"><script type="module" src="/docs/live-chat.js?v=1"></script></body>
 </html>
