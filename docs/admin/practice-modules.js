@@ -315,6 +315,7 @@ function bindDocumentRows(module,body,rows){
  [...body.rows].forEach((tr,i)=>{const r=rows[i];if(!r)return;tr.tabIndex=0;tr.onclick=()=>open(r);tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(r)}};if(r.id===module.dataset.docSelected)open(r)});
 }
 
+  function filterTimeTab(){const host=byId('work-time');if(!host)return;const tab=host.dataset.timeTab;host.querySelectorAll('.pm-content-grid .pm-table tbody tr').forEach(tr=>{if(tr.cells.length!==7)return;const expense=tr.cells[4].textContent.trim().startsWith('AUD');tr.hidden=tab==='Expenses'?!expense:tab==='Time & Fees'?expense:false;});}
   function renderActivityLibrary(){
     const host=byId('work-time'), form=byId('pm-time')?.querySelector('form');if(!host||!form||!practiceContext)return;
     let panel=host.querySelector('[data-activity-library]');
@@ -322,6 +323,12 @@ function bindDocumentRows(module,body,rows){
       panel=document.createElement('details');panel.dataset.activityLibrary='';panel.className='pm-panel';panel.style.margin='12px 0';
       panel.innerHTML='<summary style="cursor:pointer;font-weight:600;color:#102438">Activity Library</summary><div style="display:flex;justify-content:flex-end;margin:10px 0"><button type="button" class="pm-button pm-primary" data-new-activity>＋ New activity</button></div><div data-activity-list></div>';
       host.querySelector('.pm-kpis')?.before(panel);
+      const nav=document.createElement('nav');nav.className='inv-tabs';nav.style.cssText='display:flex;gap:6px;margin:0 0 16px;border-bottom:1px solid #ded3c4';
+      const heading=host.querySelector('.pm-heading'),kpis=host.querySelector('.pm-kpis'),grid=host.querySelector('.pm-content-grid');
+      panel.open=true;panel.querySelector('summary').style.display='none';panel.style.minHeight='360px';
+      const title=document.createElement('h3');title.textContent='Activity Library';title.style.margin='0';panel.prepend(title);
+      const tabs=['Time & Fees','Expenses','Activities'];const activate=t=>{nav.querySelectorAll('button').forEach(b=>{b.setAttribute('aria-selected',String(b.textContent===t));b.style.background=b.textContent===t?'#102438':'transparent';b.style.color=b.textContent===t?'white':'#102438';});panel.style.display=t==='Activities'?'block':'none';for(const el of [heading,kpis,grid])if(el)el.style.display=t==='Activities'?'none':'';if(heading){heading.querySelector('[data-open-dialog="pm-time"]').style.display=t==='Expenses'?'none':'';heading.querySelector('[data-open-dialog="pm-expense"]').style.display=t==='Expenses'?'':'none';}host.dataset.timeTab=t;filterTimeTab();};
+      for(const t of tabs){const b=document.createElement('button');b.type='button';b.className='pm-button';b.textContent=t;b.onclick=()=>activate(t);nav.append(b);}host.prepend(nav);activate('Time & Fees');
       const label=document.createElement('label');label.textContent='Billing activity';const sel=document.createElement('select');sel.name='activityId';label.append(sel);form.querySelector('.pm-form-grid').prepend(label);
       sel.onchange=()=>{const a=recordRows('billingActivity').find(r=>r.id===sel.value)?.payload;if(!a)return;form.elements.description.value=a.description||a.name;form.elements.rate.value=a.rate;form.elements.billable.value=a.billable;};
       panel.querySelector('[data-new-activity]').onclick=()=>editBillingActivity();
@@ -337,7 +344,7 @@ function bindDocumentRows(module,body,rows){
     f.onsubmit=async e=>{e.preventDefault();const {payload}=recordPayload(f);if(!payload.code||!payload.name||!Number.isFinite(payload.rate)||payload.rate<0){setStatus(f,'Enter valid activity details.',true);return;}if(recordRows('billingActivity').some(r=>r.id!==record?.id&&String(r.payload.code).toLowerCase()===payload.code.toLowerCase())){setStatus(f,'Activity code already exists.',true);return;}const b=f.querySelector('[type=submit]');b.disabled=true;try{if(practiceContext!==ctx)throw Error('Workspace changed');if(ctx.sampleMode){if(record)record.payload=payload;else practiceRecords.push({id:crypto.randomUUID(),recordType:'billingActivity',payload});}else{const fs=await import(firebaseModuleUrl);if(record)await fs.updateDoc(fs.doc(ctx.db,'firmRecords',record.id),{payload,updatedBy:ctx.user.uid,updatedAt:fs.serverTimestamp()});else await fs.setDoc(fs.doc(fs.collection(ctx.db,'firmRecords')),{firmUid:ctx.firmUid,recordType:'billingActivity',payload,createdBy:ctx.user.uid,updatedBy:ctx.user.uid,createdAt:fs.serverTimestamp(),updatedAt:fs.serverTimestamp()});}d.close();renderActivityLibrary();}catch(err){setStatus(f,'Unable to save activity. Check workspace permissions and try again.',true);}finally{b.disabled=false;}};
   }
 
-function renderRecords() {renderActivityLibrary();publishEnquiryStaff();if(location.hash==='#work-approvals')renderDownloadApprovals();
+function renderRecords() {queueMicrotask(filterTimeTab);renderActivityLibrary();publishEnquiryStaff();if(location.hash==='#work-approvals')renderDownloadApprovals();
     const tableTargets = [
       ['work-documents','document', r=>[r.payload.title||r.payload.fileName||'Document',r.payload.matter||'—',r.payload.fileSize!=null?(r.payload.fileSize/1048576).toFixed(2)+' MB':'—',sydneyDate(r.createdAt),'Details']],
       ['work-time','timeEntry', r=>[r.payload.date||'—',r.payload.staff||practiceContext?.user?.displayName||'Staff',r.payload.matter||'—',r.payload.description||'—',(r.payload.hours||0)+' hrs',r.payload.billable||'—',r.payload.status||'Unbilled']],
