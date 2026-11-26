@@ -1426,7 +1426,17 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
       const title=active.title.replace(/^\[ATTY EMAIL\] /,'');
       const mode=compose.dataset.correspondenceCompose;
       const recipient=mode==='forward'?'':(incoming?active.recipient||'':active.recipient||'');
-      open(editors['Email draft'],null,{title:(mode==='forward'?'Fwd: ':'Re: ')+title,recipient,matter:active.matter||'',notes:mode==='forward'?'Forwarded message:\\n\\n'+(active.notes||''):'\\n\\nOn '+(active.date||'the previous message')+', '+(active.recipient||'the sender')+' wrote:\\n'+(active.notes||'')});
+      const article=compose.closest('.correspondence-message');
+      article.querySelector('.corr-inline-compose')?.remove();
+      const form=document.createElement('form');form.className='corr-inline-compose';
+      form.innerHTML='<label>To <input type="email" name="recipient" required></label><label>Subject <input name="subject" required maxlength="160"></label><label>Message <textarea name="body" required></textarea></label><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="submit">Save reply draft</button><button type="button" data-open-mail>Open email app</button><button type="button" data-cancel-reply>Cancel</button></div>';
+      form.elements.recipient.value=recipient;
+      form.elements.subject.value=(mode==='forward'?'Fwd: ':'Re: ')+title;
+      form.elements.body.value=mode==='forward'?'\\n\\nForwarded message:\\n'+(active.notes||''):'';
+      form.querySelector('[data-cancel-reply]').onclick=()=>form.remove();
+      form.querySelector('[data-open-mail]').onclick=()=>{if(!form.reportValidity())return;location.href='mailto:'+encodeURIComponent(form.elements.recipient.value)+'?subject='+encodeURIComponent(form.elements.subject.value)+'&body='+encodeURIComponent(form.elements.body.value);};
+      form.onsubmit=e=>{e.preventDefault();e.stopPropagation();if(!form.reportValidity())return;open(editors['Email draft'],null,{title:form.elements.subject.value,recipient:form.elements.recipient.value,matter:active.matter||'',notes:form.elements.body.value});};
+      article.append(form);form.elements.body.focus();form.scrollIntoView({block:'nearest'});
       return;
     }
   });
