@@ -228,6 +228,22 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /supportChats/{chatId} {
+      function visitor() { return signedIn() && request.auth.uid == chatId && request.auth.token.firebase.sign_in_provider == 'anonymous'; }
+      allow create: if visitor() && request.resource.data.keys().hasOnly(['ownerUid']) && request.resource.data.ownerUid == chatId;
+      allow update: if visitor() && request.resource.data == resource.data;
+      allow get: if visitor() || inboxStaff();
+      allow list: if inboxStaff() && request.query.limit <= 100;
+      match /messages/{messageId} {
+        allow read: if visitor() || inboxStaff();
+        allow create: if exists(/databases/$(database)/documents/supportChats/$(chatId))
+          && request.resource.data.keys().hasOnly(['text','sender','createdAt'])
+          && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000
+          && request.resource.data.createdAt == request.time
+          && ((visitor() && request.resource.data.sender == 'visitor') || (inboxStaff() && request.resource.data.sender == 'staff'));
+      }
+    }
+
     function validFirmRecord(data, firmUid, creating) {
       return data.keys().hasOnly([
           'firmUid', 'recordType', 'payload', 'createdBy',
