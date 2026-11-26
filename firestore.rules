@@ -279,6 +279,13 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /firmRecords/{recordId}/previews/{previewId} {
+      function parentDoc() { return get(/databases/$(database)/documents/firmRecords/$(recordId)).data; }
+      allow get: if isFirmStaff() && belongsToFirm(parentDoc().firmUid) && parentDoc().recordType == 'document' && previewId == 'protected';
+      allow create, update: if isSolicitor() && request.auth.uid == parentDoc().firmUid && parentDoc().recordType == 'document' && previewId == 'protected' && request.resource.data.keys().hasOnly(['kind','content']) && request.resource.data.kind in ['image','archive'] && request.resource.data.content is string && request.resource.data.content.size() <= 100000;
+      allow list, delete: if false;
+    }
+
     match /firmRecords/{recordId}/fileChunks/{chunkId} {
       function parentRecord() {
         return get(/databases/$(database)/documents/firmRecords/$(recordId)).data;
