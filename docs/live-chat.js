@@ -12,7 +12,7 @@ function thread(db,id,staff,host){
 const staffPage=location.pathname.startsWith('/admin')||location.pathname.startsWith('/lawyer');
 if(!staffPage){
  const panel=el('section','lc-panel lc-public'), head=el('header','lc-head'), title=el('div','lc-heading','Live Chat Support'), status=el('p','lc-status'),body=el('div','lc-thread');let started=false;
- title.append(el('small','','Prevail Family Law'));head.append(title,btn('×',()=>panel.hidden=true));
+ const logo=el('img','lc-brand-logo');logo.src='/docs/Prevail-Family-Law-Gold-Logo.webp?v=footer-logo-1';logo.alt='Prevail Family Law';title.append(el('small','','Prevail Family Law'));const close=btn('×',()=>panel.hidden=true);close.setAttribute('aria-label','Close live chat');head.append(logo,title,close);panel.setAttribute('aria-label','Live Chat Support');
  const form=el('form','lc-register');form.append(el('h2','','Connect with our team'),el('p','','Please provide your contact details to start a conversation.'));
  const fields={};for(const [key,label,type] of [['name','Full name','text'],['email','Email address','email'],['phone','Phone number','tel']]){const l=el('label','',label+' *'),i=el('input');i.type=type;i.required=true;i.maxLength=key==='email'?254:100;i.autocomplete=key==='phone'?'tel':key;l.append(i);form.append(l);fields[key]=i;}
  const consent=el('label','lc-consent'),check=el('input');check.type='checkbox';check.required=true;consent.append(check,el('span','','I confirm that my contact details may be shared with the Prevail Family Law team.'));const submit=el('button','lc-btn','Connect with an agent');submit.type='submit';submit.disabled=true;form.append(consent,submit,el('small','','Please avoid sharing confidential case details in this chat.'));
