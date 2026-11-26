@@ -1414,9 +1414,9 @@ export function mountWorkflow(db, uid, sampleMode = false, authUser = null) {
     renderDrafts();
   });
   const correspondenceLayout=find('#correspondence-layout');
-  find('#correspondence-list-close').addEventListener('click',()=>{correspondenceLayout.classList.add('is-list-collapsed');find('#correspondence-list-open').hidden=false;});
+  find('#correspondence-list-close').addEventListener('click',()=>{if(correspondenceLayout.classList.contains('is-reader-closed'))return;correspondenceLayout.classList.add('is-list-collapsed');find('#correspondence-list-open').hidden=false;});
   find('#correspondence-list-open').addEventListener('click',()=>{correspondenceLayout.classList.remove('is-list-collapsed');find('#correspondence-list-open').hidden=true;});
-  find('#correspondence-reader-close').addEventListener('click',()=>{correspondenceLayout.classList.remove('has-selected');correspondenceLayout.classList.add('is-reader-closed');});
+  find('#correspondence-reader-close').addEventListener('click',()=>{correspondenceLayout.classList.remove('has-selected','is-list-collapsed');correspondenceLayout.classList.add('is-reader-closed');find('#correspondence-list-open').hidden=true;});
   find('#correspondence-reader-list').addEventListener('click',()=>{correspondenceLayout.classList.remove('is-list-collapsed');find('#correspondence-list-open').hidden=true;});
   find('#correspondence-reader-content').addEventListener('click',event=>{
     const compose=event.target.closest('[data-correspondence-compose]');
