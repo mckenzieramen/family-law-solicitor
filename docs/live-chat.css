@@ -140,3 +140,24 @@ body .lc-windows>.lc-panel>.lc-head .lc-btn{margin-left:0!important}
 body .lc-windows>.lc-panel.lc-unread>.lc-head{background:linear-gradient(120deg,#ffe1e3,#ffc9ce)!important;color:#922b36!important;border-bottom-color:#f4aab1!important}
 body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
 body .lc-windows>.lc-panel.lc-unread>.lc-head .lc-btn{background:#fff!important;color:#a52e3a!important;border-color:#f1b2b8!important}
+
+
+/* Compact Messenger-style floating chat dimensions (header + conversation area). */
+body .lc-windows>.lc-panel{
+  box-sizing:border-box!important;
+  width:min(264px,calc(100vw - 16px))!important;
+  height:min(365px,calc(100dvh - 16px))!important;
+  max-height:min(365px,calc(100dvh - 16px))!important;
+  min-height:0!important;
+}
+body .lc-windows>.lc-panel.lc-minimized{
+  height:62px!important;
+  min-height:62px!important;
+  max-height:62px!important;
+}
+@media(max-width:600px){
+  body .lc-windows>.lc-panel{
+    width:min(264px,calc(100vw - 16px))!important;
+    height:min(365px,calc(100dvh - 16px))!important;
+  }
+}
