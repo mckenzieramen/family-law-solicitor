@@ -188,3 +188,17 @@ body .lc-windows>.lc-panel .lc-status{font-size:9px!important;padding:2px 9px!im
 body .lc-windows>.lc-panel.lc-unread>.lc-head{background:#fff0f0!important;color:#a5222d!important}
 body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
 @media(max-width:600px){body .lc-windows{right:8px!important;bottom:0!important;max-width:calc(100vw - 16px)!important}body .lc-windows>.lc-panel{width:min(264px,calc(100vw - 16px))!important;height:min(365px,calc(100dvh - 8px))!important;max-height:min(365px,calc(100dvh - 8px))!important}}
+
+/* Persistent customer chat and three-column admin conversation view */
+.lc-resume{width:100%;margin:10px 0;background:#17483a!important;color:#fff!important}
+.lc-admin-chat-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,280px);min-height:0;flex:1;overflow:hidden}
+.lc-admin-chat-layout>.lc-main-thread{min-width:0;display:flex;flex-direction:column;min-height:0}
+.lc-customer-profile{border-left:1px solid #e8e2d7;background:#fbfaf7;padding:18px;overflow:auto;color:#17382f;font-size:13px}
+.lc-customer-profile h3{font:600 17px Georgia;margin:0 0 16px}
+.lc-customer-profile p{overflow-wrap:anywhere;line-height:1.5}
+.lc-linked-records{margin-top:18px;padding-top:14px;border-top:1px solid #e6dfd2}
+.lc-linked-records small{font-size:10px;letter-spacing:.08em;color:#98763c;font-weight:700}
+.lc-close-conversation{margin-top:16px;width:100%;background:#9d3434!important;color:white!important}
+.lc-close-conversation:disabled{opacity:.55;cursor:not-allowed}
+.lc-admin-chat-layout .lc-messages{flex:1;min-height:0;overflow:auto}
+@media(max-width:900px){.lc-admin-chat-layout{grid-template-columns:minmax(0,1fr)}.lc-customer-profile{border-left:0;border-top:1px solid #e8e2d7;max-height:220px}}
