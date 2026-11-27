@@ -161,3 +161,30 @@ body .lc-windows>.lc-panel.lc-minimized{
     height:min(365px,calc(100dvh - 16px))!important;
   }
 }
+
+
+/* Final Messenger-inspired floating widget specification */
+body .lc-windows{right:12px!important;bottom:0!important;left:auto!important;top:auto!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:flex-end!important;gap:10px!important;max-width:calc(100vw - 24px)!important;max-height:100dvh!important;overflow:visible!important;pointer-events:none!important}
+body .lc-windows>.lc-panel{pointer-events:auto!important;position:relative!important;box-sizing:border-box!important;width:min(264px,calc(100vw - 24px))!important;height:min(365px,calc(100dvh - 12px))!important;min-height:0!important;max-height:min(365px,calc(100dvh - 12px))!important;margin:0!important;border:1px solid #dce5ee!important;border-radius:12px 12px 0 0!important;background:#fff!important;box-shadow:0 8px 28px rgba(25,55,85,.18)!important;overflow:hidden!important}
+body .lc-windows>.lc-panel.lc-minimized{height:50px!important;min-height:50px!important;max-height:50px!important}
+body .lc-windows>.lc-panel>.lc-head{height:52px!important;min-height:52px!important;flex:0 0 52px!important;padding:7px 9px!important;gap:8px!important;background:#fff!important;color:#182b3a!important;border-bottom:1px solid #edf1f5!important;border-radius:12px 12px 0 0!important}
+.lc-head-identity{display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important;flex:1!important}
+.lc-head-avatar{width:32px!important;height:32px!important;min-width:32px!important;font-size:13px!important}
+.lc-head-name-stack{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important}
+.lc-head-name{font-size:12px!important;font-weight:700!important;color:#182b3a!important}
+.lc-head-status{font-size:10px!important;font-weight:400!important;color:#718096!important;white-space:nowrap!important}
+body .lc-windows>.lc-panel>.lc-head .lc-btn{width:25px!important;height:25px!important;min-width:25px!important;flex:0 0 25px!important;background:#f0f4f8!important;color:#526579!important;border:0!important;font-size:15px!important}
+body .lc-windows>.lc-panel>.lc-thread{background:#fff!important;min-height:0!important;flex:1 1 auto!important;display:flex!important;flex-direction:column!important}
+body .lc-windows>.lc-panel .lc-messages{background:#fff!important;flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:10px!important;gap:6px!important}
+body .lc-windows>.lc-panel .lc-message-row{margin:0 0 5px!important;max-width:100%!important}
+body .lc-windows>.lc-panel .lc-message-row .lc-bubble{max-width:82%!important;padding:7px 10px!important;border-radius:16px!important;font-size:11px!important;line-height:1.4!important}
+body .lc-windows>.lc-panel .lc-message-row .lc-in{background:#eef1f4!important;color:#263746!important;border:0!important}
+body .lc-windows>.lc-panel .lc-message-row .lc-out{background:#1684f8!important;color:#fff!important;border:0!important}
+body .lc-windows>.lc-panel .lc-message-time{font-size:9px!important;color:#8b98a5!important;margin-top:2px!important}
+body .lc-windows>.lc-panel .lc-form{flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:6px!important;padding:8px!important;background:#fff!important;border-top:1px solid #edf1f5!important}
+body .lc-windows>.lc-panel .lc-form textarea{min-height:32px!important;max-height:54px!important;resize:none!important;padding:8px 10px!important;border:0!important;border-radius:18px!important;background:#f0f2f5!important;font-size:12px!important;outline:none!important}
+body .lc-windows>.lc-panel .lc-form .lc-btn{height:30px!important;min-width:34px!important;padding:0 9px!important;border:0!important;border-radius:18px!important;background:#1684f8!important;color:#fff!important;font-size:11px!important}
+body .lc-windows>.lc-panel .lc-status{font-size:9px!important;padding:2px 9px!important;color:#7b8794!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head{background:#fff0f0!important;color:#a5222d!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
+@media(max-width:600px){body .lc-windows{right:8px!important;bottom:0!important;max-width:calc(100vw - 16px)!important}body .lc-windows>.lc-panel{width:min(264px,calc(100vw - 16px))!important;height:min(365px,calc(100dvh - 8px))!important;max-height:min(365px,calc(100dvh - 8px))!important}}
