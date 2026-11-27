@@ -108,3 +108,28 @@ body .lc-windows>.lc-panel.lc-unread>.lc-head .lc-btn{color:#991b1b!important;bo
 #correspondence-layout .lc-inbox-avatar{width:40px!important;height:40px!important;border-radius:50%!important;display:grid!important;place-items:center!important}
 #correspondence-layout .lc-message-out .lc-out{background:#c8e6ff!important;color:#123d60!important;border:1px solid #b5dafa!important}
 #correspondence-layout .lc-message-in .lc-in{background:#e9f1f8!important;color:#253c50!important;border:1px solid #d8e4ef!important}
+
+
+/* Messenger-inspired floating chat header: roomy identity, letter avatar and unread badge */
+body .lc-windows>.lc-panel{overflow:visible!important;border-radius:15px 15px 0 0!important}
+body .lc-windows>.lc-panel>.lc-head{
+  position:relative!important;display:flex!important;align-items:center!important;gap:10px!important;
+  min-height:62px!important;height:62px!important;padding:9px 12px!important;
+  border-radius:14px 14px 0 0!important;overflow:visible!important;
+  box-sizing:border-box!important;
+}
+body .lc-windows>.lc-panel.lc-minimized>.lc-head{min-height:62px!important;height:62px!important}
+.lc-head-identity{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;flex:1 1 auto!important}
+.lc-head-avatar{width:38px!important;height:38px!important;min-width:38px!important;border-radius:50%!important;display:grid!important;place-items:center!important;font-size:15px!important;font-weight:800!important;letter-spacing:0!important;border:2px solid rgba(255,255,255,.9)!important;box-shadow:0 2px 7px rgba(29,67,103,.14)!important}
+.lc-head-name{font-size:14px!important;font-weight:750!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:inherit!important}
+body .lc-windows>.lc-panel>.lc-head .lc-btn{width:30px!important;height:30px!important;min-width:30px!important;padding:0!important;display:grid!important;place-items:center!important;border-radius:50%!important;font-size:17px!important;line-height:1!important;flex:0 0 30px!important}
+.lc-unread-count{position:absolute!important;top:-9px!important;right:49px!important;width:23px!important;height:23px!important;display:grid!important;place-items:center!important;border-radius:50%!important;background:#e53945!important;color:#fff!important;border:2px solid #fff!important;box-shadow:0 2px 7px rgba(160,25,35,.25)!important;font-size:11px!important;font-weight:800!important;line-height:1!important;z-index:5!important}
+.lc-unread-count[hidden]{display:none!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head{background:linear-gradient(120deg,#ffe3e5,#ffd1d5)!important;color:#8f2632!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
+body .lc-windows>.lc-panel>.lc-head .lc-btn{margin-left:0!important}
+@media(max-width:700px){
+ body .lc-windows>.lc-panel>.lc-head{gap:8px!important;padding:8px 10px!important}
+ .lc-head-avatar{width:34px!important;height:34px!important;min-width:34px!important}
+ .lc-unread-count{right:46px!important}
+}
