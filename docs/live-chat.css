@@ -47,3 +47,35 @@ body .lc-windows>.lc-panel>.lc-thread{flex:1 1 auto!important;min-height:0!impor
 body .lc-windows>.lc-panel .lc-messages{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important}
 @media(max-width:600px){body .lc-windows{right:8px!important;bottom:0!important;max-width:calc(100vw - 16px)!important}body .lc-windows>.lc-panel{width:min(340px,calc(100vw - 16px))!important;height:min(420px,calc(100dvh - 16px))!important}}
 @media(prefers-reduced-motion:reduce){body .lc-windows>.lc-panel{transition:none!important}}
+
+/* Admin floating chats: show separate visitor windows side-by-side along the bottom edge. */
+body .lc-windows{
+  position:fixed!important;right:8px!important;bottom:0!important;left:auto!important;top:auto!important;
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:flex-end!important;justify-content:flex-end!important;gap:8px!important;
+  width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important;
+  max-height:calc(100dvh - 12px)!important;overflow-x:auto!important;overflow-y:visible!important;
+  z-index:2147483000!important;pointer-events:none!important;scrollbar-width:none!important;
+}
+body .lc-windows::-webkit-scrollbar{display:none!important}
+body .lc-windows>.lc-panel{
+  pointer-events:auto!important;box-sizing:border-box!important;
+  width:min(250px,calc((100vw - 32px)/3))!important;
+  min-width:min(220px,calc((100vw - 32px)/2))!important;
+  height:min(390px,calc(100dvh - 24px))!important;max-height:calc(100dvh - 24px)!important;
+  margin:0!important;flex:0 0 min(250px,calc((100vw - 32px)/3))!important;
+  transform-origin:bottom center!important;
+  transition:height .24s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,opacity .2s ease!important;
+}
+body .lc-windows>.lc-panel.lc-minimized{height:44px!important;min-height:44px!important;max-height:44px!important}
+body .lc-windows>.lc-panel.lc-minimized>.lc-head{min-height:44px!important;height:44px!important;box-sizing:border-box!important;cursor:pointer!important;user-select:none!important}
+body .lc-windows>.lc-panel.lc-minimized>.lc-thread{display:none!important}
+body .lc-windows>.lc-panel>.lc-head{flex:0 0 auto!important;min-height:44px!important;white-space:nowrap!important;overflow:hidden!important}
+body .lc-windows>.lc-panel>.lc-head>*{min-width:0}
+body .lc-windows>.lc-panel>.lc-thread{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+body .lc-windows>.lc-panel .lc-messages{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+@media(max-width:700px){
+  body .lc-windows{right:6px!important;bottom:0!important;width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important;gap:6px!important}
+  body .lc-windows>.lc-panel{width:250px!important;min-width:250px!important;flex-basis:250px!important;height:min(360px,calc(100dvh - 16px))!important}
+}
+@media(prefers-reduced-motion:reduce){body .lc-windows>.lc-panel{transition:none!important}}
