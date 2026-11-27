@@ -133,3 +133,10 @@ body .lc-windows>.lc-panel>.lc-head .lc-btn{margin-left:0!important}
  .lc-head-avatar{width:34px!important;height:34px!important;min-width:34px!important}
  .lc-unread-count{right:46px!important}
 }
+
+
+/* Unread conversations use a clean red header state, without a floating number badge. */
+.lc-unread-count{display:none!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head{background:linear-gradient(120deg,#ffe1e3,#ffc9ce)!important;color:#922b36!important;border-bottom-color:#f4aab1!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head .lc-btn{background:#fff!important;color:#a52e3a!important;border-color:#f1b2b8!important}
