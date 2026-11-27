@@ -79,3 +79,32 @@ body .lc-windows>.lc-panel .lc-messages{min-height:0!important;overflow-y:auto!i
   body .lc-windows>.lc-panel{width:250px!important;min-width:250px!important;flex-basis:250px!important;height:min(360px,calc(100dvh - 16px))!important}
 }
 @media(prefers-reduced-motion:reduce){body .lc-windows>.lc-panel{transition:none!important}}
+
+
+/* Premium light-blue admin live chat theme */
+body .lc-windows>.lc-panel{background:#f7fbff!important;border:1px solid #c8def2!important;border-radius:14px 14px 0 0!important;box-shadow:0 12px 34px rgba(24,66,105,.20)!important;overflow:hidden!important}
+body .lc-windows>.lc-panel>.lc-head{background:linear-gradient(120deg,#d9edff,#b9dcf7)!important;color:#153b5b!important;padding:10px 12px!important;font-weight:700!important;border-bottom:1px solid #b7d5ef!important}
+body .lc-windows>.lc-panel>.lc-head .lc-btn{background:rgba(255,255,255,.72)!important;color:#17466a!important;border:1px solid #a9cde9!important;border-radius:8px!important}
+body .lc-windows>.lc-panel>.lc-thread{background:#f4f9fe!important}
+body .lc-windows>.lc-panel .lc-messages{background:#f4f9fe!important;padding:13px!important;gap:10px!important}
+body .lc-windows>.lc-panel .lc-bubble{border-radius:15px!important;padding:10px 13px!important;line-height:1.48!important;box-shadow:0 1px 2px rgba(30,70,110,.06)!important}
+body .lc-windows>.lc-panel .lc-in{background:#e5edf5!important;color:#253c50!important;border:1px solid #d8e4ef!important}
+body .lc-windows>.lc-panel .lc-out{background:#c8e6ff!important;color:#123d60!important;border:1px solid #b5dafa!important}
+body .lc-windows>.lc-panel .lc-form{background:#fff!important;border-top:1px solid #d5e6f4!important;padding:9px!important}
+body .lc-windows>.lc-panel .lc-form textarea{background:#f8fbff!important;border:1px solid #c8dced!important;border-radius:10px!important;color:#183c59!important}
+body .lc-windows>.lc-panel .lc-form .lc-btn{background:#347fb7!important;color:#fff!important;border-radius:10px!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head{background:linear-gradient(110deg,#fee2e2,#fecaca)!important;color:#991b1b!important;border-bottom-color:#fca5a5!important}
+body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:'NEW MESSAGE';font-size:9px;letter-spacing:.08em;font-weight:800;color:#b91c1c;background:#fff;border:1px solid #fecaca;border-radius:999px;padding:4px 7px;margin-left:2px}
+body .lc-windows>.lc-panel.lc-unread>.lc-head .lc-btn{color:#991b1b!important;border-color:#fca5a5!important}
+.lc-inbox-avatar{font-weight:750!important;border:1px solid rgba(34,74,110,.10)!important;box-shadow:0 2px 5px rgba(25,60,95,.08)!important}
+.lc-avatar-tone-0{background:#dbeafe!important;color:#1d4ed8!important}
+.lc-avatar-tone-1{background:#ede9fe!important;color:#6d28d9!important}
+.lc-avatar-tone-2{background:#d1fae5!important;color:#047857!important}
+.lc-avatar-tone-3{background:#ffedd5!important;color:#c2410c!important}
+.lc-avatar-tone-4{background:#fce7f3!important;color:#be185d!important}
+.lc-avatar-tone-5{background:#cffafe!important;color:#0e7490!important}
+.lc-avatar-tone-6{background:#e0e7ff!important;color:#4338ca!important}
+.lc-avatar-tone-7{background:#fef3c7!important;color:#a16207!important}
+#correspondence-layout .lc-inbox-avatar{width:40px!important;height:40px!important;border-radius:50%!important;display:grid!important;place-items:center!important}
+#correspondence-layout .lc-message-out .lc-out{background:#c8e6ff!important;color:#123d60!important;border:1px solid #b5dafa!important}
+#correspondence-layout .lc-message-in .lc-in{background:#e9f1f8!important;color:#253c50!important;border:1px solid #d8e4ef!important}
