@@ -243,6 +243,18 @@ service cloud.firestore {
       allow update: if (visitor() && resource.data.ownerUid == chatId && validChatContact() && resource.data.get('status','open') != 'closed' && request.resource.data.get('status', resource.data.get('status','open')) == resource.data.get('status','open')) || (inboxStaff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','closedAt','closedBy','updatedAt']) && request.resource.data.status == 'closed' && request.resource.data.closedAt == request.time && request.resource.data.closedBy == request.auth.uid);
       allow get: if visitor() || inboxStaff();
       allow list: if inboxStaff() && request.query.limit <= 100;
+      match /internalNotes/{noteId} {
+        allow read: if inboxStaff();
+        allow create: if inboxStaff()
+          && exists(/databases/$(database)/documents/supportChats/$(chatId))
+          && request.resource.data.keys().hasOnly(['text','authorUid','createdAt'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 4000
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
       match /typing/{side} {
         allow get: if (visitor() || inboxStaff()) && side in ['visitor','staff'];
         allow create, update: if exists(/databases/$(database)/documents/supportChats/$(chatId))
