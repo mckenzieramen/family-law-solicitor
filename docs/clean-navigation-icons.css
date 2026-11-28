@@ -138,3 +138,15 @@ html body main .elig-faq details[open] p {animation:prevailFaqReveal .28s ease b
 @keyframes prevailFaqReveal {from{opacity:0;translate:0 -4px}to{opacity:1;translate:0 0}}
 @media(max-width:700px){html body main .elig-faq .elig-faq-grid{gap:0!important}html body main .elig-faq .faq-independent-column+.faq-independent-column details:first-child{border-top:0!important}html body main .elig-faq details summary{font-size:16px!important}}
 @media(prefers-reduced-motion:reduce){html body main .elig-faq *{animation:none!important;transition:none!important}}
+
+/* Mobile navigation: consistent contrast in both header scroll states. */
+@media(max-width:850px){
+html body:has(.client-home)>header.site-header.site-header nav#public-navigation[data-collapsed=false]:not([hidden]),html body:not(:has(.client-home))>header.site-header nav#public-navigation.is-open{
+display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;background:#102a3a!important;border:1px solid #b9976155!important;border-radius:12px!important;padding:12px!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;max-height:60dvh!important;overflow:auto!important;box-shadow:0 12px 30px #102a3a25!important;animation:pflMobileNavIn .3s ease both}
+html body:has(.client-home)>header.site-header.site-header nav#public-navigation[data-collapsed=false]>a:not(.nav-cta),html body:not(:has(.client-home))>header.site-header nav#public-navigation.is-open>a:not(.nav-cta){color:#fff9ef!important;text-shadow:none!important;justify-content:flex-start!important;min-height:46px!important;padding:12px!important;border-radius:6px!important;font-size:14px!important;white-space:normal!important}
+html body:has(.client-home)>header.site-header.site-header nav#public-navigation[data-collapsed=false]>a:not(.nav-cta):is(:hover,:focus-visible,[aria-current]),html body:not(:has(.client-home))>header.site-header nav#public-navigation.is-open>a:not(.nav-cta):is(:hover,:focus-visible,[aria-current]){color:#f0ce88!important;background:#ffffff0d!important}
+html body>header.site-header #public-navigation>a.nav-cta{grid-column:1/-1!important;min-height:48px!important;margin:6px 0 0!important;width:100%!important;box-sizing:border-box!important}
+html body:has(>header.site-header nav#public-navigation[data-collapsed=false]:not([hidden])) .pfl-concierge,html body:has(>header.site-header nav#public-navigation.is-open) .pfl-concierge{visibility:hidden!important}
+}
+@keyframes pflMobileNavIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){html body>header.site-header nav#public-navigation{animation:none!important}}
