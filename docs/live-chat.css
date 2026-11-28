@@ -214,3 +214,9 @@ body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
 /* Slightly taller staff floating chat, preserving minimized state. */
 body .lc-windows>.lc-panel:not(.lc-minimized){height:min(425px,calc(100dvh - 12px))!important;max-height:min(425px,calc(100dvh - 12px))!important}
 @media(max-width:600px){body .lc-windows>.lc-panel:not(.lc-minimized){height:min(405px,calc(100dvh - 8px))!important;max-height:min(405px,calc(100dvh - 8px))!important}}
+
+/* Desktop compact zoom: compensate for low effective pixel density (e.g. 80% on standard-density displays). */
+@media (min-width: 901px) and (pointer: fine) and (max-resolution: 0.85dppx){
+ body .lc-windows>.lc-panel{zoom:1.25!important}
+ body .lc-windows>.lc-panel:not(.lc-minimized){height:min(425px,calc(80dvh - 12px))!important;max-height:min(425px,calc(80dvh - 12px))!important}
+}
