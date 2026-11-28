@@ -398,6 +398,11 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
 #work-reports .pf-report-toggle{padding:3px}
 }
 #work-reports .pf-report-unavailable:not([hidden]){display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;min-height:240px;border:0;background:#fbf9f5;padding:24px;box-sizing:border-box;color:#102a3a}#work-reports .pf-report-empty-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#f1e7d2;color:#a47b35}#work-reports .pf-report-unavailable strong{font-size:13px;font-weight:600}#work-reports .pf-report-unavailable p{font-size:12px;max-width:260px;margin:0;line-height:1.6}
+
+#work-reports .pf-report-list{overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;flex:1 1 0;min-height:0}
+#work-reports .pf-report-search,#work-reports .pf-report-footer{flex:0 0 auto}
+#work-reports .pf-report-item{padding:7px 9px;font-size:13px;line-height:18px;white-space:normal;overflow-wrap:anywhere}
+#work-reports .pf-report-group{padding:10px 9px 6px;font-size:10px;line-height:14px}
 </style>
 <script id="pf-reports-library-script-v1">
 (function(){
