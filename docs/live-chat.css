@@ -202,3 +202,11 @@ body .lc-windows>.lc-panel.lc-unread>.lc-head:after{content:none!important}
 .lc-close-conversation:disabled{opacity:.55;cursor:not-allowed}
 .lc-admin-chat-layout .lc-messages{flex:1;min-height:0;overflow:auto}
 @media(max-width:900px){.lc-admin-chat-layout{grid-template-columns:minmax(0,1fr)}.lc-customer-profile{border-left:0;border-top:1px solid #e8e2d7;max-height:220px}}
+
+/* Public returning visitor: Prevail navy, ivory and muted gold. */
+.lc-public .lc-register[hidden],.lc-public .lc-resume[hidden]{display:none!important}
+.lc-public .lc-resume:not([hidden]){display:flex!important;align-items:center;justify-content:center;gap:12px;width:calc(100% - 48px)!important;max-width:400px;min-height:52px;margin:24px auto!important;padding:14px 20px!important;box-sizing:border-box;background:#102a3a!important;color:#fffaf0!important;border:1px solid #c9a66b!important;border-radius:8px!important;font:600 14px/1.5 system-ui!important;letter-spacing:.15px;box-shadow:0 5px 14px #102a3a15;transition:background .25s ease,box-shadow .25s ease,transform .25s ease}
+.lc-public .lc-resume:not([hidden])::after{content:'→';color:#e8c583;font-size:19px;line-height:1}
+.lc-public .lc-resume:hover{background:#193b4b!important;box-shadow:0 7px 18px #102a3a26;transform:translateY(-1px)}
+.lc-public .lc-resume:focus-visible{outline:2px solid #b28b4c;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){.lc-public .lc-resume{transition:none!important;transform:none!important}}
