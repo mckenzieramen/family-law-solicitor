@@ -386,6 +386,17 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
 #work-reports .pf-report-item:focus-visible,#work-reports .pf-report-toggle:focus-visible{outline:2px solid #a78248;outline-offset:-2px}
 @media(max-width:1000px){#work-reports .pf-report-content .pm-toolbar,#work-reports .pf-report-content .pm-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){#work-reports .pf-report-shell,#work-reports .pf-report-shell.is-collapsed{height:auto;grid-template-columns:minmax(0,1fr)}#work-reports .pf-report-list{max-height:220px}#work-reports .pf-report-content{overflow:visible;padding:12px}}
+
+/* Compact report library: keep the complete standard catalogue above the fold on desktop. */
+@media(min-width:701px){
+#work-reports .pf-report-search{padding:6px 8px}
+#work-reports .pf-report-search input{padding:5px 8px;font-size:12px;min-height:26px}
+#work-reports .pf-report-list{padding:2px 5px}
+#work-reports .pf-report-group{padding:5px 7px 4px;font-size:10px;line-height:12px}
+#work-reports .pf-report-item{padding:3px 6px;font-size:11px;line-height:15px;min-height:0;white-space:nowrap;letter-spacing:-.1px}
+#work-reports .pf-report-footer{padding:3px 6px}
+#work-reports .pf-report-toggle{padding:3px}
+}
 </style>
 <script id="pf-reports-library-script-v1">
 (function(){
