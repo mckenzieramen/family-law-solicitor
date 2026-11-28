@@ -256,8 +256,19 @@ service cloud.firestore {
         allow read: if visitor() || inboxStaff();
         allow create: if exists(/databases/$(database)/documents/supportChats/$(chatId))
           && get(/databases/$(database)/documents/supportChats/$(chatId)).data.get('status','open') != 'closed'
-          && request.resource.data.keys().hasOnly(['text','sender','createdAt'])
-          && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000
+          && request.resource.data.keys().hasOnly(['text','sender','createdAt','image'])
+          && request.resource.data.text is string && request.resource.data.text.size() <= 1000
+          && (request.resource.data.text.size() > 0 || 'image' in request.resource.data)
+          && (!('image' in request.resource.data) || (
+            request.resource.data.image is map
+            && request.resource.data.image.keys().hasOnly(['name','mime','bytes'])
+            && request.resource.data.image.name is string
+            && request.resource.data.image.name.size() <= 255
+            && request.resource.data.image.mime in ['image/jpeg','image/png','image/webp']
+            && request.resource.data.image.bytes is bytes
+            && request.resource.data.image.bytes.size() <= 716800
+            && request.resource.data.image.bytes.size() > 0
+          ))
           && request.resource.data.createdAt == request.time
           && ((visitor() && request.resource.data.sender == 'visitor') || (inboxStaff() && request.resource.data.sender == 'staff'));
       }
