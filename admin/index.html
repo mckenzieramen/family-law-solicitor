@@ -403,6 +403,25 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
 #work-reports .pf-report-search,#work-reports .pf-report-footer{flex:0 0 auto}
 #work-reports .pf-report-item{padding:7px 9px;font-size:13px;line-height:18px;white-space:normal;overflow-wrap:anywhere}
 #work-reports .pf-report-group{padding:10px 9px 6px;font-size:10px;line-height:14px}
+
+#work-reports .pf-report-content .pm-toolbar.pf-config{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:8px 10px;padding:12px;background:#f7f6f3;border:1px solid #e4dfd6;border-radius:7px;align-items:end}
+#work-reports .pf-config>label{grid-column:span 3;font-size:12px;min-width:0}
+#work-reports .pf-config>label:has([name=report]){display:none!important}
+#work-reports .pf-config>label:has([name=from]),#work-reports .pf-config>label:has([name=to]){grid-column:span 2}
+#work-reports .pf-config>label:has([name=staff]){grid-column:span 3}
+#work-reports .pf-config input,#work-reports .pf-config select{width:100%;min-height:30px!important;height:30px!important;font-size:12px!important;box-sizing:border-box}
+#work-reports .pf-config .pf-options{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:12px}
+#work-reports .pf-options strong{flex-basis:100%;font-size:12px}
+#work-reports .pf-options label{display:inline-flex;align-items:center;gap:5px;color:#65717e}
+#work-reports .pf-options input[type=checkbox]{appearance:none;width:26px!important;height:15px!important;min-height:15px!important;border-radius:20px;background:#c9c9c9;position:relative;margin:0}
+#work-reports .pf-options input[type=checkbox]:before{content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:white}
+#work-reports .pf-options input:checked{background:#102a3a}
+#work-reports .pf-options input:checked:before{left:13px}
+#work-reports .pf-config .pf-actions{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+#work-reports .pf-actions button{width:auto!important;min-height:29px!important;padding:5px 13px!important;font-size:12px!important}
+#work-reports .pf-actions button:disabled{opacity:.5;cursor:not-allowed}
+#work-reports .pf-config-note{grid-column:1/-1;font-size:11px;color:#65717e;margin:0}
+@media(max-width:900px){#work-reports .pf-config>label{grid-column:span 6!important}}
 </style>
 <script id="pf-reports-library-script-v1">
 (function(){
@@ -416,6 +435,24 @@ function setup(){
  const content=shell.querySelector('.pf-report-content'),list=shell.querySelector('.pf-report-list'),title=shell.querySelector('.pf-report-title'),notice=shell.querySelector('.pf-report-unavailable'),search=shell.querySelector('input'),toggle=shell.querySelector('.pf-report-toggle');
  const practice=Array.from(select.options,o=>o.value);let active=select.value;
  panel.before(shell);content.append(panel);
+ const toolbar=panel.querySelector('.pm-toolbar');
+ if(toolbar){
+ toolbar.classList.add('pf-config');
+ const from=toolbar.querySelector('[name=from]'),to=toolbar.querySelector('[name=to]'),staff=toolbar.querySelector('[name=staff]'),matter=toolbar.querySelector('[name=matter]');
+ const period=document.createElement('label');period.innerHTML='Report period<select aria-label="Report period"><option>Custom date range</option><option>This month</option><option>Last month</option><option>This financial year</option></select>';
+ toolbar.prepend(period);
+ const periodSelect=period.querySelector('select');
+ periodSelect.onchange=()=>{if(!from||!to||periodSelect.selectedIndex===0)return;const parts=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Sydney',year:'numeric',month:'numeric'}).formatToParts(new Date());const y=Number(parts.find(p=>p.type==='year').value),m=Number(parts.find(p=>p.type==='month').value);const iso=(yy,mm,dd)=>new Date(Date.UTC(yy,mm-1,dd)).toISOString().slice(0,10);if(periodSelect.selectedIndex===1){from.value=iso(y,m,1);to.value=iso(y,m+1,0);}else if(periodSelect.selectedIndex===2){from.value=iso(y,m-1,1);to.value=iso(y,m,0);}else{const fy=m>=7?y:y-1;from.value=iso(fy,7,1);to.value=iso(fy+1,6,30);} };
+ for(const f of [from,to])f?.addEventListener('change',()=>{periodSelect.selectedIndex=0;});
+ if(staff){const l=staff.closest('label');if(l?.firstChild?.nodeType===3)l.firstChild.textContent='Timekeeper';}
+ const addDisabled=(label,values)=>{const l=document.createElement('label');l.textContent=label;const s=document.createElement('select');s.disabled=true;s.title='Reporting integration required';for(const v of values)s.add(new Option(v));l.append(s);toolbar.append(l);};
+ addDisabled('Area of law',['All']);addDisabled('Type of entries',['Time and expenses']);
+ for(const [heading,labels] of [['Print view',['Include firm header','Include firm logo','Include firm name']],['View options',['Show entries list','Show description field','Exclude externally billed']]]){
+ const row=document.createElement('div');row.className='pf-options';const h=document.createElement('strong');h.textContent=heading;row.append(h);for(const label of labels){const l=document.createElement('label'),i=document.createElement('input');i.type='checkbox';i.disabled=true;i.title='Reporting integration required';l.append(i,document.createTextNode(label));row.append(l);}toolbar.append(row);}
+ const actions=document.createElement('div');actions.className='pf-actions';for(const b of toolbar.querySelectorAll('[data-report],[data-export]')){b.textContent=b.hasAttribute('data-report')?'Generate':'CSV';actions.append(b);}for(const label of ['PDF','Print']){const b=document.createElement('button');b.type='button';b.className='pm-button';b.disabled=true;b.textContent=label;b.title='Reporting integration required';actions.append(b);}toolbar.append(actions);
+ const note=document.createElement('p');note.className='pf-config-note';note.textContent='Additional filters and print options require a connected reporting engine.';toolbar.append(note);
+ }
+
  function render(){
   list.replaceChildren();let count=0;
   for(const [heading,items] of [['STANDARD REPORTS',standard],['PRACTICE REPORTS',practice]]){
