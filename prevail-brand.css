@@ -718,3 +718,7 @@ html body #app>footer.client-footer.premium-footer .footer-visually-hidden{
 
 /* Keep Services visible alongside the complete public navigation. */
 #public-navigation > a[href="#premium-journey-title"],#public-navigation > a[href="/#premium-journey-title"]{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center;white-space:nowrap;flex-shrink:0;color:inherit!important}
+
+/* Public footer charcoal branding */
+html body .client-footer.premium-footer,html body.resources-page .client-footer.premium-footer{background:#29292b!important;background-image:none!important;color:#fff!important}
+html body .client-footer.premium-footer .footer-inner{background:transparent!important}
