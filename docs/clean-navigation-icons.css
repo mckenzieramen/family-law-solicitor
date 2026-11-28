@@ -102,3 +102,23 @@ html body:has(.client-home)>.premium-top-contact .mockup-icon{color:#79551d!impo
 
 html body:has(.client-home)>header.site-header.site-header.is-scrolled{box-shadow:0 5px 18px rgba(16,42,58,.08)!important}
 @media(prefers-reduced-motion:reduce){html body:has(.client-home)>header.site-header.site-header,html body:has(.client-home)>.premium-top-contact{transition:none!important}}
+
+/* Shared expertise editorial standard: FAQ and legal disclaimer */
+html body main .elig-faq {background:#f8f5ee!important;padding:clamp(40px,6vw,76px) 0!important;color:#272729!important}
+html body main .elig-faq h2 {font-family:Georgia,serif!important;font-size:clamp(27px,3vw,38px)!important;font-weight:500!important;text-align:center!important;color:#272729!important;margin:0 0 32px!important}
+html body main .elig-faq .elig-faq-grid {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:32px!important;align-items:start!important}
+html body main .elig-faq .faq-independent-column {display:flex!important;flex-direction:column!important;gap:0!important}
+html body main .elig-faq details {background:transparent!important;border:0!important;border-top:1px solid #d8d0c4!important;border-radius:0!important;box-shadow:none!important;margin:0!important;padding:0!important}
+html body main .elig-faq details:last-child {border-bottom:1px solid #d8d0c4!important}
+html body main .elig-faq details summary {position:relative!important;display:block!important;list-style:none!important;padding:20px 38px 20px 0!important;color:#272729!important;font-size:15px!important;font-weight:600!important;line-height:1.55!important;cursor:pointer!important;transition:color .22s ease!important}
+html body main .elig-faq details summary::-webkit-details-marker {display:none!important}
+html body main .elig-faq details summary::before {display:none!important}
+html body main .elig-faq details summary::after {content:"+"!important;position:absolute!important;right:4px!important;top:20px!important;color:#94734f!important;font-size:20px!important;line-height:1.2!important;background:none!important;border:0!important;transform:none!important}
+html body main .elig-faq details[open] summary::after {content:"−"!important}
+html body main .elig-faq details[open] summary,html body main .elig-faq summary:hover {color:#795b38!important}
+html body main .elig-faq details p {color:#55514c!important;font-size:14px!important;line-height:1.85!important;padding:0 24px 20px 0!important;margin:0!important}
+html body main .elig-faq summary:focus-visible {outline:2px solid #94734f!important;outline-offset:3px!important}
+html body main .divorce-disclaimer,html body main .premium-legal-disclaimer {display:block!important;border:0!important;border-top:1px solid #d8d0c4!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;margin:30px 0 0!important;padding:20px 0 0!important;color:#625e57!important;font-family:inherit!important;font-size:13px!important;font-weight:400!important;font-style:italic!important;line-height:1.85!important;text-align:left!important}
+html body main :is(.divorce-disclaimer,.premium-legal-disclaimer) * {font-style:italic!important;font-weight:400!important;color:inherit!important}
+@media(max-width:700px){html body main .elig-faq .elig-faq-grid {grid-template-columns:minmax(0,1fr)!important;gap:0!important}}
+@media(prefers-reduced-motion:reduce){html body main .elig-faq * {animation:none!important;transition:none!important}}
