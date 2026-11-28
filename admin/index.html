@@ -354,6 +354,70 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
   
  </aside>
 <script src="../docs/admin/practice-modules.js?v=matter-intake-25"></script>
+<style id="pf-reports-library-v1">
+#work-reports .pf-report-shell{display:grid;grid-template-columns:252px minmax(0,1fr);gap:14px;min-height:0;height:var(--pf-report-height,65vh);color:#102a3a}
+#work-reports .pf-report-shell.is-collapsed{grid-template-columns:44px minmax(0,1fr)}
+#work-reports .pf-report-library,#work-reports .pf-report-content{min-width:0;min-height:0;border:1px solid #e2ded6;border-radius:10px;background:#fff;overflow:hidden}
+#work-reports .pf-report-library{display:flex;flex-direction:column}
+#work-reports .pf-report-search{padding:12px;border-bottom:1px solid #e8e4dc}
+#work-reports .pf-report-search input{width:100%;box-sizing:border-box;border:1px solid #dcd8d0;border-radius:6px;padding:9px;font:13px system-ui;background:#fff;color:#102a3a}
+#work-reports .pf-report-list{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;padding:6px}
+#work-reports .pf-report-group{font:700 10px system-ui;letter-spacing:.09em;color:#77684f;padding:12px 8px 7px}
+#work-reports .pf-report-item{display:block;width:100%;text-align:left;border:0;border-left:3px solid transparent;background:transparent;color:#34485a;padding:9px 8px;font:13px/1.35 system-ui;border-radius:4px;cursor:pointer}
+#work-reports .pf-report-item:hover{background:#f5f3ef}
+#work-reports .pf-report-item[aria-pressed=true]{background:#f1e9da;border-left-color:#ad8749;color:#102a3a;font-weight:650}
+#work-reports .pf-report-footer{border-top:1px solid #e8e4dc;padding:7px;display:flex;justify-content:flex-end}
+#work-reports .pf-report-toggle{border:1px solid #ded9cf;background:white;border-radius:6px;color:#102a3a;padding:6px;cursor:pointer;display:grid;place-items:center}
+#work-reports .pf-report-shell.is-collapsed .pf-report-search,#work-reports .pf-report-shell.is-collapsed .pf-report-list{display:none}
+#work-reports .pf-report-content{overflow:auto;padding:16px;box-sizing:border-box;scrollbar-width:thin}
+#work-reports .pf-report-title{font:600 22px/1.3 Georgia,serif;margin:0 0 4px;color:#102a3a}
+#work-reports .pf-report-caption{font:13px/1.5 system-ui;color:#65717e;margin:0 0 16px}
+#work-reports .pf-report-content>.pm-panel{border:0!important;box-shadow:none!important;padding:0!important;background:transparent!important}
+#work-reports .pf-report-content .pm-toolbar{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#work-reports .pf-report-content .pm-toolbar label:has(select[name=report]){display:none}
+#work-reports .pf-report-content .pm-kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#work-reports .pf-report-content .pm-kpis article{background:#fff;border-color:#e5e1d9}
+#work-reports .pf-report-content .pm-button.pm-primary{background:#102a3a!important;color:white!important;border-color:#102a3a!important}
+#work-reports .pf-report-content .pm-table-wrap{max-width:100%;overflow:auto}
+#work-reports .pf-report-unavailable{border:1px dashed #d8c7a9;border-radius:8px;padding:24px;background:#faf8f4;font:14px/1.6 system-ui;color:#34485a}
+#work-reports .pf-report-unavailable[hidden],#work-reports .pf-report-content>.pm-panel[hidden]{display:none!important}
+#work-reports .pf-report-item:focus-visible,#work-reports .pf-report-toggle:focus-visible{outline:2px solid #a78248;outline-offset:-2px}
+@media(max-width:1000px){#work-reports .pf-report-content .pm-toolbar,#work-reports .pf-report-content .pm-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){#work-reports .pf-report-shell,#work-reports .pf-report-shell.is-collapsed{height:auto;grid-template-columns:minmax(0,1fr)}#work-reports .pf-report-list{max-height:220px}#work-reports .pf-report-content{overflow:visible;padding:12px}}
+</style>
+<script id="pf-reports-library-script-v1">
+(function(){
+'use strict';
+const standard=['Account Balance Payments','Account Balance Receipts','Account Balance Transfers','Account Balances','Account Statements','Accounts Receivable','Aging Summary','Audit Logs','Billed Fees & Expenses - Details','Billed Fees & Expenses - Summary','Client - Full List','Credit Balances','Credit History','Dormant Trust Balances','Income Allocation - Details','Income Allocation - Summary','Invoice History','Ledger Export','Matter - Full List'];
+function setup(){
+ const root=document.getElementById('work-reports');if(!root||root.querySelector('.pf-report-shell'))return;
+ const panel=root.querySelector('.pm-panel'),select=panel&&panel.querySelector('select[name="report"]');if(!select)return;
+ const shell=document.createElement('div');shell.className='pf-report-shell';
+ shell.innerHTML='<aside class="pf-report-library" aria-label="Report library"><div class="pf-report-search"><input type="search" aria-label="Find a report" placeholder="Find a report…"></div><div class="pf-report-list"></div><div class="pf-report-footer"><button type="button" class="pf-report-toggle" aria-label="Collapse report library" aria-expanded="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m11 6-6 6 6 6m7-12-6 6 6 6"/></svg></button></div></aside><section class="pf-report-content" aria-label="Report configuration"><h3 class="pf-report-title"></h3><p class="pf-report-caption">Report configuration and results</p><div class="pf-report-unavailable" hidden role="status">This report is not connected to a verified reporting data source. No records or financial totals are available for export.</div></section>';
+ const content=shell.querySelector('.pf-report-content'),list=shell.querySelector('.pf-report-list'),title=shell.querySelector('.pf-report-title'),notice=shell.querySelector('.pf-report-unavailable'),search=shell.querySelector('input'),toggle=shell.querySelector('.pf-report-toggle');
+ const practice=Array.from(select.options,o=>o.value);let active=select.value;
+ panel.before(shell);content.append(panel);
+ function render(){
+  list.replaceChildren();let count=0;
+  for(const [heading,items] of [['STANDARD REPORTS',standard],['PRACTICE REPORTS',practice]]){
+   const matches=items.filter(x=>x.toLowerCase().includes(search.value.trim().toLowerCase()));if(!matches.length)continue;
+   const label=document.createElement('div');label.className='pf-report-group';label.textContent=heading;list.append(label);
+   for(const name of matches){count++;const b=document.createElement('button');b.type='button';b.className='pf-report-item';b.textContent=name;b.title=name;b.setAttribute('aria-pressed',String(active===name));b.onclick=()=>{active=name;if(practice.includes(name)){select.value=name;select.dispatchEvent(new Event('change',{bubbles:true}));}update();list.querySelector('[aria-pressed=true]')?.focus({preventScroll:true});};list.append(b);}
+  }
+  if(!count){const empty=document.createElement('p');empty.className='pf-report-group';empty.textContent='No matching reports';list.append(empty);}
+ }
+ function update(){title.textContent=active;const supported=practice.includes(active);panel.hidden=!supported;notice.hidden=supported;render();}
+ search.addEventListener('input',render);
+ toggle.addEventListener('click',()=>{const collapsed=shell.classList.toggle('is-collapsed');toggle.setAttribute('aria-expanded',String(!collapsed));toggle.setAttribute('aria-label',collapsed?'Expand report library':'Collapse report library');toggle.querySelector('svg').style.transform=collapsed?'rotate(180deg)':'';});
+ select.addEventListener('change',()=>{active=select.value;update();});
+ function resize(){if(shell.getClientRects().length){shell.style.setProperty('--pf-report-height',Math.max(280,window.innerHeight-shell.getBoundingClientRect().top-20)+'px');}}
+ window.addEventListener('resize',resize);window.addEventListener('hashchange',()=>requestAnimationFrame(resize));new MutationObserver(resize).observe(root,{attributes:true,attributeFilter:['hidden','class']});const dashboard=document.getElementById('staff-checklist');if(dashboard)new MutationObserver(resize).observe(dashboard,{attributes:true,attributeFilter:['data-view','hidden']});
+ update();resize();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
+
 <script type="module">
 const url = new URL(location.href);
 const status = document.getElementById('auth-status');
