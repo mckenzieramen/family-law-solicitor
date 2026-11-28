@@ -422,6 +422,33 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
 #work-reports .pf-actions button:disabled{opacity:.5;cursor:not-allowed}
 #work-reports .pf-config-note{grid-column:1/-1;font-size:11px;color:#65717e;margin:0}
 @media(max-width:900px){#work-reports .pf-config>label{grid-column:span 6!important}}
+
+#work-reports .pf-report-content .pm-kpis{display:none!important}
+#work-reports .pf-report-content .pm-report-placeholder{border:0!important;background:transparent!important;padding:0!important;margin:12px 0!important;min-height:0!important}
+#work-reports .pf-report-content .pm-report-placeholder h3{display:none!important}
+#work-reports .pf-report-content .pm-report-placeholder p{font:12px/1.5 system-ui;color:#65717e;margin:0}
+#work-reports .pf-report-content .pm-report-placeholder:not(.pf-feedback){display:none!important}
+#work-reports .pf-report-content .pm-toolbar.pf-config{padding:20px!important;gap:14px 12px!important;background:#faf9f6!important;border:1px solid #e4dfd6!important;border-radius:10px!important;align-items:end!important}
+#work-reports .pf-config>label{display:flex!important;flex-direction:column;gap:6px;font:600 12px/1.4 system-ui;color:#34485a}
+#work-reports .pf-config>label:has([name=report]){display:none!important}
+#work-reports .pf-config>label:has([name=staff]){grid-row:1;grid-column:8/span 5}
+#work-reports .pf-config>label:has([name=matter]){grid-column:span 4}
+#work-reports .pf-config>label:has(select[aria-label="Report period"]){grid-column:span 3}
+#work-reports .pf-config>label:has(select:disabled){grid-column:span 4}
+#work-reports .pf-config>label input,#work-reports .pf-config>label select{height:38px!important;min-height:38px!important;max-height:none!important;padding:8px 10px!important;line-height:20px!important;font:500 13px/20px system-ui!important;border:1px solid #dcd8d0!important;border-radius:7px!important;background-color:#fff!important;color:#102a3a!important;box-sizing:border-box!important}
+#work-reports .pf-config>label select{padding-right:28px!important}
+#work-reports .pf-config>label select:disabled{color:#77818a!important;background-color:#f4f3f0!important}
+#work-reports .pf-options{padding-top:10px;border-top:1px solid #e8e4dc;gap:10px 22px!important}
+#work-reports .pf-options strong{font:600 12px/1.4 system-ui;color:#102a3a}
+#work-reports .pf-options label{font:500 12px/1.5 system-ui}
+#work-reports .pf-options input[type=checkbox]{width:32px!important;height:18px!important;min-height:18px!important;padding:0!important;border:0!important}
+#work-reports .pf-options input[type=checkbox]:before{width:14px;height:14px}
+#work-reports .pf-options input:checked:before{left:16px}
+#work-reports .pf-actions{padding-top:8px}
+#work-reports .pf-actions button{min-height:36px!important;padding:7px 18px!important;border-radius:7px!important;font:600 12px/20px system-ui!important}
+#work-reports .pf-config-note{font:11px/1.5 system-ui!important}
+@media(max-width:900px){#work-reports .pf-config>label:has([name=staff]){grid-row:auto;grid-column:span 6!important}}
+@media(max-width:550px){#work-reports .pf-config>label{grid-column:1/-1!important}}
 </style>
 <script id="pf-reports-library-script-v1">
 (function(){
@@ -450,6 +477,8 @@ function setup(){
  for(const [heading,labels] of [['Print view',['Include firm header','Include firm logo','Include firm name']],['View options',['Show entries list','Show description field','Exclude externally billed']]]){
  const row=document.createElement('div');row.className='pf-options';const h=document.createElement('strong');h.textContent=heading;row.append(h);for(const label of labels){const l=document.createElement('label'),i=document.createElement('input');i.type='checkbox';i.disabled=true;i.title='Reporting integration required';l.append(i,document.createTextNode(label));row.append(l);}toolbar.append(row);}
  const actions=document.createElement('div');actions.className='pf-actions';for(const b of toolbar.querySelectorAll('[data-report],[data-export]')){b.textContent=b.hasAttribute('data-report')?'Generate':'CSV';actions.append(b);}for(const label of ['PDF','Print']){const b=document.createElement('button');b.type='button';b.className='pm-button';b.disabled=true;b.textContent=label;b.title='Reporting integration required';actions.append(b);}toolbar.append(actions);
+ actions.addEventListener('click',e=>{if(e.target.closest('[data-report],[data-export]'))panel.querySelector('.pm-report-placeholder')?.classList.add('pf-feedback');});
+
  const note=document.createElement('p');note.className='pf-config-note';note.textContent='Additional filters and print options require a connected reporting engine.';toolbar.append(note);
  }
 
