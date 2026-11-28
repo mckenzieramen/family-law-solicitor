@@ -715,3 +715,6 @@ html body #app>footer.client-footer.premium-footer .footer-visually-hidden{
 @media(prefers-reduced-motion:reduce){
  html body #app>footer.client-footer.premium-footer .footer-callback button{transition:none}
 }
+
+/* Keep Services visible alongside the complete public navigation. */
+#public-navigation > a[href="#premium-journey-title"],#public-navigation > a[href="/#premium-journey-title"]{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center;white-space:nowrap;flex-shrink:0;color:inherit!important}
