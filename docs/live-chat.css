@@ -220,3 +220,15 @@ body .lc-windows>.lc-panel:not(.lc-minimized){height:min(425px,calc(100dvh - 12p
  body .lc-windows>.lc-panel{zoom:1.25!important}
  body .lc-windows>.lc-panel:not(.lc-minimized){height:min(425px,calc(80dvh - 12px))!important;max-height:min(425px,calc(80dvh - 12px))!important}
 }
+
+/* Shared floating chat dimensions; resize from the top-left corner. */
+@media (min-width:601px) and (pointer:fine){
+ body .lc-windows>.lc-panel{zoom:1!important;width:min(var(--lc-shared-w,264px),calc(100vw - 24px))!important;min-width:0!important;flex-basis:auto!important;flex-shrink:0!important}
+ body .lc-windows>.lc-panel:not(.lc-minimized){height:min(var(--lc-shared-h,425px),calc(100dvh - 12px))!important;max-height:calc(100dvh - 12px)!important}
+ body .lc-windows.lc-resizing>.lc-panel{transition:none!important;animation:none!important}
+ body .lc-windows>.lc-panel>.lc-resize-grip{display:block;position:absolute;left:0;top:0;width:18px;height:18px;padding:0;border:0;background:transparent;cursor:nwse-resize;touch-action:none;z-index:5}
+ .lc-resize-grip:before{content:'';position:absolute;left:4px;top:4px;width:7px;height:7px;border-left:2px solid #8399ac;border-top:2px solid #8399ac;border-radius:2px}
+ .lc-resize-grip:focus-visible{outline:2px solid #1684f8;outline-offset:-2px}
+ body .lc-windows>.lc-panel.lc-minimized>.lc-resize-grip{display:none}
+}
+@media(max-width:600px),(pointer:coarse){.lc-resize-grip{display:none!important}}
