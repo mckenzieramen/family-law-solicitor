@@ -355,6 +355,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('#work-email .cor
  </aside>
 <script src="../docs/admin/practice-modules.js?v=matter-intake-25"></script>
 <style id="pf-reports-library-v1">
+#work-reports:has(.pf-report-shell) > .module-heading,#work-reports:has(.pf-report-shell) > .pm-heading,#work-reports:has(.pf-report-shell) > header{display:none!important}
+
 #work-reports .pf-report-shell{display:grid;grid-template-columns:252px minmax(0,1fr);gap:14px;min-height:0;height:var(--pf-report-height,65vh);color:#102a3a}
 #work-reports .pf-report-shell.is-collapsed{grid-template-columns:44px minmax(0,1fr)}
 #work-reports .pf-report-library,#work-reports .pf-report-content{min-width:0;min-height:0;border:1px solid #e2ded6;border-radius:10px;background:#fff;overflow:hidden}
