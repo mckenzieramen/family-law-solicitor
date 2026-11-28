@@ -122,7 +122,9 @@ dialog#consultation-success-dialog p{color:#53626e}
 </style>
 <link rel="stylesheet" href="/docs/clean-navigation-icons.css?v=nav-shared-5">
 
-</head>
+<style id="pfl-editorial-refresh">
+html body{background:#f8f5ee;color:#102a3a}main .container{width:min(1120px,calc(100% - 48px))}main h1,main h2,main h3{font-family:Georgia,serif;letter-spacing:-.025em}main p,main li{line-height:1.8}main .eyebrow,main .contact-kicker{color:#896735;letter-spacing:.18em;font-size:11px;font-weight:700}main .about-hero{background:#f8f5ee;padding-block:clamp(48px,7vw,96px)}main .about-copy h1{max-width:15ch;font-size:clamp(42px,5.4vw,68px)}main .about-copy p,main .solicitor-copy p:not(.role){font:400 16px/1.85 system-ui,sans-serif;color:#405563}main .consult-card{border-radius:8px;box-shadow:0 14px 40px #102a3a0b;border-top:3px solid #d5ae67}main .about-story,main .solicitor-section{background:#fdfbf6}main .story-lead{font:500 clamp(26px,3vw,38px)/1.3 Georgia,serif;color:#102a3a}main .values-band{background:#102a3a}main .values-band p{font:400 15px/1.85 system-ui,sans-serif}main .solicitor-photo{border-radius:6px;box-shadow:12px 12px 0 #e6d9c2}main .ready-section{background:#f8f5ee}main .ready-section>.container{background:#102a3a;border-radius:8px;padding:clamp(30px,5vw,56px);max-width:900px}main .ready-section h2,main .ready-section p:not(.eyebrow){color:#fff}main .ready-section .eyebrow{color:#e5c48b}main .ready-cta,main .consultation-submit{background:#f0ce88!important;color:#102a3a!important;border:1px solid #d5ae67!important;border-radius:6px;transition:transform .3s ease,box-shadow .3s ease}main .ready-cta:hover,main .consultation-submit:hover{transform:translateY(-2px);box-shadow:0 8px 20px #102a3a26}html body main .elig-hero{background:#102a3a!important;background-image:none!important;min-height:0;padding:clamp(48px,7vw,90px) 0}main .elig-hero h1{max-width:none}html body .elig-article:has(.contact-intro){background:transparent;gap:32px}html body .elig-article:has(.contact-intro)>section:not(.contact-consult){background:transparent;box-shadow:none;border:0;border-top:1px solid #d9cdb9;border-radius:0;padding:28px 0}html body .elig-article:has(.contact-intro)>.contact-intro{border:0;padding-top:0}html body .elig-article:has(.contact-intro)>.contact-consult{border-radius:8px}main .contact-consult .contact-kicker{color:#e5c48b}main .contact-details{padding:24px;background:#fffdf8;border:1px solid #ded3bf;border-radius:6px}main .contact-social{display:flex;flex-wrap:wrap;gap:10px}main .contact-social a{border:1px solid #d9cdb9;padding:8px 12px;border-radius:4px}main .pfl-page-notice{grid-column:1/-1;border-top:1px solid #d9cdb9;padding:20px 0 0;margin:0;color:#59646b;font:italic 13px/1.85 Georgia,serif}main .pfl-page-notice strong{display:block;font:700 10px/1.5 system-ui;letter-spacing:.15em;text-transform:uppercase;color:#896735;margin-bottom:8px}main .contact-urgent a{font-weight:700;text-underline-offset:3px}main .contact-layout{align-items:start}main .pfl-contact-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}main .pfl-contact-actions .contact-chat-trigger{background:transparent!important;color:#f0ce88!important} @media(max-width:760px){main .container{width:calc(100% - 36px)}main .solicitor-photo{box-shadow:6px 6px 0 #e6d9c2}main .contact-details{padding:20px}}@media(prefers-reduced-motion:reduce){main *{transition:none!important;animation:none!important}}
+</style></head>
 <body>
 <div class="contact-strip" aria-label="Firm contact details">
  <div>
@@ -139,7 +141,7 @@ dialog#consultation-success-dialog p{color:#53626e}
   <a href="/about/" aria-current="page"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>About</a>
   <a href="#services" data-expertise aria-expanded="false" aria-controls="expertise-mega"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M7 6 3 13h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/></svg>Expertise</a>
   <a href="/#premium-journey-title"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-11 0v2h4v-2"/></svg>Services</a>
-  <a href="/#contact"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Contact</a>
+  <a href="/contact/"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Contact</a>
   <a class="nav-cta" href="/?booking=1"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4m9-4v4M3.5 10h17m-12 4h2m3 0h2m-7 3h2"/></svg>Book a Consultation</a>
  </nav>
 </header>
@@ -148,16 +150,16 @@ dialog#consultation-success-dialog p{color:#53626e}
   <div class="container about-hero-grid">
    <div class="about-copy">
     <p class="eyebrow">Prevail Family Law · Sydney, NSW</p>
-    <h1 id="about-title">About Us</h1>
-    <h2>About Prevail Family Law</h2>
+    <h1 id="about-title">Family law. Personal guidance.</h1>
+    <h2>Clear advice. Confident next steps.</h2>
     <p>At Prevail Family Law, we provide practical, compassionate legal guidance to individuals and families navigating separation, divorce, parenting arrangements and property settlements. We understand that family law matters are personal, and that clear advice can make a meaningful difference at a challenging time.</p>
     <p>Our approach begins with listening. We take the time to understand each client’s circumstances, explain their legal options and develop a considered strategy that reflects their priorities. Whether a matter can be resolved through negotiation or mediation, or requires court proceedings, we focus on helping clients make informed decisions and move forward with confidence.</p>
-    <p>Supporting clients across Sydney, including the Eastern Suburbs, North Sydney and the Northern Beaches, Prevail Family Law is committed to approachable communication, discretion and thoughtful legal support.</p>
+    <p>We support clients across Sydney and NSW, including the Northern Beaches, Eastern Suburbs, Hills District and North Shore. As a virtual law firm, we offer consultations by phone, video or in person by appointment in Chatswood and Norwest.</p>
     <div class="intro-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M7 6 3 13h8L7 6Zm10 0-4 7h8l-4-7ZM8 21h8"/></svg><span>Clear advice. Thoughtful guidance. A practical path forward.</span></div>
    </div>
    <aside class="consult-card" aria-labelledby="consult-card-title">
-    <div class="consult-card-head"><p class="eyebrow">Start with a conversation</p><h2 id="consult-card-title">Get a free consultation</h2><p>Share a few details and the team will be in touch.</p></div>
-    <form id="consultation-form" aria-describedby="consultation-demo">
+    <div class="consult-card-head"><p class="eyebrow">Start with a conversation</p><h2 id="consult-card-title">Book a free 30-minute consultation</h2><p>Request a free 30-minute consultation. Your preferred appointment is subject to confirmation.</p></div>
+    <form id="consultation-form" aria-labelledby="consult-card-title">
      <input type="hidden" name="firstName"><input type="hidden" name="lastName"><input type="hidden" name="postcode" value=""><input type="hidden" name="preferredTime"><textarea name="message" hidden></textarea>
      <div class="consultation-fields">
       <label class="full">Full name<input name="fullName" autocomplete="name" maxlength="140" required placeholder="Your name"></label>
@@ -178,7 +180,7 @@ dialog#consultation-success-dialog p{color:#53626e}
  </section>
  <section class="about-story" aria-labelledby="story-title">
   <div class="container">
-   <div class="brand-panel"><img src="/docs/Prevail-Family-Law-Horizontal-Logo-2.webp?v=header-logo-2" alt="Prevail Family Law logo"></div>
+   <p class="eyebrow">The Prevail difference</p>
    <div class="story-grid">
     <h2 class="story-lead" id="story-title">Family law advice that is clear, practical and personal, from a solicitor who handles your matter from start to finish.</h2>
     <div class="story-copy"><p>Prevail Family Law was founded to offer a different experience of family law: direct access to an experienced solicitor, honest advice about your options and transparent fees from the outset. Whether you are just starting to think about separation or are already in negotiations or court proceedings, you will always know where you stand and what comes next.</p></div>
@@ -191,7 +193,7 @@ dialog#consultation-success-dialog p{color:#53626e}
    <div><h2>What we value</h2><ul>
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Honest, straightforward advice</span></li>
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Clear communication at every stage</span></li>
-    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Transparent fees, with no surprises</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Clear, upfront fees</span></li>
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Putting children’s wellbeing first</span></li>
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Discretion and confidentiality</span></li>
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Practical outcomes over unnecessary conflict</span></li>
@@ -202,7 +204,7 @@ dialog#consultation-success-dialog p{color:#53626e}
   <div class="container solicitor-grid">
    <figure class="solicitor-photo"><img src="/docs/melissa-gok.webp" alt="Melissa Gok, family law solicitor" loading="lazy" width="420" height="560"></figure>
    <div class="solicitor-copy">
-    <p class="eyebrow">Your solicitor</p><h2 id="melissa-title">Meet Melissa Gok</h2><p class="role">Family Law Solicitor</p>
+    <p class="eyebrow">Your solicitor</p><h2 id="melissa-title">Meet Melissa Gok</h2><p class="role">Principal Solicitor</p>
     <p>Melissa Gok is a Sydney-based family law solicitor with over 10 years’ experience in family law. She holds a Bachelor of Laws and a Bachelor of Commerce (majoring in Finance) from Macquarie University and worked with established Sydney law firms before founding Prevail Family Law.</p>
     <p>Her experience includes parenting arrangements and disputes, property settlements, financial agreements and dispute resolution. She understands the emotional and financial pressures that can accompany separation and approaches each matter with care, attention to detail and practical judgement.</p>
     <p>Melissa’s aim is to help you reach a fair and appropriate outcome as quickly and as inexpensively as possible. She helps clients understand their options and make informed decisions, combining clear communication and thoughtful negotiation with a readiness to navigate court processes when required.</p>
@@ -210,7 +212,7 @@ dialog#consultation-success-dialog p{color:#53626e}
   </div>
  </section>
  <section class="ready-section" aria-labelledby="ready-title">
-  <div class="container"><p class="eyebrow">A free first conversation</p><h2 id="ready-title">Ready to talk about your situation?</h2><p>Book a free 30-minute consultation with Melissa. You’ll get an initial view on your options and clear next steps, with no obligation to go further.</p><a class="ready-cta" href="/?booking=1">Claim your free consultation now <span aria-hidden="true">→</span></a></div>
+  <div class="container"><p class="eyebrow">A free first conversation</p><h2 id="ready-title">Ready to talk about your situation?</h2><p>Book a free 30-minute consultation with Melissa. You’ll get an initial view on your options and clear next steps, with no obligation to go further.</p><a class="ready-cta" href="/?booking=1">Book a Consultation <span aria-hidden="true">→</span></a></div>
  </section>
 </main>
 <footer class="site-footer">
@@ -234,6 +236,6 @@ dialog#consultation-success-dialog p{color:#53626e}
 </script>
 <script type="module" src="/docs/client-inbox.js?v=about-page-1"></script>
 
-<script src="/docs/expertise-menu.js?v=parenting-orders-5" defer></script>
+<script src="/docs/expertise-menu.js?v=editorial-refresh-1" defer></script>
 <link rel="stylesheet" href="/docs/live-chat.css?v=45"><script type="module" src="/docs/live-chat.js?v=45"></script></body>
 </html>
