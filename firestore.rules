@@ -264,7 +264,12 @@ service cloud.firestore {
           && request.resource.data.active is bool
           && request.resource.data.updatedAt == request.time;
       }
+      match /presence/{side} {
+        allow get: if (visitor() || inboxStaff()) && side in ['visitor','staff'];
+        allow create, update: if exists(/databases/$(database)/documents/supportChats/$(chatId)) && ((visitor() && side == 'visitor') || (inboxStaff() && side == 'staff')) && request.resource.data.keys().hasOnly(['updatedAt','activeAt']) && request.resource.data.updatedAt == request.time && request.resource.data.activeAt is timestamp && request.resource.data.activeAt <= request.time;
+      }
       match /messages/{messageId} {
+        allow update: if ((visitor() && resource.data.sender == 'staff') || (inboxStaff() && resource.data.sender == 'visitor')) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['deliveredAt','seenAt']) && (request.resource.data.get('deliveredAt',null) == resource.data.get('deliveredAt',null) || (resource.data.get('deliveredAt',null) == null && request.resource.data.deliveredAt == request.time)) && (request.resource.data.get('seenAt',null) == resource.data.get('seenAt',null) || (resource.data.get('seenAt',null) == null && request.resource.data.seenAt == request.time));
         allow read: if visitor() || inboxStaff();
         allow create: if exists(/databases/$(database)/documents/supportChats/$(chatId))
           && get(/databases/$(database)/documents/supportChats/$(chatId)).data.get('status','open') != 'closed'
